@@ -477,54 +477,165 @@
     var c = moldura(raiz, 'Laboratório: média e variância de uma distribuição discreta');
     var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
 
-    var iX = numero(ctr, 'Valores x<sub>i</sub> (vírgula)', '', atualizar, { type: 'text' });
-    var iP = numero(ctr, 'Probabilidades P<sub>i</sub>', '', atualizar, { type: 'text' });
-    iX.value = '0, 1, 2'; iP.value = '0.5, 0.25, 0.25';
+    var modo = 'contagem';   /* 'contagem' ou 'prob' */
+
+    var campoModo = el('div', { class: 'campo', style: 'flex:1 1 230px' });
+    campoModo.appendChild(el('label', { html: 'O que você vai digitar na 2ª linha' }));
+    var sel = el('select');
+    sel.appendChild(el('option', { value: 'contagem',
+      texto: 'Contagens (frequências) — normalizo para você' }));
+    sel.appendChild(el('option', { value: 'prob',
+      texto: 'Probabilidades (devem somar 1)' }));
+    campoModo.appendChild(sel); ctr.appendChild(campoModo);
+    sel.addEventListener('change', function () {
+      modo = sel.value;
+      rotuloP.innerHTML = modo === 'contagem'
+        ? 'Contagens f<sub>i</sub> (quantas vezes cada valor ocorreu)'
+        : 'Probabilidades P<sub>i</sub>';
+      iP.value = modo === 'contagem' ? '50, 25, 25' : '0,5 · 0,25 · 0,25';
+      if (modo === 'prob') iP.value = '0.5, 0.25, 0.25';
+      atualizar();
+    });
+
+    var iX = numero(ctr, 'Valores x<sub>i</sub> (separados por vírgula)', '', atualizar, { type: 'text' });
+    var iP = numero(ctr, 'Contagens f<sub>i</sub> (quantas vezes cada valor ocorreu)', '',
+                    atualizar, { type: 'text' });
+    var rotuloP = iP.parentNode.querySelector('label');
+    iX.value = '0, 1, 2'; iP.value = '50, 25, 25';
+
+    var exemplos = el('div', { class: 'botoes', style: 'margin:.1rem 0 .9rem' });
+    c.appendChild(exemplos);
+    [
+      ['Dado honesto', '1,2,3,4,5,6', '1,1,1,1,1,1'],
+      ['Irmãos (Módulo 6)', '0,1,2,3,4', '5,10,7,2,1'],
+      ['Soma de 2 dados', '2,3,4,5,6,7,8,9,10,11,12', '1,2,3,4,5,6,5,4,3,2,1'],
+      ['Exemplo 4.1', '0,1,2', '50,25,25']
+    ].forEach(function (ex) {
+      botao(exemplos, ex[0], function () {
+        if (modo !== 'contagem') { modo = 'contagem'; sel.value = 'contagem';
+          rotuloP.innerHTML = 'Contagens f<sub>i</sub> (quantas vezes cada valor ocorreu)'; }
+        iX.value = ex[1]; iP.value = ex[2]; atualizar();
+      }, true);
+    });
 
     var cv = el('canvas'); c.appendChild(cv);
+    var tabela = el('div', { class: 'tabela-rolavel' }); c.appendChild(tabela);
     var painel = cartoes(c, [
-      { rot: 'Σ P<sub>i</sub>', k: 's' }, { rot: '⟨x⟩', k: 'm' },
-      { rot: '⟨x²⟩', k: 'm2' }, { rot: 'σ² = ⟨x²⟩−⟨x⟩²', k: 'v' },
-      { rot: 'σ', k: 'd' }
+      { rot: 'total N = Σf<sub>i</sub>', k: 'n' }, { rot: 'Σ P<sub>i</sub>', k: 's' },
+      { rot: '⟨x⟩', k: 'm' }, { rot: '⟨x²⟩', k: 'm2' },
+      { rot: 'σ² = ⟨x²⟩−⟨x⟩²', k: 'v' }, { rot: 'σ', k: 'd' }
     ]);
     var saida = el('div', { class: 'saida' }); c.appendChild(saida);
 
     function ler(s) {
-      return String(s).split(/[,;]+/).map(function (t) {
+      return String(s).split(/[,;\s]+/).map(function (t) {
         return Number(t.trim().replace(',', '.'));
       }).filter(function (v) { return !isNaN(v); });
     }
 
     function atualizar() {
-      var xs = ler(iX.value), ps = ler(iP.value);
-      var n = Math.min(xs.length, ps.length);
+      var xs = ler(iX.value), fs = ler(iP.value);
+      var n = Math.min(xs.length, fs.length);
       if (n === 0) {
-        saida.innerHTML = 'Informe ao menos um par (x, P).';
-        painel({ s: '—', m: '—', m2: '—', v: '—', d: '—' });
+        saida.innerHTML = 'Informe ao menos um valor e a contagem correspondente.';
+        painel({ n: '—', s: '—', m: '—', m2: '—', v: '—', d: '—' });
+        tabela.innerHTML = '';
+        G.preparar(cv, 240);
         return;
       }
-      xs = xs.slice(0, n); ps = ps.slice(0, n);
-      var soma = 0, m = 0, m2 = 0;
-      for (var i = 0; i < n; i++) { soma += ps[i]; m += xs[i] * ps[i]; m2 += xs[i] * xs[i] * ps[i]; }
+      xs = xs.slice(0, n); fs = fs.slice(0, n);
+
+      if (fs.some(function (f) { return f < 0; })) {
+        saida.innerHTML = '<b style="color:#8c2f39">Há valor negativo na segunda linha.</b> '
+          + (modo === 'contagem'
+              ? 'Contagens não podem ser negativas.'
+              : 'Probabilidade negativa viola o Axioma 1 (Módulo 1).');
+        painel({ n: '—', s: '—', m: '—', m2: '—', v: '—', d: '—' });
+        tabela.innerHTML = '';
+        G.preparar(cv, 240);
+        return;
+      }
+
+      var total = 0;
+      fs.forEach(function (f) { total += f; });
+      if (total === 0) {
+        saida.innerHTML = 'A soma da segunda linha é zero — não há o que normalizar.';
+        painel({ n: '0', s: '—', m: '—', m2: '—', v: '—', d: '—' });
+        tabela.innerHTML = ''; G.preparar(cv, 240);
+        return;
+      }
+
+      /* no modo contagem, normaliza dividindo pelo total */
+      var ps = modo === 'contagem'
+        ? fs.map(function (f) { return f / total; })
+        : fs.slice();
+
+      var somaP = 0, m = 0, m2 = 0;
+      for (var i = 0; i < n; i++) {
+        somaP += ps[i];
+        m += xs[i] * ps[i];
+        m2 += xs[i] * xs[i] * ps[i];
+      }
       var v = m2 - m * m, d = Math.sqrt(Math.max(0, v));
 
-      painel({ s: M.fmt(soma, 4), m: M.fmt(m, 4), m2: M.fmt(m2, 4),
-               v: M.fmt(v, 4), d: M.fmt(d, 4) });
+      painel({
+        n: modo === 'contagem' ? M.fmt(total, 0) : '—',
+        s: M.fmt(somaP, 4), m: M.fmt(m, 4), m2: M.fmt(m2, 4),
+        v: M.fmt(v, 4), d: M.fmt(d, 4)
+      });
 
-      var msg = '';
-      if (Math.abs(soma - 1) > 1e-6)
-        msg = '<b style="color:#8c2f39">Atenção: ΣP<sub>i</sub> = ' + M.fmt(soma, 4)
-            + ' ≠ 1.</b> A distribuição não está normalizada, e média e variância perdem o sentido.';
-      else if (ps.some(function (p) { return p < 0; }))
-        msg = '<b style="color:#8c2f39">Há probabilidade negativa — viola o Axioma 1.</b>';
-      else {
-        var possivel = xs.some(function (x) { return Math.abs(x - m) < 1e-9; });
-        msg = 'Distribuição válida. ⟨x⟩ = <b>' + M.fmt(m, 4) + '</b>, σ = <b>' + M.fmt(d, 4) + '</b>. '
-            + (possivel ? 'A média coincide com um dos valores possíveis.'
-                        : '<b>A média não é um dos valores possíveis</b> — lembre do exemplo dos 2,4 filhos.');
+      montarTabela(xs, fs, ps, total, m);
+
+      var msg;
+      if (modo === 'contagem') {
+        msg = 'Total de <b>' + M.fmt(total, 0) + '</b> observações. Cada probabilidade foi '
+            + 'obtida dividindo a contagem pelo total: '
+            + '<b>P<sub>i</sub> = f<sub>i</sub>/N</b>. Assim ΣP<sub>i</sub> = 1 '
+            + '<b>por construção</b> — a normalização é automática. ';
+      } else if (Math.abs(somaP - 1) > 1e-6) {
+        msg = '<b style="color:#8c2f39">ΣP<sub>i</sub> = ' + M.fmt(somaP, 4) + ' ≠ 1.</b> '
+            + 'A distribuição não está normalizada, e os momentos perdem o sentido. '
+            + 'Troque para o modo <i>contagens</i> acima e eu normalizo os mesmos números. ';
+        saida.innerHTML = msg;
+        desenhar(xs, ps, m, d);
+        return;
+      } else {
+        msg = 'Distribuição normalizada corretamente. ';
       }
+
+      var possivel = xs.some(function (x) { return Math.abs(x - m) < 1e-9; });
+      msg += '⟨x⟩ = <b>' + M.fmt(m, 4) + '</b> e σ = <b>' + M.fmt(d, 4) + '</b>. '
+           + (possivel
+               ? 'Aqui a média coincide com um dos valores possíveis.'
+               : '<b>A média não é um dos valores possíveis</b> — como nos 2,4 filhos por família.');
       saida.innerHTML = msg;
       desenhar(xs, ps, m, d);
+    }
+
+    function montarTabela(xs, fs, ps, total, m) {
+      var linhas = '';
+      for (var i = 0; i < xs.length; i++) {
+        linhas += '<tr><td class="num">' + M.fmt(xs[i], 0) + '</td>'
+                + (modo === 'contagem' ? '<td class="num">' + M.fmt(fs[i], 0) + '</td>' : '')
+                + '<td class="num">' + M.fmt(ps[i], 4) + '</td>'
+                + '<td class="num">' + M.fmt(xs[i] * ps[i], 4) + '</td>'
+                + '<td class="num">' + M.fmt(xs[i] * xs[i] * ps[i], 4) + '</td></tr>';
+      }
+      var somaXP = 0, somaX2P = 0;
+      for (var j = 0; j < xs.length; j++) {
+        somaXP += xs[j] * ps[j]; somaX2P += xs[j] * xs[j] * ps[j];
+      }
+      tabela.innerHTML =
+        '<table><thead><tr><th class="num">x<sub>i</sub></th>'
+        + (modo === 'contagem' ? '<th class="num">f<sub>i</sub></th>' : '')
+        + '<th class="num">P<sub>i</sub></th><th class="num">x<sub>i</sub>P<sub>i</sub></th>'
+        + '<th class="num">x<sub>i</sub>²P<sub>i</sub></th></tr></thead><tbody>'
+        + linhas
+        + '<tr><th class="num">Σ</th>'
+        + (modo === 'contagem' ? '<th class="num">' + M.fmt(total, 0) + '</th>' : '')
+        + '<th class="num">1</th><th class="num">' + M.fmt(somaXP, 4) + '</th>'
+        + '<th class="num">' + M.fmt(somaX2P, 4) + '</th></tr>'
+        + '</tbody></table>';
     }
 
     function desenhar(xs, ps, m, d) {

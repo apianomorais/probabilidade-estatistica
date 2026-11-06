@@ -125,12 +125,35 @@
       <p>\[\sigma^2 = \langle x^2\rangle - \langle x\rangle^2 = \frac54 - \frac{9}{16}
       = \frac{20-9}{16} = \frac{11}{16} = 0{,}6875,
       \qquad \sigma = \sqrt{11}/4 \approx 0{,}829 .\]</p>
-      <p>Mais uma vez, a média \(3/4\) não é um valor possível. Monte essa distribuição no
-      laboratório abaixo e confira.</p>
+      <p>Mais uma vez, a média \(3/4\) não é um valor possível.</p>
+      <p>No laboratório da próxima seção, essa distribuição corresponde às contagens
+      <b>50, 25, 25</b> — ou a quaisquer outras na mesma proporção, como 2, 1, 1. O que importa
+      para a distribuição são as <em>razões</em> entre as contagens, não os valores absolutos.</p>
     </div>
   </details>
 
+  <div class="bloco def">
+    <span class="rotulo">Da contagem à probabilidade</span>
+    <p>Na prática raramente recebemos as probabilidades prontas: recebemos
+    <strong>contagens</strong>. Perguntamos a 25 estudantes quantos irmãos têm e anotamos quantos
+    responderam 0, quantos responderam 1, e assim por diante.</p>
+    <p>A passagem de um para o outro é a divisão pelo total:</p>
+    <p>\[P_i = \frac{f_i}{N}, \qquad N = \sum_i f_i .\]</p>
+    <p>E a normalização vem de graça, <strong>por construção</strong>:</p>
+    <p>\[\sum_i P_i = \sum_i \frac{f_i}{N} = \frac{1}{N}\sum_i f_i = \frac{N}{N} = 1 .\]</p>
+    <p>É a definição frequentista do Módulo 1 reaparecendo: a frequência relativa observada é a
+    estimativa natural da probabilidade.</p>
+  </div>
+
+  <p>O laboratório abaixo aceita as duas entradas. Deixe em <em>contagens</em> e digite os
+  números brutos — ele normaliza, monta a tabela de cálculo coluna por coluna e devolve os
+  momentos:</p>
+
   <div data-widget="discreta"></div>
+
+  <p>Os botões carregam quatro conjuntos conhecidos. Vale conferir que o dado honesto dá
+  \(\langle x\rangle = 3{,}5\) e \(\sigma^2 = 35/12 \approx 2{,}917\), e que a soma de dois dados
+  dá \(\langle x\rangle = 7\) — resultados que você reencontrará nos exercícios propostos.</p>
 
   <!-- ================================================== -->
   <h2 id="s3">3. A variância</h2>

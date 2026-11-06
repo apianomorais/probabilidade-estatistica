@@ -430,3 +430,9 @@ mjx-container[display="true"]{
   .tri-rot{width:26px;font-size:.52rem}
   .tri-linha{gap:2px;margin-bottom:2px}
 }
+
+/* tabelas dentro de widgets: sem caixa alta, que estragaria os índices
+   (x_i viraria X_I) */
+.widget-corpo thead th{text-transform:none;letter-spacing:0;font-size:.86rem}
+.widget-corpo table{font-size:.86rem}
+.widget-corpo tbody th{color:var(--azul);font-weight:700}
