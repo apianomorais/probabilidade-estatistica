@@ -42,9 +42,10 @@
     <li><a href="#s5">5. Medidas de posição</a></li>
     <li><a href="#s6">6. Medidas de dispersão</a></li>
     <li><a href="#s7">7. Quartis e boxplot</a></li>
-    <li><a href="#s8">8. Assimetria</a></li>
-    <li><a href="#s9">9. Aplicações em Física</a></li>
-    <li><a href="#s10">10. Exercícios propostos</a></li>
+    <li><a href="#so">8. Outliers</a></li>
+    <li><a href="#s8">9. Assimetria</a></li>
+    <li><a href="#s9">10. Aplicações em Física</a></li>
+    <li><a href="#s10">11. Exercícios propostos</a></li>
   </ol>
 </aside>
 
@@ -341,7 +342,60 @@
     e se decidir removê-lo, diga isso no relatório.</p>
   </div>
 
-  <h3>Exercício resolvido 6.4 — Boxplot de tempos de reação</h3>
+
+  <div class="bloco def">
+    <span class="rotulo">Método de Tukey — o cálculo manual</span>
+    <p>Para calcular os quartis à mão, o procedimento mais usado em sala é o de
+    <strong>Tukey</strong>:</p>
+    <ol>
+      <li>Ordene os dados e encontre a mediana \(Q_2\);</li>
+      <li>\(Q_1\) é a mediana da <strong>metade inferior</strong> dos dados — e, se \(n\)
+      for ímpar, a mediana central <em>não</em> entra nessa metade;</li>
+      <li>\(Q_3\) é a mediana da <strong>metade superior</strong>, com a mesma ressalva.</li>
+    </ol>
+  </div>
+
+  <h3>Exercício resolvido 6.4 — Quartis passo a passo</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>As notas de 13 alunos em uma prova de Física foram:</p>
+    <p style="font-family:var(--mono);font-size:.85rem">4,5 · 6,0 · 6,5 · 7,0 · 7,0 · 7,5 · 8,0 · 8,0 · 8,5 · 9,0 · 9,0 · 9,5 · 10,0</p>
+    <p>Calcule os três quartis pelo método de Tukey e interprete cada um.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Os dados já estão ordenados, e \(n = 13\) é ímpar.</p>
+      <p><strong>Passo 1 — a mediana \(Q_2\).</strong> A posição central é
+      \(\frac{13+1}{2} = 7^{\underline{a}}\). O sétimo valor é</p>
+      <p>\[Q_2 = \mathbf{8{,}0}.\]</p>
+      <p><strong>Passo 2 — o primeiro quartil \(Q_1\).</strong> A metade inferior são os seis
+      valores <em>antes</em> da mediana (que fica de fora, por \(n\) ser ímpar):</p>
+      <p style="font-family:var(--mono);font-size:.85rem">4,5 · 6,0 · 6,5 · 7,0 · 7,0 · 7,5</p>
+      <p>São 6 valores, então a mediana deles é a média do 3º e do 4º:</p>
+      <p>\[Q_1 = \frac{6{,}5 + 7{,}0}{2} = \mathbf{6{,}75}.\]</p>
+      <p><strong>Passo 3 — o terceiro quartil \(Q_3\).</strong> A metade superior são os seis
+      valores <em>depois</em> da mediana:</p>
+      <p style="font-family:var(--mono);font-size:.85rem">8,0 · 8,5 · 9,0 · 9,0 · 9,5 · 10,0</p>
+      <p>\[Q_3 = \frac{9{,}0 + 9{,}0}{2} = \mathbf{9{,}0}.\]</p>
+      <p><strong>A leitura.</strong> Os quartis dividem a turma em quatro grupos de tamanho
+      igual:</p>
+      <ul>
+        <li>25% dos alunos tiraram nota <strong>até 6,75</strong>;</li>
+        <li>50% tiraram <strong>até 8,0</strong> — e 50%, acima disso;</li>
+        <li>75% tiraram <strong>até 9,0</strong>;</li>
+        <li>os 25% melhores tiraram <strong>acima de 9,0</strong>.</li>
+      </ul>
+      <p>E \(IQR = 9{,}0 - 6{,}75 = 2{,}25\): a metade central da turma está contida em uma
+      faixa de 2,25 pontos.</p>
+      <p><em>Observação sobre convenções:</em> o método de Tukey não é o único. Programas como
+      o Excel e o R usam interpolação linear, e podem dar valores ligeiramente diferentes — o
+      laboratório interativo desta página usa interpolação. As duas respostas estão corretas;
+      apenas seguem convenções distintas, o que importa declarar num relatório.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 6.5 — Boxplot de tempos de reação</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
     <p>Doze medidas de tempo de reação (ms):</p>
@@ -368,8 +422,94 @@
     </div>
   </details>
 
+
   <!-- ================================================== -->
-  <h2 id="s8">8. Assimetria</h2>
+  <h2 id="so">8. Outliers: o que fazer com eles</h2>
+
+  <p>A regra de 1,5×IQR identifica candidatos a outlier. Decidir o que fazer com eles é uma
+  questão <strong>científica</strong>, não estatística — e mal resolvida arruína um trabalho.</p>
+
+  <h3>Exercício resolvido 6.6 — Fator de impacto de revistas</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>O <em>fator de impacto</em> mede quantas vezes, em média, os artigos de uma revista são
+    citados. Eis os valores de algumas revistas de Física:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Revista</th><th class="num">FI</th><th>Revista</th><th class="num">FI</th></tr></thead>
+      <tbody>
+        <tr><td>Nature</td><td class="num">64,8</td><td>Physical Review B</td><td class="num">3,7</td></tr>
+        <tr><td>Science</td><td class="num">56,9</td><td>Classical and Quantum Gravity</td><td class="num">3,6</td></tr>
+        <tr><td>Reviews of Modern Physics</td><td class="num">45,9</td><td>New Journal of Physics</td><td class="num">3,3</td></tr>
+        <tr><td>Physics Reports</td><td class="num">23,9</td><td>Physica A</td><td class="num">3,3</td></tr>
+        <tr><td>Nature Physics</td><td class="num">19,6</td><td>Physical Review C</td><td class="num">3,2</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Analise a distribuição. Média ou mediana descreve melhor o "fator de impacto típico"?
+    Há outliers? Eles devem ser removidos?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Ordenando os dez valores:</p>
+      <p style="font-family:var(--mono);font-size:.85rem">3,2 · 3,3 · 3,3 · 3,6 · 3,7 · 19,6 · 23,9 · 45,9 · 56,9 · 64,8</p>
+      <p><strong>Medidas.</strong> A soma é 228,2, logo \(\bar x = \mathbf{22{,}82}\). A
+      mediana é a média do 5º e 6º valores:</p>
+      <p>\[Q_2 = \frac{3{,}7 + 19{,}6}{2} = \mathbf{11{,}65}.\]</p>
+      <p>Pelo método de Tukey, \(Q_1 = 3{,}3\) e \(Q_3 = 45{,}9\), de modo que
+      \(IQR = 42{,}6\) e os limites da regra são</p>
+      <p>\[3{,}3 - 1{,}5(42{,}6) = -60{,}6 \qquad\text{e}\qquad 45{,}9 + 1{,}5(42{,}6) = 109{,}8 .\]</p>
+      <p><strong>Nenhum valor está fora desses limites</strong> — nem mesmo a Nature, com 64,8.
+      A regra não acusa outlier algum, porque o IQR é enorme: a própria dispersão é tão grande
+      que engole os extremos.</p>
+      <p><strong>Média ou mediana?</strong> A média, 22,82, é maior que <em>seis</em> dos dez
+      valores — e nenhuma revista da lista tem fator de impacto próximo dela. A mediana, 11,65,
+      é ainda pior: cai exatamente no <em>vazio</em> entre 3,7 e 19,6, uma região onde não
+      existe revista alguma.</p>
+      <p>O motivo é que <strong>não existe um valor típico</strong>: a distribuição é
+      claramente <em>bimodal</em>, com cinco revistas agrupadas em torno de 3,4 e cinco
+      espalhadas entre 19,6 e 64,8.</p>
+      <p><strong>A lição.</strong> Nenhuma medida-resumo descreve bem uma distribuição bimodal.
+      Resumir esses dados em um único número — qualquer que seja — é perder a informação mais
+      importante, que é a existência de <em>dois grupos distintos</em>: revistas generalistas de
+      alto impacto e revistas especializadas. Este é o melhor argumento que conheço para
+      <strong>sempre olhar o gráfico antes de calcular</strong>.</p>
+    </div>
+  </details>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Possíveis causas de um outlier</span>
+    <ol>
+      <li><strong>Erro de digitação ou transcrição</strong> — 1750 virou 17500. Corrija, se
+      puder recuperar o valor original;</li>
+      <li><strong>Falha do instrumento</strong> — sensor saturado, contato mau, leitura durante
+      uma oscilação de rede. Documente e remova, explicando;</li>
+      <li><strong>Erro de procedimento</strong> — o cronômetro disparado tarde, a amostra
+      contaminada. Mesmo tratamento;</li>
+      <li><strong>Variabilidade legítima</strong> — a cauda da distribuição existe, e valores
+      extremos ocorrem. <em>Não remova</em>;</li>
+      <li><strong>Um fenômeno novo</strong> — o dado anômalo é real e o modelo é que está errado.
+      <em>Jamais remova.</em></li>
+    </ol>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Uma história que vale lembrar</span>
+    <p>O buraco na camada de ozônio sobre a Antártida foi detectado por satélites da NASA desde
+    o fim dos anos 1970 — mas o software de processamento descartava automaticamente as leituras
+    muito baixas, classificando-as como <em>erro de instrumento</em>. A descoberta só foi
+    publicada em 1985, por uma equipe britânica que media do solo e viu os valores caírem ano
+    após ano.</p>
+    <p>Os dados estavam lá o tempo todo. O que faltou foi alguém perguntar <em>por quê</em>
+    antes de descartar.</p>
+    <p><strong>Regra prática para o relatório:</strong> nunca remova um ponto apenas porque ele
+    é um outlier. Investigue a causa; se decidir removê-lo, diga <em>quantos</em> removeu e
+    <em>por quê</em>; e, sempre que possível, apresente os resultados com e sem o ponto.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s8">9. Assimetria</h2>
 
   <p>A relação entre média, mediana e moda revela a forma da distribuição:</p>
 
@@ -387,6 +527,17 @@
   <p>A regra mnemônica: <strong>a média é arrastada na direção da cauda</strong>. É ela que
   "sente" a magnitude dos valores extremos; a mediana só conta posições.</p>
 
+
+  <div class="bloco def">
+    <span class="rotulo">Fórmula empírica de Pearson</span>
+    <p>Para distribuições moderadamente assimétricas, vale a relação aproximada</p>
+    <p>\[\bar x - \text{Mo} \approx 3\,(\bar x - \text{Md}),\]</p>
+    <p>de onde se obtém um coeficiente de assimetria simples de calcular:</p>
+    <p>\[A_P = \frac{3(\bar x - \text{Md})}{s}.\]</p>
+    <p>Interpreta-se como \(g_1\): zero para simetria, positivo para cauda à direita.
+    É útil quando se tem apenas as medidas-resumo, sem os dados brutos.</p>
+  </div>
+
   <p>Uma medida numérica da assimetria é o coeficiente</p>
   <p>\[g_1 = \frac{n}{(n-1)(n-2)}\sum_{i=1}^{n}\left(\frac{x_i-\bar x}{s}\right)^{3},\]</p>
   <p>nulo para distribuições simétricas, positivo para cauda à direita e negativo para cauda à
@@ -395,7 +546,7 @@
   bem acima de zero, com a média visivelmente à direita da mediana.</p>
 
   <!-- ================================================== -->
-  <h2 id="s9">9. Aplicações em Física</h2>
+  <h2 id="s9">10. Aplicações em Física</h2>
 
   <div class="bloco fisica">
     <span class="rotulo">Descritiva no laboratório didático</span>
@@ -432,7 +583,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s10">10. Exercícios propostos</h2>
+  <h2 id="s10">11. Exercícios propostos</h2>
 
   <ol>
     <li>Classifique as variáveis: (a) tipo sanguíneo; (b) número de filhos; (c) temperatura em
