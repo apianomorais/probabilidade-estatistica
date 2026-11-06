@@ -2190,6 +2190,314 @@
   }
 
   /* =================================================================
+     18. Cem intervalos de confiança
+     ================================================================= */
+  function intervalos(raiz) {
+    var c = moldura(raiz, 'O que "95% de confiança" realmente significa');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var MU = 100, SIGMA = 15;
+    var nAm = 25, conf = 0.95, usaT = true;
+
+    deslizante(ctr, 'Tamanho da amostra n', 2, 100, 1, 25, function (v) { nAm = v; gerar(); });
+
+    var campoC = el('div', { class: 'campo' });
+    campoC.appendChild(el('label', { html: 'Nível de confiança' }));
+    var selC = el('select');
+    [['0.80', '80%'], ['0.90', '90%'], ['0.95', '95%'], ['0.99', '99%']].forEach(function (o) {
+      selC.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selC.value = '0.95';
+    campoC.appendChild(selC); ctr.appendChild(campoC);
+    selC.addEventListener('change', function () { conf = Number(selC.value); gerar(); });
+
+    var campoT = el('div', { class: 'campo' });
+    campoT.appendChild(el('label', { html: 'σ é conhecido?' }));
+    var selT = el('select');
+    selT.appendChild(el('option', { value: 't', texto: 'Não — usar s e a t de Student' }));
+    selT.appendChild(el('option', { value: 'z', texto: 'Sim — usar σ e a normal' }));
+    campoT.appendChild(selT); ctr.appendChild(campoT);
+    selT.addEventListener('change', function () { usaT = selT.value === 't'; gerar(); });
+
+    var bts = el('div', { class: 'botoes' }); ctr.appendChild(bts);
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Cada linha é um intervalo construído a partir de uma amostra diferente da <b>mesma</b> '
+      + 'população &nbsp;·&nbsp; em vermelho, os que erraram μ' }));
+    var painel = cartoes(c, [
+      { rot: 'intervalos gerados', k: 'n' },
+      { rot: 'acertaram μ', k: 'ok' },
+      { rot: 'erraram μ', k: 'erro' },
+      { rot: 'taxa de acerto', k: 'taxa' },
+      { rot: 'largura média', k: 'larg' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    var lista = [], acum = { n: 0, ok: 0 };
+
+    function umIntervalo() {
+      var am = [], s = 0;
+      for (var i = 0; i < nAm; i++) { var x = MU + SIGMA * M.normalAleatoria(); am.push(x); s += x; }
+      var media = s / nAm;
+      var sq = 0;
+      am.forEach(function (x) { sq += (x - media) * (x - media); });
+      var dp = Math.sqrt(sq / (nAm - 1));
+      var alfa = (1 - conf) / 2;
+      var crit, erroPadrao;
+      if (usaT) { crit = M.tCritico(alfa, nAm - 1); erroPadrao = dp / Math.sqrt(nAm); }
+      else { crit = M.zCritico(1 - alfa); erroPadrao = SIGMA / Math.sqrt(nAm); }
+      var margem = crit * erroPadrao;
+      return { lo: media - margem, hi: media + margem, m: media,
+               ok: (media - margem) <= MU && MU <= (media + margem) };
+    }
+
+    function gerar() {
+      lista = [];
+      for (var i = 0; i < 100; i++) lista.push(umIntervalo());
+      acum.n = 100;
+      acum.ok = lista.filter(function (x) { return x.ok; }).length;
+      desenhar();
+    }
+
+    function acumular(q) {
+      var ok = 0;
+      for (var i = 0; i < q; i++) if (umIntervalo().ok) ok++;
+      acum.n += q; acum.ok += ok;
+      desenhar();
+    }
+
+    function desenhar() {
+      var p = G.preparar(cv, 330), ct = p.ct, L = p.L, A = p.A;
+      if (!lista.length) return;
+
+      var lo = Math.min.apply(null, lista.map(function (x) { return x.lo; }));
+      var hi = Math.max.apply(null, lista.map(function (x) { return x.hi; }));
+      var folga = (hi - lo) * 0.04;
+      lo -= folga; hi += folga;
+      var mE = 38, mD = 12, mC = 26, mB = 26;
+      function X(v) { return mE + (v - lo) / (hi - lo) * (L - mE - mD); }
+      var alt = (A - mC - mB) / lista.length;
+
+      /* linha de mu */
+      ct.strokeStyle = G.COR.ambar; ct.lineWidth = 2;
+      ct.beginPath(); ct.moveTo(X(MU), mC - 8); ct.lineTo(X(MU), A - mB + 4); ct.stroke();
+      ct.fillStyle = G.COR.ambar; ct.font = '600 11px system-ui, sans-serif';
+      ct.textAlign = 'center'; ct.textBaseline = 'bottom';
+      ct.fillText('μ = ' + MU, X(MU), mC - 11);
+
+      /* intervalos */
+      lista.forEach(function (it, i) {
+        var y = mC + (i + 0.5) * alt;
+        ct.strokeStyle = it.ok ? 'rgba(44,95,141,.55)' : G.COR.vinho;
+        ct.lineWidth = it.ok ? 1.3 : 2.1;
+        ct.beginPath(); ct.moveTo(X(it.lo), y); ct.lineTo(X(it.hi), y); ct.stroke();
+        ct.fillStyle = it.ok ? G.COR.azul : G.COR.vinho;
+        ct.beginPath(); ct.arc(X(it.m), y, 1.5, 0, 2 * Math.PI); ct.fill();
+      });
+
+      /* escala */
+      ct.strokeStyle = '#c9d2db'; ct.lineWidth = 1;
+      ct.beginPath(); ct.moveTo(mE, A - mB + 4); ct.lineTo(L - mD, A - mB + 4); ct.stroke();
+      ct.fillStyle = G.COR.suave; ct.font = '10px system-ui, sans-serif';
+      ct.textAlign = 'center'; ct.textBaseline = 'top';
+      for (var k = 0; k <= 5; k++) {
+        var v = lo + (hi - lo) * k / 5;
+        ct.fillText(M.fmt(v, 0), X(v), A - mB + 8);
+      }
+      ct.textAlign = 'left';
+      ct.fillText('amostras →', 4, mC);
+
+      var erram = lista.filter(function (x) { return !x.ok; }).length;
+      var largMedia = lista.reduce(function (a, b) { return a + (b.hi - b.lo); }, 0) / lista.length;
+      painel({
+        n: acum.n.toLocaleString('pt-BR'),
+        ok: (acum.n - (acum.n - acum.ok)).toLocaleString('pt-BR'),
+        erro: (acum.n - acum.ok).toLocaleString('pt-BR'),
+        taxa: M.pct(acum.ok / acum.n, 2),
+        larg: M.fmt(largMedia, 2)
+      });
+
+      saida.innerHTML =
+        'Dos <b>100</b> intervalos desenhados, <b>' + erram + '</b> não contêm μ = ' + MU + '. '
+        + 'Acumulando <b>' + acum.n.toLocaleString('pt-BR') + '</b> intervalos, a taxa de acerto é '
+        + '<b>' + M.pct(acum.ok / acum.n, 2) + '</b> — e deve convergir para '
+        + M.pct(conf, 0) + '. '
+        + '<br><br><b>É isto que significa 95% de confiança:</b> o <i>procedimento</i> acerta em '
+        + '95% das amostras. Um intervalo específico ou contém μ ou não contém — não há '
+        + '"probabilidade 95% de μ estar dentro dele", porque μ não é aleatório: a amostra é.';
+    }
+
+    botao(bts, 'Sortear 100 novas', gerar);
+    botao(bts, 'Acumular +10 000', function () { acumular(10000); }, true);
+    botao(bts, 'Zerar contagem', function () {
+      acum.n = 0; acum.ok = 0; gerar();
+    }, true);
+
+    gerar();
+    registrarRedesenho(desenhar);
+  }
+
+  /* =================================================================
+     19. Calculadora de intervalos de confiança
+     ================================================================= */
+  function calcIC(raiz) {
+    var c = moldura(raiz, 'Calculadora de intervalos de confiança');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var tipo = 'media_s';
+    var campoT = el('div', { class: 'campo', style: 'flex:2 1 260px' });
+    campoT.appendChild(el('label', { html: 'O que você quer estimar' }));
+    var selT = el('select');
+    [['media_s', 'Média, com σ desconhecido (usa t)'],
+     ['media_z', 'Média, com σ conhecido (usa z)'],
+     ['prop', 'Proporção'],
+     ['var', 'Variância e desvio padrão']].forEach(function (o) {
+      selT.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoT.appendChild(selT); ctr.appendChild(campoT);
+    selT.addEventListener('change', function () { tipo = selT.value; ajustar(); atualizar(); });
+
+    var campoC = el('div', { class: 'campo' });
+    campoC.appendChild(el('label', { html: 'Confiança' }));
+    var selC = el('select');
+    [['0.90', '90%'], ['0.95', '95%'], ['0.99', '99%']].forEach(function (o) {
+      selC.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selC.value = '0.95';
+    campoC.appendChild(selC); ctr.appendChild(campoC);
+    selC.addEventListener('change', atualizar);
+
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    var iN = numero(ctr2, 'n (tamanho da amostra)', 25, atualizar, { min: 2, step: 1 });
+    var iM = numero(ctr2, 'x̄ (média amostral)', 100, atualizar, { step: 'any' });
+    var iS = numero(ctr2, 's (desvio amostral)', 15, atualizar, { step: 'any', min: 0 });
+    var iK = numero(ctr2, 'sucessos observados', 60, atualizar, { min: 0, step: 1 });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var painel = cartoes(c, [
+      { rot: 'estimativa pontual', k: 'est' },
+      { rot: 'erro padrão', k: 'ep' },
+      { rot: 'valor crítico', k: 'crit' },
+      { rot: 'margem de erro', k: 'marg' },
+      { rot: 'limite inferior', k: 'li' },
+      { rot: 'limite superior', k: 'ls' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function mostrar(campo, visivel) { campo.parentNode.style.display = visivel ? '' : 'none'; }
+
+    function ajustar() {
+      mostrar(iM, tipo === 'media_s' || tipo === 'media_z');
+      mostrar(iS, tipo !== 'prop');
+      mostrar(iK, tipo === 'prop');
+      var rotS = iS.parentNode.querySelector('label');
+      rotS.innerHTML = tipo === 'media_z' ? 'σ (desvio populacional)' : 's (desvio amostral)';
+    }
+
+    function atualizar() {
+      var n = Math.max(2, Math.floor(Number(iN.value) || 2));
+      var conf = Number(selC.value), alfa = (1 - conf) / 2;
+      var est, ep, crit, li, ls, texto, rotCrit;
+
+      if (tipo === 'prop') {
+        var k = Math.min(n, Math.max(0, Math.floor(Number(iK.value) || 0)));
+        est = k / n;
+        ep = Math.sqrt(est * (1 - est) / n);
+        crit = M.zCritico(1 - alfa); rotCrit = 'z';
+        li = est - crit * ep; ls = est + crit * ep;
+        var valido = n * est >= 5 && n * (1 - est) >= 5;
+        texto = 'Com <b>' + k + '</b> sucessos em <b>' + n + '</b>, a proporção estimada é <b>'
+          + M.pct(est, 1) + '</b>. O intervalo de ' + M.pct(conf, 0) + ' vai de <b>'
+          + M.pct(Math.max(0, li), 1) + '</b> a <b>' + M.pct(Math.min(1, ls), 1) + '</b>, '
+          + 'ou seja, ' + M.pct(est, 1) + ' ± ' + M.pct(crit * ep, 1) + '. '
+          + (valido ? 'As condições np̂ ≥ 5 e n(1−p̂) ≥ 5 estão satisfeitas.'
+                    : '<b style="color:#8c2f39">Atenção: np̂ ou n(1−p̂) é menor que 5 — '
+                      + 'a aproximação normal não é confiável aqui.</b>');
+      } else if (tipo === 'var') {
+        var s = Math.abs(Number(iS.value) || 0);
+        var gl = n - 1;
+        var qLo = M.quiCritico(alfa, gl);          /* cauda direita: alfa */
+        var qHi = M.quiCritico(1 - alfa, gl);      /* cauda direita: 1-alfa */
+        li = gl * s * s / qLo; ls = gl * s * s / qHi;
+        est = s * s; ep = NaN; crit = qLo; rotCrit = 'χ² sup.';
+        texto = 'Com s = <b>' + M.fmt(s, 3) + '</b> e n = <b>' + n + '</b> (ν = ' + gl + '), o '
+          + 'intervalo de ' + M.pct(conf, 0) + ' para a <b>variância</b> vai de <b>'
+          + M.fmt(li, 4) + '</b> a <b>' + M.fmt(ls, 4) + '</b>; para o <b>desvio padrão</b>, de <b>'
+          + M.fmt(Math.sqrt(li), 4) + '</b> a <b>' + M.fmt(Math.sqrt(ls), 4) + '</b>. '
+          + 'Note que o intervalo <b>não é simétrico</b> em torno de s² — a qui-quadrado é '
+          + 'assimétrica. Esta fórmula exige população normal e é sensível a desvios dessa hipótese.';
+      } else {
+        var md = Number(iM.value) || 0, sd = Math.abs(Number(iS.value) || 0);
+        est = md; ep = sd / Math.sqrt(n);
+        if (tipo === 'media_s') { crit = M.tCritico(alfa, n - 1); rotCrit = 't (' + (n - 1) + ' gl)'; }
+        else { crit = M.zCritico(1 - alfa); rotCrit = 'z'; }
+        li = md - crit * ep; ls = md + crit * ep;
+        texto = 'O intervalo de ' + M.pct(conf, 0) + ' para a média é <b>'
+          + M.fmt(li, 4) + '</b> a <b>' + M.fmt(ls, 4) + '</b>, isto é, '
+          + M.fmt(md, 3) + ' ± <b>' + M.fmt(crit * ep, 4) + '</b>. '
+          + (tipo === 'media_s'
+              ? 'Como σ é desconhecido, o valor crítico vem da t com ' + (n - 1) + ' graus de '
+                + 'liberdade (' + M.fmt(crit, 3) + '), e não da normal ('
+                + M.fmt(M.zCritico(1 - alfa), 3) + ').'
+              : 'Com σ conhecido, o valor crítico vem da normal padrão.');
+      }
+
+      painel({
+        est: tipo === 'prop' ? M.pct(est, 2) : M.fmt(est, 4),
+        ep: isFinite(ep) ? M.fmt(ep, 4) : '—',
+        crit: M.fmt(crit, 4),
+        marg: tipo === 'var' ? '—'
+              : (tipo === 'prop' ? M.pct(crit * ep, 2) : M.fmt(crit * ep, 4)),
+        li: tipo === 'prop' ? M.pct(Math.max(0, li), 2) : M.fmt(li, 4),
+        ls: tipo === 'prop' ? M.pct(Math.min(1, ls), 2) : M.fmt(ls, 4)
+      });
+      saida.innerHTML = texto;
+      desenhar(est, li, ls, tipo);
+    }
+
+    function desenhar(est, li, ls, tp) {
+      var p = G.preparar(cv, 120), ct = p.ct, L = p.L;
+      var centro = tp === 'var' ? (li + ls) / 2 : est;
+      var meia = Math.max(1e-9, (ls - li) / 2);
+      var lo = centro - meia * 2.2, hi = centro + meia * 2.2;
+      function X(v) { return 30 + (v - lo) / (hi - lo) * (L - 60); }
+      var y = 52;
+
+      ct.strokeStyle = '#c9d2db'; ct.lineWidth = 1;
+      ct.beginPath(); ct.moveTo(30, y); ct.lineTo(L - 30, y); ct.stroke();
+
+      ct.fillStyle = 'rgba(44,95,141,.2)';
+      ct.fillRect(X(li), y - 17, X(ls) - X(li), 34);
+      ct.strokeStyle = G.COR.azul; ct.lineWidth = 2;
+      ct.beginPath();
+      ct.moveTo(X(li), y - 17); ct.lineTo(X(li), y + 17);
+      ct.moveTo(X(ls), y - 17); ct.lineTo(X(ls), y + 17);
+      ct.stroke();
+
+      if (tp !== 'var') {
+        ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2.4;
+        ct.beginPath(); ct.moveTo(X(est), y - 20); ct.lineTo(X(est), y + 20); ct.stroke();
+      }
+
+      ct.font = '11px system-ui, sans-serif'; ct.textAlign = 'center';
+      ct.fillStyle = G.COR.azul; ct.textBaseline = 'top';
+      var fmtv = tp === 'prop'
+        ? function (v) { return M.pct(v, 1); }
+        : function (v) { return M.fmt(v, 3); };
+      ct.fillText(fmtv(li), X(li), y + 22);
+      ct.fillText(fmtv(ls), X(ls), y + 22);
+      if (tp !== 'var') {
+        ct.fillStyle = G.COR.vinho; ct.textBaseline = 'bottom';
+        ct.fillText(fmtv(est), X(est), y - 24);
+      }
+    }
+
+    ajustar();
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Registro e inicialização
      ================================================================= */
   var REGISTRO = {

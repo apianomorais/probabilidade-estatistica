@@ -107,6 +107,19 @@ sobre o azul — avise que eu ajusto o CSS.
 - Cada pagina tem folha de estilo de impressao: ao imprimir ou
   salvar em PDF, menu e botoes somem e as solucoes dos exercicios
   aparecem abertas. Util para gerar apostilas.
+- IMPORTANTE ao atualizar CSS ou JavaScript: rode antes do commit
+
+      python3 ferramentas/versao.py
+
+  Isso carimba uma versao nova nos enderecos dos arquivos (?v=...) e
+  obriga o navegador do aluno a baixar a versao atualizada em vez de
+  usar a copia guardada em cache. Sem isso, quem ja visitou o site
+  continua vendo a versao antiga ate limpar o cache manualmente.
+
+- Para regenerar o menu depois de criar um modulo novo:
+
+      python3 ferramentas/atualiza-menu.py
+
 - Para adicionar um simulador em qualquer lugar do texto, basta
   inserir no HTML:
       <div data-widget="NOME"></div>
