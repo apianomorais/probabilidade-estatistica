@@ -4201,6 +4201,364 @@
   }
 
   /* =================================================================
+     Calculadora de tamanho amostral
+     ================================================================= */
+  function tamanhoAmostral(raiz) {
+    var c = moldura(raiz, 'Calculadora de tamanho amostral');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var cen = 'media', conf = 0.95, poder = 0.80, N = 0;
+
+    var campoC = el('div', { class: 'campo', style: 'flex:3 1 300px' });
+    campoC.appendChild(el('label', { html: 'O que você quer fazer' }));
+    var selC = el('select');
+    [['media', 'Estimar uma média com erro máximo E'],
+     ['prop', 'Estimar uma proporção com erro máximo E'],
+     ['duasmedias', 'Comparar duas médias (detectar diferença δ)'],
+     ['duasprop', 'Comparar duas proporções'],
+     ['corr', 'Detectar uma correlação r']].forEach(function (o) {
+      selC.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoC.appendChild(selC); ctr.appendChild(campoC);
+    selC.addEventListener('change', function () { cen = selC.value; ajustar(); atualizar(); });
+
+    var campoNC = el('div', { class: 'campo' });
+    campoNC.appendChild(el('label', { html: 'Confiança (1 − α)' }));
+    var selNC = el('select');
+    [['0.90', '90%'], ['0.95', '95%'], ['0.99', '99%']].forEach(function (o) {
+      selNC.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selNC.value = '0.95'; campoNC.appendChild(selNC); ctr.appendChild(campoNC);
+    selNC.addEventListener('change', function () { conf = Number(selNC.value); atualizar(); });
+
+    var campoPo = el('div', { class: 'campo' });
+    campoPo.appendChild(el('label', { html: 'Poder desejado (1 − β)' }));
+    var selPo = el('select');
+    [['0.80', '80%'], ['0.90', '90%'], ['0.95', '95%']].forEach(function (o) {
+      selPo.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selPo.value = '0.80'; campoPo.appendChild(selPo); ctr.appendChild(campoPo);
+    selPo.addEventListener('change', function () { poder = Number(selPo.value); atualizar(); });
+
+    /* campos numéricos específicos de cada cenário */
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    function campoNum(rot, inicial, passo) {
+      var cp = el('div', { class: 'campo' });
+      cp.appendChild(el('label', { html: rot }));
+      var inp = el('input', { type: 'number', value: inicial, step: passo || 'any' });
+      cp.appendChild(inp); ctr2.appendChild(cp);
+      inp.addEventListener('input', atualizar);
+      return { campo: cp, inp: inp, v: function () { return Number(inp.value); } };
+    }
+    var fSigma = campoNum('Desvio padrão σ (estimado)', 10);
+    var fE     = campoNum('Erro máximo E aceitável', 2);
+    var fP     = campoNum('Proporção esperada p (0 a 1)', 0.5, '0.01');
+    var fEp    = campoNum('Erro máximo E (em proporção)', 0.05, '0.01');
+    var fDelta = campoNum('Diferença δ a detectar', 5);
+    var fSig2  = campoNum('Desvio padrão σ comum', 10);
+    var fP1    = campoNum('Proporção do grupo 1', 0.50, '0.01');
+    var fP2    = campoNum('Proporção do grupo 2', 0.60, '0.01');
+    var fR     = campoNum('Correlação r a detectar', 0.30, '0.01');
+    var fN     = campoNum('População finita N (0 = infinita)', 0, '1');
+
+    function ajustar() {
+      var mostra = {
+        media:      [fSigma, fE, fN],
+        prop:       [fP, fEp, fN],
+        duasmedias: [fDelta, fSig2],
+        duasprop:   [fP1, fP2],
+        corr:       [fR]
+      }[cen];
+      [fSigma, fE, fP, fEp, fDelta, fSig2, fP1, fP2, fR, fN].forEach(function (f) {
+        f.campo.style.display = mostra.indexOf(f) >= 0 ? '' : 'none';
+      });
+      campoPo.style.display = (cen === 'media' || cen === 'prop') ? 'none' : '';
+    }
+    ajustar();
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda' }); c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'n necessário', k: 'n' }, { rot: 'por grupo / total', k: 'tot' },
+      { rot: 'z usado', k: 'z' }, { rot: 'ajuste p/ população finita', k: 'fin' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    /* n em função do parâmetro que varia, para a curva */
+    function calcula(par) {
+      var za = M.zCritico(1 - (1 - conf) / 2);
+      var zb = M.zCritico(poder);
+      var n;
+      if (cen === 'media') {
+        n = Math.pow(za * fSigma.v() / par, 2);
+      } else if (cen === 'prop') {
+        var p = Math.min(0.999, Math.max(0.001, fP.v()));
+        n = za * za * p * (1 - p) / (par * par);
+      } else if (cen === 'duasmedias') {
+        n = 2 * Math.pow(za + zb, 2) * Math.pow(fSig2.v() / par, 2);
+      } else if (cen === 'duasprop') {
+        var p1 = fP1.v(), p2 = p1 + par;
+        p2 = Math.min(0.999, Math.max(0.001, p2));
+        n = Math.pow(za + zb, 2) * (p1 * (1 - p1) + p2 * (1 - p2)) / Math.pow(p1 - p2, 2);
+      } else {
+        var r = Math.min(0.99, Math.max(0.01, Math.abs(par)));
+        var zr = 0.5 * Math.log((1 + r) / (1 - r));
+        n = Math.pow((za + zb) / zr, 2) + 3;
+      }
+      return n;
+    }
+
+    function atualizar() {
+      var za = M.zCritico(1 - (1 - conf) / 2);
+      var zb = M.zCritico(poder);
+      var par = { media: fE.v(), prop: fEp.v(), duasmedias: fDelta.v(),
+                  duasprop: fP2.v() - fP1.v(), corr: fR.v() }[cen];
+      if (!isFinite(par) || par === 0) {
+        saida.innerHTML = 'Informe um valor diferente de zero para o efeito ou erro máximo.';
+        painel({ n: '—', tot: '—', z: '—', fin: '—' });
+        G.preparar(cv, 290); return;
+      }
+
+      var nBruto = calcula(par);
+      var n = Math.ceil(nBruto);
+      var porGrupo = (cen === 'duasmedias' || cen === 'duasprop');
+      var Nf = fN.v();
+      var nAj = (Nf > 0 && !porGrupo) ? Math.ceil(n / (1 + (n - 1) / Nf)) : null;
+
+      painel({
+        n: String(n),
+        tot: porGrupo ? (n + ' por grupo, ' + (2 * n) + ' no total') : (n + ' no total'),
+        z: 'z = ' + M.fmt(za, 3) + (porGrupo || cen === 'corr'
+             ? ' , z<sub>β</sub> = ' + M.fmt(zb, 3) : ''),
+        fin: nAj !== null ? String(nAj) : '—'
+      });
+
+      /* ---------- curva de n contra o parâmetro ---------- */
+      var rotX = { media: 'erro máximo E', prop: 'erro máximo E',
+                   duasmedias: 'diferença δ a detectar',
+                   duasprop: 'diferença entre as proporções',
+                   corr: 'correlação r a detectar' }[cen];
+      var xmin, xmax;
+      if (cen === 'corr') { xmin = 0.05; xmax = 0.80; }
+      else if (cen === 'prop' || cen === 'duasprop') { xmin = 0.01; xmax = 0.30; }
+      else { xmin = Math.abs(par) / 4; xmax = Math.abs(par) * 3; }
+
+      var ys = [], xs = [], i, v;
+      for (i = 0; i <= 160; i++) {
+        v = xmin + (xmax - xmin) * i / 160;
+        xs.push(v); ys.push(calcula(cen === 'duasprop' ? v : v));
+      }
+      var ymax = Math.min(Math.max.apply(null, ys), calcula(xmin)) * 1.05;
+      ymax = Math.min(ymax, Math.max(n * 6, 50));
+
+      var g = G.eixos(cv, {
+        xmin: xmin, xmax: xmax, ymin: 0, ymax: ymax, altura: 290,
+        rotX: rotX, rotY: 'n necessário',
+        marcasX: G.marcasLineares(xmin, xmax, 6, xmax <= 1 ? 2 : 1),
+        formataY: function (w) { return M.fmt(w, 0); }
+      });
+      var ct = g.ct;
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2.4;
+      ct.beginPath();
+      var comecou = false;
+      for (i = 0; i < xs.length; i++) {
+        if (ys[i] > ymax) { comecou = false; continue; }
+        if (!comecou) { ct.moveTo(g.X(xs[i]), g.Y(ys[i])); comecou = true; }
+        else ct.lineTo(g.X(xs[i]), g.Y(ys[i]));
+      }
+      ct.stroke();
+      if (Math.abs(par) >= xmin && Math.abs(par) <= xmax && n <= ymax) {
+        G.vertical(g, Math.abs(par), '#2e7d4f', '');
+        ct.strokeStyle = '#2e7d4f'; ct.lineWidth = 1.4; ct.setLineDash([5, 4]);
+        ct.beginPath(); ct.moveTo(g.X(g.xmin), g.Y(n)); ct.lineTo(g.X(Math.abs(par)), g.Y(n));
+        ct.stroke(); ct.setLineDash([]);
+        ct.fillStyle = '#2e7d4f';
+        ct.beginPath(); ct.arc(g.X(Math.abs(par)), g.Y(n), 5, 0, 2 * Math.PI); ct.fill();
+        ct.strokeStyle = '#fff'; ct.lineWidth = 1.5; ct.stroke();
+      }
+      legenda.innerHTML = 'A curva mostra como o n exigido cresce quando o efeito a detectar '
+        + '(ou o erro tolerado) diminui. O ponto verde é a sua configuração atual. '
+        + '<b>Repare na forma:</b> ela é uma hipérbole do tipo 1/E², e não uma reta.';
+
+      /* ---------- texto ---------- */
+      var txt = '';
+      if (cen === 'media') {
+        txt = 'Para estimar a média com erro máximo <b>E = ' + M.fmt(fE.v(), 3)
+          + '</b> e ' + M.pct(conf, 0) + ' de confiança, supondo σ ≈ '
+          + M.fmt(fSigma.v(), 3) + ':<br><br>'
+          + '\\( n = (z_{\\alpha/2}\\,\\sigma / E)^2 \\) = (' + M.fmt(za, 3) + ' × '
+          + M.fmt(fSigma.v(), 3) + ' / ' + M.fmt(fE.v(), 3) + ')² = '
+          + M.fmt(nBruto, 2) + ' → <b>n = ' + n + '</b>.';
+        txt += '<br><br>Note que <b>N não aparece</b> na fórmula: para uma população grande, '
+          + 'o tamanho dela é irrelevante. Uma amostra de 1 000 pessoas é igualmente precisa '
+          + 'no Crato e no Brasil inteiro. É contraintuitivo e é verdade.';
+      } else if (cen === 'prop') {
+        txt = 'Para estimar uma proporção com erro máximo <b>' + M.pct(fEp.v(), 1)
+          + '</b> e ' + M.pct(conf, 0) + ' de confiança, supondo p ≈ ' + M.fmt(fP.v(), 2)
+          + ':<br><br>\\( n = z_{\\alpha/2}^2\\,p(1-p)/E^2 \\) = ' + M.fmt(nBruto, 2)
+          + ' → <b>n = ' + n + '</b>.';
+        if (Math.abs(fP.v() - 0.5) > 0.001) {
+          var nPior = Math.ceil(za * za * 0.25 / (fEp.v() * fEp.v()));
+          txt += '<br><br>Como p é desconhecido antes da pesquisa, o usual é adotar o '
+            + '<b>pior caso p = 0,5</b>, que maximiza p(1−p). Isso daria <b>n = ' + nPior
+            + '</b> — ' + M.pct(nPior / n - 1, 0) + ' a mais, e é o número honesto a usar '
+            + 'quando não se tem estudo piloto.';
+        } else {
+          txt += '<br><br>Com p = 0,5 estamos no <b>pior caso</b>: é o valor que maximiza '
+            + 'p(1−p) = 0,25 e portanto exige a maior amostra. É a escolha prudente quando '
+            + 'não há estudo piloto.';
+        }
+      } else if (cen === 'duasmedias') {
+        var d = Math.abs(fDelta.v()) / fSig2.v();
+        txt = 'Para detectar uma diferença de <b>δ = ' + M.fmt(fDelta.v(), 3)
+          + '</b> entre duas médias, com σ ≈ ' + M.fmt(fSig2.v(), 3) + ', α = '
+          + M.fmt(1 - conf, 3) + ' e poder ' + M.pct(poder, 0) + ':<br><br>'
+          + '\\( n = 2(z_{\\alpha/2}+z_{\\beta})^2\\,\\sigma^2/\\delta^2 \\) = '
+          + M.fmt(nBruto, 2) + ' → <b>' + n + ' por grupo</b>, ' + (2 * n) + ' no total.';
+        txt += '<br><br><b>Tamanho de efeito:</b> d = δ/σ = <b>' + M.fmt(d, 3) + '</b> '
+          + '(d de Cohen). Pela convenção usual, '
+          + (d < 0.35 ? 'é um efeito <b>pequeno</b> — e efeitos pequenos custam caro.'
+             : d < 0.65 ? 'é um efeito <b>médio</b>.'
+             : 'é um efeito <b>grande</b>.')
+          + ' O que importa é que n depende apenas de d: dobrar δ e dobrar σ ao mesmo tempo '
+          + 'não muda nada.';
+      } else if (cen === 'duasprop') {
+        txt = 'Para detectar a diferença entre <b>' + M.pct(fP1.v(), 1) + '</b> e <b>'
+          + M.pct(fP2.v(), 1) + '</b>, com α = ' + M.fmt(1 - conf, 3) + ' e poder '
+          + M.pct(poder, 0) + ': <b>' + n + ' por grupo</b>, ' + (2 * n) + ' no total.';
+        txt += '<br><br>Diferenças pequenas entre proporções são <b>caríssimas</b> de '
+          + 'detectar. Experimente aproximar as duas proporções e veja o n explodir.';
+      } else {
+        var zr = 0.5 * Math.log((1 + Math.abs(fR.v())) / (1 - Math.abs(fR.v())));
+        txt = 'Para detectar uma correlação de <b>r = ' + M.fmt(fR.v(), 2) + '</b> com α = '
+          + M.fmt(1 - conf, 3) + ' e poder ' + M.pct(poder, 0)
+          + ', usa-se a transformação z de Fisher, z<sub>r</sub> = ½ ln[(1+r)/(1−r)] = <b>'
+          + M.fmt(zr, 4) + '</b>:<br><br>'
+          + '\\( n = \\left[(z_{\\alpha/2}+z_{\\beta})/z_r\\right]^2 + 3 \\) = '
+          + M.fmt(nBruto, 2) + ' → <b>n = ' + n + '</b>.';
+        txt += '<br><br>Correlações fracas exigem amostras enormes. Repare na curva: para '
+          + 'r = 0,10 o n passa de 780.';
+      }
+
+      if (nAj !== null) {
+        txt += '<br><br><b>Correção para população finita.</b> Com N = ' + Nf
+          + ', basta n<sub>aj</sub> = n/[1+(n−1)/N] = <b>' + nAj + '</b>, ou seja, '
+          + M.pct(nAj / Nf, 1) + ' da população. A correção só importa quando a amostra '
+          + 'passa de cerca de 5% de N.';
+      }
+
+      txt += '<br><br><b>Arredonde sempre para cima</b> e acrescente margem para perdas: '
+        + 'se você espera 20% de não resposta ou de medidas inutilizadas, colete '
+        + '<b>' + Math.ceil(n / 0.8) + '</b> em vez de ' + n + '.';
+
+      saida.innerHTML = txt;
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([saida]).catch(function () {});
+      }
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     Curvas de poder: o que se ganha aumentando n
+     ================================================================= */
+  function curvasPoder(raiz) {
+    var c = moldura(raiz, 'Curvas de poder: o retorno decrescente de aumentar n');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var alfa = 0.05, nAtual = 30;
+
+    var campoA = el('div', { class: 'campo' });
+    campoA.appendChild(el('label', { html: 'Nível α (bilateral)' }));
+    var selA = el('select');
+    [['0.10', '0,10'], ['0.05', '0,05'], ['0.01', '0,01']].forEach(function (o) {
+      selA.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selA.value = '0.05'; campoA.appendChild(selA); ctr.appendChild(campoA);
+    selA.addEventListener('change', function () { alfa = Number(selA.value); atualizar(); });
+
+    deslizante(ctr, 'n por grupo', 4, 300, 1, 30, function (v) { nAtual = v; atualizar(); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda', html:
+      'Cada curva é um tamanho de efeito d = δ/σ. A linha tracejada marca o poder de 80%, '
+      + 'convenção mais usada em planejamento. A vertical verde é o n escolhido.' });
+    c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'poder se d = 0,2', k: 'p2' }, { rot: 'poder se d = 0,5', k: 'p5' },
+      { rot: 'poder se d = 0,8', k: 'p8' }, { rot: 'n para 80% com d = 0,5', k: 'n80' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function poderDe(d, n) {
+      var za = M.zCritico(1 - alfa / 2);
+      var lam = d * Math.sqrt(n / 2);
+      return M.FNormal(lam - za, 0, 1) + M.FNormal(-lam - za, 0, 1);
+    }
+
+    function atualizar() {
+      var ds = [[0.2, '#b5831f', 'd = 0,2 (pequeno)'],
+                [0.5, G.COR.azul, 'd = 0,5 (médio)'],
+                [0.8, G.COR.vinho, 'd = 0,8 (grande)']];
+      var g = G.eixos(cv, {
+        xmin: 4, xmax: 300, ymin: 0, ymax: 1.04, altura: 300, divY: 5,
+        rotX: 'n por grupo', rotY: 'poder (1 − β)',
+        marcasX: G.marcasLineares(4, 300, 6, 0),
+        formataY: function (v) { return (100 * v).toFixed(0) + '%'; }
+      });
+      var ct = g.ct;
+
+      /* linha dos 80% */
+      ct.strokeStyle = G.COR.suave; ct.lineWidth = 1.4; ct.setLineDash([6, 4]);
+      ct.beginPath(); ct.moveTo(g.X(4), g.Y(0.8)); ct.lineTo(g.X(300), g.Y(0.8)); ct.stroke();
+      ct.setLineDash([]);
+      ct.fillStyle = G.COR.suave; ct.font = '600 11px var(--fonte)';
+      ct.textAlign = 'left'; ct.textBaseline = 'bottom';
+      ct.fillText('80%', g.X(6), g.Y(0.8) - 3);
+
+      ds.forEach(function (par) {
+        G.curva(g, function (n) { return poderDe(par[0], n); }, par[1], 2.4);
+      });
+      G.vertical(g, nAtual, '#2e7d4f', 'n = ' + nAtual);
+      G.legenda(g, ds.map(function (p) { return { texto: p[2], cor: p[1] }; }));
+
+      var p2 = poderDe(0.2, nAtual), p5 = poderDe(0.5, nAtual), p8 = poderDe(0.8, nAtual);
+      var za = M.zCritico(1 - alfa / 2), zb = M.zCritico(0.8);
+      var n80 = Math.ceil(2 * Math.pow(za + zb, 2) / 0.25);
+      painel({ p2: M.pct(p2, 1), p5: M.pct(p5, 1), p8: M.pct(p8, 1), n80: String(n80) });
+
+      var dobro = poderDe(0.5, 2 * nAtual);
+      var txt = 'Com <b>n = ' + nAtual + '</b> por grupo e α = ' + M.fmt(alfa, 2)
+        + ', o poder é <b>' + M.pct(p2, 1) + '</b> para um efeito pequeno, <b>'
+        + M.pct(p5, 1) + '</b> para um médio e <b>' + M.pct(p8, 1) + '</b> para um grande.';
+      var ganho = 100 * (dobro - p5);
+      txt += '<br><br><b>O retorno é decrescente.</b> Dobrando n para ' + (2 * nAtual)
+        + ', o poder contra d = 0,5 iria de ' + M.pct(p5, 1) + ' para '
+        + M.pct(dobro, 1) + ' — um ganho de ' + M.fmt(ganho, 1) + ' pontos. '
+        + (ganho > 15
+            ? 'Aqui ainda compensa, porque estamos na parte íngreme da curva. '
+              + 'Arraste o n para cima e refaça a conta: o mesmo esforço rende cada vez '
+              + 'menos.'
+            : 'Pouquíssimo, porque a curva já achatou: perto do teto, dobrar a amostra '
+              + 'quase não muda nada. É por isso que ninguém planeja para 99% de poder.');
+      txt += '<br><br><b>Por que 80%?</b> É convenção, não lei. Ela embute a ideia de que '
+        + 'um erro tipo I é cerca de quatro vezes mais grave que um tipo II '
+        + '(β = 0,20 = 4α). Se deixar de detectar um efeito real for mais caro que um '
+        + 'alarme falso — num teste de segurança, por exemplo — planeje para 90% ou 95%.';
+      txt += '<br><br><b>E o que não adianta.</b> Repare que para d = 0,2 é preciso passar '
+        + 'de ' + Math.ceil(2 * Math.pow(za + zb, 2) / 0.04) + ' por grupo para chegar aos '
+        + '80%. Estudos pequenos simplesmente <b>não conseguem</b> detectar efeitos '
+        + 'pequenos — e quando um estudo pequeno encontra um efeito pequeno '
+        + 'significativo, isso costuma ser acaso, não descoberta.';
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Coeficientes a_i do Shapiro–Wilk, vistos de perto
      ================================================================= */
   function coefSW(raiz) {
@@ -5136,7 +5494,8 @@
     correlacao: correlacao, criticos: criticos,
     regressao: regressao, linearizacao: linearizacao,
     naoparametrico: naoParametrico,
-    coefsw: coefSW, escadaks: escadaKS
+    coefsw: coefSW, escadaks: escadaKS,
+    tamanhoamostral: tamanhoAmostral, curvaspoder: curvasPoder
   };
 
   document.addEventListener('DOMContentLoaded', function () {

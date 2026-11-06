@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 15 — Tamanho amostral e planejamento | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061322">
+<script src="assets/js/comum.js?v=202611061322"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Probabilidade</span>
+      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
+      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
+      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
+      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
+      <span class="grupo">Estatística</span>
+      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
+      <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
+      <a href="aula08.html" class="num" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
+      <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
+      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
+      <a href="aula11.html" class="num" title="Módulo 11 — Testes de normalidade">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Correlação">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Regressão linear e mínimos quadrados">13</a>
+      <a href="aula14.html" class="num" title="Módulo 14 — Testes não paramétricos">14</a>
+      <a href="aula15.html" class="num ativo" title="Módulo 15 — Tamanho amostral e planejamento">15</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. A pergunta que vem antes</a></li>
+    <li><a href="#s2">2. Estimar uma média</a></li>
+    <li><a href="#s3">3. Estimar uma proporção</a></li>
+    <li><a href="#s4">4. População finita</a></li>
+    <li><a href="#s5">5. Planejar pelo poder</a></li>
+    <li><a href="#s6">6. Tamanho de efeito</a></li>
+    <li><a href="#s7">7. Curvas de poder</a></li>
+    <li><a href="#s8">8. Planos de amostragem</a></li>
+    <li><a href="#s9">9. Erros que invalidam tudo</a></li>
+    <li><a href="#s10">10. Planejamento em Física</a></li>
+    <li><a href="#s11">11. Checklist e exercícios</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 15 · 3 horas · encerramento</p>
+  <h1>Tamanho amostral e planejamento de pesquisa</h1>
+  <p class="subtitulo">A única parte da estatística que precisa ser feita <em>antes</em> de
+  coletar os dados — e a mais negligenciada.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Dimensionar amostras para estimar médias e proporções com precisão dada;</li>
+      <li>Aplicar a correção para população finita e saber quando ela importa;</li>
+      <li>Planejar pelo poder: detectar um efeito de tamanho \(\delta\) com probabilidade
+      \(1-\beta\);</li>
+      <li>Entender o tamanho de efeito e por que ele é mais informativo que o valor p;</li>
+      <li>Reconhecer os erros de planejamento que nenhuma análise posterior corrige;</li>
+      <li>Montar um plano de pesquisa defensável antes da coleta.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. A pergunta que vem antes de todas</h2>
+
+  <p>Catorze módulos ensinaram o que fazer <em>depois</em> que os dados chegam. Este trata do
+  que fazer antes — e é, na prática de pesquisa, o momento em que mais se erra.</p>
+
+  <div class="destaque">
+    <span class="anuncio">Nenhuma análise conserta uma amostra mal dimensionada</span>
+    Dados insuficientes não revelam o que você procura; dados em excesso custam tempo,
+    dinheiro e, em pesquisa com pessoas ou animais, impõem ônus sem necessidade.
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Uma frase que vale o módulo inteiro</span>
+    <p>Ronald Fisher, dirigindo-se à Indian Statistical Conference em 1938, disse algo que se
+    tornou célebre:</p>
+    <p style="padding-left:1.2rem;border-left:3px solid var(--borda);font-style:italic">
+    Chamar o estatístico depois que o experimento terminou talvez seja apenas pedir-lhe que
+    faça um exame <i>post mortem</i>: ele poderá, quem sabe, dizer de que o experimento
+    morreu.</p>
+    <p>A tarefa deste módulo é evitar o <i>post mortem</i>. Planejar significa decidir, antes
+    de coletar qualquer coisa: qual é a pergunta, qual efeito importa detectar, quanta
+    precisão se exige, e quantas observações isso custa.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Duas perguntas distintas</span>
+    <p>O tamanho da amostra responde a uma de duas perguntas, e elas usam fórmulas
+    diferentes:</p>
+    <ul>
+      <li><strong>Precisão</strong> — "quero estimar a média com erro de no máximo \(E\)".
+      É um problema de intervalo de confiança, do Módulo 8;</li>
+      <li><strong>Poder</strong> — "quero detectar uma diferença \(\delta\), se ela existir,
+      com probabilidade \(1-\beta\)". É um problema de teste de hipóteses, do Módulo 9.</li>
+    </ul>
+    <p>Confundir as duas é o erro mais comum. Pergunte-se sempre: <em>vou estimar, ou vou
+    comparar?</em></p>
+  </div>
+
+  <div data-widget="tamanhoamostral"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Estimar uma média</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Dedução, em três linhas</span>
+    <p>O intervalo de confiança para \(\mu\) tem semiamplitude</p>
+    <p>\[E = z_{\alpha/2}\,\frac{\sigma}{\sqrt n}.\]</p>
+    <p>Isolando \(n\):</p>
+    <p>\[\boxed{\,n = \left(\frac{z_{\alpha/2}\,\sigma}{E}\right)^{2}\,}\]</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A dependência é quadrática, e isso muda tudo</span>
+    <p>\(E\) aparece ao <strong>quadrado</strong> no denominador. Portanto:</p>
+    <ul>
+      <li>Para <strong>metade</strong> do erro, é preciso <strong>quatro vezes</strong> a
+      amostra;</li>
+      <li>Para <strong>um décimo</strong> do erro, <strong>cem vezes</strong>.</li>
+    </ul>
+    <p>É a mesma lei de \(1/\sqrt n\) que governa o erro padrão desde o Módulo 7, vista do
+    outro lado. Ela é a razão pela qual precisão é cara, e por que vale muito mais a pena
+    <em>reduzir \(\sigma\)</em> — medindo melhor — do que aumentar \(n\).</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">De onde vem o σ, se ainda não coletei nada?</span>
+    <p>É a objeção óbvia, e tem três respostas legítimas:</p>
+    <ol>
+      <li><strong>Estudo piloto.</strong> Colete 20 ou 30 observações e estime \(\sigma\) com
+      elas. É o caminho mais seguro, e o piloto ainda serve para testar o protocolo;</li>
+      <li><strong>Literatura.</strong> Trabalhos anteriores sobre a mesma grandeza, com
+      instrumentação parecida;</li>
+      <li><strong>Regra da amplitude.</strong> Se você consegue estimar o maior e o menor
+      valor plausíveis, \(\sigma \approx (\text{máx}-\text{mín})/4\), porque cerca de 95% de
+      uma normal cabe em quatro desvios.</li>
+    </ol>
+    <p>Na dúvida, <strong>superestime \(\sigma\)</strong>. Errar para cima custa algumas
+    medidas a mais; errar para baixo custa o estudo inteiro.</p>
+  </div>
+
+  <h3>Exercício resolvido 15.1 — Quantas medidas do período?</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um estudante quer medir o período de um pêndulo com erro máximo de 0,005 s e 95% de
+    confiança. Um piloto com 15 medidas deu \(s = 0{,}018\ \mathrm{s}\). Quantas medidas são
+    necessárias? E se ele quiser 0,002 s?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Para E = 0,005 s.</strong></p>
+      <p>\[n = \left(\frac{1{,}96 \times 0{,}018}{0{,}005}\right)^{2}
+      = \left(\frac{0{,}03528}{0{,}005}\right)^{2} = (7{,}056)^{2} = 49{,}8
+      \;\Rightarrow\; \mathbf{n = 50}.\]</p>
+      <p><strong>Para E = 0,002 s.</strong></p>
+      <p>\[n = \left(\frac{1{,}96 \times 0{,}018}{0{,}002}\right)^{2} = (17{,}64)^{2}
+      = 311{,}2 \;\Rightarrow\; \mathbf{n = 312}.\]</p>
+      <p>Reduzir o erro de 0,005 para 0,002 — um fator de 2,5 — exigiu
+      \(2{,}5^2 = 6{,}25\) vezes mais medidas. De 50 para 312.</p>
+      <div class="bloco fisica">
+        <span class="rotulo">A saída inteligente</span>
+        <p>Trezentas e doze cronometragens manuais são inviáveis, e o pior é que não
+        resolveriam: boa parte de \(s = 0{,}018\) s é <strong>tempo de reação humano</strong>,
+        que não some com repetição porque tem componente sistemática.</p>
+        <p>Duas alternativas valem mais que 262 medidas extras:</p>
+        <ul>
+          <li><strong>Cronometrar 10 oscilações</strong> e dividir por 10. O erro de reação
+          é o mesmo em valor absoluto, mas se reparte entre dez períodos: \(\sigma\) cai por
+          um fator 10, e o \(n\) necessário cai por 100. Vinte medidas passam a bastar;</li>
+          <li><strong>Usar um sensor óptico</strong>, eliminando a reação humana por
+          completo.</li>
+        </ul>
+        <p><strong>A lição geral:</strong> quando o \(n\) exigido ficar absurdo, o problema
+        quase nunca é a amostra — é o <strong>método de medida</strong>. Reduzir \(\sigma\)
+        por um fator \(k\) vale tanto quanto multiplicar \(n\) por \(k^2\), e costuma ser
+        muito mais barato.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Estimar uma proporção</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Fórmula e pior caso</span>
+    <p>\[n = \frac{z_{\alpha/2}^{2}\;p(1-p)}{E^{2}}\]</p>
+    <p>Mas \(p\) é justamente o que não sabemos. A saída é o <strong>pior caso</strong>:
+    a função \(p(1-p)\) é máxima em \(p = 0{,}5\), onde vale 0,25. Adotando isso,</p>
+    <p>\[n = \left(\frac{z_{\alpha/2}}{2E}\right)^{2},\]</p>
+    <p>e a amostra é suficiente seja qual for o \(p\) verdadeiro.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">A tabela que explica as pesquisas eleitorais</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Margem de erro</th><th class="num">n (95%)</th><th class="num">n (99%)</th></tr></thead>
+      <tbody>
+        <tr><td>± 5 pontos</td><td class="num">385</td><td class="num">664</td></tr>
+        <tr><td>± 4 pontos</td><td class="num">601</td><td class="num">1 037</td></tr>
+        <tr><td>± 3 pontos</td><td class="num">1 068</td><td class="num">1 844</td></tr>
+        <tr><td>± 2 pontos</td><td class="num">2 401</td><td class="num">4 147</td></tr>
+        <tr><td>± 1 ponto</td><td class="num">9 604</td><td class="num">16 588</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>É daqui que vem o número 2 000 que aparece em tantas pesquisas de opinião: ele compra
+    cerca de dois pontos de margem a 95%. E é daqui também que vem a razão de ninguém
+    prometer meio ponto — custaria quase 40 000 entrevistas.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. População finita</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A correção</span>
+    <p>\[n_{\text{aj}} = \frac{n}{1 + \dfrac{n-1}{N}}\]</p>
+    <p>onde \(n\) é o tamanho calculado supondo população infinita e \(N\) é a população real.
+    A correção só é relevante quando \(n\) passa de cerca de <strong>5% de \(N\)</strong>.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O resultado mais contraintuitivo da amostragem</span>
+    <p>Para estimar uma proporção com ±3 pontos a 95%, precisa-se de cerca de 1 068 pessoas —
+    numa cidade de 100 000 habitantes ou num país de 200 milhões. O tamanho da população
+    <strong>quase não entra na conta</strong>.</p>
+    <p>A razão é que a precisão depende de quantas observações <em>independentes</em> você
+    tem, não de que fração do todo elas representam. Uma colher de sopa basta para provar o
+    tempero, seja de uma panela ou de um caldeirão — desde que esteja bem mexido. O "bem
+    mexido" é a aleatorização, e é ela que importa.</p>
+    <p>Com \(N = 500\), a correção reduz 1 068 para 341. Com \(N = 10\,000\), para 966. Com
+    \(N = 1\) milhão, para 1 067 — praticamente nada.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Planejar pelo poder</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Comparar duas médias</span>
+    <p>Para detectar uma diferença \(\delta\) entre dois grupos, com nível \(\alpha\) e poder
+    \(1-\beta\):</p>
+    <p>\[\boxed{\,n = \frac{2\,(z_{\alpha/2}+z_{\beta})^{2}\,\sigma^{2}}{\delta^{2}}\,}\]</p>
+    <p>por grupo. Valores de \(z_\beta\): 0,842 para 80% de poder, 1,282 para 90%, 1,645 para
+    95%.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Comparar duas proporções</span>
+    <p>\[n = \frac{(z_{\alpha/2}+z_{\beta})^{2}\left[p_1(1-p_1)+p_2(1-p_2)\right]}
+    {(p_1-p_2)^{2}}\]</p>
+    <p>por grupo.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Detectar uma correlação</span>
+    <p>Usa-se a transformação \(z\) de Fisher, que normaliza a distribuição de \(r\):</p>
+    <p>\[z_r = \tfrac12\ln\!\frac{1+r}{1-r}, \qquad
+    n = \left(\frac{z_{\alpha/2}+z_{\beta}}{z_r}\right)^{2} + 3.\]</p>
+    <p>Para \(r = 0{,}30\) com 80% de poder: \(n = 85\). Para \(r = 0{,}10\): \(n = 783\).</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Por que o simulador dá 63 e o G*Power dá 64</span>
+    <p>Todas as fórmulas acima usam a <strong>aproximação normal</strong>. O cálculo exato
+    envolve a distribuição \(t\) <em>não central</em>, que exige iteração porque os graus de
+    liberdade dependem do próprio \(n\).</p>
+    <p>A diferença é de uma ou duas observações, e sempre para baixo — a aproximação normal
+    é ligeiramente otimista. Na prática isso não importa, porque a incerteza sobre \(\sigma\)
+    é muito maior que isso. Mas convém saber de onde vem a discrepância quando você conferir
+    seu resultado num programa especializado.</p>
+  </div>
+
+  <h3>Exercício resolvido 15.2 — Dimensionar um estudo de ensino</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Quer-se comparar duas metodologias de ensino de Física. Espera-se diferença de
+    5 pontos na nota final, e estudos anteriores indicam \(\sigma \approx 12\) pontos.
+    Quantos estudantes por grupo, com \(\alpha = 0{,}05\) e 80% de poder? E se houver apenas
+    40 por grupo disponíveis?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Parte 1 — o n necessário.</strong></p>
+      <p>\[n = \frac{2(1{,}960+0{,}842)^{2}(12)^{2}}{5^{2}}
+      = \frac{2 \times 7{,}849 \times 144}{25} = \frac{2260{,}5}{25} = 90{,}4
+      \;\Rightarrow\; \mathbf{91 \text{ por grupo}},\]</p>
+      <p>ou seja, 182 estudantes ao todo.</p>
+      <p><strong>Parte 2 — o que dá para fazer com 40.</strong> Invertendo a fórmula, o poder
+      com \(n = 40\) é</p>
+      <p>\[z_\beta = \frac{\delta}{\sigma}\sqrt{\frac n2} - z_{\alpha/2}
+      = \frac{5}{12}\sqrt{20} - 1{,}96 = 1{,}863 - 1{,}960 = -0{,}097,\]</p>
+      <p>\[1-\beta = \Phi(-0{,}097) = \mathbf{46\%}.\]</p>
+      <p>Menos que cara ou coroa. Se a diferença de 5 pontos for real, este estudo tem
+      <strong>mais chance de não detectá-la do que de detectá-la</strong>.</p>
+      <div class="bloco alerta">
+        <span class="rotulo">O que fazer diante disso</span>
+        <p>Há quatro saídas honestas, e uma desonesta.</p>
+        <ol>
+          <li><strong>Conseguir mais estudantes</strong> — outras turmas, outro semestre,
+          colaboração com outra instituição;</li>
+          <li><strong>Reduzir \(\sigma\)</strong> — usar a nota do pré-teste como covariável,
+          ou um delineamento pareado. Isso costuma cortar \(\sigma\) à metade, e com ela o
+          \(n\) a um quarto;</li>
+          <li><strong>Aceitar detectar só efeitos maiores.</strong> Com \(n=40\) e 80% de
+          poder, o menor efeito detectável é \(\delta = 7{,}5\) pontos. Declare isso
+          explicitamente;</li>
+          <li><strong>Declarar o estudo como piloto</strong>, cujo objetivo é estimar
+          \(\sigma\) e testar o protocolo, não concluir.</li>
+        </ol>
+        <p>A saída desonesta é rodar assim mesmo, não encontrar nada, e escrever "não houve
+        diferença significativa entre as metodologias". <strong>Ausência de evidência não é
+        evidência de ausência</strong> — e com 46% de poder, não encontrar nada era o
+        resultado mais provável desde o início, houvesse efeito ou não.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Tamanho de efeito</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">d de Cohen</span>
+    <p>\[d = \frac{\delta}{\sigma} = \frac{\bar x_1 - \bar x_2}{s_p}\]</p>
+    <p>É a diferença medida <strong>em desvios padrão</strong>, e por isso adimensional e
+    comparável entre estudos.</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th class="num">d</th><th>Convenção</th><th class="num">n por grupo (80%, α=5%)</th></tr></thead>
+      <tbody>
+        <tr><td class="num">0,2</td><td>pequeno</td><td class="num">393</td></tr>
+        <tr><td class="num">0,5</td><td>médio</td><td class="num">63</td></tr>
+        <tr><td class="num">0,8</td><td>grande</td><td class="num">25</td></tr>
+        <tr><td class="num">1,0</td><td>muito grande</td><td class="num">16</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Veja a assimetria: um efeito pequeno custa <strong>vinte e cinco vezes</strong> mais
+    observações que um grande.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Outras medidas de efeito que você já viu</span>
+    <ul>
+      <li>\(r^2\) na regressão — fração da variação explicada (Módulo 13);</li>
+      <li>\(r\) na correlação — ele próprio já é adimensional (Módulo 12);</li>
+      <li>\(U_1/(n_1n_2)\) no Mann–Whitney — estima \(P(X>Y)\) (Módulo 14);</li>
+      <li>Razão de chances, em tabelas \(2\times2\) (Módulo 10).</li>
+    </ul>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Significância não é importância</span>
+    <p>Com \(n\) suficientemente grande, <strong>qualquer</strong> diferença não nula se torna
+    estatisticamente significativa. É o mesmo ponto do Módulo 12 sobre correlações: com mil
+    pares, um \(r = 0{,}062\) é "significativo" e explica 0,4% da variação.</p>
+    <p>A pergunta que importa não é "é significativo?", mas <strong>"é grande o bastante para
+    fazer diferença?"</strong> — e essa é uma pergunta sobre o fenômeno, não sobre
+    estatística. Um ganho de 0,3 ponto numa prova de 100 pode ser significativo com 5 000
+    alunos e ainda assim não justificar mudar o currículo.</p>
+    <p>Reporte sempre <strong>a estimativa, seu intervalo de confiança e o tamanho de
+    efeito</strong>. O valor p sozinho é a informação menos útil das três.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Curvas de poder</h2>
+
+  <p>As três quantidades — \(\alpha\), \(n\) e o tamanho de efeito — estão amarradas. Fixadas
+  duas, a terceira fica determinada. O simulador abaixo mostra a amarração.</p>
+
+  <div data-widget="curvaspoder"></div>
+
+  <div class="bloco def">
+    <span class="rotulo">Três leituras do gráfico</span>
+    <ul>
+      <li><strong>As curvas saturam.</strong> Depois de certo ponto, aumentar \(n\) quase não
+      acrescenta poder. Planejar para 99% é desperdício;</li>
+      <li><strong>Efeitos pequenos são outra categoria.</strong> A curva de \(d = 0{,}2\) mal
+      sai do chão na faixa de \(n\) que um laboratório didático consegue;</li>
+      <li><strong>Reduzir \(\alpha\) desloca as curvas para a direita.</strong> Exigir mais
+      rigor contra falsos positivos custa poder — ou amostra.</li>
+    </ul>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Poder observado: não faça isso</span>
+    <p>Há uma prática disseminada e errada: concluída a análise sem significância, calcular o
+    "poder observado" usando o efeito <em>estimado</em> na própria amostra.</p>
+    <p>Isso não informa nada. O poder observado é uma função monótona do valor p — p alto
+    implica poder observado baixo, sempre, por construção. Dizer "não deu significativo e o
+    poder era baixo" é dizer a mesma coisa duas vezes.</p>
+    <p>O poder deve ser calculado <strong>antes</strong>, com o efeito que se considera
+    relevante detectar, não com o que por acaso saiu. Depois dos dados, o que informa é o
+    <strong>intervalo de confiança</strong>: se ele for estreito e contiver o zero, há
+    evidência real de ausência de efeito relevante; se for largo, o estudo simplesmente não
+    conclui nada.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Planos de amostragem</h2>
+
+  <p>O tamanho responde "quantos"; o plano responde <strong>"quais"</strong> — e esta segunda
+  pergunta é a que decide se os resultados valem alguma coisa.</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Plano</th><th>Como</th><th>Quando usar</th></tr></thead>
+    <tbody>
+      <tr><td><b>Aleatória simples</b></td><td>sorteio entre todos</td><td>população homogênea e lista completa disponível</td></tr>
+      <tr><td><b>Sistemática</b></td><td>a cada k-ésimo, partindo de início sorteado</td><td>lista ordenada sem periodicidade</td></tr>
+      <tr><td><b>Estratificada</b></td><td>divide em estratos e sorteia dentro de cada</td><td>há subgrupos relevantes e distintos</td></tr>
+      <tr><td><b>Por conglomerados</b></td><td>sorteia grupos inteiros</td><td>população dispersa geograficamente</td></tr>
+      <tr><td><b>Por conveniência</b></td><td>quem estiver à mão</td><td><b>nunca</b>, para inferência</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Amostragem estratificada: a que mais rende</span>
+    <p>Dividindo a população em estratos homogêneos e sorteando dentro de cada um, a variância
+    da estimativa cai, porque a variação <em>entre</em> estratos deixa de contar. Com
+    alocação proporcional, o estrato \(h\) recebe \(n_h = n\,N_h/N\).</p>
+    <p>Em pesquisa educacional é quase sempre a escolha certa: estratificar por turma, por
+    turno ou por semestre garante representação de cada grupo e, de quebra, reduz o \(n\)
+    necessário.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Amostragem sistemática tem uma armadilha</span>
+    <p>Se a lista tiver periodicidade que coincida com o passo \(k\), a amostra fica
+    sistematicamente enviesada. O exemplo clássico: medir a temperatura de um forno a cada
+    24 horas sempre no mesmo horário, quando o forno tem ciclo diário. Você mede sempre a
+    mesma fase do ciclo, e conclui que o forno é estável.</p>
+    <p>Em séries temporais e em qualquer processo com ciclo, verifique o passo antes de
+    adotá-lo.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Erros que nenhuma análise corrige</h2>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Os seis mais caros</span>
+    <ol>
+      <li><strong>Amostra de conveniência apresentada como aleatória.</strong> Pesquisar com
+      os alunos da própria turma e generalizar para "estudantes de licenciatura" é o viés de
+      seleção do Módulo 7, com outro nome;</li>
+      <li><strong>Não aleatorizar a alocação.</strong> Se os estudantes escolhem o grupo, as
+      diferenças entre grupos refletem a escolha, não o tratamento. Sem aleatorização não há
+      conclusão causal — Módulo 12;</li>
+      <li><strong>Ignorar perdas.</strong> Se 20% não respondem, e os que não respondem forem
+      diferentes dos que respondem, nenhum \(n\) salva o estudo. Planeje para a perda
+      <em>e</em> investigue quem se perdeu;</li>
+      <li><strong>Pseudo-replicação.</strong> Vinte medidas no mesmo pêndulo não são vinte
+      pêndulos. O \(n\) para inferência é o número de unidades <em>independentes</em>, não de
+      medidas;</li>
+      <li><strong>Testar até dar certo.</strong> Coletar, testar, e continuar coletando se
+      não deu significativo infla \(\alpha\) muito acima do nominal. O \(n\) deve ser fixado
+      antes, ou usa-se um desenho sequencial com fronteiras ajustadas;</li>
+      <li><strong>Comparações múltiplas não declaradas.</strong> Testar vinte hipóteses a 5%
+      e reportar a que deu significativa produz, em média, uma falsa descoberta por estudo.
+      Declare todas as comparações e corrija — Bonferroni, dividindo \(\alpha\) pelo número
+      de testes, é o mais simples.</li>
+    </ol>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Pseudo-replicação, com um exemplo de Física</span>
+    <p>Para estimar a resistividade de um material, medir mil vezes a mesma amostra dá uma
+    excelente estimativa da resistividade <em>daquela amostra</em>, com incerteza
+    minúscula — e não diz quase nada sobre o material, porque não captura a variação entre
+    amostras, que costuma ser a dominante.</p>
+    <p>Se o interesse é o material, o \(n\) relevante é o número de <strong>amostras
+    distintas</strong>. Dez amostras medidas três vezes cada é um desenho muito melhor que
+    uma amostra medida trinta vezes — e o erro padrão correto usa \(n = 10\), não
+    \(n = 30\).</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Planejamento em Física experimental</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Quatro princípios que valem mais que fórmulas</span>
+    <p><strong>1. Reduzir σ bate aumentar n.</strong> Um fator \(k\) em \(\sigma\) vale
+    \(k^2\) em \(n\). Cronometrar 10 oscilações em vez de 1, usar um sensor no lugar do
+    cronômetro, blindar o arranjo de vibração — tudo isso rende mais que repetir medidas.</p>
+    <p><strong>2. Espalhar os \(x\) bate aumentar \(n\), em regressão.</strong> Do Módulo 13:
+    \(s_a = s_e/\sqrt{S_{xx}}\), e \(S_{xx}\) cresce com o quadrado da amplitude. Dez
+    comprimentos de pêndulo entre 0,2 m e 1,2 m valem mais que trinta entre 0,5 m e
+    0,6 m.</p>
+    <p><strong>3. Identifique o erro dominante antes de atacar.</strong> Se a incerteza é 80%
+    sistemática e 20% aleatória, repetir medidas não resolve nada — a parte sistemática não
+    cai com \(\sqrt n\). Calibre primeiro, repita depois.</p>
+    <p><strong>4. Faça o piloto.</strong> Vinte medidas preliminares dão \(\sigma\), revelam
+    problemas do protocolo e custam uma tarde. É o melhor investimento de tempo em qualquer
+    experimento.</p>
+  </div>
+
+  <h3>Exercício resolvido 15.3 — Planejar a medida de g</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Pretende-se medir \(g\) pelo método do pêndulo com incerteza relativa de no máximo
+    0,5%. Um piloto com cinco comprimentos deu \(s_a/a = 1{,}2\%\) na inclinação de
+    \(T^2 \times L\). Como planejar o experimento?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — Traduzir a meta.</strong> Como \(g = 4\pi^2/a\), a incerteza
+      relativa se transfere diretamente: \(\sigma_g/g = s_a/a\). A meta é, portanto,
+      \(s_a/a \le 0{,}5\%\).</p>
+      <p><strong>Passo 2 — Identificar as alavancas.</strong> Do Módulo 13,</p>
+      <p>\[s_a = \frac{s_e}{\sqrt{S_{xx}}}.\]</p>
+      <p>Há três caminhos: reduzir \(s_e\), aumentar \(n\), ou aumentar \(S_{xx}\).</p>
+      <p><strong>Passo 3 — Comparar o custo de cada um.</strong></p>
+      <p><em>Pelo n.</em> Como \(S_{xx}\) cresce linearmente com \(n\) quando se adicionam
+      pontos na mesma faixa, \(s_a \propto 1/\sqrt n\). Para cair de 1,2% a 0,5%, fator 2,4:</p>
+      <p>\[n_{\text{novo}} = 5 \times (2{,}4)^2 = 29 \text{ comprimentos}.\]</p>
+      <p><em>Pela amplitude.</em> Se o piloto usou comprimentos de 0,4 m a 0,6 m e passarmos
+      a usar de 0,2 m a 1,2 m, a amplitude quintuplica e \(S_{xx}\) cresce cerca de 25 vezes,
+      de modo que \(s_a\) cai por um fator 5 — <strong>de 1,2% para 0,24%</strong>, com os
+      mesmos cinco pontos.</p>
+      <p><em>Por \(s_e\).</em> Cronometrar 10 oscilações em vez de 1 divide a incerteza de
+      cada \(T\) por 10; como \(T^2\) propaga \(2\sigma_T/T\), \(s_e\) cai por um fator
+      próximo de 10.</p>
+      <p><strong>Passo 4 — O plano.</strong></p>
+      <ul>
+        <li>Dez comprimentos, <strong>bem espalhados</strong> entre 0,20 m e 1,20 m — não
+        agrupados;</li>
+        <li>Três cronometragens de <strong>10 oscilações</strong> em cada comprimento;</li>
+        <li>Medir \(L\) com o mesmo cuidado: ele entra na mesma conta, e de nada adianta um
+        \(T\) excelente com um \(L\) ruim;</li>
+        <li>Ajustar \(T^2\) contra \(L\), conferir que o intercepto é compatível com zero e
+        olhar o gráfico de resíduos.</li>
+      </ul>
+      <p>Esse é exatamente o plano que gerou os dados do Módulo 13 — e ele devolveu
+      \(g = (9{,}78 \pm 0{,}06)\ \mathrm{m/s^2}\), isto é, 0,57% de incerteza relativa, com
+      dez pontos e uma tarde de laboratório. Trinta comprimentos amontoados numa faixa
+      estreita teriam dado bem pior.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s11">11. Checklist e exercícios</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Checklist antes de coletar o primeiro dado</span>
+    <ol>
+      <li>Qual é a <strong>pergunta</strong>, em uma frase?</li>
+      <li>É de <strong>estimação</strong> ou de <strong>comparação</strong>?</li>
+      <li>Qual é a <strong>população</strong> sobre a qual quero concluir?</li>
+      <li>Qual <strong>efeito</strong> é relevante detectar — e por que esse valor?</li>
+      <li>Qual é o \(\sigma\) esperado, e <strong>de onde</strong> veio essa estimativa?</li>
+      <li>Que \(\alpha\) e que <strong>poder</strong>?</li>
+      <li>Qual o <strong>n</strong> resultante — e ele é viável?</li>
+      <li>Qual o <strong>plano de amostragem</strong>, e como será a aleatorização?</li>
+      <li>Quanta <strong>perda</strong> espero, e qual a margem para ela?</li>
+      <li>Que <strong>teste</strong> usarei, e seus pressupostos são plausíveis?</li>
+      <li>Quantas <strong>comparações</strong> farei, e como vou corrigir?</li>
+      <li>O que farei se o resultado <strong>não</strong> for significativo?</li>
+    </ol>
+    <p>Se qualquer resposta for "não sei", o planejamento ainda não terminou. Responder à
+    décima segunda pergunta antes de coletar é o que separa a pesquisa honesta da caça ao
+    valor p.</p>
+  </div>
+
+  <h3>Exercícios propostos</h3>
+  <ol>
+    <li>Quantas medidas são necessárias para estimar uma massa com erro máximo de 0,1 g e 99%
+    de confiança, se um piloto deu \(s = 0{,}4\) g?</li>
+    <li>Uma pesquisa quer margem de ±2 pontos a 95% numa cidade de 8 000 eleitores. Calcule
+    \(n\) com e sem correção para população finita e comente a diferença.</li>
+    <li>Mostre que \(p(1-p)\) é máximo em \(p=0{,}5\) e vale 0,25. Por que isso justifica o
+    "pior caso"?</li>
+    <li>Deduza, a partir de \(n = 2(z_{\alpha/2}+z_\beta)^2\sigma^2/\delta^2\), a fórmula do
+    poder em função de \(n\). Confira com o simulador para \(d = 0{,}5\) e \(n = 63\).</li>
+    <li>Um estudo com 25 por grupo quer detectar \(d = 0{,}5\) a 5%. Qual é o poder? E qual o
+    menor \(d\) detectável com 80% de poder nesse \(n\)?</li>
+    <li>Explique por que reduzir \(\sigma\) por um fator 2 equivale a multiplicar \(n\) por 4,
+    e dê um exemplo de laboratório em que isso é mais barato.</li>
+    <li>Quantos pares são necessários para detectar \(r = 0{,}25\) com 90% de poder a 5%?</li>
+    <li>Critique o seguinte trecho de um relatório: <em>"Não houve diferença significativa
+    entre os grupos (p = 0,12, n = 12 por grupo), o que demonstra que as duas metodologias
+    são equivalentes."</em> Reescreva-o de forma defensável.</li>
+    <li>Um pesquisador mediu a condutividade de uma amostra 50 vezes e reportou erro padrão
+    com \(n = 50\). O que está errado, e qual seria o desenho correto?</li>
+    <li>Planeje um experimento para verificar a lei de Hooke com incerteza de 1% na constante
+    elástica. Especifique número de massas, faixa de valores, repetições por ponto e o método
+    de análise. Justifique cada escolha.</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>Precisão: \(n=(z_{\alpha/2}\sigma/E)^2\) — quadrático em \(1/E\);</li>
+      <li>Proporção: pior caso \(p=0{,}5\), dando \(n=(z_{\alpha/2}/2E)^2\);</li>
+      <li>População finita: \(n_{\text{aj}}=n/[1+(n-1)/N]\), relevante só acima de 5% de
+      \(N\);</li>
+      <li>Poder: \(n=2(z_{\alpha/2}+z_\beta)^2\sigma^2/\delta^2\) por grupo;</li>
+      <li>\(d=\delta/\sigma\) é o tamanho de efeito; reporte-o sempre, junto do IC;</li>
+      <li>Poder observado após o fato não informa nada — use o intervalo de confiança;</li>
+      <li>Reduzir \(\sigma\) e espalhar os \(x\) rendem mais que aumentar \(n\);</li>
+      <li>O plano de amostragem decide a validade; o tamanho decide só a precisão.</li>
+    </ul>
+  </div>
+
+  <div class="destaque">
+    <span class="anuncio">Fim do programa</span>
+    Quinze módulos, de Kolmogorov ao planejamento experimental. O <a href="formulario.html"
+    style="color:inherit;text-decoration:underline">formulário</a> reúne tudo numa página só,
+    com as tabelas e as calculadoras.
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula14.html"><small>Módulo anterior</small>← 14. Testes não paramétricos</a>
+    <a class="prox" href="formulario.html"><small>Material de apoio</small>Formulário e tabelas →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js?v=202611061322"></script>
+</body>
+</html>
