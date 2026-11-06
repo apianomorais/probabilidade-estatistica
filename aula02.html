@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 2 — Técnicas de contagem | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css">
+<script src="assets/js/comum.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <a href="aula01.html">1. Fundamentos</a>
+      <a href="aula02.html" class="ativo">2. Contagem</a>
+      <a href="aula03.html">3. Condicional</a>
+      <a href="aula04.html">4. Discretas</a>
+      <a href="aula05.html">5. Contínuas</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Por que contar</a></li>
+    <li><a href="#s2">2. Princípio fundamental</a></li>
+    <li><a href="#s3">3. Permutações</a></li>
+    <li><a href="#s4">4. Arranjos</a></li>
+    <li><a href="#s5">5. Combinações</a></li>
+    <li><a href="#s6">6. Quadro-resumo</a></li>
+    <li><a href="#s7">7. Binômio de Newton</a></li>
+    <li><a href="#s8">8. Microestados e estatísticas</a></li>
+    <li><a href="#s9">9. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 2 · 3 horas</p>
+  <h1>Técnicas de contagem</h1>
+  <p class="subtitulo">Permutações, arranjos e combinações — e a multiplicidade de um sistema físico.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Aplicar o princípio fundamental da contagem a problemas com etapas sucessivas;</li>
+      <li>Distinguir com segurança quando a <strong>ordem importa</strong> e quando não importa;</li>
+      <li>Calcular permutações simples, com repetição e circulares;</li>
+      <li>Calcular arranjos e combinações, e relacioná-los por \(A_{n,k}=k!\,C_{n,k}\);</li>
+      <li>Usar o binômio de Newton e as propriedades do triângulo de Pascal;</li>
+      <li>Contar microestados nas estatísticas de Maxwell–Boltzmann, Bose–Einstein e Fermi–Dirac.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Por que contar</h2>
+
+  <p>No módulo anterior chegamos à regra de Laplace: \(P(A)=|A|/|\Omega|\). Enquanto os espaços
+  eram pequenos — seis faces, 36 pares — bastava listar. Mas considere:</p>
+
+  <ul>
+    <li>Qual a probabilidade de um jogo da Mega-Sena premiado?</li>
+    <li>De quantas maneiras 30 estudantes podem se sentar em 30 carteiras?</li>
+    <li>Quantos microestados tem um sistema de 20 spins com energia fixa?</li>
+  </ul>
+
+  <p>Listar é inviável. Precisamos <strong>contar sem enumerar</strong>. Toda a combinatória que
+  veremos aqui serve a um único propósito: fornecer \(|A|\) e \(|\Omega|\) para a regra de Laplace.</p>
+
+  <div class="destaque">
+    A pergunta que organiza este módulo inteiro é uma só: <strong>a ordem importa?</strong><br>
+    Se importa, é arranjo ou permutação. Se não importa, é combinação.
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. O princípio fundamental da contagem</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Princípio multiplicativo</span>
+    <p>Se uma decisão pode ser tomada de \(n_1\) maneiras, e em seguida outra de \(n_2\) maneiras,
+    e assim por diante até \(n_k\), então o número total de sequências de decisões é</p>
+    <p>\[N = n_1 \times n_2 \times \cdots \times n_k .\]</p>
+  </div>
+
+  <p>A justificativa é a estrutura de árvore: cada um dos \(n_1\) primeiros galhos se abre em
+  \(n_2\) ramos, e assim sucessivamente.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Princípio aditivo</span>
+    <p>Se uma tarefa pode ser feita <em>ou</em> de \(n_1\) maneiras <em>ou</em> de \(n_2\) maneiras
+    <strong>mutuamente excludentes</strong>, o total é \(n_1 + n_2\). Note o paralelo exato com
+    os eventos disjuntos do Módulo 1.</p>
+  </div>
+
+  <h3>Exercício resolvido 2.1 — Placas de veículos</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>O padrão Mercosul de placas no Brasil usa quatro letras e três algarismos no formato
+    LLLNLNN (letra, letra, letra, número, letra, número, número). Considerando 26 letras e 10
+    algarismos, quantas placas distintas são possíveis?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>São sete posições independentes: quatro letras e três algarismos. Pelo princípio
+      multiplicativo,</p>
+      <p>\[N = 26^4 \times 10^3 = 456\,976 \times 1000 = 456\,976\,000 .\]</p>
+      <p>Cerca de 457 milhões de placas — suficiente para a frota brasileira por muito tempo.
+      Observe que repetições <strong>são permitidas</strong> aqui: a placa ABC1D23 e a AAA1A11
+      são ambas válidas. Esse é o caso \(n^k\) da calculadora adiante.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Permutações</h2>
+
+  <h3>3.1 Permutação simples</h3>
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Uma <strong>permutação</strong> de \(n\) objetos distintos é uma ordenação de todos eles.
+    O número de permutações é</p>
+    <p>\[P_n = n! = n\,(n-1)\,(n-2)\cdots 2\cdot 1, \qquad 0! = 1 .\]</p>
+  </div>
+
+  <p><em>Por quê:</em> há \(n\) escolhas para a primeira posição, \(n-1\) para a segunda (um objeto
+  já foi usado), \(n-2\) para a terceira, e assim por diante. Pelo princípio multiplicativo, o
+  produto é \(n!\).</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A velocidade do fatorial</span>
+    <p>\(10! \approx 3{,}6\times 10^{6}\); \(20!\approx 2{,}4\times10^{18}\);
+    \(60! \approx 8{,}3\times 10^{81}\) — mais do que o número estimado de átomos no universo
+    observável. Embaralhar um baralho de 52 cartas gera \(52!\approx 8\times10^{67}\) ordens:
+    toda vez que você embaralha bem, é praticamente certo que produziu uma ordem <em>inédita na
+    história da humanidade</em>.</p>
+  </div>
+
+  <h3>3.2 Permutação com elementos repetidos</h3>
+  <div class="bloco def">
+    <span class="rotulo">Fórmula</span>
+    <p>Se entre \(n\) objetos há \(n_1\) iguais de um tipo, \(n_2\) de outro, …, \(n_r\) do
+    \(r\)-ésimo tipo, com \(n_1+\cdots+n_r=n\), o número de ordenações distintas é</p>
+    <p>\[P_n^{n_1,n_2,\dots,n_r} = \frac{n!}{n_1!\,n_2!\cdots n_r!}\]</p>
+    <p>Divide-se por \(n_i!\) porque permutar entre si os objetos iguais do tipo \(i\) não gera
+    uma ordenação nova — mas foi contado como se gerasse.</p>
+  </div>
+
+  <h3>3.3 Permutação circular</h3>
+  <p>Ao dispor \(n\) objetos em círculo, rotações do mesmo arranjo são indistinguíveis. Fixando
+  um objeto como referência e permutando os demais:</p>
+  <p>\[P_n^{\text{circ}} = (n-1)!\]</p>
+
+  <h3>Exercício resolvido 2.2 — Anagramas</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Quantos anagramas distintos tem a palavra <strong>ESTATÍSTICA</strong> (11 letras,
+    ignorando o acento)? E quantos começam por vogal?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Contagem das letras de E-S-T-A-T-I-S-T-I-C-A: temos \(n=11\) letras, com
+      <strong>A</strong>: 2, <strong>T</strong>: 3, <strong>S</strong>: 2, <strong>I</strong>: 2,
+      <strong>E</strong>: 1, <strong>C</strong>: 1.</p>
+      <p>\[P = \frac{11!}{2!\,3!\,2!\,2!} = \frac{39\,916\,800}{2\cdot 6\cdot 2\cdot 2}
+      = \frac{39\,916\,800}{48} = 831\,600 .\]</p>
+      <p><strong>Começando por vogal.</strong> As vogais disponíveis são A (2), I (2) e E (1),
+      num total de 5 letras-vogais. Separe por caso, fixando a primeira letra e permutando as 10
+      restantes:</p>
+      <ul>
+        <li>Começa por <strong>A</strong>: sobram A:1, T:3, S:2, I:2, E:1, C:1 →
+        \(10!/(1!\,3!\,2!\,2!) = 3\,628\,800/24 = 151\,200\);</li>
+        <li>Começa por <strong>I</strong>: sobram A:2, T:3, S:2, I:1, E:1, C:1 →
+        \(10!/(2!\,3!\,2!) = 3\,628\,800/24 = 151\,200\);</li>
+        <li>Começa por <strong>E</strong>: sobram A:2, T:3, S:2, I:2, C:1 →
+        \(10!/(2!\,3!\,2!\,2!) = 3\,628\,800/48 = 75\,600\).</li>
+      </ul>
+      <p>Pelo princípio aditivo (os casos são mutuamente excludentes):
+      \(151\,200+151\,200+75\,600 = \mathbf{378\,000}\).</p>
+      <p><em>Verificação de sanidade:</em> \(378\,000/831\,600 \approx 0{,}4545 = 5/11\) — exatamente
+      a fração de letras que são vogais. Faz sentido: por simetria, a probabilidade de a primeira
+      posição ser vogal é a proporção de vogais no conjunto.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Arranjos</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Um <strong>arranjo</strong> de \(n\) objetos distintos tomados \(k\) a \(k\) é uma
+    sequência <strong>ordenada</strong> de \(k\) objetos distintos escolhidos entre os \(n\):</p>
+    <p>\[A_{n,k} = \frac{n!}{(n-k)!} = n(n-1)\cdots(n-k+1) \quad (k \text{ fatores}).\]</p>
+  </div>
+
+  <p>É a permutação "truncada": paramos de escolher depois de \(k\) posições. Note que
+  \(A_{n,n}=n!/0!=n!\), recuperando a permutação simples.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Arranjo com repetição</span>
+    <p>Se os objetos podem repetir-se — como nas placas do Exercício 2.1 ou nas senhas de um
+    cofre — cada uma das \(k\) posições tem \(n\) opções, e o total é \(n^k\). Não confunda:
+    \(A_{n,k}\) proíbe repetição, \(n^k\) permite.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Combinações</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Uma <strong>combinação</strong> de \(n\) objetos tomados \(k\) a \(k\) é um
+    <strong>subconjunto</strong> de \(k\) elementos — a ordem é irrelevante:</p>
+    <p>\[C_{n,k} = \binom{n}{k} = \frac{n!}{k!\,(n-k)!}\]</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">A relação central</span>
+    <p>\[A_{n,k} = k!\;C_{n,k} \qquad\Longleftrightarrow\qquad C_{n,k} = \frac{A_{n,k}}{k!}\]</p>
+    <p>Cada subconjunto de \(k\) elementos pode ser ordenado de \(k!\) maneiras. O arranjo conta
+    todas essas ordens como distintas; a combinação as agrupa em uma só. <strong>Dividir por
+    \(k!\) é precisamente o ato de "esquecer a ordem".</strong></p>
+  </div>
+
+  <h3>Propriedades úteis</h3>
+  <ul>
+    <li><strong>Simetria:</strong> \(\binom{n}{k}=\binom{n}{n-k}\) — escolher quem entra é o mesmo
+    que escolher quem fica de fora;</li>
+    <li><strong>Relação de Stifel:</strong> \(\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}\) — é a
+    regra de formação do triângulo de Pascal (separe os subconjuntos conforme contenham ou não
+    um elemento fixado);</li>
+    <li><strong>Soma total:</strong> \(\sum_{k=0}^{n}\binom{n}{k}=2^n\) — o número de subconjuntos
+    de um conjunto de \(n\) elementos.</li>
+  </ul>
+
+  <div data-widget="contagem"></div>
+
+  <h3>Exercício resolvido 2.3 — Mega-Sena</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Na Mega-Sena escolhem-se 6 números entre 60. Qual a probabilidade de acertar a sena com
+    um único jogo? E a quadra (exatamente 4 acertos)?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>A ordem do sorteio não importa, logo</p>
+      <p>\[|\Omega| = \binom{60}{6} = \frac{60\cdot59\cdot58\cdot57\cdot56\cdot55}{720}
+      = 50\,063\,860 .\]</p>
+      <p><strong>Sena:</strong> há exatamente um caso favorável, então
+      \(P = 1/50\,063\,860 \approx 2{,}0\times 10^{-8}\) — cerca de 1 em 50 milhões.</p>
+      <p><strong>Quadra:</strong> o jogo precisa conter 4 dos 6 números sorteados e 2 dos 54 não
+      sorteados:</p>
+      <p>\[|A| = \binom{6}{4}\binom{54}{2} = 15 \times 1431 = 21\,465
+      \;\Longrightarrow\; P = \frac{21\,465}{50\,063\,860}\approx 4{,}3\times 10^{-4}.\]</p>
+      <p>Ou seja, cerca de 1 em 2332 jogos. Note a estrutura — <em>escolher alguns daqui e alguns
+      dali</em>, multiplicando as combinações — que reaparecerá em toda a disciplina.</p>
+      <p><strong>Para dimensionar:</strong> a probabilidade de acertar a sena é comparável à de
+      você escolher um segundo específico em um intervalo de 19 meses.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 2.4 — Comissão com restrição</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Em uma turma de Licenciatura em Física há 7 mulheres e 5 homens. Deve-se formar uma
+    comissão de 4 pessoas. (a) Quantas comissões são possíveis? (b) Quantas têm exatamente 2
+    mulheres? (c) Qual a probabilidade de a comissão ter pelo menos uma mulher?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> \(\binom{12}{4} = \dfrac{12\cdot11\cdot10\cdot9}{24} = \mathbf{495}\).</p>
+      <p><strong>(b)</strong> Escolher 2 entre as 7 mulheres e 2 entre os 5 homens:
+      \(\binom{7}{2}\binom{5}{2} = 21 \times 10 = \mathbf{210}\).</p>
+      <p><strong>(c)</strong> Use o complementar: "nenhuma mulher" significa 4 homens entre os 5,
+      ou seja \(\binom{5}{4}=5\) comissões. Então</p>
+      <p>\[P(\text{pelo menos uma mulher}) = 1 - \frac{5}{495} = \frac{490}{495}
+      = \frac{98}{99} \approx \mathbf{0{,}9899}.\]</p>
+      <p>Mais uma vez: "pelo menos" pede o complementar.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Quadro-resumo: qual fórmula usar?</h2>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead>
+      <tr><th>Situação</th><th>Ordem importa?</th><th>Repete?</th><th>Fórmula</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Ordenar todos os \(n\) objetos</td><td>sim</td><td>não</td><td>\(n!\)</td></tr>
+      <tr><td>Ordenar \(n\) com repetidos</td><td>sim</td><td>—</td><td>\(\dfrac{n!}{n_1!\cdots n_r!}\)</td></tr>
+      <tr><td>Dispor \(n\) em círculo</td><td>sim</td><td>não</td><td>\((n-1)!\)</td></tr>
+      <tr><td>Escolher e ordenar \(k\) entre \(n\)</td><td>sim</td><td>não</td><td>\(A_{n,k}=\dfrac{n!}{(n-k)!}\)</td></tr>
+      <tr><td>Preencher \(k\) posições com \(n\) opções</td><td>sim</td><td>sim</td><td>\(n^k\)</td></tr>
+      <tr><td>Escolher \(k\) entre \(n\) (subconjunto)</td><td>não</td><td>não</td><td>\(C_{n,k}=\dbinom{n}{k}\)</td></tr>
+      <tr><td>Escolher \(k\) entre \(n\) com repetição</td><td>não</td><td>sim</td><td>\(\dbinom{n+k-1}{k}\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Teste rápido para decidir</span>
+    <p>Pegue dois resultados concretos e troque a ordem dos elementos. Se o resultado é
+    <em>diferente</em> para o problema (senhas, pódios, sequências), use arranjo ou permutação.
+    Se é <em>o mesmo</em> (comissões, jogos de loteria, mãos de cartas), use combinação.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Binômio de Newton</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Teorema binomial</span>
+    <p>\[(x+y)^n = \sum_{k=0}^{n}\binom{n}{k}x^k y^{\,n-k}\]</p>
+  </div>
+
+  <p><em>Por que os coeficientes são combinações:</em> ao expandir o produto
+  \((x+y)(x+y)\cdots(x+y)\) com \(n\) fatores, cada termo resulta de escolher \(x\) ou \(y\) em
+  cada fator. Um termo \(x^k y^{n-k}\) aparece tantas vezes quantas forem as maneiras de escolher
+  <em>quais \(k\) fatores</em> contribuem com \(x\) — isto é, \(\binom{n}{k}\) vezes.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que isso nos importa</span>
+    <p>Guarde esta identidade: ela garantirá, no Módulo 4, que a distribuição binomial está
+    corretamente normalizada. Fazendo \(x=p\) e \(y=1-p\):</p>
+    <p>\[\sum_{k=0}^{n}\binom{n}{k}p^k(1-p)^{n-k} = (p + 1 - p)^n = 1^n = 1 .\]</p>
+    <p>A soma de todas as probabilidades vale 1 — o Axioma 2 reaparece, agora como consequência
+    de um teorema de álgebra.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Contando microestados</h2>
+
+  <p>Toda a combinatória acima tem uma aplicação direta e central em Física: contar os
+  microestados de um sistema. O número de microestados compatíveis com um macroestado é a
+  <strong>multiplicidade</strong> \(\Omega_{\text{mic}}\), e dela sai a entropia,
+  \(S = k_B \ln \Omega_{\text{mic}}\).</p>
+
+  <h3>Exercício resolvido 2.5 — Sistema de spins</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um sistema tem \(N=20\) spins distinguíveis, cada um podendo apontar para cima ou para
+    baixo. (a) Quantos microestados tem o sistema? (b) Quantos têm exatamente 10 spins para
+    cima? (c) Qual a fração dos microestados com \(n_\uparrow\) entre 8 e 12?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> Cada spin tem 2 opções independentes:
+      \(\Omega_{\text{total}} = 2^{20} = \mathbf{1\,048\,576}\).</p>
+      <p><strong>(b)</strong> Escolher quais 10 dos 20 spins apontam para cima:
+      \(\binom{20}{10} = \mathbf{184\,756}\). Esse é o macroestado de maior multiplicidade —
+      o de magnetização nula.</p>
+      <p><strong>(c)</strong> Somando as multiplicidades:</p>
+      <p>\[\binom{20}{8}+\binom{20}{9}+\binom{20}{10}+\binom{20}{11}+\binom{20}{12}
+      = 125\,970+167\,960+184\,756+167\,960+125\,970 = 772\,616,\]</p>
+      <p>o que dá \(772\,616/1\,048\,576 \approx \mathbf{73,7\%}\). Mais de dois terços dos
+      microestados estão concentrados em cinco macroestados entre os 21 possíveis — e a
+      concentração só aumenta com \(N\). Para \(N\sim10^{23}\), ela se torna absoluta: é a
+      origem microscópica da Segunda Lei.</p>
+    </div>
+  </details>
+
+  <h3>As três estatísticas, agora com fórmulas</h3>
+  <p>Distribuir \(N\) partículas em \(g\) estados de partícula única:</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Estatística</th><th>Partículas</th><th>Multiplicidade</th></tr></thead>
+    <tbody>
+      <tr><td>Maxwell–Boltzmann</td><td>distinguíveis, sem restrição</td><td>\(g^N\)</td></tr>
+      <tr><td>Bose–Einstein</td><td>idênticas, sem restrição</td><td>\(\dbinom{N+g-1}{N}\)</td></tr>
+      <tr><td>Fermi–Dirac</td><td>idênticas, no máximo uma por estado</td><td>\(\dbinom{g}{N}\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>O caso bosônico é exatamente a "combinação com repetição" da última linha do quadro-resumo:
+  distribuir \(N\) bolas idênticas em \(g\) caixas equivale a arranjar \(N\) bolas e \(g-1\)
+  divisórias em fila, o que dá \(\binom{N+g-1}{N}\) — o famoso argumento das
+  <em>barras e estrelas</em>.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">O paradoxo de Gibbs</span>
+    <p>Se contarmos microestados de um gás tratando átomos idênticos como distinguíveis, a
+    entropia resultante não é <strong>extensiva</strong>: ao remover a partição entre dois
+    volumes do mesmo gás, obtém-se um ganho espúrio de entropia, embora nada físico tenha
+    mudado. A correção é dividir a multiplicidade por \(N!\) — ou seja, corrigir o espaço
+    amostral. É o mesmo erro de d'Alembert, em escala termodinâmica.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Exercícios propostos</h2>
+
+  <ol>
+    <li>Quantos números de 4 algarismos distintos podem ser formados com os dígitos
+    \(\{1,2,3,4,5,6,7\}\)? Quantos são pares?</li>
+    <li>De quantas maneiras 8 pessoas podem se sentar em torno de uma mesa redonda? E se duas
+    delas insistem em sentar juntas?</li>
+    <li>Quantos anagramas tem a palavra MATEMÁTICA? Quantos têm as três vogais A juntas?</li>
+    <li>Em um baralho de 52 cartas, quantas mãos de 5 cartas contêm exatamente dois pares?</li>
+    <li>Prove a relação de Stifel \(\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}\) por um
+    argumento combinatório (sem manipular fatoriais).</li>
+    <li>Mostre que \(\sum_{k=0}^{n}\binom{n}{k}=2^n\) de duas maneiras: pelo binômio de Newton
+    com \(x=y=1\), e contando subconjuntos.</li>
+    <li>Um sistema tem \(N\) spins e energia fixa correspondente a \(n_\uparrow\) spins para
+    cima. Escreva \(\Omega_{\text{mic}}(n_\uparrow)\) e, usando a aproximação de Stirling
+    \(\ln n! \approx n\ln n - n\), mostre que a entropia por spin depende apenas da fração
+    \(x = n_\uparrow/N\).</li>
+    <li>Seis partículas devem ser distribuídas em 4 estados de energia. Calcule a multiplicidade
+    nos três casos — Maxwell–Boltzmann, Bose–Einstein e Fermi–Dirac — e explique por que um dos
+    três resultados é zero.</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>Princípio multiplicativo para etapas sucessivas; aditivo para casos excludentes;</li>
+      <li>\(P_n = n!\); com repetidos, \(n!/(n_1!\cdots n_r!)\); circular, \((n-1)!\);</li>
+      <li>\(A_{n,k} = n!/(n-k)!\) ordena; \(C_{n,k} = A_{n,k}/k!\) esquece a ordem;</li>
+      <li>Com repetição permitida: \(n^k\) se a ordem importa, \(\binom{n+k-1}{k}\) se não;</li>
+      <li>Binômio de Newton garante a normalização da binomial no próximo módulo;</li>
+      <li>Multiplicidade \(\Omega_{\text{mic}}\) e entropia \(S=k_B\ln\Omega_{\text{mic}}\).</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula01.html"><small>Módulo anterior</small>← 1. Fundamentos</a>
+    <a class="prox" href="aula03.html"><small>Próximo módulo</small>3. Probabilidade condicional →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js"></script>
+</body>
+</html>

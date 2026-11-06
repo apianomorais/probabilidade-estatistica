@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 5 — Variáveis contínuas e a Normal | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css">
+<script src="assets/js/comum.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <a href="aula01.html">1. Fundamentos</a>
+      <a href="aula02.html">2. Contagem</a>
+      <a href="aula03.html">3. Condicional</a>
+      <a href="aula04.html">4. Discretas</a>
+      <a href="aula05.html" class="ativo">5. Contínuas</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Densidade de probabilidade</a></li>
+    <li><a href="#s2">2. Média e variância</a></li>
+    <li><a href="#s3">3. Uniforme</a></li>
+    <li><a href="#s4">4. Exponencial</a></li>
+    <li><a href="#s5">5. Distribuição normal</a></li>
+    <li><a href="#s6">6. Padronização e tabela z</a></li>
+    <li><a href="#s7">7. Teorema Central do Limite</a></li>
+    <li><a href="#s8">8. Aplicações em Física</a></li>
+    <li><a href="#s9">9. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 5 · 3 horas</p>
+  <h1>Variáveis aleatórias contínuas e a distribuição normal</h1>
+  <p class="subtitulo">Densidades, a curva de Gauss e o teorema que explica por que ela está em toda parte.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Entender densidade de probabilidade e por que \(P(X = x_0) = 0\) no contínuo;</li>
+      <li>Calcular normalização, média e variância por integração;</li>
+      <li>Dominar as distribuições uniforme, exponencial e normal;</li>
+      <li>Padronizar variáveis e usar a tabela \(z\);</li>
+      <li>Enunciar e aplicar o Teorema Central do Limite;</li>
+      <li>Aproximar a binomial pela normal com correção de continuidade.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Densidade de probabilidade</h2>
+
+  <p>Para uma variável contínua há um número <strong>infinito</strong> de valores possíveis, e a
+  probabilidade de qualquer um deles é <strong>zero</strong>. Perguntar a probabilidade de uma
+  molécula ter velocidade exatamente 500,000… m/s não faz sentido. A saída é falar de
+  <strong>intervalos</strong>.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Seja \(X\) contínua. A <strong>densidade de probabilidade</strong> \(P(x)\) é definida por</p>
+    <p>\[P(x\le X \le x+dx) = P(x)\,dx .\]</p>
+    <p>Note que \(P(x)\) <strong>não é uma probabilidade</strong>: é uma probabilidade
+    <em>por unidade</em> de \(x\). Suas unidades são o inverso das unidades de \(x\), e ela pode
+    perfeitamente ser maior que 1.</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">As quatro fórmulas do contínuo</span>
+    <p>Basta trocar \(\sum_i \to \int dx\) e \(P_i \to P(x)dx\) em tudo o que vimos no Módulo 4:</p>
+    <p>\[\int P(x)\,dx = 1, \qquad \langle x\rangle = \int x\,P(x)\,dx,\]</p>
+    <p>\[\langle x^2\rangle = \int x^2 P(x)\,dx, \qquad
+       \langle f(x)\rangle = \int f(x)\,P(x)\,dx .\]</p>
+    <p>E a identidade da variância permanece idêntica:
+    \(\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\).</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Função de distribuição acumulada</span>
+    <p>\[F(x) = P(X \le x) = \int_{-\infty}^{x} P(x')\,dx',
+    \qquad\text{donde}\qquad P(x) = \frac{dF}{dx}.\]</p>
+    <p>\(F\) é não-decrescente, vai de 0 a 1, e
+    \(P(a \le X \le b) = F(b) - F(a)\).</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Média e variância por integração</h2>
+
+  <h3>Exercício resolvido 5.1 — Normalizando uma densidade</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Seja \(P(x) = Cx(1-x)\) para \(0 \le x \le 1\) e zero fora. Encontre \(C\),
+    \(\langle x\rangle\) e \(\sigma^2\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Normalização:</strong></p>
+      <p>\[1 = C\int_0^1 (x - x^2)\,dx = C\left[\frac{x^2}{2}-\frac{x^3}{3}\right]_0^1
+      = C\left(\frac12-\frac13\right) = \frac{C}{6} \;\Rightarrow\; \mathbf{C = 6}.\]</p>
+      <p><strong>Média:</strong></p>
+      <p>\[\langle x\rangle = 6\int_0^1 (x^2-x^3)\,dx = 6\left(\frac13-\frac14\right)
+      = 6\cdot\frac{1}{12} = \frac12 .\]</p>
+      <p>Como esperado por simetria: a densidade é simétrica em torno de \(x=1/2\).</p>
+      <p><strong>Segundo momento e variância:</strong></p>
+      <p>\[\langle x^2\rangle = 6\int_0^1 (x^3-x^4)\,dx = 6\left(\frac14-\frac15\right)
+      = 6\cdot\frac{1}{20} = \frac{3}{10},\]</p>
+      <p>\[\sigma^2 = \frac{3}{10}-\frac14 = \frac{6-5}{20} = \frac{1}{20} = 0{,}05,
+      \qquad \sigma = \frac{1}{\sqrt{20}} \approx 0{,}224 .\]</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Distribuição uniforme</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>\(X\) é uniforme em \([a,b]\) se \(P(x) = \dfrac{1}{b-a}\) para \(a\le x\le b\) e zero fora.</p>
+    <p>\[\langle x\rangle = \frac{a+b}{2}, \qquad \sigma^2 = \frac{(b-a)^2}{12}.\]</p>
+  </div>
+
+  <h3>Exercício resolvido 5.2 — Ângulo uniforme</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Se \(\theta\) é uniforme entre 0 e \(\pi\), escreva \(P(\theta)\) e calcule
+    \(\langle\theta\rangle\), \(\langle\theta^2\rangle\), \(\langle\cos\theta\rangle\),
+    \(\langle\cos^2\theta\rangle\) e \(\langle|\cos\theta|\rangle\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>\(P(\theta) = 1/\pi\) em \([0,\pi]\).</p>
+      <p>\[\langle\theta\rangle = \frac1\pi\int_0^\pi \theta\,d\theta
+      = \frac{1}{\pi}\cdot\frac{\pi^2}{2} = \frac{\pi}{2};\qquad
+      \langle\theta^2\rangle = \frac1\pi\cdot\frac{\pi^3}{3} = \frac{\pi^2}{3}.\]</p>
+      <p>Logo \(\sigma^2 = \dfrac{\pi^2}{3}-\dfrac{\pi^2}{4} = \dfrac{\pi^2}{12}\) ✓
+      (confere com a fórmula da uniforme, com \(b-a=\pi\)).</p>
+      <p>\[\langle\cos\theta\rangle = \frac1\pi\int_0^\pi \cos\theta\,d\theta
+      = \frac1\pi\big[\sin\theta\big]_0^\pi = 0 ;\]</p>
+      <p>\[\langle\cos^2\theta\rangle = \frac1\pi\int_0^\pi \frac{1+\cos 2\theta}{2}\,d\theta
+      = \frac{1}{2}.\]</p>
+      <p>\[\langle|\cos\theta|\rangle = \frac2\pi\int_0^{\pi/2}\cos\theta\,d\theta
+      = \frac{2}{\pi} \approx 0{,}637 .\]</p>
+      <p>Note que \(\langle\cos\theta\rangle = 0\) mas \(\langle\cos^2\theta\rangle = 1/2\):
+      mais um lembrete de que \(\langle f(x)\rangle \ne f(\langle x\rangle)\). O valor \(1/2\)
+      aparece o tempo todo em Física — é a média do quadrado do cosseno sobre orientações
+      aleatórias, que surge em dipolos, polarização e no teorema da equipartição.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Distribuição exponencial</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>\(X \geq 0\) é exponencial com taxa \(\lambda\) se \(P(x) = \lambda e^{-\lambda x}\).</p>
+    <p>\[\langle x\rangle = \frac1\lambda, \qquad
+       \langle x^2\rangle = \frac{2}{\lambda^2}, \qquad
+       \sigma^2 = \frac{1}{\lambda^2}, \qquad \sigma = \frac1\lambda .\]</p>
+    <p>A acumulada é \(F(x) = 1 - e^{-\lambda x}\), e a função de sobrevivência,
+    \(S(x) = e^{-\lambda x}\).</p>
+  </div>
+
+  <h3>Exercício resolvido 5.3 — Normalização e momentos</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Seja \(P(x)\,dx = A e^{-x/\lambda}dx\) para \(x \ge 0\). (a) Encontre \(A\);
+    (b) mostre que \(\langle x\rangle = \lambda\); (c) encontre a variância.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> \(\displaystyle 1 = A\int_0^\infty e^{-x/\lambda}dx = A\lambda\),
+      logo \(A = 1/\lambda\).</p>
+      <p><strong>(b)</strong> Integrando por partes (ou usando
+      \(\int_0^\infty x^n e^{-x/\lambda}dx = n!\,\lambda^{n+1}\)):</p>
+      <p>\[\langle x\rangle = \frac1\lambda\int_0^\infty x\,e^{-x/\lambda}dx
+      = \frac1\lambda\cdot 1!\,\lambda^2 = \lambda .\]</p>
+      <p><strong>(c)</strong> \(\displaystyle \langle x^2\rangle = \frac1\lambda\cdot 2!\,\lambda^3
+      = 2\lambda^2\), portanto</p>
+      <p>\[\sigma^2 = 2\lambda^2 - \lambda^2 = \lambda^2, \qquad \sigma = \lambda .\]</p>
+      <p>Curioso: na exponencial, o desvio padrão é igual à média. A distribuição é tão larga
+      quanto o seu próprio centro — um sinal de sua cauda longa.</p>
+    </div>
+  </details>
+
+  <div data-widget="exponencial"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. A distribuição normal (gaussiana)</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>\[P(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\,\exp\!\left[-\frac{(x-\mu)^2}{2\sigma^2}\right],
+    \qquad -\infty < x < \infty\]</p>
+    <p>com \(\langle x\rangle = \mu\) e variância \(\sigma^2\). Notação: \(X \sim N(\mu,\sigma^2)\).</p>
+  </div>
+
+  <h3>Exercício resolvido 5.4 — Normalizando a gaussiana</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Seja \(P(x) = Ce^{-x^2/2a^2}\). Determine \(C\), e calcule \(\langle x\rangle\) e
+    \(\langle x^2\rangle\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Normalização.</strong> Usando a integral de Gauss
+      \(\int_{-\infty}^{\infty} e^{-\alpha x^2}dx = \sqrt{\pi/\alpha}\) com
+      \(\alpha = 1/2a^2\):</p>
+      <p>\[1 = C\sqrt{2\pi a^2} \;\Longrightarrow\; C = \frac{1}{\sqrt{2\pi a^2}} .\]</p>
+      <p><strong>Média.</strong> O integrando \(x\,e^{-x^2/2a^2}\) é uma função <em>ímpar</em>
+      integrada em um intervalo simétrico, logo \(\langle x\rangle = 0\) — sem precisar calcular
+      nada.</p>
+      <p><strong>Segundo momento.</strong> Por partes, ou derivando a integral de Gauss em
+      relação a \(\alpha\):</p>
+      <p>\[\langle x^2\rangle = \frac{1}{\sqrt{2\pi a^2}}\int_{-\infty}^{\infty}
+      x^2 e^{-x^2/2a^2}dx = a^2 .\]</p>
+      <p>Portanto \(\sigma^2 = a^2 - 0 = a^2\): o parâmetro \(a\) <em>é</em> o desvio padrão.</p>
+    </div>
+  </details>
+
+  <div class="bloco">
+    <span class="rotulo">Propriedades da curva</span>
+    <ul>
+      <li>Simétrica em torno de \(\mu\); média = mediana = moda;</li>
+      <li>Pontos de inflexão exatamente em \(\mu \pm \sigma\);</li>
+      <li>Nunca toca o eixo, mas decai muito rápido (como \(e^{-x^2}\), não como \(e^{-x}\));</li>
+      <li>Fica completamente determinada por dois números, \(\mu\) e \(\sigma\).</li>
+    </ul>
+  </div>
+
+  <div data-widget="normal"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Padronização e a regra 68–95–99,7</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Variável padronizada</span>
+    <p>\[z = \frac{x-\mu}{\sigma} \qquad\Longrightarrow\qquad Z \sim N(0,1)\]</p>
+    <p>É uma transformação linear com \(a = 1/\sigma\) e \(b = -\mu/\sigma\): pelo Módulo 4,
+    \(\langle z\rangle = 0\) e \(\sigma_z = 1\). O número \(z\) diz <strong>quantos desvios
+    padrão</strong> o valor está da média.</p>
+  </div>
+
+  <div class="destaque">
+    <strong>Regra empírica:</strong> \(\;\mu\pm\sigma\): 68,27% &nbsp;·&nbsp;
+    \(\mu\pm2\sigma\): 95,45% &nbsp;·&nbsp; \(\mu\pm3\sigma\): 99,73%
+  </div>
+
+  <p>Use os botões ±1σ, ±2σ e ±3σ no simulador acima para verificar: note que esses valores
+  <strong>não dependem</strong> de \(\mu\) nem de \(\sigma\). É por isso que uma única tabela \(z\)
+  serve para todas as normais do mundo. A tabela completa está na
+  <a href="formulario.html">página de formulário</a>.</p>
+
+  <h3>Exercício resolvido 5.5 — Alturas</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>A altura de homens adultos numa população segue \(N(175, 7^2)\) cm. Qual a proporção de
+    homens (a) com mais de 185 cm; (b) entre 170 e 180 cm; (c) qual a altura excedida por apenas
+    5% da população?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> \(z = (185-175)/7 = 1{,}43\). Da tabela,
+      \(\Phi(1{,}43) = 0{,}9236\), logo \(P(X > 185) = 1-0{,}9236 = \mathbf{7{,}6\%}\).</p>
+      <p><strong>(b)</strong> \(z_1 = (170-175)/7 = -0{,}71\) e \(z_2 = (180-175)/7 = +0{,}71\).
+      Então \(P = \Phi(0{,}71)-\Phi(-0{,}71) = 0{,}7611 - 0{,}2389 = \mathbf{52{,}2\%}\).</p>
+      <p><strong>(c)</strong> Procuramos \(z\) tal que \(\Phi(z) = 0{,}95\), ou seja
+      \(z = 1{,}645\). Desfazendo a padronização:</p>
+      <p>\[x = \mu + z\sigma = 175 + 1{,}645\times 7 \approx \mathbf{186{,}5\ \text{cm}} .\]</p>
+      <p>Confira no simulador acima: ajuste μ = 175 e σ = 7 e varie os limites.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. O Teorema Central do Limite</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Enunciado</span>
+    <p>Sejam \(X_1, X_2, \dots, X_n\) variáveis aleatórias <strong>independentes e
+    identicamente distribuídas</strong>, com média \(\mu\) e variância \(\sigma^2\) finitas.
+    Então, para \(n\) suficientemente grande, a média amostral
+    \(\bar{X} = \tfrac1n\sum_i X_i\) é aproximadamente normal:</p>
+    <p>\[\bar{X} \;\sim\; N\!\left(\mu,\ \frac{\sigma^2}{n}\right)
+    \qquad\text{ou, equivalentemente,}\qquad
+    \frac{\bar X - \mu}{\sigma/\sqrt n} \;\to\; N(0,1).\]</p>
+    <p><strong>E isso vale qualquer que seja a distribuição original.</strong></p>
+  </div>
+
+  <p>Observe que média e variância de \(\bar X\) já sabíamos calcular desde o Módulo 4 — o
+  conteúdo <em>novo</em> e surpreendente do TCL é a <strong>forma</strong> da distribuição: ela
+  se torna gaussiana, mesmo partindo de algo totalmente diferente.</p>
+
+  <div data-widget="tcl"></div>
+
+  <p>Experimente: comece com a exponencial, que é fortemente assimétrica, e aumente \(n\)
+  gradualmente. Com \(n=1\) o histograma reproduz a assimetria original; por volta de \(n=10\) a
+  simetria já aparece; em \(n=30\) o ajuste à curva normal é quase perfeito. Tente também a
+  bimodal — a distribuição mais "antinatural" do menu — e veja a gaussiana emergir mesmo assim.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que a normal está em toda parte</span>
+    <p>O TCL explica a onipresença da gaussiana na natureza e no laboratório. Sempre que uma
+    grandeza resulta da <strong>soma de muitas contribuições pequenas, independentes e
+    comparáveis</strong>, sua distribuição tende à normal:</p>
+    <ul>
+      <li>Erros de medida — somam-se muitas fontes pequenas de ruído;</li>
+      <li>Velocidades moleculares — cada componente cartesiana é gaussiana (Maxwell–Boltzmann);</li>
+      <li>Ruído térmico (Johnson–Nyquist) em circuitos;</li>
+      <li>Posição de uma partícula browniana após muitos choques.</li>
+    </ul>
+    <p>A ressalva importa: o TCL exige <strong>variância finita</strong>. Distribuições de cauda
+    pesada, como a de Cauchy (o perfil lorentziano de uma linha espectral!), não obedecem ao
+    teorema — a média de \(n\) variáveis de Cauchy continua sendo Cauchy, por mais que \(n\)
+    cresça.</p>
+  </div>
+
+  <h3>Aproximação normal da binomial</h3>
+  <p>Como a binomial é soma de \(n\) Bernoullis independentes, o TCL se aplica diretamente.
+  Quando \(np(1-p) \gtrsim 9\):</p>
+  <p>\[\text{Binomial}(n,p) \;\approx\; N\big(np,\ np(1-p)\big).\]</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Correção de continuidade</span>
+    <p>Ao aproximar algo discreto por algo contínuo, trate o valor inteiro \(k\) como ocupando o
+    intervalo \([k-\tfrac12,\,k+\tfrac12]\). Assim,
+    \(P(X \le k) \approx \Phi\!\left(\frac{k+0{,}5-np}{\sqrt{np(1-p)}}\right)\).
+    Para \(n\) moderado, esse meio ponto faz diferença real.</p>
+  </div>
+
+  <h3>Exercício resolvido 5.6 — Mil lançamentos</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Uma moeda honesta é lançada 1000 vezes. Qual a probabilidade de obter 520 caras ou mais?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>\(np = 500\) e \(\sigma = \sqrt{1000\cdot 0{,}5\cdot 0{,}5} = \sqrt{250}\approx 15{,}81\).
+      Como \(np(1-p) = 250 \gg 9\), a aproximação normal é excelente.</p>
+      <p>Com correção de continuidade, \(P(X \ge 520) = P(X > 519{,}5)\):</p>
+      <p>\[z = \frac{519{,}5 - 500}{15{,}81} \approx 1{,}233
+      \;\Longrightarrow\; P \approx 1 - \Phi(1{,}233) \approx \mathbf{0{,}109}.\]</p>
+      <p>Cerca de 11%. O valor binomial exato é 0,10872 — a aproximação acerta até a quarta casa
+      decimal. <em>Sem</em> a correção de continuidade obteríamos \(z = 1{,}265\) e
+      \(P \approx 0{,}103\), um erro relativo de 5%, centenas de vezes maior. Meio ponto faz
+      muita diferença.</p>
+      <p>Verifique no simulador do Módulo 4: marque "Normal" com \(n=1000\) e \(p=0{,}5\).</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Aplicações em Física</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Distribuição de Maxwell–Boltzmann</span>
+    <p>Em um gás em equilíbrio a temperatura \(T\), <em>cada componente cartesiana</em> da
+    velocidade é gaussiana:</p>
+    <p>\[P(v_x) = \sqrt{\frac{m}{2\pi k_B T}}\;\exp\!\left(-\frac{mv_x^2}{2k_BT}\right),\]</p>
+    <p>ou seja, uma normal com \(\mu = 0\) e \(\sigma^2 = k_BT/m\). Daí sai imediatamente
+    \(\langle v_x^2\rangle = k_BT/m\) e, portanto,
+    \(\tfrac12 m\langle v_x^2\rangle = \tfrac12 k_B T\) — o <strong>teorema da
+    equipartição</strong>, meio \(k_BT\) por grau de liberdade.</p>
+    <p>A distribuição do <em>módulo</em> da velocidade não é gaussiana: ganha um fator \(v^2\) do
+    elemento de volume no espaço de velocidades, \(4\pi v^2 dv\), e é por isso que
+    \(P(v)\) se anula em \(v=0\) e tem um pico em \(v_p=\sqrt{2k_BT/m}\).</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Difusão e o perfil gaussiano</span>
+    <p>No Módulo 4 vimos que o passeio aleatório tem \(\sigma_x = \sqrt{2Dt}\). Pelo TCL, a
+    posição após muitos passos é <strong>normalmente distribuída</strong>:</p>
+    <p>\[P(x,t) = \frac{1}{\sqrt{4\pi D t}}\,e^{-x^2/4Dt},\]</p>
+    <p>que é precisamente a solução da equação de difusão
+    \(\partial_t P = D\,\partial_x^2 P\) com condição inicial pontual. Uma gota de tinta na água
+    espalha-se como uma gaussiana que alarga com \(\sqrt{t}\).</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Incerteza experimental e os 5σ</span>
+    <p>Quando se escreve um resultado como \(g = 9{,}79 \pm 0{,}03\ \mathrm{m/s^2}\), o que se
+    afirma é que a distribuição de valores plausíveis é aproximadamente normal, com
+    \(\sigma = 0{,}03\). O intervalo \(\pm\sigma\) corresponde a 68% de confiança;
+    \(\pm 2\sigma\) a 95%.</p>
+    <p>Na Física de partículas exige-se \(5\sigma\) para anunciar uma descoberta: a probabilidade
+    de uma flutuação aleatória produzir tal desvio é de cerca de \(3\times 10^{-7}\), ou 1 em
+    3,5 milhões. Dada a quantidade imensa de testes feitos nos dados, esse rigor é necessário —
+    é a taxa-base do Módulo 3 cobrando seu preço outra vez.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Exercícios propostos</h2>
+
+  <ol>
+    <li>Seja \(P(x) = Cx^2\) para \(0\le x\le 3\). Encontre \(C\), \(\langle x\rangle\),
+    \(\sigma^2\) e \(F(x)\).</li>
+    <li>Para \(\theta\) uniforme em \([0,\pi]\), calcule \(\langle\theta^n\rangle\),
+    \(\langle\sin\theta\rangle\) e \(\langle\sin^2\theta\rangle\).</li>
+    <li>Mostre que a exponencial é a única distribuição contínua sem memória, isto é, que
+    satisfaz \(P(T>t+s\mid T>t) = P(T>s)\) para todos \(s,t\ge 0\).</li>
+    <li>Uma máquina enche pacotes com peso \(N(500, 8^2)\) g. O rótulo informa 500 g e a norma
+    exige que no máximo 2% fiquem abaixo de 485 g. A máquina atende à norma?</li>
+    <li>Mostre que, para a normal, os pontos de inflexão ocorrem em \(x = \mu \pm \sigma\).</li>
+    <li>Um detector registra em média 400 contagens por minuto. Usando a aproximação normal da
+    Poisson, estime a probabilidade de registrar mais de 440 contagens em um minuto.</li>
+    <li>Simule mentalmente o TCL: some \(n = 12\) variáveis uniformes em \([0,1]\) e subtraia 6.
+    Mostre que o resultado tem média 0 e variância 1 — este é um gerador clássico de números
+    normais aleatórios.</li>
+    <li>Partindo de \(P(v_x)\) gaussiana, deduza a distribuição do módulo da velocidade
+    \(P(v) \propto v^2 e^{-mv^2/2k_BT}\) e encontre \(v_p\), \(\langle v\rangle\) e
+    \(v_{\text{rms}}\). Mostre que \(v_p < \langle v\rangle < v_{\text{rms}}\).</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>Densidade \(P(x)\): probabilidade por unidade de \(x\); \(P(X=x_0)=0\);</li>
+      <li>\(\int P\,dx = 1\); \(\langle x\rangle = \int xP\,dx\);
+      \(\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\);</li>
+      <li>Uniforme: \(\sigma^2 = (b-a)^2/12\); exponencial: \(\langle x\rangle = \sigma = 1/\lambda\);</li>
+      <li>Normal: \(N(\mu,\sigma^2)\), regra 68–95–99,7, padronização \(z=(x-\mu)/\sigma\);</li>
+      <li>TCL: médias de \(n\) i.i.d. tendem a \(N(\mu, \sigma^2/n)\), qualquer que seja a origem;</li>
+      <li>Binomial \(\approx\) Normal quando \(np(1-p)\gtrsim 9\), com correção de continuidade.</li>
+    </ul>
+  </div>
+
+  <div class="destaque">
+    <strong>Fim da parte de Probabilidade.</strong> Tudo o que vem a seguir — estimação,
+    intervalos de confiança, testes de hipóteses, regressão — é construído sobre o Teorema
+    Central do Limite.
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula04.html"><small>Módulo anterior</small>← 4. Variáveis discretas</a>
+    <a class="prox" href="formulario.html"><small>Apoio</small>Formulário e tabela z →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formulário e tabela z | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css">
+<script src="assets/js/comum.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+  #tabelaZ table{font-size:.78rem}
+  #tabelaZ th,#tabelaZ td{padding:.2rem .3rem}
+  #tabelaZ tbody th{background:var(--azul-pastel);color:var(--azul);font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <a href="aula01.html">1. Fundamentos</a>
+      <a href="aula02.html">2. Contagem</a>
+      <a href="aula03.html">3. Condicional</a>
+      <a href="aula04.html">4. Discretas</a>
+      <a href="aula05.html">5. Contínuas</a>
+      <a href="formulario.html" class="ativo">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Nesta página</h4>
+  <ol>
+    <li><a href="#f1">Axiomas e eventos</a></li>
+    <li><a href="#f2">Contagem</a></li>
+    <li><a href="#f3">Condicional e Bayes</a></li>
+    <li><a href="#f4">Esperança e variância</a></li>
+    <li><a href="#f5">Distribuições</a></li>
+    <li><a href="#f6">Integrais úteis</a></li>
+    <li><a href="#f7">Tabela da normal</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Material de apoio</p>
+  <h1>Formulário e tabela da normal padrão</h1>
+  <p class="subtitulo">Tudo em uma página só — feita para imprimir e levar para a prova.</p>
+
+  <!-- ================================================== -->
+  <h2 id="f1">Axiomas e álgebra de eventos</h2>
+  <div class="bloco">
+    <p>\(P(A)\ge 0\);&nbsp; \(P(\Omega)=1\);&nbsp;
+    \(P\!\left(\bigcup_i A_i\right)=\sum_i P(A_i)\) para disjuntos.</p>
+    <p>\(P(\varnothing)=0\) &nbsp;·&nbsp; \(P(A^c)=1-P(A)\) &nbsp;·&nbsp;
+    \(A\subseteq B \Rightarrow P(A)\le P(B)\)</p>
+    <p>\(P(A\cup B)=P(A)+P(B)-P(A\cap B)\)</p>
+    <p>\(P(A\cup B\cup C)=\sum P(A_i)-\sum P(A_i\cap A_j)+P(A\cap B\cap C)\)</p>
+    <p>Boole: \(P(\bigcup_i A_i)\le\sum_i P(A_i)\) &nbsp;·&nbsp;
+    De Morgan: \((A\cup B)^c=A^c\cap B^c\)</p>
+    <p>Laplace: \(P(A)=\dfrac{|A|}{|\Omega|}\) &nbsp;·&nbsp;
+    Geométrica: \(P(A)=\dfrac{\mu(A)}{\mu(\Omega)}\)</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f2">Técnicas de contagem</h2>
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Situação</th><th>Ordem</th><th>Repete</th><th>Fórmula</th></tr></thead>
+    <tbody>
+      <tr><td>Permutação simples</td><td>sim</td><td>não</td><td>\(P_n = n!\)</td></tr>
+      <tr><td>Permutação com repetidos</td><td>sim</td><td>—</td><td>\(\dfrac{n!}{n_1!\cdots n_r!}\)</td></tr>
+      <tr><td>Permutação circular</td><td>sim</td><td>não</td><td>\((n-1)!\)</td></tr>
+      <tr><td>Arranjo</td><td>sim</td><td>não</td><td>\(A_{n,k}=\dfrac{n!}{(n-k)!}\)</td></tr>
+      <tr><td>Sequência com repetição</td><td>sim</td><td>sim</td><td>\(n^k\)</td></tr>
+      <tr><td>Combinação</td><td>não</td><td>não</td><td>\(\dbinom{n}{k}=\dfrac{n!}{k!(n-k)!}\)</td></tr>
+      <tr><td>Combinação com repetição</td><td>não</td><td>sim</td><td>\(\dbinom{n+k-1}{k}\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="bloco">
+    <p>\(A_{n,k}=k!\,C_{n,k}\) &nbsp;·&nbsp; \(\dbinom{n}{k}=\dbinom{n}{n-k}\) &nbsp;·&nbsp;
+    \(\dbinom{n}{k}=\dbinom{n-1}{k-1}+\dbinom{n-1}{k}\) &nbsp;·&nbsp;
+    \(\sum_{k=0}^{n}\dbinom{n}{k}=2^n\)</p>
+    <p>Binômio de Newton: \((x+y)^n=\sum_{k=0}^{n}\dbinom{n}{k}x^k y^{n-k}\)</p>
+    <p>Stirling: \(\ln n! \approx n\ln n - n\) &nbsp;·&nbsp;
+    \(n!\approx \sqrt{2\pi n}\,(n/e)^n\)</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f3">Probabilidade condicional e Bayes</h2>
+  <div class="bloco">
+    <p>\(P(A\mid B)=\dfrac{P(A\cap B)}{P(B)}\) &nbsp;·&nbsp;
+    \(P(A\cap B)=P(B)P(A|B)=P(A)P(B|A)\)</p>
+    <p>Independência: \(P(A\cap B)=P(A)P(B) \iff P(A|B)=P(A)\)</p>
+    <p>Probabilidade total: \(P(B)=\sum_i P(A_i)P(B\mid A_i)\) sobre uma partição</p>
+    <p>Bayes: \(P(A_i\mid B)=\dfrac{P(A_i)P(B\mid A_i)}{\sum_j P(A_j)P(B\mid A_j)}\)</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f4">Esperança e variância</h2>
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th></th><th>Discreta</th><th>Contínua</th></tr></thead>
+    <tbody>
+      <tr><td>Normalização</td><td>\(\sum_i P_i = 1\)</td><td>\(\int P(x)dx = 1\)</td></tr>
+      <tr><td>Média</td><td>\(\langle x\rangle=\sum_i x_iP_i\)</td><td>\(\langle x\rangle=\int xP(x)dx\)</td></tr>
+      <tr><td>Função</td><td>\(\langle f\rangle=\sum_i f(x_i)P_i\)</td><td>\(\langle f\rangle=\int f(x)P(x)dx\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="bloco">
+    <p>\(\sigma^2=\langle(x-\langle x\rangle)^2\rangle=\langle x^2\rangle-\langle x\rangle^2\)</p>
+    <p>Transformação linear \(y=ax+b\): &nbsp;
+    \(\langle y\rangle=a\langle x\rangle+b\), &nbsp; \(\sigma_y=|a|\sigma_x\)</p>
+    <p>Independentes: \(\langle uv\rangle=\langle u\rangle\langle v\rangle\)</p>
+    <p>Soma de \(n\) i.i.d.: \(\langle Y\rangle=n\langle X\rangle\), \(\sigma_Y=\sqrt{n}\,\sigma_X\)</p>
+    <p>Média de \(n\) medidas: \(\sigma_{\bar X}=\dfrac{\sigma_X}{\sqrt n}\)</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f5">Distribuições</h2>
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Nome</th><th>Lei</th><th>Média</th><th>Variância</th></tr></thead>
+    <tbody>
+      <tr><td>Bernoulli</td><td>\(P(1)=p,\;P(0)=1-p\)</td><td>\(p\)</td><td>\(p(1-p)\)</td></tr>
+      <tr><td>Binomial</td><td>\(\dbinom{n}{k}p^k(1-p)^{n-k}\)</td><td>\(np\)</td><td>\(np(1-p)\)</td></tr>
+      <tr><td>Poisson</td><td>\(\dfrac{e^{-m}m^x}{x!}\)</td><td>\(m\)</td><td>\(m\)</td></tr>
+      <tr><td>Geométrica</td><td>\((1-p)^{k-1}p\)</td><td>\(1/p\)</td><td>\(\dfrac{1-p}{p^2}\)</td></tr>
+      <tr><td>Uniforme \([a,b]\)</td><td>\(\dfrac{1}{b-a}\)</td><td>\(\dfrac{a+b}{2}\)</td><td>\(\dfrac{(b-a)^2}{12}\)</td></tr>
+      <tr><td>Exponencial</td><td>\(\lambda e^{-\lambda x}\)</td><td>\(1/\lambda\)</td><td>\(1/\lambda^2\)</td></tr>
+      <tr><td>Normal</td><td>\(\dfrac{1}{\sqrt{2\pi\sigma^2}}e^{-(x-\mu)^2/2\sigma^2}\)</td><td>\(\mu\)</td><td>\(\sigma^2\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Aproximações</span>
+    <p>Binomial → Poisson com \(m=np\), quando \(n\gg1\) e \(np\) pequeno;</p>
+    <p>Binomial → Normal \(N(np,\,np(1-p))\), quando \(np(1-p)\gtrsim 9\),
+    com correção de continuidade \(k\pm\tfrac12\);</p>
+    <p>TCL: \(\bar X \sim N(\mu,\sigma^2/n)\) para \(n\) grande, qualquer que seja a origem.</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Padronização</span>
+    <p>\(z=\dfrac{x-\mu}{\sigma}\) &nbsp;·&nbsp; \(\Phi(-z)=1-\Phi(z)\) &nbsp;·&nbsp;
+    \(P(a\le X\le b)=\Phi(z_b)-\Phi(z_a)\)</p>
+    <p>Regra empírica: \(\pm1\sigma\): 68,27% &nbsp;·&nbsp; \(\pm2\sigma\): 95,45%
+    &nbsp;·&nbsp; \(\pm3\sigma\): 99,73%</p>
+    <p>Valores críticos usuais: \(z_{0{,}90}=1{,}282\) &nbsp;·&nbsp;
+    \(z_{0{,}95}=1{,}645\) &nbsp;·&nbsp; \(z_{0{,}975}=1{,}960\) &nbsp;·&nbsp;
+    \(z_{0{,}99}=2{,}326\) &nbsp;·&nbsp; \(z_{0{,}995}=2{,}576\)</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f6">Integrais e somas úteis</h2>
+  <div class="bloco">
+    <p>\(\displaystyle\int_{-\infty}^{\infty} e^{-\alpha x^2}dx=\sqrt{\frac{\pi}{\alpha}}\)
+    &nbsp;·&nbsp;
+    \(\displaystyle\int_{-\infty}^{\infty} x^2 e^{-\alpha x^2}dx=\frac{1}{2\alpha}\sqrt{\frac{\pi}{\alpha}}\)</p>
+    <p>\(\displaystyle\int_0^{\infty} x^n e^{-x/\lambda}dx = n!\,\lambda^{n+1}\)
+    &nbsp;·&nbsp;
+    \(\displaystyle\int_0^{\infty} x^{n}e^{-\alpha x^{2}}dx\) (ímpar \(n\)) \(=\dfrac{((n-1)/2)!}{2\alpha^{(n+1)/2}}\)</p>
+    <p>\(\displaystyle\sum_{x=0}^{\infty}\frac{m^x}{x!}=e^{m}\)
+    &nbsp;·&nbsp;
+    \(\displaystyle\sum_{k=0}^{\infty} r^k=\frac{1}{1-r}\;(|r|<1)\)
+    &nbsp;·&nbsp;
+    \(\displaystyle\sum_{k=1}^{\infty} k\,r^{k-1}=\frac{1}{(1-r)^2}\)</p>
+    <p>Ângulo sólido: \(d\Omega_s=\sin\theta\,d\theta\,d\phi\), total \(4\pi\)</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f7">Tabela da normal padrão acumulada</h2>
+
+  <p>A tabela dá \(\Phi(z)=P(Z\le z)\) para \(Z\sim N(0,1)\). Leia a parte inteira e a primeira
+  decimal de \(z\) na coluna da esquerda e a segunda decimal no topo. Para \(z\) negativo,
+  use \(\Phi(-z)=1-\Phi(z)\).</p>
+
+  <div class="tabela-rolavel" id="tabelaZ">
+  <table>
+<thead><tr><th>z</th><th class="num">0.00</th><th class="num">0.01</th><th class="num">0.02</th><th class="num">0.03</th><th class="num">0.04</th><th class="num">0.05</th><th class="num">0.06</th><th class="num">0.07</th><th class="num">0.08</th><th class="num">0.09</th></tr></thead>
+<tbody>
+<tr><th class="num">0.0</th><td class="num">0.5000</td><td class="num">0.5040</td><td class="num">0.5080</td><td class="num">0.5120</td><td class="num">0.5160</td><td class="num">0.5199</td><td class="num">0.5239</td><td class="num">0.5279</td><td class="num">0.5319</td><td class="num">0.5359</td></tr>
+<tr><th class="num">0.1</th><td class="num">0.5398</td><td class="num">0.5438</td><td class="num">0.5478</td><td class="num">0.5517</td><td class="num">0.5557</td><td class="num">0.5596</td><td class="num">0.5636</td><td class="num">0.5675</td><td class="num">0.5714</td><td class="num">0.5753</td></tr>
+<tr><th class="num">0.2</th><td class="num">0.5793</td><td class="num">0.5832</td><td class="num">0.5871</td><td class="num">0.5910</td><td class="num">0.5948</td><td class="num">0.5987</td><td class="num">0.6026</td><td class="num">0.6064</td><td class="num">0.6103</td><td class="num">0.6141</td></tr>
+<tr><th class="num">0.3</th><td class="num">0.6179</td><td class="num">0.6217</td><td class="num">0.6255</td><td class="num">0.6293</td><td class="num">0.6331</td><td class="num">0.6368</td><td class="num">0.6406</td><td class="num">0.6443</td><td class="num">0.6480</td><td class="num">0.6517</td></tr>
+<tr><th class="num">0.4</th><td class="num">0.6554</td><td class="num">0.6591</td><td class="num">0.6628</td><td class="num">0.6664</td><td class="num">0.6700</td><td class="num">0.6736</td><td class="num">0.6772</td><td class="num">0.6808</td><td class="num">0.6844</td><td class="num">0.6879</td></tr>
+<tr><th class="num">0.5</th><td class="num">0.6915</td><td class="num">0.6950</td><td class="num">0.6985</td><td class="num">0.7019</td><td class="num">0.7054</td><td class="num">0.7088</td><td class="num">0.7123</td><td class="num">0.7157</td><td class="num">0.7190</td><td class="num">0.7224</td></tr>
+<tr><th class="num">0.6</th><td class="num">0.7257</td><td class="num">0.7291</td><td class="num">0.7324</td><td class="num">0.7357</td><td class="num">0.7389</td><td class="num">0.7422</td><td class="num">0.7454</td><td class="num">0.7486</td><td class="num">0.7517</td><td class="num">0.7549</td></tr>
+<tr><th class="num">0.7</th><td class="num">0.7580</td><td class="num">0.7611</td><td class="num">0.7642</td><td class="num">0.7673</td><td class="num">0.7704</td><td class="num">0.7734</td><td class="num">0.7764</td><td class="num">0.7794</td><td class="num">0.7823</td><td class="num">0.7852</td></tr>
+<tr><th class="num">0.8</th><td class="num">0.7881</td><td class="num">0.7910</td><td class="num">0.7939</td><td class="num">0.7967</td><td class="num">0.7995</td><td class="num">0.8023</td><td class="num">0.8051</td><td class="num">0.8078</td><td class="num">0.8106</td><td class="num">0.8133</td></tr>
+<tr><th class="num">0.9</th><td class="num">0.8159</td><td class="num">0.8186</td><td class="num">0.8212</td><td class="num">0.8238</td><td class="num">0.8264</td><td class="num">0.8289</td><td class="num">0.8315</td><td class="num">0.8340</td><td class="num">0.8365</td><td class="num">0.8389</td></tr>
+<tr><th class="num">1.0</th><td class="num">0.8413</td><td class="num">0.8438</td><td class="num">0.8461</td><td class="num">0.8485</td><td class="num">0.8508</td><td class="num">0.8531</td><td class="num">0.8554</td><td class="num">0.8577</td><td class="num">0.8599</td><td class="num">0.8621</td></tr>
+<tr><th class="num">1.1</th><td class="num">0.8643</td><td class="num">0.8665</td><td class="num">0.8686</td><td class="num">0.8708</td><td class="num">0.8729</td><td class="num">0.8749</td><td class="num">0.8770</td><td class="num">0.8790</td><td class="num">0.8810</td><td class="num">0.8830</td></tr>
+<tr><th class="num">1.2</th><td class="num">0.8849</td><td class="num">0.8869</td><td class="num">0.8888</td><td class="num">0.8907</td><td class="num">0.8925</td><td class="num">0.8944</td><td class="num">0.8962</td><td class="num">0.8980</td><td class="num">0.8997</td><td class="num">0.9015</td></tr>
+<tr><th class="num">1.3</th><td class="num">0.9032</td><td class="num">0.9049</td><td class="num">0.9066</td><td class="num">0.9082</td><td class="num">0.9099</td><td class="num">0.9115</td><td class="num">0.9131</td><td class="num">0.9147</td><td class="num">0.9162</td><td class="num">0.9177</td></tr>
+<tr><th class="num">1.4</th><td class="num">0.9192</td><td class="num">0.9207</td><td class="num">0.9222</td><td class="num">0.9236</td><td class="num">0.9251</td><td class="num">0.9265</td><td class="num">0.9279</td><td class="num">0.9292</td><td class="num">0.9306</td><td class="num">0.9319</td></tr>
+<tr><th class="num">1.5</th><td class="num">0.9332</td><td class="num">0.9345</td><td class="num">0.9357</td><td class="num">0.9370</td><td class="num">0.9382</td><td class="num">0.9394</td><td class="num">0.9406</td><td class="num">0.9418</td><td class="num">0.9429</td><td class="num">0.9441</td></tr>
+<tr><th class="num">1.6</th><td class="num">0.9452</td><td class="num">0.9463</td><td class="num">0.9474</td><td class="num">0.9484</td><td class="num">0.9495</td><td class="num">0.9505</td><td class="num">0.9515</td><td class="num">0.9525</td><td class="num">0.9535</td><td class="num">0.9545</td></tr>
+<tr><th class="num">1.7</th><td class="num">0.9554</td><td class="num">0.9564</td><td class="num">0.9573</td><td class="num">0.9582</td><td class="num">0.9591</td><td class="num">0.9599</td><td class="num">0.9608</td><td class="num">0.9616</td><td class="num">0.9625</td><td class="num">0.9633</td></tr>
+<tr><th class="num">1.8</th><td class="num">0.9641</td><td class="num">0.9649</td><td class="num">0.9656</td><td class="num">0.9664</td><td class="num">0.9671</td><td class="num">0.9678</td><td class="num">0.9686</td><td class="num">0.9693</td><td class="num">0.9699</td><td class="num">0.9706</td></tr>
+<tr><th class="num">1.9</th><td class="num">0.9713</td><td class="num">0.9719</td><td class="num">0.9726</td><td class="num">0.9732</td><td class="num">0.9738</td><td class="num">0.9744</td><td class="num">0.9750</td><td class="num">0.9756</td><td class="num">0.9761</td><td class="num">0.9767</td></tr>
+<tr><th class="num">2.0</th><td class="num">0.9772</td><td class="num">0.9778</td><td class="num">0.9783</td><td class="num">0.9788</td><td class="num">0.9793</td><td class="num">0.9798</td><td class="num">0.9803</td><td class="num">0.9808</td><td class="num">0.9812</td><td class="num">0.9817</td></tr>
+<tr><th class="num">2.1</th><td class="num">0.9821</td><td class="num">0.9826</td><td class="num">0.9830</td><td class="num">0.9834</td><td class="num">0.9838</td><td class="num">0.9842</td><td class="num">0.9846</td><td class="num">0.9850</td><td class="num">0.9854</td><td class="num">0.9857</td></tr>
+<tr><th class="num">2.2</th><td class="num">0.9861</td><td class="num">0.9864</td><td class="num">0.9868</td><td class="num">0.9871</td><td class="num">0.9875</td><td class="num">0.9878</td><td class="num">0.9881</td><td class="num">0.9884</td><td class="num">0.9887</td><td class="num">0.9890</td></tr>
+<tr><th class="num">2.3</th><td class="num">0.9893</td><td class="num">0.9896</td><td class="num">0.9898</td><td class="num">0.9901</td><td class="num">0.9904</td><td class="num">0.9906</td><td class="num">0.9909</td><td class="num">0.9911</td><td class="num">0.9913</td><td class="num">0.9916</td></tr>
+<tr><th class="num">2.4</th><td class="num">0.9918</td><td class="num">0.9920</td><td class="num">0.9922</td><td class="num">0.9925</td><td class="num">0.9927</td><td class="num">0.9929</td><td class="num">0.9931</td><td class="num">0.9932</td><td class="num">0.9934</td><td class="num">0.9936</td></tr>
+<tr><th class="num">2.5</th><td class="num">0.9938</td><td class="num">0.9940</td><td class="num">0.9941</td><td class="num">0.9943</td><td class="num">0.9945</td><td class="num">0.9946</td><td class="num">0.9948</td><td class="num">0.9949</td><td class="num">0.9951</td><td class="num">0.9952</td></tr>
+<tr><th class="num">2.6</th><td class="num">0.9953</td><td class="num">0.9955</td><td class="num">0.9956</td><td class="num">0.9957</td><td class="num">0.9959</td><td class="num">0.9960</td><td class="num">0.9961</td><td class="num">0.9962</td><td class="num">0.9963</td><td class="num">0.9964</td></tr>
+<tr><th class="num">2.7</th><td class="num">0.9965</td><td class="num">0.9966</td><td class="num">0.9967</td><td class="num">0.9968</td><td class="num">0.9969</td><td class="num">0.9970</td><td class="num">0.9971</td><td class="num">0.9972</td><td class="num">0.9973</td><td class="num">0.9974</td></tr>
+<tr><th class="num">2.8</th><td class="num">0.9974</td><td class="num">0.9975</td><td class="num">0.9976</td><td class="num">0.9977</td><td class="num">0.9977</td><td class="num">0.9978</td><td class="num">0.9979</td><td class="num">0.9979</td><td class="num">0.9980</td><td class="num">0.9981</td></tr>
+<tr><th class="num">2.9</th><td class="num">0.9981</td><td class="num">0.9982</td><td class="num">0.9982</td><td class="num">0.9983</td><td class="num">0.9984</td><td class="num">0.9984</td><td class="num">0.9985</td><td class="num">0.9985</td><td class="num">0.9986</td><td class="num">0.9986</td></tr>
+<tr><th class="num">3.0</th><td class="num">0.9987</td><td class="num">0.9987</td><td class="num">0.9987</td><td class="num">0.9988</td><td class="num">0.9988</td><td class="num">0.9989</td><td class="num">0.9989</td><td class="num">0.9989</td><td class="num">0.9990</td><td class="num">0.9990</td></tr>
+</tbody>
+  </table>
+  </div>
+
+  <p>Para consultas fora da tabela, use o simulador da normal no
+  <a href="aula05.html#s5">Módulo 5</a>, que calcula \(\Phi(z)\) para qualquer valor.</p>
+
+  <nav class="nav-aulas">
+    <a href="aula05.html"><small>Módulo anterior</small>← 5. Variáveis contínuas</a>
+    <a class="prox" href="index.html"><small>Voltar</small>Página inicial →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js"></script>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 4 — Variáveis aleatórias discretas | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css">
+<script src="assets/js/comum.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <a href="aula01.html">1. Fundamentos</a>
+      <a href="aula02.html">2. Contagem</a>
+      <a href="aula03.html">3. Condicional</a>
+      <a href="aula04.html" class="ativo">4. Discretas</a>
+      <a href="aula05.html">5. Contínuas</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Variáveis aleatórias</a></li>
+    <li><a href="#s2">2. Esperança</a></li>
+    <li><a href="#s3">3. Variância</a></li>
+    <li><a href="#s4">4. Transformação linear</a></li>
+    <li><a href="#s5">5. Somas e independência</a></li>
+    <li><a href="#s6">6. Bernoulli e binomial</a></li>
+    <li><a href="#s7">7. Poisson</a></li>
+    <li><a href="#s8">8. Passeio aleatório</a></li>
+    <li><a href="#s9">9. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 4 · 3 horas</p>
+  <h1>Variáveis aleatórias discretas</h1>
+  <p class="subtitulo">Esperança, variância, Bernoulli, binomial e Poisson — e por que a média salva a Física Estatística.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Definir variável aleatória discreta e sua função de probabilidade;</li>
+      <li>Calcular \(\langle x\rangle\), \(\langle x^2\rangle\) e \(\sigma^2\);</li>
+      <li>Usar a identidade \(\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\);</li>
+      <li>Determinar média e variância sob transformação linear \(y=ax+b\);</li>
+      <li>Mostrar que a soma de \(n\) variáveis independentes tem \(\sigma_Y=\sqrt{n}\,\sigma_X\);</li>
+      <li>Dominar as distribuições de Bernoulli, binomial e Poisson.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Variáveis aleatórias discretas</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Uma <strong>variável aleatória</strong> é uma função \(X : \Omega \to \mathbb{R}\) que
+    associa um número a cada resultado do experimento. Ela é <strong>discreta</strong> quando
+    assume um conjunto finito ou enumerável de valores \(x_1, x_2, \dots\).</p>
+    <p>A <strong>função de probabilidade</strong> é \(P_i = P(X = x_i)\).</p>
+  </div>
+
+  <p>Exemplos: o número obtido num dado (\(1,\dots,6\)); o número de fótons detectados em um
+  segundo (\(0,1,2,\dots\)); o número de spins para cima em um sistema de \(N\) spins.</p>
+
+  <div class="bloco">
+    <span class="rotulo">Condição de normalização</span>
+    <p>\[\sum_i P_i = 1\]</p>
+    <p>Não é uma hipótese nova: é o Axioma 2 escrito para os eventos elementares, que formam
+    uma partição de \(\Omega\).</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Valor médio (esperança)</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definições</span>
+    <p>\[\langle x \rangle = \sum_i x_i P_i, \qquad
+       \langle x^2 \rangle = \sum_i x_i^2 P_i, \qquad
+       \langle f(x) \rangle = \sum_i f(x_i)\,P_i\]</p>
+    <p>Cada valor é ponderado por sua probabilidade. Notações alternativas: \(\bar{x}\) ou
+    \(E(X)\). Preferimos \(\langle x \rangle\), como na Física, porque deixa visualmente clara a
+    diferença entre \(\langle x^2\rangle\) e \(\langle x\rangle^2\) — distinção que será o coração
+    da variância.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O valor médio pode ser impossível</span>
+    <p>A média do número de filhos por família é frequentemente citada como 2,4. Nenhum casal
+    tem 2,4 filhos. O valor esperado não precisa ser um valor possível — ele é um
+    <em>centro de massa</em> da distribuição, não uma previsão.</p>
+  </div>
+
+  <h3>Exercício resolvido 4.1 — Uma distribuição simples</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Seja \(x\) assumindo os valores 0, 1 e 2 com probabilidades \(1/2\), \(1/4\) e \(1/4\).
+    Verifique a normalização e calcule \(\langle x\rangle\), \(\langle x^2\rangle\) e \(\sigma^2\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Normalização:</strong> \(\tfrac12+\tfrac14+\tfrac14 = 1\) ✓</p>
+      <p>\[\langle x\rangle = 0\cdot\tfrac12 + 1\cdot\tfrac14 + 2\cdot\tfrac14 = \tfrac34 = 0{,}75\]</p>
+      <p>\[\langle x^2\rangle = 0\cdot\tfrac12 + 1\cdot\tfrac14 + 4\cdot\tfrac14 = \tfrac54 = 1{,}25\]</p>
+      <p>\[\sigma^2 = \langle x^2\rangle - \langle x\rangle^2 = \frac54 - \frac{9}{16}
+      = \frac{20-9}{16} = \frac{11}{16} = 0{,}6875,
+      \qquad \sigma = \sqrt{11}/4 \approx 0{,}829 .\]</p>
+      <p>Mais uma vez, a média \(3/4\) não é um valor possível. Monte essa distribuição no
+      laboratório abaixo e confira.</p>
+    </div>
+  </details>
+
+  <div data-widget="discreta"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. A variância</h2>
+
+  <p>Como medir a <strong>dispersão</strong> dos valores em torno da média? A primeira ideia
+  seria a média do desvio \(x - \langle x\rangle\) — mas ela é sempre zero:</p>
+  <p>\[\langle x - \langle x\rangle\rangle = \langle x\rangle - \langle x\rangle = 0 .\]</p>
+  <p>Os desvios positivos e negativos se cancelam, por construção. A segunda ideia seria
+  \(|x-\langle x\rangle|\): funciona, mas módulos são desagradáveis em álgebra. A solução
+  definitiva é elevar ao quadrado.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Variância e desvio padrão</span>
+    <p>\[\sigma_x^2 = \big\langle (x - \langle x\rangle)^2 \big\rangle, \qquad
+       \sigma_x = \sqrt{\sigma_x^2}\]</p>
+    <p>O desvio padrão representa a dispersão "raiz quadrada média" (rms) e tem as mesmas
+    unidades de \(x\).</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">A identidade fundamental</span>
+    <p>\[\sigma_x^2 = \langle x^2 - 2x\langle x\rangle + \langle x\rangle^2 \rangle
+    = \langle x^2\rangle - 2\langle x\rangle\langle x\rangle + \langle x\rangle^2
+    = \langle x^2\rangle - \langle x\rangle^2 .\]</p>
+  </div>
+
+  <div class="destaque">
+    \[\boxed{\;\sigma_x^2 = \langle x^2\rangle - \langle x\rangle^2\;}\]
+    A fórmula mais usada de todo o curso.
+  </div>
+
+  <p>Um corolário imediato: como \(\sigma^2 \geq 0\), vale sempre
+  \(\langle x^2\rangle \geq \langle x\rangle^2\), com igualdade apenas se \(x\) é constante.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Transformação linear</h2>
+
+  <p>Seja \(y = ax+b\), com \(a,b\) constantes. Então</p>
+  <p>\[\langle y \rangle = \sum_i (a x_i + b)P_i = a\sum_i x_i P_i + b\sum_i P_i
+  = a\langle x\rangle + b .\]</p>
+
+  <p>Para a variância, calculemos os dois pedaços:</p>
+  <p>\[\langle y^2\rangle = a^2\langle x^2\rangle + 2ab\langle x\rangle + b^2, \qquad
+  \langle y\rangle^2 = a^2\langle x\rangle^2 + 2ab\langle x\rangle + b^2 .\]</p>
+  <p>Subtraindo, os termos em \(b\) se cancelam inteiramente:</p>
+
+  <div class="destaque">
+    \[\sigma_y^2 = a^2\sigma_x^2, \qquad \sigma_y = |a|\,\sigma_x\]
+  </div>
+
+  <p>A variância depende de \(a\) mas <strong>não</strong> de \(b\) — e isso faz todo o sentido:
+  \(b\) desloca a distribuição inteira, sem alterar sua largura.</p>
+
+  <h3>Exercício resolvido 4.2 — Conversão de temperatura</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>A temperatura média de uma cidade em janeiro é 23 °F, com desvio padrão de 9 °F. Converta
+    média e desvio para graus Celsius, usando \(C = \tfrac59(F-32)\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Aqui \(a = 5/9\) e \(b = -160/9\).</p>
+      <p>\[\langle C\rangle = \frac59(23-32) = \frac59(-9) = \mathbf{-5\ ^\circ\mathrm{C}}\]</p>
+      <p>\[\sigma_C = \frac59\,\sigma_F = \frac59 \times 9 = \mathbf{5\ ^\circ\mathrm{C}}\]</p>
+      <p><strong>Erro comum:</strong> aplicar o \(-32\) também ao desvio padrão, obtendo
+      \(\sigma_C = \tfrac59(9-32)\). Desvio padrão não tem "zero de escala" — ele mede uma
+      <em>diferença</em>, e diferenças não enxergam translações.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Somas de variáveis independentes</h2>
+
+  <p>Se \(u\) e \(v\) são independentes, as somas (ou integrais) se separam e</p>
+  <p>\[\langle uv \rangle = \langle u\rangle\langle v\rangle .\]</p>
+
+  <h3>Exercício resolvido 4.3 — Média e variância de uma soma</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Sejam \(X_1,\dots,X_n\) independentes, cada uma com média \(\langle X\rangle\) e variância
+    \(\sigma_X^2\). Seja \(Y = X_1+\cdots+X_n\). Encontre \(\langle Y\rangle\) e \(\sigma_Y^2\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Média.</strong> A esperança é linear, mesmo sem independência:
+      \(\langle Y\rangle = n\langle X\rangle\).</p>
+      <p><strong>Variância.</strong> Expandindo o quadrado,</p>
+      <p>\[\langle Y^2\rangle = \Big\langle \sum_i X_i^2 + \sum_{i\neq j} X_i X_j \Big\rangle .\]</p>
+      <p>Há \(n\) termos do tipo \(\langle X_i^2\rangle = \langle X^2\rangle\) e \(n(n-1)\) termos
+      cruzados \(\langle X_iX_j\rangle\) com \(i\neq j\), cada um valendo \(\langle X\rangle^2\)
+      <em>pela independência</em>. Logo</p>
+      <p>\[\langle Y^2\rangle = n\langle X^2\rangle + n(n-1)\langle X\rangle^2 .\]</p>
+      <p>Como \(\langle Y\rangle^2 = n^2\langle X\rangle^2\),</p>
+      <p>\[\sigma_Y^2 = n\langle X^2\rangle + n(n-1)\langle X\rangle^2 - n^2\langle X\rangle^2
+      = n\big(\langle X^2\rangle - \langle X\rangle^2\big) = n\,\sigma_X^2 .\]</p>
+      <p>Portanto \(\sigma_Y = \sqrt{n}\,\sigma_X\).</p>
+    </div>
+  </details>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Duas consequências que você usará a vida inteira</span>
+    <p><strong>1. Erro de medidas repetidas.</strong> Se medimos \(X\) um total de \(n\) vezes e
+    tiramos a média \(\bar{X} = \tfrac1n\sum X_i\), então pela transformação linear com
+    \(a = 1/n\):</p>
+    <p>\[\sigma_{\bar X} = \frac{1}{n}\,\sigma_Y = \frac{1}{n}\sqrt{n}\,\sigma_X
+    = \frac{\sigma_X}{\sqrt{n}} .\]</p>
+    <p>Fazer 4 medidas e tirar a média reduz o erro aleatório à <strong>metade</strong>. Mas
+    atenção ao preço: para reduzi-lo a um décimo, são necessárias <strong>100</strong> medidas.
+    O \(\sqrt{n}\) é generoso no começo e implacável depois.</p>
+    <p><strong>2. Soma de contribuições microscópicas.</strong> Em física térmica, as grandezas
+    macroscópicas são somas de \(\sim 10^{23}\) contribuições atômicas. A média cresce como
+    \(n\), mas a flutuação só como \(\sqrt{n}\): a <em>largura relativa</em> cai como
+    \(1/\sqrt{n} \sim 10^{-11,5}\). É por isso que a termodinâmica parece determinística,
+    embora seu fundamento seja probabilístico.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Bernoulli e a distribuição binomial</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Ensaio de Bernoulli</span>
+    <p>Um experimento com apenas dois resultados: <strong>sucesso</strong>, com probabilidade
+    \(p\), e <strong>fracasso</strong>, com probabilidade \(q = 1-p\).</p>
+  </div>
+
+  <p>Exemplos: cara ou coroa; um elétron no estado fundamental ou excitado; um paciente que
+  melhora ou não; um spin para cima ou para baixo.</p>
+
+  <p>Definindo \(x = 1\) para sucesso e \(x = 0\) para fracasso:</p>
+  <p>\[\langle x\rangle = 0\cdot(1-p) + 1\cdot p = p, \qquad
+     \langle x^2\rangle = 0^2(1-p) + 1^2 p = p,\]</p>
+  <p>\[\sigma_x^2 = p - p^2 = p(1-p), \qquad \sigma_x = \sqrt{p(1-p)} .\]</p>
+
+  <p>Note que a variância é máxima em \(p = 1/2\) (incerteza máxima) e nula em \(p=0\) ou
+  \(p=1\) (resultado certo).</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Distribuição binomial</span>
+    <p>A probabilidade de obter exatamente \(k\) sucessos em \(n\) ensaios de Bernoulli
+    independentes é</p>
+    <p>\[P(n,k) = \binom{n}{k} p^k (1-p)^{n-k} .\]</p>
+  </div>
+
+  <p><em>Dedução.</em> Uma sequência <em>particular</em> com \(k\) sucessos e \(n-k\) fracassos
+  tem probabilidade \(p^k(1-p)^{n-k}\), pela independência. E há \(\binom{n}{k}\) maneiras de
+  escolher <em>quais</em> ensaios foram os sucessos — exatamente a combinação do Módulo 2.</p>
+
+  <p>A normalização sai do binômio de Newton:
+  \(\sum_{k=0}^n \binom{n}{k}p^k(1-p)^{n-k} = (p+1-p)^n = 1\) ✓</p>
+
+  <div class="bloco">
+    <span class="rotulo">Média e variância</span>
+    <p>Como a binomial é a <strong>soma de \(n\) Bernoullis independentes</strong>, não precisamos
+    de nenhum cálculo novo — basta aplicar o Exercício 4.3:</p>
+    <p>\[\langle k\rangle = np, \qquad \sigma_k^2 = np(1-p), \qquad \sigma_k = \sqrt{np(1-p)} .\]</p>
+    <p>E a <strong>largura fracionária</strong>:</p>
+    <p>\[\frac{\sigma_k}{\langle k\rangle} = \frac{\sqrt{np(1-p)}}{np}
+    = \sqrt{\frac{1-p}{np}} \;\propto\; \frac{1}{\sqrt n}\]</p>
+  </div>
+
+  <div data-widget="binomial"></div>
+
+  <h3>Exercício resolvido 4.4 — Moeda honesta em duas escalas</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Para uma moeda honesta (\(p=1/2\)), calcule o número esperado de caras, o desvio padrão e
+    a largura fracionária, para \(n = 16\) e para \(n = 10^{20}\) lançamentos.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Para \(n = 16\):</strong> \(\langle k\rangle = 8\);
+      \(\sigma_k = \sqrt{16\cdot\tfrac12\cdot\tfrac12} = 2\);
+      largura fracionária \(= 2/8 = \mathbf{25\%}\). Obter 10 caras em 16 lançamentos não
+      surpreende ninguém.</p>
+      <p><strong>Para \(n = 10^{20}\):</strong> \(\langle k\rangle = 5\times10^{19}\);
+      \(\sigma_k = \sqrt{10^{20}/4} = 5\times10^{9}\);
+      largura fracionária \(= 5\times10^9 / 5\times10^{19} = \mathbf{10^{-10}}\).</p>
+      <p>O desvio absoluto é gigantesco — cinco bilhões! — mas <em>relativamente</em> à média é
+      dez ordens de grandeza menor que no caso anterior. Uma fração de caras diferente de 0,5 na
+      décima casa decimal seria espantosa. <strong>É assim que leis determinísticas emergem de
+      fundamentos aleatórios.</strong></p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 4.5 — Controle de qualidade</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um lote tem 5% de peças defeituosas. Retiram-se 20 peças ao acaso. Qual a probabilidade de
+    (a) nenhuma defeituosa; (b) exatamente uma; (c) pelo menos duas?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Modelo binomial com \(n=20\), \(p=0{,}05\).</p>
+      <p><strong>(a)</strong> \(P(0) = \binom{20}{0}(0{,}05)^0(0{,}95)^{20} = (0{,}95)^{20}
+      \approx \mathbf{0{,}3585}\).</p>
+      <p><strong>(b)</strong> \(P(1) = \binom{20}{1}(0{,}05)(0{,}95)^{19}
+      = 20 \times 0{,}05 \times 0{,}3774 \approx \mathbf{0{,}3774}\).</p>
+      <p><strong>(c)</strong> Complementar:
+      \(P(k\geq 2) = 1 - P(0) - P(1) \approx 1 - 0{,}3585 - 0{,}3774 = \mathbf{0{,}2641}\).</p>
+      <p>Como \(np = 1\) é pequeno e \(n\) é grande, a aproximação de Poisson com \(m=1\) é
+      excelente: ela daria \(e^{-1} \approx 0{,}3679\) e \(e^{-1}\approx 0{,}3679\) para (a) e (b).
+      Marque a caixa "Poisson" no simulador acima com \(n=20\) e \(p=0{,}05\) e compare as curvas.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. A distribuição de Poisson</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Uma variável discreta \(x \in \{0,1,2,\dots\}\) é <strong>Poisson distribuída</strong> com
+    parâmetro \(m\) se</p>
+    <p>\[P(x) = \frac{e^{-m}\,m^{x}}{x!}\]</p>
+  </div>
+
+  <p><strong>Normalização:</strong> usando a série da exponencial,
+  \(\sum_{x=0}^{\infty} \frac{m^x}{x!} = e^{m}\), de modo que
+  \(\sum_x P(x) = e^{-m}e^{m} = 1\) ✓</p>
+
+  <p><strong>Média:</strong></p>
+  <p>\[\langle x\rangle = \sum_{x=0}^{\infty} x\,\frac{e^{-m}m^x}{x!}
+  = e^{-m}\sum_{x=1}^{\infty} \frac{m^x}{(x-1)!}
+  = e^{-m}\,m \sum_{x'=0}^{\infty}\frac{m^{x'}}{x'!} = m .\]</p>
+
+  <p>Um cálculo análogo com \(x^2 = x(x-1)+x\) fornece \(\langle x^2\rangle = m^2 + m\), donde</p>
+
+  <div class="destaque">
+    \[\langle x\rangle = m, \qquad \sigma^2 = m, \qquad \sigma = \sqrt{m}\]
+    Na Poisson, <strong>média e variância são iguais</strong>.
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que a Poisson aparece tanto em Física</span>
+    <p>Ela é o limite da binomial quando \(n \to \infty\) e \(p \to 0\) com \(np = m\) fixo: o
+    caso de <strong>eventos raros em muitas oportunidades</strong>. Por isso descreve contagens de
+    decaimentos radioativos, de fótons em um detector, de raios cósmicos, de eventos em um
+    acelerador.</p>
+    <p>A consequência prática é a <strong>estatística de contagem</strong>: se você conta \(N\)
+    eventos, a incerteza é \(\sqrt{N}\), e a incerteza relativa é \(\sqrt{N}/N = 1/\sqrt{N}\).
+    Contar 100 eventos dá 10% de erro; contar 10 000 dá 1%. É a razão pela qual experimentos de
+    contagem exigem tempos de aquisição tão longos.</p>
+  </div>
+
+  <div data-widget="poisson"></div>
+
+  <h3>Exercício resolvido 4.6 — Coices de cavalo no exército prussiano</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>O exemplo clássico de Bortkiewicz (1898): registraram-se as mortes por coice de cavalo em
+    10 corpos do exército prussiano ao longo de 20 anos (200 observações corpo-ano), totalizando
+    122 mortes. Os dados observados foram: 109 corpos-ano com 0 mortes, 65 com 1, 22 com 2, 3 com
+    3 e 1 com 4. Compare com a previsão de Poisson.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>A média observada é \(m = 122/200 = 0{,}61\) morte por corpo-ano. A previsão é
+      \(200 \times P(x)\) com \(P(x) = e^{-0{,}61}(0{,}61)^x/x!\):</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th class="num">Mortes \(x\)</th><th class="num">Observado</th><th class="num">Poisson</th></tr></thead>
+        <tbody>
+          <tr><td class="num">0</td><td class="num">109</td><td class="num">108,7</td></tr>
+          <tr><td class="num">1</td><td class="num">65</td><td class="num">66,3</td></tr>
+          <tr><td class="num">2</td><td class="num">22</td><td class="num">20,2</td></tr>
+          <tr><td class="num">3</td><td class="num">3</td><td class="num">4,1</td></tr>
+          <tr><td class="num">4</td><td class="num">1</td><td class="num">0,6</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>O acordo é notável. A variância observada, \(\approx 0{,}61\), coincide com a média —
+      a assinatura da Poisson. Ajuste \(m = 0{,}61\) no simulador acima e compare o perfil.</p>
+      <p>Este é o exemplo histórico que estabeleceu a Poisson como a distribuição dos eventos
+      raros. Morrer coiceado por um cavalo é improvável para cada soldado, mas há muitos soldados
+      e muitos cavalos — \(n\) grande, \(p\) minúsculo, \(np\) moderado.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. O passeio aleatório</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">O problema</span>
+    <p>Uma partícula dá \(n\) passos de comprimento \(L\), cada um para frente ou para trás com
+    probabilidade \(1/2\). Se \(k\) passos foram para frente, a posição final é</p>
+    <p>\[x = kL - (n-k)L = (2k-n)L .\]</p>
+  </div>
+
+  <p>Como \(k\) é binomial com \(p=1/2\), temos \(\langle k\rangle = n/2\) e \(\sigma_k^2 = n/4\).
+  Aplicando a transformação linear \(x = (2k-n)L\), com \(a = 2L\):</p>
+
+  <p>\[\langle x\rangle = (2\cdot\tfrac{n}{2} - n)L = 0, \qquad
+  \sigma_x^2 = (2L)^2\,\sigma_k^2 = 4L^2 \cdot \frac{n}{4} = nL^2,\qquad
+  \sigma_x = \sqrt{n}\,L .\]</p>
+
+  <div class="destaque">
+    A posição média é <strong>zero</strong>, mas a distância típica cresce como
+    \(\sqrt{n}\,L\) — não como \(n\,L\).
+  </div>
+
+  <div data-widget="passeio"></div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Da caminhada do bêbado à difusão</span>
+    <p>Se cada passo leva um tempo \(\tau\), então após um tempo \(t\) temos \(n = t/\tau\) passos e</p>
+    <p>\[\sigma_x = \sqrt{\frac{t}{\tau}}\,L = \sqrt{\frac{L^2}{\tau}\,t} = \sqrt{2Dt},
+    \qquad D = \frac{L^2}{2\tau}.\]</p>
+    <p>Esta é a <strong>lei da difusão</strong>, e explica por que o cheiro do café atravessa a
+    sala tão devagar apesar de as moléculas se moverem a centenas de metros por segundo: elas não
+    viajam em linha reta, mas aos tropeços, colidindo o tempo todo. Dobrar a distância percorrida
+    exige <strong>quatro vezes</strong> mais tempo.</p>
+  </div>
+
+  <div data-widget="moeda"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Exercícios propostos</h2>
+
+  <ol>
+    <li>Um dado honesto produz os números 1 a 6, cada um com probabilidade \(1/6\). Encontre a
+    média, a variância e o desvio padrão. <em>(Respostas: \(7/2\), \(35/12\), \(\approx 1{,}71\).)</em></li>
+    <li>O peso médio ao nascer no Reino Unido é 3,2 kg com desvio padrão 0,5 kg. Converta ambos
+    para libras, sabendo que 1 kg = 2,2 lb.</li>
+    <li>Mostre, para a distribuição de Poisson, que \(\langle x^2\rangle = m^2 + m\) e conclua
+    que \(\sigma^2 = m\).</li>
+    <li>Prove que, para a binomial, \(\langle k \rangle = np\) diretamente pela soma, usando a
+    identidade \(k\binom{n}{k} = n\binom{n-1}{k-1}\).</li>
+    <li>Na física experimental, mostre que se o erro em uma única medição de \(X\) é \(\Delta\),
+    o erro da média de \(n\) medições é \(\Delta/\sqrt{n}\).</li>
+    <li>Mostre que a binomial pode ser aproximada pela Poisson com média \(np\) quando
+    \(n \gg 1\) e \(np\) permanece pequeno.</li>
+    <li>Defina a função geradora de momentos \(M(t) = \langle e^{tx}\rangle\). Mostre que
+    \(\langle x^n\rangle = M^{(n)}(0)\) e que, para a binomial, \(M(t) = (pe^t + 1 - p)^n\).
+    Derive a média e a variância a partir dela.</li>
+    <li>Um detector registra em média 3 eventos por minuto. Qual a probabilidade de registrar
+    nenhum evento em um minuto? E de registrar mais de 5?</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>\(\langle x\rangle = \sum_i x_i P_i\); \(\;\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\);</li>
+      <li>\(y = ax+b \Rightarrow \langle y\rangle = a\langle x\rangle + b\) e \(\sigma_y = |a|\sigma_x\);</li>
+      <li>Soma de \(n\) independentes: \(\langle Y\rangle = n\langle X\rangle\), \(\sigma_Y = \sqrt{n}\sigma_X\);
+      média de \(n\) medidas: \(\sigma_{\bar X}=\sigma_X/\sqrt{n}\);</li>
+      <li>Bernoulli: \(\langle x\rangle = p\), \(\sigma^2 = p(1-p)\);</li>
+      <li>Binomial: \(P(n,k)=\binom{n}{k}p^k(1-p)^{n-k}\), \(\langle k\rangle = np\), \(\sigma^2=np(1-p)\);</li>
+      <li>Poisson: \(P(x)=e^{-m}m^x/x!\), com \(\langle x\rangle = \sigma^2 = m\);</li>
+      <li>Passeio aleatório: \(\sigma_x=\sqrt{n}L\), base da difusão \(\sigma_x=\sqrt{2Dt}\).</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula03.html"><small>Módulo anterior</small>← 3. Probabilidade condicional</a>
+    <a class="prox" href="aula05.html"><small>Próximo módulo</small>5. Variáveis contínuas →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js"></script>
+</body>
+</html>

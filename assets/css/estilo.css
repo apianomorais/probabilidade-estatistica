@@ -1,0 +1,268 @@
+/* ===================================================================
+   Probabilidade & Estatística — Licenciatura em Física EAD / URCA
+   Folha de estilo única. Sem dependências.
+   =================================================================== */
+
+:root{
+  --azul:#16304f;
+  --azul-claro:#2c5f8d;
+  --azul-pastel:#eaf1f8;
+  --vinho:#8c2f39;
+  --verde:#1f6f54;
+  --ambar:#b5831f;
+  --tinta:#1b1f24;
+  --tinta-suave:#4a5560;
+  --papel:#ffffff;
+  --papel-alt:#f6f7f9;
+  --borda:#d8dee6;
+  --raio:10px;
+  --sombra:0 1px 3px rgba(22,48,79,.10), 0 6px 20px rgba(22,48,79,.06);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:86px}
+body{
+  margin:0;background:var(--papel);color:var(--tinta);
+  font-family:var(--serif);font-size:18px;line-height:1.65;
+  -webkit-text-size-adjust:100%;
+}
+
+/* ---------- Cabeçalho e navegação ---------- */
+.topo{
+  position:sticky;top:0;z-index:50;
+  background:var(--azul);color:#fff;
+  box-shadow:0 2px 10px rgba(0,0,0,.18);
+}
+.topo-interno{
+  max-width:1180px;margin:0 auto;padding:.55rem 1.1rem;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.marca{font-family:var(--sans);font-weight:700;font-size:.95rem;letter-spacing:.02em;
+  color:#fff;text-decoration:none;white-space:nowrap}
+.marca span{opacity:.72;font-weight:400}
+.menu{display:flex;gap:.2rem;flex-wrap:wrap;margin-left:auto;font-family:var(--sans);font-size:.82rem}
+.menu a{
+  color:#dbe6f2;text-decoration:none;padding:.3rem .62rem;border-radius:6px;
+  transition:background .15s,color .15s;
+}
+.menu a:hover{background:rgba(255,255,255,.12);color:#fff}
+.menu a.ativo{background:#fff;color:var(--azul);font-weight:600}
+
+/* ---------- Layout ---------- */
+.envoltorio{max-width:1180px;margin:0 auto;padding:0 1.1rem;display:flex;gap:2.2rem}
+.conteudo{flex:1;min-width:0;padding:1.6rem 0 4rem}
+.lateral{
+  width:234px;flex-shrink:0;position:sticky;top:86px;align-self:flex-start;
+  max-height:calc(100vh - 110px);overflow-y:auto;padding:1.6rem 0;
+  font-family:var(--sans);font-size:.8rem;
+}
+.lateral h4{margin:0 0 .5rem;font-size:.7rem;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--tinta-suave)}
+.lateral ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--borda)}
+.lateral li a{display:block;padding:.3rem .7rem;color:var(--tinta-suave);
+  text-decoration:none;border-left:2px solid transparent;margin-left:-2px}
+.lateral li a:hover{color:var(--azul);background:var(--papel-alt)}
+.lateral li a.ativo{color:var(--azul);border-left-color:var(--azul);font-weight:600}
+
+/* ---------- Tipografia ---------- */
+h1{font-size:2.05rem;line-height:1.2;margin:.2rem 0 .4rem;color:var(--azul);letter-spacing:-.01em}
+h2{font-size:1.5rem;margin:2.6rem 0 .8rem;color:var(--azul);
+   padding-bottom:.3rem;border-bottom:2px solid var(--azul-pastel)}
+h3{font-size:1.16rem;margin:1.7rem 0 .5rem;color:var(--azul-claro)}
+h4{font-size:1rem;margin:1.2rem 0 .4rem}
+p{margin:.7rem 0}
+a{color:var(--azul-claro)}
+ul,ol{padding-left:1.4rem}
+li{margin:.3rem 0}
+code{font-family:var(--mono);font-size:.88em;background:var(--papel-alt);
+  padding:.1em .35em;border-radius:4px}
+.chapeu{font-family:var(--sans);font-size:.74rem;text-transform:uppercase;
+  letter-spacing:.13em;color:var(--vinho);font-weight:600;margin:0}
+.subtitulo{font-size:1.06rem;color:var(--tinta-suave);margin:.2rem 0 1.4rem;font-style:italic}
+.linha{border:0;border-top:1px solid var(--borda);margin:2.6rem 0}
+
+/* ---------- Blocos ---------- */
+.bloco{
+  border:1px solid var(--borda);border-left:4px solid var(--azul-claro);
+  background:var(--papel-alt);border-radius:var(--raio);
+  padding:.9rem 1.15rem;margin:1.2rem 0;
+}
+.bloco>:first-child{margin-top:0}
+.bloco>:last-child{margin-bottom:0}
+.bloco .rotulo{
+  display:block;font-family:var(--sans);font-size:.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.09em;color:var(--azul-claro);margin-bottom:.35rem;
+}
+.bloco.def{border-left-color:var(--azul-claro)}
+.bloco.def .rotulo{color:var(--azul-claro)}
+.bloco.ex{border-left-color:var(--verde);background:#f1f8f5}
+.bloco.ex .rotulo{color:var(--verde)}
+.bloco.alerta{border-left-color:var(--vinho);background:#fdf3f4}
+.bloco.alerta .rotulo{color:var(--vinho)}
+.bloco.fisica{border-left-color:var(--ambar);background:#fdf8ec}
+.bloco.fisica .rotulo{color:var(--ambar)}
+.destaque{
+  background:linear-gradient(0deg,#fff8dd,#fff8dd);border:1px solid #e8d79a;
+  border-radius:var(--raio);padding:.75rem 1.1rem;margin:1.2rem 0;text-align:center;
+}
+
+/* ---------- Solução recolhível ---------- */
+details.solucao{
+  border:1px solid var(--borda);border-radius:var(--raio);
+  margin:.8rem 0;background:var(--papel);overflow:hidden;
+}
+details.solucao>summary{
+  cursor:pointer;padding:.6rem 1rem;font-family:var(--sans);font-size:.85rem;
+  font-weight:600;color:var(--azul);background:var(--azul-pastel);list-style:none;
+  user-select:none;
+}
+details.solucao>summary::-webkit-details-marker{display:none}
+details.solucao>summary::before{content:"▸ ";font-size:.9em}
+details.solucao[open]>summary::before{content:"▾ "}
+details.solucao>summary:hover{background:#dbe7f3}
+.corpo-solucao{padding:.5rem 1.15rem 1rem}
+
+/* ---------- Tabelas ---------- */
+.tabela-rolavel{overflow-x:auto;margin:1.1rem 0}
+table{border-collapse:collapse;width:100%;font-size:.93rem;font-family:var(--sans)}
+th,td{padding:.45rem .7rem;text-align:left;border-bottom:1px solid var(--borda)}
+thead th{border-bottom:2px solid var(--azul);color:var(--azul);font-size:.82rem;
+  text-transform:uppercase;letter-spacing:.04em}
+tbody tr:hover{background:var(--papel-alt)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---------- Widgets ---------- */
+.widget{
+  border:1px solid var(--borda);border-radius:var(--raio);background:var(--papel);
+  box-shadow:var(--sombra);margin:1.6rem 0;overflow:hidden;
+}
+.widget-cabeca{
+  background:var(--azul);color:#fff;padding:.5rem .95rem;
+  font-family:var(--sans);font-size:.82rem;font-weight:600;letter-spacing:.02em;
+  display:flex;align-items:center;gap:.5rem;
+}
+.widget-cabeca::before{content:"◆";opacity:.65;font-size:.7em}
+.widget-corpo{padding:1rem}
+.controles{
+  display:flex;flex-wrap:wrap;gap:.9rem 1.3rem;align-items:flex-end;
+  margin-bottom:.9rem;font-family:var(--sans);font-size:.82rem;
+}
+.campo{display:flex;flex-direction:column;gap:.22rem;min-width:132px;flex:1 1 132px}
+/* sem text-transform: maiúsculas destroem letras gregas (λ→Λ, σ→Σ, μ→Μ) */
+.campo label{font-weight:700;color:var(--tinta-suave);font-size:.76rem;letter-spacing:.02em}
+.campo .valor{color:var(--azul);font-weight:700;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--azul-claro);margin:0}
+input[type=number],input[type=text],select{
+  font-family:var(--sans);font-size:.9rem;padding:.33rem .5rem;
+  border:1px solid var(--borda);border-radius:6px;background:#fff;color:var(--tinta);width:100%;
+}
+input[type=number]:focus,input[type=text]:focus,select:focus{
+  outline:2px solid var(--azul-pastel);border-color:var(--azul-claro)}
+.botoes{display:flex;gap:.5rem;flex-wrap:wrap}
+button{
+  font-family:var(--sans);font-size:.83rem;font-weight:600;
+  padding:.42rem .9rem;border-radius:7px;border:1px solid var(--azul);
+  background:var(--azul);color:#fff;cursor:pointer;transition:background .15s,transform .05s;
+}
+button:hover{background:var(--azul-claro)}
+button:active{transform:translateY(1px)}
+button.sec{background:#fff;color:var(--azul)}
+button.sec:hover{background:var(--azul-pastel)}
+canvas{display:block;width:100%;height:auto;border-radius:6px;background:#fff}
+.saida{
+  font-family:var(--sans);font-size:.88rem;background:var(--azul-pastel);
+  border-radius:var(--raio);padding:.7rem .95rem;margin-top:.9rem;line-height:1.55;
+}
+.saida b{color:var(--azul)}
+.grade-num{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:.6rem;margin-top:.9rem}
+.cartao-num{
+  background:var(--papel-alt);border:1px solid var(--borda);border-radius:8px;
+  padding:.55rem .7rem;text-align:center;font-family:var(--sans);
+}
+.cartao-num .rot{font-size:.7rem;letter-spacing:.01em;font-weight:600;
+  color:var(--tinta-suave);display:block}
+.cartao-num .val{font-size:1.18rem;font-weight:700;color:var(--azul);
+  font-variant-numeric:tabular-nums}
+.legenda{font-family:var(--sans);font-size:.76rem;color:var(--tinta-suave);
+  margin-top:.5rem;text-align:center}
+.lista-rolavel{max-height:190px;overflow-y:auto;background:var(--papel-alt);
+  border:1px solid var(--borda);border-radius:8px;padding:.55rem .7rem;
+  font-family:var(--mono);font-size:.78rem;line-height:1.75;margin-top:.8rem}
+
+/* ---------- Cartões da página inicial ---------- */
+.heroi{
+  background:linear-gradient(135deg,var(--azul),var(--azul-claro));
+  color:#fff;border-radius:14px;padding:2.2rem 1.9rem;margin:1.6rem 0 2.2rem;
+}
+.heroi h1{color:#fff;margin:0 0 .5rem}
+/* a logo tem letras pretas: vai sobre uma placa branca no fundo azul */
+.placa-logo{
+  display:inline-block;background:#fff;border-radius:10px;
+  padding:.7rem 1rem;margin-bottom:1.3rem;line-height:0;
+  box-shadow:0 2px 12px rgba(0,0,0,.18);
+}
+.placa-logo img{height:46px;width:auto;display:block}
+@media (max-width:620px){.placa-logo img{height:34px}}
+.rodape img.logo-rodape{height:38px;width:auto;margin-bottom:.7rem;opacity:.9}
+.heroi p{margin:.3rem 0;opacity:.93}
+.heroi .meta{font-family:var(--sans);font-size:.82rem;opacity:.8;margin-top:1rem}
+.cartoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:1.1rem;margin:1.4rem 0}
+.cartao{
+  border:1px solid var(--borda);border-radius:12px;padding:1.15rem;
+  background:var(--papel);box-shadow:var(--sombra);text-decoration:none;color:inherit;
+  display:block;transition:transform .14s,box-shadow .14s,border-color .14s;
+}
+.cartao:hover{transform:translateY(-3px);border-color:var(--azul-claro);
+  box-shadow:0 8px 26px rgba(22,48,79,.14)}
+.cartao .numero{font-family:var(--sans);font-size:.68rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--vinho)}
+.cartao h3{margin:.25rem 0 .4rem;font-size:1.1rem;color:var(--azul)}
+.cartao p{font-size:.9rem;color:var(--tinta-suave);margin:0 0 .6rem}
+.etiquetas{display:flex;flex-wrap:wrap;gap:.3rem}
+.etiqueta{font-family:var(--sans);font-size:.67rem;background:var(--azul-pastel);
+  color:var(--azul);padding:.13rem .45rem;border-radius:20px}
+
+/* ---------- Rodapé e navegação inferior ---------- */
+.nav-aulas{display:flex;justify-content:space-between;gap:1rem;margin:3rem 0 0;
+  font-family:var(--sans);font-size:.86rem}
+.nav-aulas a{
+  flex:1;padding:.8rem 1rem;border:1px solid var(--borda);border-radius:var(--raio);
+  text-decoration:none;color:var(--azul);background:var(--papel-alt);transition:background .15s}
+.nav-aulas a:hover{background:var(--azul-pastel)}
+.nav-aulas a.prox{text-align:right}
+.nav-aulas small{display:block;color:var(--tinta-suave);font-size:.72rem;
+  text-transform:uppercase;letter-spacing:.07em}
+.rodape{
+  border-top:1px solid var(--borda);margin-top:3rem;padding:1.6rem 1.1rem 2.4rem;
+  font-family:var(--sans);font-size:.8rem;color:var(--tinta-suave);text-align:center;
+}
+.rodape a{color:var(--azul-claro)}
+
+/* ---------- Responsivo ---------- */
+@media (max-width:980px){
+  .lateral{display:none}
+  .envoltorio{gap:0}
+}
+@media (max-width:620px){
+  body{font-size:17px}
+  h1{font-size:1.7rem}
+  h2{font-size:1.3rem}
+  .heroi{padding:1.6rem 1.2rem}
+  .topo-interno{padding:.5rem .8rem}
+  .menu{font-size:.76rem;width:100%;margin-left:0}
+  .nav-aulas{flex-direction:column}
+  .campo{min-width:100%;flex-basis:100%}
+}
+
+/* ---------- Impressão ---------- */
+@media print{
+  .topo,.lateral,.nav-aulas,.rodape,.botoes{display:none}
+  .widget{break-inside:avoid;box-shadow:none}
+  details.solucao{border:none}
+  details.solucao>summary{display:none}
+  details.solucao .corpo-solucao{padding:0}
+  body{font-size:11pt}
+}

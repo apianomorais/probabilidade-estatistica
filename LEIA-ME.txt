@@ -1,0 +1,114 @@
+SITE: PROBABILIDADE & ESTATISTICA — Licenciatura em Fisica EAD / URCA
+Prof. Apiano Morais — LFCA — apiano.morais@urca.br
+
+-----------------------------------------------------------------
+1. ONDE PUBLICAR
+-----------------------------------------------------------------
+O site e estatico (so HTML, CSS e JavaScript), entao roda em
+qualquer hospedagem. Duas opcoes:
+
+--- OPCAO A: GITHUB PAGES (gratuito, recomendado) ---------------
+
+A pasta ja vem preparada como repositorio Git, com o primeiro
+commit feito. Falta so enviar.
+
+1. Crie um repositorio PUBLICO e VAZIO no GitHub
+   (sem README, sem .gitignore, sem licenca)
+2. Nesta pasta, rode os comandos que o GitHub mostra na tela:
+
+       git remote add origin https://github.com/USUARIO/REPO.git
+       git push -u origin main
+
+3. No repositorio: Settings > Pages
+   Source: "Deploy from a branch"
+   Branch: main        Pasta: / (root)
+4. Aguarde 1 a 2 minutos. O endereco aparece na propria tela,
+   no formato https://USUARIO.github.io/REPO/
+
+Para atualizar o site depois de editar qualquer arquivo:
+
+       git add -A
+       git commit -m "descricao da mudanca"
+       git push
+
+Vantagens: gratuito, historico de versoes, e os alunos podem
+abrir "issues" apontando erros no material.
+
+--- OPCAO B: GODADDY (ou outra hospedagem tradicional) ----------
+
+Envie TODO o conteudo desta pasta para a pasta publica do seu
+dominio, normalmente chamada public_html/.
+
+(a) Gerenciador de Arquivos do cPanel
+    - cPanel > Gerenciador de Arquivos > public_html
+    - "Carregar" e envie o site-probabilidade.zip
+    - Botao direito no zip > Extrair; apague o zip depois
+
+(b) FTP (FileZilla ou similar)
+    - Host, usuario e senha no painel do GoDaddy, em
+      "Hospedagem > Gerenciar > FTP"
+    - Arraste index.html, as paginas aulaXX.html, formulario.html
+      e a pasta assets/ inteira para public_html/
+
+A pagina inicial e o index.html — nao renomeie esse arquivo.
+Como todos os links sao relativos, o site funciona tambem em um
+subdiretorio (ex.: .../probabilidade/).
+
+-----------------------------------------------------------------
+2. ESTRUTURA DOS ARQUIVOS
+-----------------------------------------------------------------
+index.html .............. pagina inicial, mapa do curso
+aula01.html ............. Modulo 1 — espaco amostral, eventos, axiomas
+aula02.html ............. Modulo 2 — tecnicas de contagem
+aula03.html ............. Modulo 3 — probabilidade condicional e Bayes
+aula04.html ............. Modulo 4 — variaveis discretas
+aula05.html ............. Modulo 5 — variaveis continuas e Normal
+formulario.html ......... formulario completo + tabela z (imprimivel)
+assets/css/estilo.css ... toda a aparencia do site
+assets/js/comum.js ...... matematica, graficos, configuracao do MathJax
+assets/js/widgets.js .... os 13 simuladores interativos
+assets/img/logo-lfca.png  logo do LFCA
+assets/img/favicon.png .. icone da aba do navegador
+README.md ............... apresentacao do repositorio no GitHub
+.nojekyll ............... desliga o Jekyll no GitHub Pages
+
+-----------------------------------------------------------------
+3. A LOGO
+-----------------------------------------------------------------
+A logo do LFCA ja esta instalada em assets/img/logo-lfca.png.
+
+Ela aparece em dois lugares:
+  - no bloco azul da pagina inicial, sobre uma placa branca
+    (as letras "URCA" sao pretas e sumiriam no fundo azul);
+  - no rodape de todas as paginas, direto sobre o fundo branco.
+
+O pato foi recortado da logo e usado como icone da aba do
+navegador: assets/img/favicon.png
+
+Se um dia voce tiver a versao em SVG, substitua o PNG e troque a
+extensao nas referencias (uma em index.html, uma no rodape de cada
+pagina, uma no <link rel="icon"> de cada pagina).
+
+Se precisar de uma versao da logo com letras claras para fundos
+escuros, da para dispensar a placa branca e usar a logo direto
+sobre o azul — avise que eu ajusto o CSS.
+
+-----------------------------------------------------------------
+4. OBSERVACOES TECNICAS
+-----------------------------------------------------------------
+- Site totalmente estatico: nao precisa de PHP, banco de dados nem
+  qualquer configuracao no servidor.
+- As formulas sao renderizadas pelo MathJax, carregado do CDN
+  jsdelivr. O computador do aluno precisa de internet (o que ja e
+  o caso, para acessar o site).
+- Os simuladores rodam no navegador do aluno, em JavaScript puro,
+  sem bibliotecas externas. Funcionam em celular.
+- Cada pagina tem folha de estilo de impressao: ao imprimir ou
+  salvar em PDF, menu e botoes somem e as solucoes dos exercicios
+  aparecem abertas. Util para gerar apostilas.
+- Para adicionar um simulador em qualquer lugar do texto, basta
+  inserir no HTML:
+      <div data-widget="NOME"></div>
+  Nomes disponiveis: dados2, eventos, encontro, contagem, bayes,
+  discreta, binomial, poisson, normal, tcl, passeio, moeda,
+  exponencial.

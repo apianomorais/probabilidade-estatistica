@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 3 — Probabilidade condicional e Bayes | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css">
+<script src="assets/js/comum.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <a href="aula01.html">1. Fundamentos</a>
+      <a href="aula02.html">2. Contagem</a>
+      <a href="aula03.html" class="ativo">3. Condicional</a>
+      <a href="aula04.html">4. Discretas</a>
+      <a href="aula05.html">5. Contínuas</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Informação parcial</a></li>
+    <li><a href="#s2">2. Definição e regra do produto</a></li>
+    <li><a href="#s3">3. Independência</a></li>
+    <li><a href="#s4">4. Probabilidade total</a></li>
+    <li><a href="#s5">5. Teorema de Bayes</a></li>
+    <li><a href="#s6">6. A armadilha do teste</a></li>
+    <li><a href="#s7">7. Monty Hall</a></li>
+    <li><a href="#s8">8. Aplicações em Física</a></li>
+    <li><a href="#s9">9. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 3 · 3 horas</p>
+  <h1>Probabilidade condicional e o teorema de Bayes</h1>
+  <p class="subtitulo">Como a informação nova reorganiza o espaço amostral.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Interpretar \(P(A|B)\) como a restrição do espaço amostral a \(B\);</li>
+      <li>Aplicar a regra do produto e construir árvores de probabilidade;</li>
+      <li>Distinguir eventos <strong>independentes</strong> de <strong>mutuamente exclusivos</strong>;</li>
+      <li>Usar o teorema da probabilidade total com uma partição de \(\Omega\);</li>
+      <li>Aplicar o teorema de Bayes e interpretar o resultado em frequências naturais;</li>
+      <li>Reconhecer a falácia da taxa-base em situações reais.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Informação parcial muda tudo</h2>
+
+  <p>Lanço um dado honesto e pergunto: qual a probabilidade de ter saído 2? Você responde
+  \(1/6\). Agora eu olho o resultado e digo: <em>"saiu um número par"</em>. A pergunta é a
+  mesma, mas a resposta não pode mais ser \(1/6\).</p>
+
+  <p>Com a informação de que saiu par, o espaço amostral efetivo encolheu de
+  \(\{1,2,3,4,5,6\}\) para \(\{2,4,6\}\). Dentro desse novo universo, os três resultados
+  continuam igualmente prováveis, e</p>
+
+  <p>\[P(\text{sair }2 \mid \text{par}) = \frac{1}{3}.\]</p>
+
+  <div class="destaque">
+    Condicionar não é um novo axioma: é <strong>reinterpretar \(B\) como o novo \(\Omega\)</strong>,
+    renormalizando as probabilidades para que somem 1 de novo.
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Definição e regra do produto</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Dados dois eventos \(A\) e \(B\), com \(P(B)>0\), a <strong>probabilidade condicional</strong>
+    de \(A\) dado \(B\) é</p>
+    <p>\[P(A\mid B) = \frac{P(A \cap B)}{P(B)}.\]</p>
+  </div>
+
+  <p>O numerador restringe a atenção à parte de \(A\) que sobrevive dentro de \(B\); o
+  denominador renormaliza, para que \(P(B\mid B)=1\). Vale verificar que \(P(\cdot\mid B)\)
+  satisfaz os três axiomas de Kolmogorov — ou seja, é uma medida de probabilidade legítima sobre
+  \(\Omega\), apenas concentrada em \(B\).</p>
+
+  <div class="bloco">
+    <span class="rotulo">Regra do produto</span>
+    <p>Reescrevendo a definição:</p>
+    <p>\[P(A \cap B) = P(B)\,P(A\mid B) = P(A)\,P(B\mid A).\]</p>
+    <p>Para três eventos, encadeando:</p>
+    <p>\[P(A\cap B\cap C) = P(A)\,P(B\mid A)\,P(C \mid A\cap B).\]</p>
+    <p>É essa cadeia que percorremos ao descer os galhos de uma <strong>árvore de probabilidade</strong>:
+    multiplicam-se as probabilidades ao longo do caminho.</p>
+  </div>
+
+  <h3>Exercício resolvido 3.1 — Extração sem reposição</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Uma urna contém 5 bolas brancas e 3 pretas. Retiram-se duas bolas, sem reposição.
+    Qual a probabilidade de: (a) ambas brancas; (b) a segunda ser branca; (c) a primeira ter sido
+    branca, <em>sabendo</em> que a segunda foi branca?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Seja \(B_i\) o evento "a \(i\)-ésima bola é branca".</p>
+      <p><strong>(a)</strong> Pela regra do produto:</p>
+      <p>\[P(B_1\cap B_2) = P(B_1)P(B_2\mid B_1) = \frac58 \cdot \frac47 = \frac{20}{56}
+      = \frac{5}{14} \approx 0{,}357.\]</p>
+      <p><strong>(b)</strong> Decomponha conforme a primeira bola (probabilidade total):</p>
+      <p>\[P(B_2) = P(B_1)P(B_2|B_1) + P(B_1^c)P(B_2|B_1^c)
+      = \frac58\cdot\frac47 + \frac38\cdot\frac57 = \frac{20+15}{56} = \frac{35}{56} = \frac58 .\]</p>
+      <p>Resultado notável: \(P(B_2) = P(B_1) = 5/8\). <strong>Sem informação sobre a primeira
+      extração, a segunda bola tem exatamente a mesma chance da primeira</strong> — por simetria,
+      nenhuma posição é privilegiada. É o argumento que justifica que a ordem do sorteio não
+      favorece ninguém.</p>
+      <p><strong>(c)</strong> Agora invertemos o condicionamento:</p>
+      <p>\[P(B_1\mid B_2) = \frac{P(B_1\cap B_2)}{P(B_2)} = \frac{5/14}{5/8}
+      = \frac{5}{14}\cdot\frac{8}{5} = \frac{4}{7} \approx 0{,}571 .\]</p>
+      <p>Saber que a segunda foi branca <em>diminui</em> a chance de a primeira ter sido branca
+      (de \(5/8=0{,}625\) para \(4/7\approx0{,}571\)) — afinal, uma branca já foi consumida.
+      Note que a informação flui "para trás no tempo": condicionar não respeita causalidade.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Independência</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Dois eventos \(A\) e \(B\) são <strong>independentes</strong> quando</p>
+    <p>\[P(A \cap B) = P(A)\,P(B),\]</p>
+    <p>o que equivale (se \(P(B)>0\)) a \(P(A\mid B)=P(A)\): saber que \(B\) ocorreu não altera a
+    avaliação de \(A\).</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Erro clássico: independente ≠ mutuamente exclusivo</span>
+    <p>São conceitos <strong>opostos</strong>, não sinônimos. Se \(A\) e \(B\) são mutuamente
+    exclusivos e ambos têm probabilidade positiva, saber que \(A\) ocorreu informa que \(B\)
+    <em>não</em> ocorreu — a dependência é máxima:</p>
+    <p>\[P(A\cap B) = 0 \neq P(A)P(B) > 0 .\]</p>
+    <p>Exclusividade mútua é uma afirmação sobre a <em>geometria</em> dos conjuntos; independência
+    é uma afirmação sobre as <em>probabilidades</em>.</p>
+  </div>
+
+  <p>Para \(n\) eventos, a independência <strong>mútua</strong> exige que a fatoração valha para
+  toda subfamília, não apenas para os pares. É possível ter três eventos dois a dois
+  independentes sem que sejam mutuamente independentes.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Teorema da probabilidade total</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Enunciado</span>
+    <p>Seja \(\{A_1,\dots,A_n\}\) uma <strong>partição</strong> de \(\Omega\) (eventos disjuntos
+    cuja união é \(\Omega\)), com \(P(A_i)>0\). Então, para qualquer evento \(B\):</p>
+    <p>\[P(B) = \sum_{i=1}^{n} P(A_i)\,P(B\mid A_i).\]</p>
+  </div>
+
+  <p><em>Demonstração.</em> Os conjuntos \(B\cap A_i\) são disjuntos e sua união é \(B\), pois a
+  partição cobre todo \(\Omega\). Pela aditividade (Axioma 3),
+  \(P(B)=\sum_i P(B\cap A_i)\); aplicando a regra do produto a cada termo, chega-se ao resultado. ∎</p>
+
+  <p>A leitura é intuitiva: para achar a probabilidade de \(B\), divida o mundo em cenários
+  possíveis, calcule a probabilidade de \(B\) <em>dentro de cada cenário</em>, e faça a média
+  <strong>ponderada pela probabilidade de cada cenário</strong>. Foi exatamente o que fizemos no
+  item (b) do Exercício 3.1.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. O teorema de Bayes</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Teorema (Bayes, 1763)</span>
+    <p>\[P(A_i \mid B) = \frac{P(A_i)\,P(B\mid A_i)}{P(B)}
+    = \frac{P(A_i)\,P(B\mid A_i)}{\sum_{j} P(A_j)\,P(B\mid A_j)}.\]</p>
+  </div>
+
+  <p><em>Demonstração.</em> Escreva \(P(A_i\cap B)\) das duas maneiras possíveis pela regra do
+  produto: \(P(B)P(A_i|B) = P(A_i)P(B|A_i)\). Isolando \(P(A_i|B)\) e expandindo \(P(B)\) pelo
+  teorema da probabilidade total, obtém-se o enunciado. ∎</p>
+
+  <div class="bloco">
+    <span class="rotulo">O vocabulário bayesiano</span>
+    <ul>
+      <li>\(P(A_i)\) — <strong>probabilidade a priori</strong>: o que eu acreditava antes do dado;</li>
+      <li>\(P(B\mid A_i)\) — <strong>verossimilhança</strong>: quão bem a hipótese \(A_i\) explica
+      a observação \(B\);</li>
+      <li>\(P(A_i \mid B)\) — <strong>probabilidade a posteriori</strong>: a crença revisada;</li>
+      <li>\(P(B)\) — <strong>evidência</strong>: apenas o fator de normalização.</li>
+    </ul>
+    <p>Bayes é, portanto, a <strong>regra de atualização de crenças diante de evidência</strong>.
+    É a espinha dorsal da análise de dados em Física moderna — da detecção de ondas
+    gravitacionais ao ajuste de parâmetros cosmológicos.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A assimetria fundamental</span>
+    <p>\(P(A\mid B)\) e \(P(B\mid A)\) são coisas <strong>diferentes</strong>. Confundi-las é a
+    "falácia da transposição do condicional". A probabilidade de ter quatro patas dado que é um
+    cachorro é ≈ 1; a probabilidade de ser um cachorro dado que tem quatro patas é bem menor.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. A armadilha do teste diagnóstico</h2>
+
+  <h3>Exercício resolvido 3.2 — Um teste muito bom, um resultado inútil</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Uma doença atinge 1% da população. Um teste detecta a doença em 99% dos doentes
+    (sensibilidade) e dá resultado negativo em 95% dos saudáveis (especificidade). Você testa
+    positivo. Qual a probabilidade de você estar realmente doente?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Sejam \(D\) = "ter a doença" e \(+\) = "testar positivo". Os dados são
+      \(P(D)=0{,}01\), \(P(+|D)=0{,}99\) e \(P(-|D^c)=0{,}95\), donde \(P(+|D^c)=0{,}05\).</p>
+      <p><strong>Probabilidade total:</strong></p>
+      <p>\[P(+) = P(D)P(+|D) + P(D^c)P(+|D^c) = (0{,}01)(0{,}99) + (0{,}99)(0{,}05)
+      = 0{,}0099 + 0{,}0495 = 0{,}0594 .\]</p>
+      <p><strong>Bayes:</strong></p>
+      <p>\[P(D\mid +) = \frac{0{,}0099}{0{,}0594} \approx \mathbf{0{,}167} = 16{,}7\%.\]</p>
+      <p>Apesar de um teste com 99% de sensibilidade, <strong>cinco em cada seis positivos são
+      falsos alarmes</strong>. A maioria das pessoas — e, em estudos conhecidos, a maioria dos
+      médicos — chuta algo próximo de 95%.</p>
+      <p><strong>Por que a intuição falha:</strong> os saudáveis são 99 vezes mais numerosos.
+      Mesmo uma taxa pequena de erro aplicada a um grupo enorme produz mais falsos positivos
+      do que o grupo pequeno de doentes produz verdadeiros positivos. Isso se chama
+      <strong>falácia da taxa-base</strong>: ignorar \(P(D)\), a prevalência.</p>
+      <p><strong>Em frequências naturais</strong> (muito mais fácil de pensar), em 10 000 pessoas:
+      100 têm a doença e 99 delas testam positivo; das 9 900 saudáveis, 495 testam positivo por
+      engano. Total de positivos: 594, dos quais 99 são reais → \(99/594 \approx 16{,}7\%\).</p>
+    </div>
+  </details>
+
+  <div data-widget="bayes"></div>
+
+  <p>Experimente no simulador: aumente a prevalência para 10% e veja o valor preditivo saltar.
+  Depois reduza-a para 0,1%, como numa triagem populacional de doença rara — o teste praticamente
+  perde utilidade individual. <strong>A qualidade do teste não mudou; o que mudou foi o
+  contexto.</strong> É por isso que não se faz rastreio universal para doenças muito raras.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. O problema de Monty Hall</h2>
+
+  <h3>Exercício resolvido 3.3</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Em um programa de TV há três portas. Atrás de uma há um carro; atrás das outras duas,
+    cabras. Você escolhe a porta 1. O apresentador, que <strong>sabe onde está o carro</strong>,
+    abre a porta 3, revelando uma cabra, e oferece a você a chance de trocar para a porta 2.
+    Você deve trocar?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Sim — trocar dobra a probabilidade de ganhar, de 1/3 para 2/3.</strong></p>
+      <p>Seja \(C_i\) = "o carro está na porta \(i\)" (cada um com probabilidade a priori 1/3) e
+      \(M_3\) = "o apresentador abre a porta 3". Calculemos as verossimilhanças:</p>
+      <ul>
+        <li>\(P(M_3 \mid C_1) = 1/2\) — o carro está na sua porta, e ele pode abrir a 2 ou a 3,
+        à vontade;</li>
+        <li>\(P(M_3 \mid C_2) = 1\) — o carro está na 2, ele não pode abrir a sua (1) nem a do
+        carro (2), logo é obrigado a abrir a 3;</li>
+        <li>\(P(M_3 \mid C_3) = 0\) — ele jamais revela o carro.</li>
+      </ul>
+      <p>Pela probabilidade total,
+      \(P(M_3) = \tfrac13\cdot\tfrac12 + \tfrac13\cdot 1 + \tfrac13\cdot 0 = \tfrac12\). Então:</p>
+      <p>\[P(C_1 \mid M_3) = \frac{(1/3)(1/2)}{1/2} = \frac13, \qquad
+         P(C_2 \mid M_3) = \frac{(1/3)(1)}{1/2} = \frac23 .\]</p>
+      <p><strong>A chave é a assimetria das verossimilhanças.</strong> A ação do apresentador é
+      informativa justamente porque ele <em>não</em> escolhe ao acaso: ele é obrigado a desviar
+      do carro. Toda a probabilidade das portas que você não escolheu se concentra na porta que
+      sobrou.</p>
+      <p><strong>Teste decisivo:</strong> se o apresentador abrisse uma porta <em>ao acaso</em> e
+      por sorte saísse cabra, teríamos \(P(M_3|C_2)=1/2\) também — e aí trocar seria indiferente,
+      com 1/2 para cada porta. O mesmo evento observado, gerado por um mecanismo diferente, carrega
+      informação diferente. <em>O que importa não é só o que você viu, mas como aquilo veio a ser
+      mostrado.</em></p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Aplicações em Física</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Decaimento radioativo e a ausência de memória</span>
+    <p>Vimos no Módulo 1 que a probabilidade de um núcleo sobreviver até \(t\) é
+    \(S(t)=e^{-\lambda t}\). Qual a probabilidade de sobreviver mais um tempo \(s\),
+    <em>dado</em> que já sobreviveu até \(t\)?</p>
+    <p>\[P(T > t+s \mid T>t) = \frac{P(T>t+s)}{P(T>t)}
+    = \frac{e^{-\lambda(t+s)}}{e^{-\lambda t}} = e^{-\lambda s} = P(T>s).\]</p>
+    <p>O resultado <strong>não depende de \(t\)</strong>. Um núcleo que já existe há mil anos tem
+    exatamente a mesma perspectiva de futuro que um recém-formado. Essa é a propriedade de
+    <strong>ausência de memória</strong>, e a exponencial é a única distribuição contínua que a
+    possui. Núcleos não envelhecem.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Detecção de partículas e a razão sinal-ruído</span>
+    <p>Um detector registra um evento candidato a uma partícula rara. Seja \(S\) a hipótese
+    "sinal" e \(R\) "ruído de fundo". Por Bayes,</p>
+    <p>\[\frac{P(S\mid \text{dado})}{P(R\mid \text{dado})}
+    = \underbrace{\frac{P(S)}{P(R)}}_{\text{razão a priori}} \times
+      \underbrace{\frac{P(\text{dado}\mid S)}{P(\text{dado}\mid R)}}_{\text{fator de Bayes}} .\]</p>
+    <p>É a mesma estrutura do teste diagnóstico: se o processo buscado é raríssimo (razão a
+    priori minúscula), é preciso um fator de Bayes gigantesco para reivindicar descoberta. Daí a
+    exigência de \(5\sigma\) na Física de partículas — é a taxa-base cobrando seu preço.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Exercícios propostos</h2>
+
+  <ol>
+    <li>Num dado honesto, sejam \(A\) = "sair número par" e \(B\) = "sair número maior que 3".
+    Calcule \(P(A|B)\) e \(P(B|A)\), e verifique se \(A\) e \(B\) são independentes.</li>
+    <li>Duas cartas são retiradas de um baralho sem reposição. Qual a probabilidade de ambas
+    serem ases? E de a segunda ser ás?</li>
+    <li>Prove que, se \(A\) e \(B\) são independentes, então \(A\) e \(B^c\) também são.</li>
+    <li>Três fábricas produzem 50%, 30% e 20% das lâmpadas de um estoque, com taxas de defeito
+    de 1%, 2% e 4%. Uma lâmpada é sorteada e está defeituosa. Qual a probabilidade de ter vindo
+    da terceira fábrica?</li>
+    <li>Em uma turma, 60% dos estudantes passam em Cálculo, 70% em Física e 50% em ambas. Os
+    eventos são independentes? Calcule \(P(\text{Cálculo} \mid \text{Física})\).</li>
+    <li>Um núcleo com meia-vida \(t_{1/2}\) sobreviveu à primeira meia-vida. Qual a probabilidade
+    de decair durante a segunda? <em>(Compare com a resposta "ingênua" e explique.)</em></li>
+    <li>Mostre que, se \(\{A_1,A_2,A_3\}\) é uma partição de \(\Omega\), então
+    \(\sum_i P(A_i\mid B) = 1\) para qualquer \(B\) com \(P(B)>0\).</li>
+    <li>Um teste tem sensibilidade 95% e especificidade 90%. Para que prevalência o valor
+    preditivo positivo atinge 50%? <em>(Use o simulador para estimar e depois resolva
+    algebricamente.)</em></li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>\(P(A|B) = P(A\cap B)/P(B)\) — restringir e renormalizar;</li>
+      <li>Regra do produto: \(P(A\cap B)=P(B)P(A|B)=P(A)P(B|A)\);</li>
+      <li>Independência: \(P(A\cap B)=P(A)P(B)\) — não confundir com exclusividade mútua;</li>
+      <li>Probabilidade total: \(P(B)=\sum_i P(A_i)P(B|A_i)\) sobre uma partição;</li>
+      <li>Bayes: a posteriori ∝ a priori × verossimilhança;</li>
+      <li>A taxa-base domina quando o evento buscado é raro.</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula02.html"><small>Módulo anterior</small>← 2. Técnicas de contagem</a>
+    <a class="prox" href="aula04.html"><small>Próximo módulo</small>4. Variáveis discretas →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js"></script>
+</body>
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 1 — Espaço amostral, eventos e axiomas | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css">
+<script src="assets/js/comum.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <a href="aula01.html" class="ativo">1. Fundamentos</a>
+      <a href="aula02.html">2. Contagem</a>
+      <a href="aula03.html">3. Condicional</a>
+      <a href="aula04.html">4. Discretas</a>
+      <a href="aula05.html">5. Contínuas</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Experimentos aleatórios</a></li>
+    <li><a href="#s2">2. Espaço amostral</a></li>
+    <li><a href="#s3">3. Álgebra de eventos</a></li>
+    <li><a href="#s4">4. Axiomas de Kolmogorov</a></li>
+    <li><a href="#s5">5. Consequências dos axiomas</a></li>
+    <li><a href="#s6">6. Regra de Laplace</a></li>
+    <li><a href="#s7">7. Probabilidade geométrica</a></li>
+    <li><a href="#s8">8. Aplicações em Física</a></li>
+    <li><a href="#s9">9. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 1 · 3 horas</p>
+  <h1>Espaço amostral, eventos e os axiomas da probabilidade</h1>
+  <p class="subtitulo">Do lançamento de um dado à irreversibilidade da Segunda Lei.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Descrever o espaço amostral de um experimento, nos casos finito, enumerável e contínuo;</li>
+      <li>Manipular eventos como conjuntos, usando união, interseção, complementar e De Morgan;</li>
+      <li>Enunciar os axiomas de Kolmogorov e deduzir deles as propriedades elementares;</li>
+      <li>Calcular probabilidades pela regra de Laplace e reconhecer suas limitações;</li>
+      <li>Resolver problemas de probabilidade geométrica por integração;</li>
+      <li>Relacionar tudo isso à contagem de microestados em Física Estatística.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Determinismo e acaso</h2>
+
+  <p>Um <strong>experimento determinístico</strong>, repetido sob as mesmas condições, produz
+  sempre o mesmo resultado. Soltar um corpo de uma altura \(h\) no vácuo é assim: o tempo de
+  queda é \(t=\sqrt{2h/g}\), hoje e amanhã.</p>
+
+  <p>Um <strong>experimento aleatório</strong>, repetido sob as mesmas condições, pode produzir
+  resultados diferentes — mas o conjunto de resultados possíveis é conhecido de antemão.
+  Lançar um dado, medir o instante em que um núcleo de \(^{14}\mathrm{C}\) decai, medir a
+  componente \(z\) do spin de um átomo de prata num aparato de Stern–Gerlach.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Atenção conceitual</span>
+    <p>A aleatoriedade pode ser <strong>epistêmica</strong> — o dado obedece à mecânica clássica,
+    mas ignoramos as condições iniciais com precisão suficiente — ou <strong>intrínseca</strong> —
+    o resultado quântico não é determinado nem em princípio. O formalismo matemático que vamos
+    construir é <em>o mesmo</em> nos dois casos. Essa é justamente a força da teoria: ela não
+    precisa saber por que você ignora algo.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Espaço amostral</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>O <strong>espaço amostral</strong> \(\Omega\) de um experimento aleatório é o conjunto de
+    todos os seus resultados possíveis. Cada elemento \(\omega \in \Omega\) é um
+    <strong>ponto amostral</strong>, ou resultado elementar.</p>
+  </div>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Experimento</th><th>Espaço amostral</th><th>Tipo</th></tr></thead>
+    <tbody>
+      <tr><td>Lançar uma moeda</td><td>\(\Omega=\{K,C\}\)</td><td>finito</td></tr>
+      <tr><td>Lançar um dado</td><td>\(\Omega=\{1,2,3,4,5,6\}\)</td><td>finito</td></tr>
+      <tr><td>Lançar dois dados</td><td>\(\Omega=\{(i,j)\}\), \(|\Omega|=36\)</td><td>finito</td></tr>
+      <tr><td>Contar fótons em 1 s</td><td>\(\Omega=\{0,1,2,\dots\}\)</td><td>enumerável</td></tr>
+      <tr><td>Tempo de vida de um núcleo</td><td>\(\Omega=[0,\infty)\)</td><td>contínuo</td></tr>
+      <tr><td>Velocidade de uma molécula</td><td>\(\Omega=\mathbb{R}^3\)</td><td>contínuo</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O espaço amostral não é único</span>
+    <p>Ele depende da <strong>pergunta</strong> que fazemos. Ao lançar dois dados, podemos tomar
+    \(\Omega\) como os 36 pares ordenados ou como as 11 somas possíveis \(\{2,3,\dots,12\}\).
+    No segundo caso, porém, os resultados <strong>não são equiprováveis</strong> — e isso muda
+    tudo. O simulador abaixo mostra por quê.</p>
+  </div>
+
+  <div data-widget="dados2"></div>
+
+  <p>Observe que a soma 7 aparece cerca de seis vezes mais que a soma 2. Isso acontece porque
+  há seis pares ordenados que somam 7 — \((1,6),(2,5),(3,4),(4,3),(5,2),(6,1)\) — e apenas um
+  que soma 2. Os 36 pares são equiprováveis; as 11 somas não são.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Eventos e a álgebra de conjuntos</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Um <strong>evento</strong> é um subconjunto do espaço amostral, \(A \subseteq \Omega\).
+    Dizemos que \(A\) <strong>ocorreu</strong> se o resultado observado \(\omega\) pertence a \(A\).</p>
+  </div>
+
+  <p>Com um dado, \(\Omega=\{1,\dots,6\}\):</p>
+  <ul>
+    <li>\(A=\) "sair número par" \(=\{2,4,6\}\);</li>
+    <li>\(B=\) "sair número maior que 4" \(=\{5,6\}\);</li>
+    <li>\(C=\) "sair 7" \(=\varnothing\), o evento <strong>impossível</strong>;</li>
+    <li>\(D=\) "sair número menor que 10" \(=\Omega\), o evento <strong>certo</strong>.</li>
+  </ul>
+
+  <h3>Dicionário: palavras e conjuntos</h3>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Em palavras</th><th>Em conjuntos</th></tr></thead>
+    <tbody>
+      <tr><td>Ocorre \(A\) <em>ou</em> \(B\) (ou ambos)</td><td>\(A \cup B\)</td></tr>
+      <tr><td>Ocorre \(A\) <em>e</em> \(B\) simultaneamente</td><td>\(A \cap B\)</td></tr>
+      <tr><td><em>Não</em> ocorre \(A\)</td><td>\(A^c = \Omega \setminus A\)</td></tr>
+      <tr><td>Ocorre \(A\) mas não \(B\)</td><td>\(A \cap B^c\)</td></tr>
+      <tr><td>Se ocorre \(A\), então ocorre \(B\)</td><td>\(A \subseteq B\)</td></tr>
+      <tr><td>\(A\) e \(B\) não podem ocorrer juntos</td><td>\(A \cap B = \varnothing\)</td></tr>
+      <tr><td>Ocorre exatamente um entre \(A\) e \(B\)</td><td>\((A\cap B^c)\cup(A^c\cap B)\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Leis de De Morgan</span>
+    <p>\[(A \cup B)^c = A^c \cap B^c, \qquad (A \cap B)^c = A^c \cup B^c\]</p>
+    <p>e, para uma família qualquer,</p>
+    <p>\[\left(\bigcup_i A_i\right)^{c} = \bigcap_i A_i^c, \qquad
+        \left(\bigcap_i A_i\right)^{c} = \bigcup_i A_i^c .\]</p>
+    <p><strong>Leitura física:</strong> "nenhum detector disparou" é o mesmo que "o detector 1 não
+    disparou <em>e</em> o 2 não disparou <em>e</em>…".</p>
+  </div>
+
+  <h3>Partição do espaço amostral</h3>
+  <p>Uma família \(\{A_1,\dots,A_n\}\) é uma <strong>partição</strong> de \(\Omega\) quando os
+  eventos são mutuamente exclusivos (\(A_i \cap A_j = \varnothing\) para \(i\neq j\)) e
+  coletivamente exaustivos (\(\bigcup_i A_i = \Omega\)). O par \(\{A, A^c\}\) é sempre uma
+  partição. Em um sistema quântico, os autoestados de um observável formam uma partição dos
+  resultados possíveis de medida. Esse conceito será decisivo no Módulo 3.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Os axiomas de Kolmogorov</h2>
+
+  <h3>Três caminhos para definir probabilidade</h3>
+
+  <div class="bloco">
+    <span class="rotulo">1. Clássica (Laplace, 1812)</span>
+    <p>Se \(\Omega\) é finito e os resultados são igualmente prováveis,
+    \(P(A) = |A|/|\Omega|\). <strong>Problema:</strong> é circular — define probabilidade usando
+    "igualmente prováveis" — e não se aplica a \(\Omega\) infinito.</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">2. Frequentista (von Mises)</span>
+    <p>\(P(A) = \lim_{N \to \infty} n_A/N\). <strong>Problema:</strong> o limite é empírico, não
+    matemático, e exige repetições infinitas.</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">3. Axiomática (Kolmogorov, 1933)</span>
+    <p>Não se define <em>o que é</em> probabilidade: postulam-se as <strong>propriedades</strong>
+    que ela deve satisfazer. As duas definições anteriores tornam-se modelos consistentes com
+    os axiomas.</p>
+  </div>
+
+  <h3>Espaço de probabilidade</h3>
+  <p>Uma família \(\mathcal{F}\) de subconjuntos de \(\Omega\) é uma <strong>\(\sigma\)-álgebra</strong>
+  se contém \(\Omega\), é fechada por complementação e por uniões enumeráveis. Se \(\Omega\) é
+  finito ou enumerável, tomamos \(\mathcal{F}=2^{\Omega}\); se \(\Omega=\mathbb{R}\), tomamos a
+  \(\sigma\)-álgebra de <strong>Borel</strong>, gerada pelos intervalos.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Por que precisamos de \(\mathcal{F}\)?</span>
+    <p>Em \(\mathbb{R}\) existem subconjuntos patológicos (não mensuráveis) aos quais é
+    <em>impossível</em> atribuir probabilidade de forma consistente. A \(\sigma\)-álgebra
+    seleciona os conjuntos bem-comportados. Na prática da Física, todo conjunto de interesse é
+    boreliano — mas é bom saber que a ressalva existe.</p>
+  </div>
+
+  <p>O <strong>espaço de probabilidade</strong> é a tripla \((\Omega, \mathcal{F}, P)\), em que
+  \(P:\mathcal{F}\to[0,1]\) é uma medida de probabilidade satisfazendo:</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Axioma 1 — Não-negatividade</span>
+    <p>\[P(A) \geq 0 \qquad \forall\, A \in \mathcal{F}\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Axioma 2 — Medida unitária</span>
+    <p>\[P(\Omega) = 1\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Axioma 3 — Aditividade enumerável</span>
+    <p>Para qualquer sequência enumerável de eventos <strong>disjuntos</strong>
+    \(A_1,A_2,\dots\), com \(A_i \cap A_j=\varnothing\) para \(i\neq j\),</p>
+    <p>\[P\!\left(\bigcup_{i=1}^{\infty} A_i\right) = \sum_{i=1}^{\infty} P(A_i)\]</p>
+  </div>
+
+  <div class="destaque">
+    Tudo o que se segue — em todo o curso — é <strong>consequência lógica</strong> destes três enunciados.
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Consequências dos axiomas</h2>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 1 — \(P(\varnothing)=0\)</span>
+    <p><em>Demonstração.</em> Tome \(A_1=\Omega\) e \(A_i=\varnothing\) para \(i\geq 2\). Esses
+    conjuntos são disjuntos e sua união é \(\Omega\). Por (A3),
+    \(P(\Omega)=P(\Omega)+\sum_{i\geq2}P(\varnothing)\), donde
+    \(\sum_{i\geq2}P(\varnothing)=0\). Como \(P(\varnothing)\geq 0\) por (A1), só resta
+    \(P(\varnothing)=0\). ∎</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 2 — Aditividade finita</span>
+    <p>Se \(A_1,\dots,A_n\) são disjuntos, \(P(\bigcup_{i=1}^n A_i)=\sum_{i=1}^n P(A_i)\).</p>
+    <p><em>Demonstração.</em> Complete a sequência com \(A_i=\varnothing\) para \(i>n\) e aplique
+    (A3) junto ao Teorema 1. ∎</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 3 — Complementar</span>
+    <p>\(P(A^c)=1-P(A)\).</p>
+    <p><em>Demonstração.</em> \(A\cup A^c=\Omega\) e \(A\cap A^c=\varnothing\). Por (A2) e pelo
+    Teorema 2, \(1=P(A)+P(A^c)\). ∎</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 4 — Monotonicidade</span>
+    <p>Se \(A \subseteq B\), então \(P(A)\leq P(B)\).</p>
+    <p><em>Demonstração.</em> \(B=A\cup(B\cap A^c)\), união disjunta. Logo
+    \(P(B)=P(A)+P(B\cap A^c)\geq P(A)\). ∎ <br>
+    <em>Corolário:</em> como \(A\subseteq\Omega\), temos \(0\leq P(A)\leq 1\).</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 5 — Regra da adição</span>
+    <p>\[P(A \cup B) = P(A) + P(B) - P(A \cap B)\]</p>
+    <p><em>Demonstração.</em> Decomponha \(A\cup B\) em três partes disjuntas:
+    \((A\cap B^c)\), \((A\cap B)\) e \((A^c\cap B)\). Como \(P(A)=P(A\cap B^c)+P(A\cap B)\) e
+    \(P(B)=P(A^c\cap B)+P(A\cap B)\), somar \(P(A)+P(B)\) conta a interseção duas vezes; subtraí-la
+    uma vez corrige a conta. ∎</p>
+  </div>
+
+  <p>Para três eventos, o mesmo raciocínio dá o <strong>princípio da inclusão–exclusão</strong>:</p>
+  <p>\[P(A\cup B\cup C)=P(A)+P(B)+P(C)-P(A\cap B)-P(A\cap C)-P(B\cap C)+P(A\cap B\cap C)\]</p>
+
+  <p>E, em geral, vale a <strong>desigualdade de Boole</strong> (subaditividade):
+  \(P(\bigcup_i A_i) \leq \sum_i P(A_i)\), útil para limitar a probabilidade de que
+  <em>alguma</em> entre muitas fontes de erro estrague uma medida.</p>
+
+  <div data-widget="eventos"></div>
+
+  <h3>Exercício resolvido 1.1 — Manipulando os axiomas</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Sejam \(A\) e \(B\) eventos com \(P(A)=0{,}6\), \(P(B)=0{,}5\) e \(P(A\cap B)=0{,}3\).
+    Calcule: (a) \(P(A\cup B)\); (b) \(P(A^c\cap B^c)\); (c) \(P(A\cap B^c)\);
+    (d) a probabilidade de ocorrer exatamente um dos dois.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> Pelo Teorema 5:
+      \(P(A\cup B)=0{,}6+0{,}5-0{,}3=\mathbf{0{,}8}\).</p>
+      <p><strong>(b)</strong> Por De Morgan, \(A^c\cap B^c=(A\cup B)^c\), logo
+      \(P(A^c\cap B^c)=1-0{,}8=\mathbf{0{,}2}\).</p>
+      <p><strong>(c)</strong> Como \(A=(A\cap B)\cup(A\cap B^c)\) é união disjunta,
+      \(P(A\cap B^c)=0{,}6-0{,}3=\mathbf{0{,}3}\).</p>
+      <p><strong>(d)</strong> Analogamente \(P(A^c\cap B)=0{,}2\). Os eventos "só \(A\)" e
+      "só \(B\)" são disjuntos, então a resposta é \(0{,}3+0{,}2=\mathbf{0{,}5}\).</p>
+      <p><em>Verificação:</em> \(0{,}3+0{,}2+0{,}3+0{,}2=1\) ✓ — as quatro regiões particionam
+      \(\Omega\). Confira os números no simulador acima.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 1.2 — Detectores em coincidência</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um experimento usa três detectores, com probabilidades de falha
+    \(p_1=0{,}02\), \(p_2=0{,}03\) e \(p_3=0{,}05\) durante uma tomada de dados.
+    <strong>Sem qualquer hipótese sobre independência</strong>, dê cotas para a probabilidade de
+    que pelo menos um detector falhe.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Seja \(F_i\) o evento "o detector \(i\) falha". Queremos \(P(F_1\cup F_2\cup F_3)\).
+      Sem informação sobre as interseções não há valor exato — mas há limites.</p>
+      <p><strong>Cota superior</strong> (Boole):
+      \(P(F_1\cup F_2\cup F_3)\leq 0{,}02+0{,}03+0{,}05=\mathbf{0{,}10}\).</p>
+      <p><strong>Cota inferior</strong> (monotonicidade): como \(F_3 \subseteq F_1\cup F_2\cup F_3\),
+      \(P(F_1\cup F_2\cup F_3)\geq \max_i p_i=\mathbf{0{,}05}\).</p>
+      <p>Portanto \(0{,}05 \leq P \leq 0{,}10\). Os axiomas sozinhos já produzem informação útil,
+      mesmo sem conhecer a estrutura de dependência entre os detectores.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. A regra de Laplace</h2>
+
+  <p>Se \(\Omega=\{\omega_1,\dots,\omega_N\}\) é finito e cada resultado tem a mesma
+  probabilidade \(p\), então por (A2) e pelo Teorema 2:
+  \(1=P(\Omega)=\sum_{i=1}^N p = Np\), donde \(p = 1/N\). Para qualquer evento \(A\):</p>
+
+  <div class="destaque">
+    \[P(A) = \frac{|A|}{|\Omega|} = \frac{\text{casos favoráveis}}{\text{casos possíveis}}\]
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Quando podemos supor equiprobabilidade?</span>
+    <ul>
+      <li>Por <strong>simetria física</strong>: moeda, dado, roleta balanceados;</li>
+      <li>Por <strong>princípio de indiferença</strong>: na ausência de razão para privilegiar um resultado;</li>
+      <li>Na Física Estatística, pelo <strong>postulado fundamental</strong>: todos os microestados
+      acessíveis de um sistema isolado em equilíbrio são igualmente prováveis.</li>
+    </ul>
+  </div>
+
+  <h3>Exercício resolvido 1.3 — Soma de dois dados</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Dois dados honestos são lançados. Calcule a probabilidade de a soma ser (a) igual a 7;
+    (b) igual a 7 ou 11; (c) pelo menos 4.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Tomamos \(\Omega\) como os pares ordenados, \(|\Omega|=36\), todos equiprováveis.</p>
+      <p><strong>(a)</strong> \(A_7=\{(1,6),(2,5),(3,4),(4,3),(5,2),(6,1)\}\), com \(|A_7|=6\).
+      Logo \(P(A_7)=6/36=1/6\approx \mathbf{0{,}167}\).</p>
+      <p><strong>(b)</strong> \(A_{11}=\{(5,6),(6,5)\}\), \(|A_{11}|=2\). Como \(A_7\cap A_{11}=\varnothing\),
+      \(P=6/36+2/36=8/36=2/9\approx \mathbf{0{,}222}\).</p>
+      <p><strong>(c)</strong> Aqui o complementar é muito mais econômico: "soma \(\geq 4\)" tem
+      complementar "soma \(\leq 3\)" \(=\{(1,1),(1,2),(2,1)\}\). Então
+      \(P=1-3/36=33/36=11/12\approx \mathbf{0{,}917}\).</p>
+      <p><strong>Regra prática:</strong> sempre que aparecer "pelo menos", pense no complementar.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 1.4 — O erro de d'Alembert</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Lançam-se duas moedas honestas. D'Alembert argumentou: "os resultados possíveis são duas
+    caras, duas coroas e uma de cada; logo \(P(\text{uma de cada})=1/3\)". Onde está o erro?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>O espaço amostral \(\Omega'=\{KK, CC, \text{mista}\}\) é legítimo como conjunto, mas seus
+      elementos <strong>não são equiprováveis</strong> — e a regra de Laplace exige equiprobabilidade.</p>
+      <p>Tomando o espaço amostral simétrico, com moedas distinguíveis (uma de 1 real, outra de
+      50 centavos), \(\Omega=\{KK, KC, CK, CC\}\), com \(|\Omega|=4\) e cada resultado valendo
+      \(1/4\) por simetria. Então</p>
+      <p>\[P(\text{uma de cada}) = P(\{KC,CK\}) = \frac{2}{4} = \frac{1}{2} \neq \frac13 .\]</p>
+      <p><strong>Moral:</strong> escolher \(\Omega\) é um ato <em>físico</em>, não apenas
+      notacional. A pergunta decisiva é: os constituintes são distinguíveis?</p>
+    </div>
+  </details>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Eco na Física: distinguibilidade e as três estatísticas</span>
+    <p>Duas partículas em dois estados de partícula única. Quantas configurações, e qual a
+    probabilidade de encontrar uma em cada estado?</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Estatística</th><th>Partículas</th><th>Configurações</th><th>\(P\)(uma em cada)</th></tr></thead>
+      <tbody>
+        <tr><td>Maxwell–Boltzmann</td><td>distinguíveis</td><td>\(\{AB|\cdot\},\{\cdot|AB\},\{A|B\},\{B|A\}\)</td><td>2/4 = 1/2</td></tr>
+        <tr><td>Bose–Einstein</td><td>idênticas</td><td>\(\{\bullet\bullet|\cdot\},\{\cdot|\bullet\bullet\},\{\bullet|\bullet\}\)</td><td>1/3</td></tr>
+        <tr><td>Fermi–Dirac</td><td>idênticas + Pauli</td><td>\(\{\bullet|\bullet\}\)</td><td>1/1 = 1</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p><strong>A ironia histórica:</strong> a contagem de d'Alembert está errada para moedas, mas
+    é exatamente correta para <strong>bósons</strong>. A Natureza, para fótons e átomos de
+    \(^4\)He, conta como d'Alembert queria contar.</p>
+    <p>As consequências são mensuráveis: o agrupamento (<em>bunching</em>) de fótons no experimento
+    de Hanbury Brown–Twiss, a condensação de Bose–Einstein, a emissão estimulada do laser; e, do
+    lado fermiônico, a estrutura da tabela periódica e a pressão de degenerescência que sustenta
+    anãs brancas contra o colapso gravitacional.</p>
+  </div>
+
+  <h3>Exercício resolvido 1.5 — Baralho</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>De um baralho de 52 cartas retira-se uma ao acaso. Seja \(A=\) "é de copas" e \(B=\) "é
+    figura" (valete, dama ou rei). Calcule \(P(A)\), \(P(B)\), \(P(A\cap B)\) e \(P(A\cup B)\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Há 13 copas: \(P(A)=13/52=1/4\). Há 3 figuras por naipe, ou seja 12:
+      \(P(B)=12/52=3/13\). Figuras de copas são 3: \(P(A\cap B)=3/52\).</p>
+      <p>\[P(A\cup B)=\frac{13}{52}+\frac{12}{52}-\frac{3}{52}=\frac{22}{52}=\frac{11}{26}\approx 0{,}423 .\]</p>
+      <p>Note que \(P(A\cap B)=P(A)\,P(B)=\tfrac14\cdot\tfrac{3}{13}=\tfrac{3}{52}\): os eventos são
+      <strong>independentes</strong>, conceito que formalizaremos no Módulo 3.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Probabilidade geométrica</h2>
+
+  <p>Se \(\Omega\) é um contínuo, cada ponto tem probabilidade zero e a regra \(|A|/|\Omega|\)
+  vira \(\infty/\infty\). A generalização natural troca <em>contagem</em> por <strong>medida</strong>
+  — comprimento, área, volume. Se o ponto é escolhido uniformemente em \(\Omega\subset\mathbb{R}^n\):</p>
+
+  <p>\[P(A) = \frac{\mu(A)}{\mu(\Omega)}, \qquad \mu(A)=\int_A d^n x .\]</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Probabilidade zero ≠ impossível</span>
+    <p>Ao escolher um real ao acaso em \([0,1]\), a probabilidade de obter exatamente \(1/2\) é
+    zero — mas o evento não é impossível. Reciprocamente, \(P(A)=1\) significa "quase
+    certamente", não "sempre". Este é o embrião da <strong>densidade de probabilidade</strong>,
+    formalizada no Módulo 5.</p>
+  </div>
+
+  <h3>Exercício resolvido 1.6 — O problema do encontro</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Dois estudantes combinam encontrar-se no laboratório entre 14h e 15h; cada um chega em um
+    instante uniformemente distribuído nesse intervalo, independentemente do outro. Cada um
+    espera no máximo 15 minutos e vai embora. Qual a probabilidade de se encontrarem?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Sejam \(x,y\in[0,1]\) os instantes de chegada em horas a partir das 14h. O espaço
+      amostral é o quadrado unitário, com \(\mu(\Omega)=1\). Eles se encontram se
+      \(|x-y|\leq \tfrac14\).</p>
+      <p>A região <em>complementar</em> são dois triângulos retângulos de catetos \(3/4\):</p>
+      <p>\[\mu(A^c)=2\cdot\frac12\left(\frac34\right)^2=\frac{9}{16}
+      \quad\Longrightarrow\quad P(A)=1-\frac{9}{16}=\frac{7}{16}\approx \mathbf{0{,}4375}.\]</p>
+      <p><strong>Generalização:</strong> com tolerância \(\tau\) em horas,
+      \(P = 1-(1-\tau)^2 = 2\tau-\tau^2\). Verifique no simulador abaixo mudando a tolerância.</p>
+    </div>
+  </details>
+
+  <div data-widget="encontro"></div>
+
+  <h3>Exercício resolvido 1.7 — Emissão isotrópica e o fator \(\sin\theta\)</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um átomo emite um fóton em direção aleatória, isotrópica no espaço. Qual a probabilidade
+    de que o fóton saia dentro de um cone de semiabertura \(\theta_0\) em torno do eixo \(z\)?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Isotropia significa probabilidade uniforme sobre o <strong>ângulo sólido</strong>, não
+      sobre o ângulo \(\theta\). O elemento de ângulo sólido é
+      \(d\Omega_s=\sin\theta\,d\theta\,d\phi\), e o total é \(4\pi\). Assim:</p>
+      <p>\[P(\theta \leq \theta_0)=\frac{1}{4\pi}\int_0^{2\pi}\!\!\int_0^{\theta_0}
+      \sin\theta\,d\theta\,d\phi = \frac{2\pi}{4\pi}\big[-\cos\theta\big]_0^{\theta_0}
+      = \frac{1-\cos\theta_0}{2}.\]</p>
+      <p><strong>Verificações:</strong> \(\theta_0=\pi \Rightarrow P=1\) ✓;
+      \(\theta_0=\pi/2 \Rightarrow P=1/2\) ✓ (metade do espaço).</p>
+      <p><strong>Erro comum:</strong> escrever \(P=\theta_0/\pi\), tratando \(\theta\) como
+      uniforme. Isso acerta por acidente em \(\theta_0=\pi/2\) e erra em todos os outros casos.
+      A densidade correta é \(P(\theta)\,d\theta=\tfrac12\sin\theta\,d\theta\).</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Aplicações em Física</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Microestados e o postulado fundamental</span>
+    <p>Para um sistema isolado em equilíbrio, todos os microestados acessíveis são igualmente
+    prováveis. Se há \(\Omega_{\text{mic}}\) microestados compatíveis com os vínculos
+    macroscópicos, cada um tem probabilidade \(1/\Omega_{\text{mic}}\) — exatamente o espaço
+    amostral equiprovável de Laplace. A probabilidade de um macroestado \(M\) é</p>
+    <p>\[P(M)=\frac{\Omega_{\text{mic}}(M)}{\Omega_{\text{mic}}^{\text{total}}}
+    =\frac{\text{casos favoráveis}}{\text{casos possíveis}}.\]</p>
+    <p>E a ponte com a termodinâmica é a fórmula de Boltzmann,
+    \(S = k_B \ln \Omega_{\text{mic}}\): maximizar a entropia equivale a encontrar o macroestado
+    com o maior número de casos favoráveis, isto é, o mais provável.</p>
+  </div>
+
+  <h3>Exercício resolvido 1.8 — Flutuação de densidade em um gás</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um recipiente de volume \(V\) contém \(N\) moléculas de gás ideal. Qual a probabilidade de
+    que, num dado instante, <strong>todas</strong> estejam na metade esquerda? Avalie para
+    \(N=10\), \(N=100\) e \(N=N_A\approx 6{,}0\times10^{23}\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Cada molécula tem probabilidade \(1/2\) de estar na metade esquerda, por simetria
+      geométrica. O espaço amostral tem \(2^N\) configurações equiprováveis, das quais apenas
+      uma é favorável:</p>
+      <p>\[P = \frac{1}{2^N}=2^{-N}.\]</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>\(N\)</th><th>\(P=2^{-N}\)</th><th>Interpretação</th></tr></thead>
+        <tbody>
+          <tr><td>10</td><td>\(\approx 10^{-3}\)</td><td>ocorre 1 vez em mil</td></tr>
+          <tr><td>100</td><td>\(\approx 10^{-30}\)</td><td>jamais observado</td></tr>
+          <tr><td>\(6\times10^{23}\)</td><td>\(\approx 10^{-1{,}8\times10^{23}}\)</td><td>"impossível" na prática</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>A irreversibilidade da Segunda Lei é um enunciado probabilístico.</strong> Nada
+      na mecânica proíbe o gás de se concentrar espontaneamente; é apenas esmagadoramente
+      improvável. Essa é uma das ideias mais importantes de toda a Física Estatística.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 1.9 — Decaimento radioativo</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um núcleo instável tem probabilidade \(\lambda\,dt\) de decair em um intervalo
+    infinitesimal \(dt\), independentemente de sua idade. Mostre que a probabilidade de
+    sobreviver até o instante \(t\) é \(e^{-\lambda t}\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Seja \(S(t)=P(\text{não decaiu até } t)\). Sobreviver até \(t+dt\) exige sobreviver até
+      \(t\) <em>e</em> não decair em \(dt\):</p>
+      <p>\[S(t+dt)=S(t)\,(1-\lambda\,dt) \;\Longrightarrow\; \frac{dS}{dt}=-\lambda S .\]</p>
+      <p>Com \(S(0)=1\), integrando: \(\;S(t)=e^{-\lambda t}\), e portanto
+      \(P(\text{decai entre } t \text{ e } t+dt)=\lambda e^{-\lambda t}\,dt\).</p>
+      <p>A meia-vida satisfaz \(S(t_{1/2})=1/2\), ou seja \(t_{1/2}=\ln 2/\lambda\).</p>
+      <p>Reencontraremos essa expressão no Módulo 5 como a <strong>distribuição exponencial</strong>,
+      e a contagem de decaimentos em um intervalo fixo, no Módulo 4, como a <strong>distribuição
+      de Poisson</strong>.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Exercícios propostos</h2>
+
+  <ol>
+    <li>Três moedas honestas são lançadas. Descreva \(\Omega\) e calcule a probabilidade de:
+    (a) exatamente duas caras; (b) pelo menos uma cara; (c) nenhuma coroa.</li>
+    <li>Prove, a partir dos axiomas, que \(P(A\cap B)\geq P(A)+P(B)-1\) (desigualdade de Bonferroni).</li>
+    <li>Mostre que \(P(A \triangle B)=P(A)+P(B)-2P(A\cap B)\), onde \(A\triangle B\) é a diferença simétrica.</li>
+    <li>Em um dado viciado, a probabilidade de cada face é proporcional ao número que ela exibe.
+    Determine \(P(\{i\})\) para cada \(i\) e calcule \(P(\text{face par})\).</li>
+    <li>Escolhe-se um ponto ao acaso, uniformemente, no interior de um círculo de raio \(R\).
+    Qual a probabilidade de estar a menos de \(R/2\) do centro? E a menos de \(R/2\) da borda?</li>
+    <li>Um segmento de comprimento \(L\) é quebrado em dois pontos escolhidos ao acaso. Qual a
+    probabilidade de que os três pedaços formem um triângulo? <em>(Resposta: 1/4.)</em></li>
+    <li>Um gás de \(N\) moléculas ocupa um recipiente. Mostre que a probabilidade de encontrar
+    exatamente \(n\) moléculas em uma fração \(f\) do volume é \(\binom{N}{n}f^n(1-f)^{N-n}\).
+    <em>(Antecipa o Módulo 4.)</em></li>
+    <li>Um núcleo com meia-vida \(t_{1/2}\) é observado por um tempo \(t=2\,t_{1/2}\). Qual a
+    probabilidade de que decaia nesse intervalo? E de que decaia na <em>segunda</em> meia-vida,
+    dado que sobreviveu à primeira? <em>(Antecipa o Módulo 3.)</em></li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>\(\Omega\) é o espaço amostral; um evento é um subconjunto de \(\Omega\);</li>
+      <li>Eventos combinam-se por \(\cup\), \(\cap\) e complementar; valem as leis de De Morgan;</li>
+      <li>Axiomas: \(P(A)\geq 0\), \(P(\Omega)=1\), aditividade enumerável para disjuntos;</li>
+      <li>Consequências: \(P(\varnothing)=0\), \(P(A^c)=1-P(A)\), monotonicidade,
+      \(P(A\cup B)=P(A)+P(B)-P(A\cap B)\), desigualdade de Boole;</li>
+      <li>Caso discreto equiprovável: \(P(A)=|A|/|\Omega|\); caso contínuo uniforme:
+      \(P(A)=\mu(A)/\mu(\Omega)\).</li>
+    </ul>
+    <p>O gargalo do cálculo clássico é <strong>contar</strong> \(|A|\) e \(|\Omega|\).
+    Esse é o tema do próximo módulo.</p>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="index.html"><small>Voltar</small>Página inicial</a>
+    <a class="prox" href="aula02.html"><small>Próximo módulo</small>2. Técnicas de contagem →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js"></script>
+</body>
+</html>
