@@ -11,7 +11,19 @@ window.MathJax = {
     processEscapes: true,
     macros: {
       med: ['\\langle #1 \\rangle', 1],
+      /* notação brasileira: sen, tg, cotg, arcsen.
+         Redefinimos \sin e \tan para que qualquer fórmula escrita no padrão
+         internacional também apareça na notação usada em sala. */
       sen: '\\operatorname{sen}',
+      sin: '\\operatorname{sen}',
+      tg: '\\operatorname{tg}',
+      tan: '\\operatorname{tg}',
+      cotg: '\\operatorname{cotg}',
+      cot: '\\operatorname{cotg}',
+      arcsen: '\\operatorname{arcsen}',
+      arcsin: '\\operatorname{arcsen}',
+      arctg: '\\operatorname{arctg}',
+      arctan: '\\operatorname{arctg}',
       Var: '\\operatorname{Var}',
       Cov: '\\operatorname{Cov}',
       E: '\\mathbb{E}',

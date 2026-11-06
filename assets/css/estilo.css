@@ -404,3 +404,29 @@ mjx-container[display="true"]{
   .marca{font-size:.72rem}
   .heroi h1{font-size:1.4rem}
 }
+
+/* ---------- Triângulo de Pascal ---------- */
+.triangulo{margin:.6rem 0 1rem;overflow-x:auto;padding-bottom:.3rem}
+.tri-linha{display:flex;justify-content:center;align-items:center;gap:3px;margin-bottom:3px}
+.tri-rot{
+  font-family:var(--sans);font-size:.6rem;color:#9aa6b2;
+  width:34px;text-align:right;flex-shrink:0;padding-right:4px;
+}
+.tri-cel{
+  font-family:var(--sans);font-size:.74rem;font-weight:600;
+  min-width:38px;padding:.26rem .3rem;border-radius:5px;
+  background:var(--papel-alt);border:1px solid var(--borda);color:var(--tinta-suave);
+  cursor:pointer;transition:all .12s;
+}
+.tri-cel:hover{border-color:var(--laranja);color:var(--laranja-texto);background:#fff}
+.tri-cel.linha-ativa{background:#eaf1f8;border-color:#b9cfe3;color:var(--azul)}
+.tri-cel.pai{background:#ffe4cc;border-color:var(--laranja);color:var(--laranja-texto)}
+.tri-cel.sel{
+  background:var(--azul);border-color:var(--azul);color:#fff;
+  transform:scale(1.1);box-shadow:0 2px 8px rgba(22,48,79,.3);
+}
+@media (max-width:520px){
+  .tri-cel{min-width:27px;font-size:.6rem;padding:.2rem .18rem}
+  .tri-rot{width:26px;font-size:.52rem}
+  .tri-linha{gap:2px;margin-bottom:2px}
+}

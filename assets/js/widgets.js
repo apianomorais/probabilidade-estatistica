@@ -1270,6 +1270,159 @@
   }
 
   /* =================================================================
+     14a. Triângulo de Pascal interativo
+     ================================================================= */
+  function pascal(raiz) {
+    var c = moldura(raiz, 'O triângulo de Pascal, linha por linha');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var linhas = 8, selN = 4, selK = 2;
+    deslizante(ctr, 'Linhas visíveis', 1, 14, 1, 8, function (v) {
+      linhas = v;
+      if (selN > linhas) { selN = linhas; selK = Math.min(selK, selN); }
+      montar();
+    });
+
+    var tri = el('div', { class: 'triangulo' }); c.appendChild(tri);
+    var painel = cartoes(c, [
+      { rot: 'C(n,k) selecionado', k: 'c' },
+      { rot: 'pais (Stifel)', k: 'pais' },
+      { rot: 'soma da linha = 2ⁿ', k: 'soma' },
+      { rot: 'termo do binômio', k: 'termo' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function montar() {
+      tri.innerHTML = '';
+      for (var n = 0; n <= linhas; n++) {
+        var linha = el('div', { class: 'tri-linha' });
+        linha.appendChild(el('span', { class: 'tri-rot', texto: 'n=' + n }));
+        for (var k = 0; k <= n; k++) {
+          var cel = el('button', {
+            class: 'tri-cel', 'data-n': n, 'data-k': k,
+            texto: String(M.binom(n, k))
+          });
+          cel.addEventListener('click', (function (nn, kk) {
+            return function () { selN = nn; selK = kk; marcar(); };
+          })(n, k));
+          linha.appendChild(cel);
+        }
+        tri.appendChild(linha);
+      }
+      marcar();
+    }
+
+    function marcar() {
+      tri.querySelectorAll('.tri-cel').forEach(function (cel) {
+        var n = Number(cel.getAttribute('data-n')), k = Number(cel.getAttribute('data-k'));
+        cel.classList.remove('sel', 'pai', 'linha-ativa');
+        if (n === selN && k === selK) cel.classList.add('sel');
+        else if (n === selN - 1 && (k === selK - 1 || k === selK)) cel.classList.add('pai');
+        else if (n === selN) cel.classList.add('linha-ativa');
+      });
+
+      var v = M.binom(selN, selK);
+      var p1 = selN > 0 ? M.binom(selN - 1, selK - 1) : 0;
+      var p2 = selN > 0 ? M.binom(selN - 1, selK) : 0;
+
+      painel({
+        c: 'C(' + selN + ',' + selK + ') = ' + v,
+        pais: selN === 0 ? '—' : p1 + ' + ' + p2 + ' = ' + v,
+        soma: Math.pow(2, selN).toLocaleString('pt-BR'),
+        termo: (v === 1 ? '' : v) + 'x<sup>' + selK + '</sup>y<sup>' + (selN - selK) + '</sup>'
+      });
+
+      saida.innerHTML =
+        'A célula destacada vale <b>' + v + '</b>: é o número de maneiras de escolher <b>'
+        + selK + '</b> objetos entre <b>' + selN + '</b>. '
+        + (selN > 0
+            ? 'As duas células acima dela — em laranja — somam exatamente esse valor: '
+              + '<b>' + p1 + ' + ' + p2 + ' = ' + v + '</b>. É a <b>relação de Stifel</b>, '
+              + 'e ela tem uma leitura combinatória: separe os subconjuntos conforme contenham '
+              + 'ou não um elemento fixado. '
+            : '')
+        + 'A soma de toda a linha n = ' + selN + ' vale <b>2<sup>' + selN + '</sup> = '
+        + Math.pow(2, selN).toLocaleString('pt-BR') + '</b>, o número de subconjuntos de um '
+        + 'conjunto com ' + selN + ' elementos. '
+        + 'E a linha inteira são os coeficientes de (x+y)<sup>' + selN + '</sup>.';
+    }
+
+    montar();
+  }
+
+  /* =================================================================
+     14c. O problema do aniversário
+     ================================================================= */
+  function aniversarios(raiz) {
+    var c = moldura(raiz, 'O problema do aniversário');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+    var n = 23;
+    deslizante(ctr, 'Pessoas na sala', 2, 80, 1, 23, function (v) { n = v; atualizar(); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var painel = cartoes(c, [
+      { rot: 'P(ao menos 2 coincidirem)', k: 'p' },
+      { rot: 'P(todos diferentes)', k: 'q' },
+      { rot: 'pares de pessoas', k: 'pares' },
+      { rot: 'n para atingir 50%', k: 'n50' },
+      { rot: 'n para atingir 99%', k: 'n99' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    /* P(todos diferentes) = 365!/(365-n)! / 365^n, em logaritmos */
+    function pDiferentes(m) {
+      if (m > 365) return 0;
+      var ln = 0;
+      for (var i = 0; i < m; i++) ln += Math.log((365 - i) / 365);
+      return Math.exp(ln);
+    }
+
+    var n50 = 2, n99 = 2;
+    for (var m = 2; m <= 365; m++) {
+      if (1 - pDiferentes(m) < 0.5) n50 = m + 1;
+      if (1 - pDiferentes(m) < 0.99) n99 = m + 1;
+    }
+
+    function atualizar() {
+      var q = pDiferentes(n), p = 1 - q;
+      painel({
+        p: M.pct(p, 2), q: M.pct(q, 2),
+        pares: String(n * (n - 1) / 2),
+        n50: String(n50), n99: String(n99)
+      });
+
+      var g = G.eixos(cv, {
+        xmin: 0, xmax: 80, ymin: 0, ymax: 1, altura: 240,
+        rotX: 'número de pessoas na sala', rotY: 'P(ao menos duas coincidirem)',
+        marcasX: G.marcasLineares(0, 80, 8, 0),
+        formataY: function (v) { return (100 * v).toFixed(0) + '%'; }
+      });
+      G.area(g, function (x) { return 1 - pDiferentes(Math.round(x)); }, 0, n,
+             'rgba(44,95,141,.22)');
+      G.curva(g, function (x) { return 1 - pDiferentes(Math.round(x)); }, G.COR.vinho, 2.4);
+      var ct = g.ct;
+      ct.strokeStyle = '#c9d2db'; ct.setLineDash([4, 4]); ct.lineWidth = 1;
+      ct.beginPath(); ct.moveTo(g.x0, g.Y(0.5)); ct.lineTo(g.x1, g.Y(0.5)); ct.stroke();
+      ct.setLineDash([]);
+      G.vertical(g, n, G.COR.azul, 'n = ' + n);
+      ct.fillStyle = G.COR.vinho;
+      ct.beginPath(); ct.arc(g.X(n), g.Y(p), 4, 0, 2 * Math.PI); ct.fill();
+
+      saida.innerHTML = 'Com <b>' + n + '</b> pessoas há <b>' + (n * (n - 1) / 2)
+        + '</b> pares possíveis, e a probabilidade de alguma coincidência é <b>'
+        + M.pct(p, 1) + '</b>. '
+        + (n >= n50
+            ? 'Já passamos de 50% — e bastaram <b>' + n50 + '</b> pessoas para isso.'
+            : 'Aumente até <b>' + n50 + '</b> pessoas e a probabilidade ultrapassa 50%.')
+        + ' A intuição falha porque pensamos em "alguém com o <i>meu</i> aniversário" '
+        + '(apenas ' + (n - 1) + ' comparações) em vez de "duas pessoas quaisquer" ('
+        + (n * (n - 1) / 2) + ' comparações).';
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      14b. Grade do espaço amostral de dois dados
      ================================================================= */
   var EVENTOS_DADOS = {
@@ -1674,7 +1827,8 @@
     bayes: bayes, discreta: discreta, binomial: binomial, poisson: poisson,
     normal: normal, tcl: tcl, passeio: passeio, moeda: moeda, exponencial: exponencial,
     descritiva: descritiva, amostragem: amostragem, tstudent: tstudent,
-    quiquadrado: quiquadrado, gradedados: gradeDados
+    quiquadrado: quiquadrado, gradedados: gradeDados,
+    pascal: pascal, aniversarios: aniversarios
   };
 
   document.addEventListener('DOMContentLoaded', function () {

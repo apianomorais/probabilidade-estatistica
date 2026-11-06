@@ -36,14 +36,15 @@
   <h4>Neste módulo</h4>
   <ol>
     <li><a href="#s1">1. Por que contar</a></li>
-    <li><a href="#s2">2. Princípio fundamental</a></li>
-    <li><a href="#s3">3. Permutações</a></li>
-    <li><a href="#s4">4. Arranjos</a></li>
-    <li><a href="#s5">5. Combinações</a></li>
-    <li><a href="#s6">6. Quadro-resumo</a></li>
-    <li><a href="#s7">7. Binômio de Newton</a></li>
-    <li><a href="#s8">8. Microestados e estatísticas</a></li>
-    <li><a href="#s9">9. Exercícios propostos</a></li>
+    <li><a href="#sh">2. Uma história antiga</a></li>
+    <li><a href="#s2">3. Princípio fundamental</a></li>
+    <li><a href="#s3">4. Permutações</a></li>
+    <li><a href="#s4">5. Arranjos</a></li>
+    <li><a href="#s5">6. Combinações</a></li>
+    <li><a href="#s6">7. Quadro-resumo</a></li>
+    <li><a href="#s7">8. Binômio e triângulo de Pascal</a></li>
+    <li><a href="#s8">9. Microestados e estatísticas</a></li>
+    <li><a href="#s9">10. Exercícios propostos</a></li>
   </ol>
 </aside>
 
@@ -87,8 +88,66 @@
     Se importa, é arranjo ou permutação. Se não importa, é combinação.
   </div>
 
+
   <!-- ================================================== -->
-  <h2 id="s2">2. O princípio fundamental da contagem</h2>
+  <h2 id="sh">2. Uma história bem mais antiga que a probabilidade</h2>
+
+  <p>É curioso: a <em>probabilidade</em> só nasce no século XVII, mas a <em>combinatória</em>
+  tem milhares de anos. Contar arranjos é uma necessidade que aparece sozinha em culturas muito
+  distantes, sem contato entre si — e sempre por motivos que pouco têm a ver com jogos.</p>
+
+  <h3>O triângulo que tem muitos nomes</h3>
+
+  <p>O arranjo triangular de números que no Ocidente chamamos de <strong>triângulo de
+  Pascal</strong> foi descoberto independentemente em pelo menos quatro lugares:</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Onde</th><th>Quando</th><th>Quem, e por quê</th></tr></thead>
+    <tbody>
+      <tr><td>Índia</td><td>séc. II a.C.</td>
+        <td><b>Pingala</b>, estudando métrica poética em sânscrito: de quantas
+        maneiras se combinam sílabas longas e breves em um verso</td></tr>
+      <tr><td>Pérsia</td><td>séc. XI</td>
+        <td><b>Omar Khayyam</b> e <b>Al-Karaji</b>, para extrair raízes e expandir
+        potências de binômios</td></tr>
+      <tr><td>China</td><td>séc. XI–XIII</td>
+        <td><b>Jia Xian</b> e <b>Yang Hui</b> — na China ele é chamado até hoje de
+        "triângulo de Yang Hui"</td></tr>
+      <tr><td>Europa</td><td>séc. XVI–XVII</td>
+        <td><b>Tartaglia</b>, <b>Stifel</b> e enfim <b>Pascal</b>, que em 1654 escreveu o
+        <em>Traité du triangle arithmétique</em> organizando tudo e conectando-o ao
+        problema dos pontos</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>O mérito de Pascal não foi descobrir o triângulo — foi perceber que aquele objeto
+  aritmético e o problema do jogador eram <strong>a mesma coisa</strong>. Que contar arranjos e
+  calcular chances eram duas faces de um só problema. Esse é o elo que o nosso Módulo 1 e este
+  Módulo 2 reproduzem.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">A combinatória como contagem de possibilidades físicas</span>
+    <p>Há um fio que atravessa todos esses usos. Pingala contava versos; Khayyam, termos de um
+    binômio; Pascal, resultados de uma partida. Em todos os casos, a pergunta é a mesma:
+    <strong>de quantas maneiras um sistema pode se organizar?</strong></p>
+    <p>É exatamente essa a pergunta que Boltzmann faria duzentos anos depois, ao contar de
+    quantas maneiras as moléculas de um gás podem se distribuir. A combinatória que você vai
+    aprender aqui para resolver problemas de baralho é, literalmente, a mesma que fornece a
+    entropia de um sistema físico. Voltaremos a isso na seção 9.</p>
+  </div>
+
+  <h3>De onde vem a notação</h3>
+
+  <p>O símbolo <strong>\(n!\)</strong> foi proposto por <strong>Christian Kramp</strong> em
+  1808, e a palavra <em>factorielle</em> por Louis Arbogast, pouco antes. Até então escrevia-se
+  o produto por extenso, ou com notações desajeitadas que não pegaram. É um lembrete de que boa
+  notação é invenção, não natureza: o avanço de uma área frequentemente espera por um símbolo
+  conveniente.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s2">3. O princípio fundamental da contagem</h2>
 
   <div class="bloco def">
     <span class="rotulo">Princípio multiplicativo</span>
@@ -127,9 +186,9 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s3">3. Permutações</h2>
+  <h2 id="s3">4. Permutações</h2>
 
-  <h3>3.1 Permutação simples</h3>
+  <h3>4.1 Permutação simples</h3>
   <div class="bloco def">
     <span class="rotulo">Definição</span>
     <p>Uma <strong>permutação</strong> de \(n\) objetos distintos é uma ordenação de todos eles.
@@ -150,7 +209,7 @@
     história da humanidade</em>.</p>
   </div>
 
-  <h3>3.2 Permutação com elementos repetidos</h3>
+  <h3>4.2 Permutação com elementos repetidos</h3>
   <div class="bloco def">
     <span class="rotulo">Fórmula</span>
     <p>Se entre \(n\) objetos há \(n_1\) iguais de um tipo, \(n_2\) de outro, …, \(n_r\) do
@@ -160,7 +219,7 @@
     uma ordenação nova — mas foi contado como se gerasse.</p>
   </div>
 
-  <h3>3.3 Permutação circular</h3>
+  <h3>4.3 Permutação circular</h3>
   <p>Ao dispor \(n\) objetos em círculo, rotações do mesmo arranjo são indistinguíveis. Fixando
   um objeto como referência e permutando os demais:</p>
   <p>\[P_n^{\text{circ}} = (n-1)!\]</p>
@@ -199,7 +258,7 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s4">4. Arranjos</h2>
+  <h2 id="s4">5. Arranjos</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
@@ -219,7 +278,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s5">5. Combinações</h2>
+  <h2 id="s5">6. Combinações</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
@@ -274,7 +333,69 @@
     </div>
   </details>
 
-  <h3>Exercício resolvido 2.4 — Comissão com restrição</h3>
+
+  <h3>Exercício resolvido 2.4 — O problema do aniversário</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Em uma sala com \(n\) pessoas, qual a probabilidade de que ao menos duas façam
+    aniversário no mesmo dia? Quantas pessoas são necessárias para que essa probabilidade
+    ultrapasse 50%?</p>
+    <p><em>Suponha 365 dias equiprováveis e ignore anos bissextos.</em></p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>"Ao menos duas" pede o <strong>complementar</strong>: calculemos a probabilidade de
+      <em>todas</em> fazerem aniversário em dias diferentes.</p>
+      <p>O espaço amostral tem \(365^n\) elementos — cada pessoa pode nascer em qualquer um dos
+      365 dias, com repetição permitida. Os casos favoráveis a "todos diferentes" são os
+      <strong>arranjos</strong> de 365 dias tomados \(n\) a \(n\), pois a ordem importa
+      (quem nasceu em qual dia) e não há repetição:</p>
+      <p>\[P(\text{todos diferentes}) = \frac{A_{365,n}}{365^n}
+      = \frac{365 \times 364 \times \cdots \times (365-n+1)}{365^n}.\]</p>
+      <p>Portanto</p>
+      <p>\[P(\text{ao menos duas coincidem}) = 1 - \prod_{i=0}^{n-1}\frac{365-i}{365}.\]</p>
+      <p>Calculando para alguns valores:</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th class="num">n</th><th class="num">P(coincidência)</th></tr></thead>
+        <tbody>
+          <tr><td class="num">10</td><td class="num">11,7%</td></tr>
+          <tr><td class="num">20</td><td class="num">41,1%</td></tr>
+          <tr><td class="num"><b>23</b></td><td class="num"><b>50,7%</b></td></tr>
+          <tr><td class="num">30</td><td class="num">70,6%</td></tr>
+          <tr><td class="num">50</td><td class="num">97,0%</td></tr>
+          <tr><td class="num">70</td><td class="num">99,9%</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Bastam 23 pessoas.</strong> O resultado choca quase todo mundo — menos de uma
+      turma de escola.</p>
+      <p><strong>Por que a intuição erra.</strong> Pensamos espontaneamente em "alguém faz
+      aniversário no <em>meu</em> dia", que envolve apenas \(n-1\) comparações. Mas a pergunta
+      é sobre <em>duas pessoas quaisquer</em>, e o número de pares é</p>
+      <p>\[\binom{n}{2} = \frac{n(n-1)}{2},\]</p>
+      <p>que cresce com o <strong>quadrado</strong> de \(n\). Com 23 pessoas são 253 pares —
+      e aí 50% deixa de ser surpreendente.</p>
+      <p><em>(Para a outra pergunta — "alguém coincide comigo" — seriam necessárias 253 <b>outras</b>
+      pessoas, isto é, uma sala de 254. A diferença entre as duas perguntas é todo o problema.)</em></p>
+    </div>
+  </details>
+
+  <div data-widget="aniversarios"></div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Onde isso aparece na prática</span>
+    <p>O mesmo cálculo governa o <strong>paradoxo do aniversário em criptografia</strong>: a
+    probabilidade de duas entradas distintas produzirem o mesmo valor de uma função <em>hash</em>
+    de \(b\) bits torna-se apreciável já com cerca de \(2^{b/2}\) tentativas, e não
+    \(2^{b}\). É por isso que funções de 64 bits são consideradas inseguras.</p>
+    <p>Em Física, o raciocínio reaparece sempre que contamos <strong>coincidências</strong>:
+    eventos simultâneos em dois detectores, ou picos espúrios em um espectro. Com muitos canais,
+    alguma coincidência por acaso é quase certa — e confundi-la com sinal é um erro clássico.</p>
+  </div>
+
+  <h3>Exercício resolvido 2.5 — Comissão com restrição</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
     <p>Em uma turma de Licenciatura em Física há 7 mulheres e 5 homens. Deve-se formar uma
@@ -296,7 +417,7 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s6">6. Quadro-resumo: qual fórmula usar?</h2>
+  <h2 id="s6">7. Quadro-resumo: qual fórmula usar?</h2>
 
   <div class="tabela-rolavel">
   <table>
@@ -323,7 +444,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s7">7. Binômio de Newton</h2>
+  <h2 id="s7">8. Binômio de Newton e o triângulo de Pascal</h2>
 
   <div class="bloco def">
     <span class="rotulo">Teorema binomial</span>
@@ -344,15 +465,40 @@
     de um teorema de álgebra.</p>
   </div>
 
+
+  <h3>O triângulo de Pascal</h3>
+
+  <p>Dispor os coeficientes \(\binom{n}{k}\) em linhas produz o triângulo. Cada número é a
+  soma dos dois imediatamente acima — a <strong>relação de Stifel</strong> da seção 6 — e cada
+  linha fornece de uma vez todos os coeficientes de \((x+y)^n\).</p>
+
+  <p>Clique em qualquer célula do triângulo abaixo para ver o que ela significa:</p>
+
+  <div data-widget="pascal"></div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Três leituras do mesmo número</span>
+    <p>A célula \(\binom{4}{2}=6\), por exemplo, responde simultaneamente a três perguntas
+    que parecem diferentes:</p>
+    <ul>
+      <li>De quantas maneiras escolher 2 objetos entre 4? <em>(combinatória)</em></li>
+      <li>Qual o coeficiente de \(x^2y^2\) em \((x+y)^4\)? <em>(álgebra)</em></li>
+      <li>Quantos caminhos levam do topo até aquela célula, descendo sempre? <em>(contagem de trajetos)</em></li>
+    </ul>
+    <p>E, no Módulo 4, uma quarta: de quantas maneiras obter 2 caras em 4 lançamentos de uma
+    moeda. É o mesmo número porque é o mesmo problema vestido de roupas diferentes — e perceber
+    isso é boa parte do que significa aprender matemática.</p>
+  </div>
+
   <!-- ================================================== -->
-  <h2 id="s8">8. Contando microestados</h2>
+  <h2 id="s8">9. Contando microestados</h2>
 
   <p>Toda a combinatória acima tem uma aplicação direta e central em Física: contar os
   microestados de um sistema. O número de microestados compatíveis com um macroestado é a
   <strong>multiplicidade</strong> \(\Omega_{\text{mic}}\), e dela sai a entropia,
   \(S = k_B \ln \Omega_{\text{mic}}\).</p>
 
-  <h3>Exercício resolvido 2.5 — Sistema de spins</h3>
+  <h3>Exercício resolvido 2.6 — Sistema de spins</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
     <p>Um sistema tem \(N=20\) spins distinguíveis, cada um podendo apontar para cima ou para
@@ -406,7 +552,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s9">9. Exercícios propostos</h2>
+  <h2 id="s9">10. Exercícios propostos</h2>
 
   <ol>
     <li>Quantos números de 4 algarismos distintos podem ser formados com os dígitos
