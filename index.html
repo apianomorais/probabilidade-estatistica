@@ -46,10 +46,112 @@
     </p>
   </div>
 
-  <p>Este site reúne o conteúdo da disciplina, organizado em módulos de aproximadamente
-  três horas cada. Cada módulo traz a teoria
-  completa, exercícios resolvidos passo a passo e <strong>simuladores interativos</strong> —
-  você muda os parâmetros e vê a matemática responder na hora.</p>
+  <h2 id="apresentacao">Uma ciência nascida nas mesas de jogo</h2>
+
+  <p>Em julho de 1654, dois matemáticos franceses trocaram cartas sobre um problema que um
+  jogador profissional lhes havia proposto. <strong>Antoine Gombaud</strong>, o Cavaleiro de
+  Méré, era um nobre com gosto por apostas e tempo de sobra. Ele queria saber como dividir o
+  dinheiro de uma partida de dados interrompida antes do fim — quem está ganhando deveria levar
+  tudo? A aposta deveria ser devolvida? E se faltassem apenas dois pontos para um dos jogadores?</p>
+
+  <p>A pergunta parecia frívola. <strong>Blaise Pascal</strong> e <strong>Pierre de Fermat</strong>
+  levaram-na a sério, e naquela troca de cartas — sete, ao todo — inventaram uma maneira
+  inteiramente nova de raciocinar: em vez de perguntar <em>o que vai acontecer</em>, perguntar
+  <em>com que frequência cada coisa aconteceria</em>, se a partida fosse repetida indefinidamente.
+  Era o nascimento da teoria da probabilidade.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">O que o acaso tem de romântico</span>
+    <p>Há algo de belo no fato de que a matemática do incerto tenha nascido não de uma
+    necessidade prática grandiosa, mas da curiosidade sobre um jogo. Os jogos de azar eram o
+    laboratório perfeito: dados e cartas são sistemas <em>simples o bastante</em> para que se
+    possa enumerar todos os resultados, e <em>imprevisíveis o bastante</em> para que a previsão
+    exata seja impossível. Exatamente a tensão que a probabilidade resolve.</p>
+    <p>A palavra <em>azar</em>, aliás, vem do árabe <em>az-zahr</em>, "o dado". E
+    <em>aleatório</em> vem do latim <em>alea</em>, também "dado" — a mesma palavra da frase que
+    César teria dito ao cruzar o Rubicão, <em>alea jacta est</em>: a sorte está lançada. A
+    linguagem guarda a origem.</p>
+  </div>
+
+  <h3>De Cardano a Kolmogorov</h3>
+
+  <p>Pascal e Fermat não foram exatamente os primeiros. Um século antes, o italiano
+  <strong>Girolamo Cardano</strong> — médico, algebrista e jogador compulsivo — escrevera o
+  <em>Liber de ludo aleae</em>, um livro sobre jogos de azar que continha, entre conselhos sobre
+  como detectar trapaça, a primeira formulação da ideia de que a chance de um evento é a razão
+  entre casos favoráveis e casos possíveis. O livro só foi publicado em 1663, mais de um século
+  depois de escrito, quando Pascal e Fermat já haviam refeito o caminho.</p>
+
+  <p>Em 1657, <strong>Christiaan Huygens</strong> publicou o primeiro tratado impresso sobre o
+  assunto e deu o passo decisivo: aplicou a probabilidade a algo que não era jogo nenhum — o
+  cálculo da <strong>expectativa de vida</strong>, a partir de registros de óbitos. Pela primeira
+  vez, a matemática do acaso descrevia o mundo.</p>
+
+  <p>Daí em diante a história é de expansão. Jacob Bernoulli demonstra a lei dos grandes números;
+  De Moivre encontra a curva em sino; Laplace escreve o tratado que define o campo por um século;
+  Gauss usa a distribuição normal para tratar erros de observação astronômica. E em
+  <strong>1933</strong>, o russo <strong>Andrei Kolmogorov</strong> faz o que faltava: reduz toda
+  a teoria a <strong>três axiomas</strong>, tão simples que cabem em cinco linhas, dos quais tudo
+  o mais decorre. É a versão que você vai estudar no Módulo 1.</p>
+
+  <h3>Por que um físico precisa disso</h3>
+
+  <p>Por boa parte da história, a Física foi a ciência do determinismo. Laplace chegou a
+  escrever que uma inteligência que conhecesse a posição e a velocidade de todas as partículas do
+  universo poderia prever todo o futuro. O acaso, nessa visão, era apenas um nome para a nossa
+  ignorância.</p>
+
+  <p>O século XX desfez isso de duas maneiras, e ambas são razões pelas quais esta disciplina
+  existe no seu currículo.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">1. O acaso como ferramenta: a Física Estatística</span>
+    <p>Um copo d'água tem cerca de \(10^{24}\) moléculas. Resolver as equações de movimento de
+    todas elas é impossível — e, mesmo que fosse possível, inútil. Mas é justamente o número
+    gigantesco que salva o problema: quando se somam \(10^{24}\) contribuições aleatórias, as
+    flutuações relativas caem como \(1/\sqrt{N}\) e se tornam <em>invisíveis</em>. A temperatura,
+    a pressão e a entropia emergem como <strong>médias estatísticas</strong> tão estáveis que
+    parecem leis determinísticas.</p>
+    <p>Boltzmann descobriu que a entropia é o logaritmo de uma <em>contagem</em>, e que a Segunda
+    Lei da Termodinâmica não é uma proibição, mas uma afirmação de probabilidade: o gás não se
+    concentra espontaneamente num canto da sala porque isso seria <em>absurdamente</em>
+    improvável — não porque seja proibido.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">2. O acaso como natureza: a Mecânica Quântica</span>
+    <p>Aqui a mudança é mais profunda. Quando um átomo radioativo decai, não há variável oculta
+    que determine o instante. A teoria quântica fornece apenas a <strong>probabilidade</strong>
+    de decaimento, e os experimentos indicam que não há nada por trás dela. O acaso deixou de ser
+    ignorância e passou a ser constituinte do mundo.</p>
+    <p>É o que incomodava Einstein quando escreveu que Deus não joga dados. A frase é famosa; a
+    resposta de Bohr, menos — ele teria dito a Einstein que parasse de dizer a Deus o que fazer.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">3. O acaso como método: toda medida experimental</span>
+    <p>E há a razão mais cotidiana de todas. <strong>Nenhuma medida é exata.</strong> Repita a
+    medição de um período de pêndulo dez vezes e você obterá dez números diferentes. Escrever
+    \(g = 9{,}79 \pm 0{,}03\ \mathrm{m/s^2}\) é fazer uma afirmação probabilística — e não saber
+    exatamente qual afirmação é não entender o próprio resultado.</p>
+    <p>Decidir se dois resultados concordam, se um efeito é real ou flutuação, quantas medidas
+    fazer, que reta ajustar a um conjunto de pontos: tudo isso é estatística. O anúncio da
+    descoberta do bóson de Higgs, em 2012, foi literalmente um enunciado estatístico — um excesso
+    de contagens de \(5\sigma\), termo que você entenderá no Módulo 5.</p>
+  </div>
+
+  <div class="destaque">
+    Pascal e Fermat queriam dividir o dinheiro de uma partida interrompida.<br>
+    Trezentos e setenta anos depois, as mesmas ideias sustentam a termodinâmica, a mecânica
+    quântica e cada barra de erro de cada gráfico que você vai desenhar na vida.
+  </div>
+
+  <h2>Como este material funciona</h2>
+
+  <p>O site reúne o conteúdo da disciplina em módulos de aproximadamente três horas cada. Cada
+  módulo traz a teoria completa, exercícios resolvidos passo a passo e
+  <strong>simuladores interativos</strong> — você muda os parâmetros e vê a matemática responder
+  na hora.</p>
 
   <div class="destaque">
     <strong>Como usar durante a aula:</strong> acompanhe a leitura, pare em cada simulador e

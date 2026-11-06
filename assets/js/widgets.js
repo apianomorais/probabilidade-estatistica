@@ -1270,6 +1270,118 @@
   }
 
   /* =================================================================
+     14b. Grade do espaço amostral de dois dados
+     ================================================================= */
+  var EVENTOS_DADOS = {
+    igual:   { rot: 'A soma é igual a k', usaK: true,
+               teste: function (i, j, k) { return i + j === k; } },
+    maiorig: { rot: 'A soma é maior ou igual a k', usaK: true,
+               teste: function (i, j, k) { return i + j >= k; } },
+    menorig: { rot: 'A soma é menor ou igual a k', usaK: true,
+               teste: function (i, j, k) { return i + j <= k; } },
+    par:     { rot: 'A soma é par', usaK: false,
+               teste: function (i, j) { return (i + j) % 2 === 0; } },
+    dupla:   { rot: 'Os dois dados são iguais (dupla)', usaK: false,
+               teste: function (i, j) { return i === j; } },
+    seis:    { rot: 'Pelo menos um dado mostra 6', usaK: false,
+               teste: function (i, j) { return i === 6 || j === 6; } },
+    maior:   { rot: 'O dado vermelho é maior que o azul', usaK: false,
+               teste: function (i, j) { return i > j; } }
+  };
+
+  function gradeDados(raiz) {
+    var c = moldura(raiz, 'O espaço amostral de dois dados, célula por célula');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var evento = 'igual', k = 7;
+
+    var campoSel = el('div', { class: 'campo', style: 'flex:2 1 260px' });
+    campoSel.appendChild(el('label', { html: 'Evento favorável' }));
+    var sel = el('select');
+    Object.keys(EVENTOS_DADOS).forEach(function (key) {
+      sel.appendChild(el('option', { value: key, texto: EVENTOS_DADOS[key].rot }));
+    });
+    campoSel.appendChild(sel); ctr.appendChild(campoSel);
+    sel.addEventListener('change', function () { evento = sel.value; atualizar(); });
+
+    var slK = deslizante(ctr, 'valor de k', 2, 12, 1, 7, function (v) { k = v; atualizar(); });
+    var campoK = slK.parentNode;
+
+    var grade = el('div', { class: 'grade-dados' }); c.appendChild(grade);
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Distribuição da soma &nbsp;·&nbsp; em destaque, as somas que pertencem ao evento' }));
+    var painel = cartoes(c, [
+      { rot: 'casos favoráveis |A|', k: 'fav' },
+      { rot: 'casos possíveis |Ω|', k: 'tot' },
+      { rot: 'P(A) = |A|/|Ω|', k: 'p' },
+      { rot: 'em porcentagem', k: 'pc' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    /* desenha a grade 7x7 (cabeçalhos + 36 células) */
+    function montarGrade() {
+      grade.innerHTML = '';
+      grade.appendChild(el('div', { class: 'gd-canto', html: '+' }));
+      for (var j = 1; j <= 6; j++) {
+        grade.appendChild(el('div', { class: 'gd-cab gd-azul', texto: String(j) }));
+      }
+      for (var i = 1; i <= 6; i++) {
+        grade.appendChild(el('div', { class: 'gd-cab gd-vermelho', texto: String(i) }));
+        for (var jj = 1; jj <= 6; jj++) {
+          grade.appendChild(el('div', {
+            class: 'gd-cel', 'data-i': i, 'data-j': jj,
+            html: '<span class="gd-soma">' + (i + jj) + '</span>'
+                + '<span class="gd-par">(' + i + ',' + jj + ')</span>'
+          }));
+        }
+      }
+    }
+
+    function atualizar() {
+      var ev = EVENTOS_DADOS[evento];
+      campoK.style.display = ev.usaK ? '' : 'none';
+
+      var fav = 0, porSoma = {};
+      for (var s = 2; s <= 12; s++) porSoma[s] = false;
+      grade.querySelectorAll('.gd-cel').forEach(function (cel) {
+        var i = Number(cel.getAttribute('data-i')), j = Number(cel.getAttribute('data-j'));
+        var ok = ev.teste(i, j, k);
+        cel.classList.toggle('favoravel', ok);
+        if (ok) { fav++; porSoma[i + j] = true; }
+      });
+
+      painel({ fav: String(fav), tot: '36', p: fav + '/36', pc: M.pct(fav / 36, 1) });
+
+      /* distribuição da soma, com as somas do evento em destaque */
+      var dados = [], ymax = 6;
+      for (var t = 2; t <= 12; t++) dados.push({ x: t, y: 6 - Math.abs(t - 7) });
+      var g = G.eixos(cv, {
+        xmin: 1.4, xmax: 12.6, ymax: ymax * 1.16, altura: 190,
+        rotX: 'soma dos dois dados', rotY: 'nº de pares',
+        marcasX: G.marcasInteiras(2, 12, 11), divY: 6,
+        formataY: function (v) { return String(Math.round(v)); }
+      });
+      G.barras(g, dados.filter(function (d) { return !porSoma[d.x]; }), '#c9d6e2', 0.74);
+      G.barras(g, dados.filter(function (d) { return porSoma[d.x]; }), G.COR.vinho, 0.74);
+
+      var mdc = (function (a, b) { while (b) { var t2 = a % b; a = b; b = t2; } return a; })(fav, 36);
+      var fracao = fav === 0 ? '0' : (fav / mdc) + '/' + (36 / mdc);
+
+      saida.innerHTML = fav === 0
+        ? 'Nenhuma célula satisfaz o evento: ele é <b>impossível</b>, e P(A) = 0.'
+        : 'Há <b>' + fav + '</b> células destacadas entre as <b>36</b> do quadro, portanto '
+          + 'P(A) = ' + fav + '/36 = <b>' + fracao + '</b> ≈ <b>' + M.pct(fav / 36, 1) + '</b>. '
+          + (fav === 36 ? 'Todas as células: o evento é <b>certo</b>. ' : '')
+          + 'Repare que <b>cada célula vale 1/36</b> — são elas as equiprováveis, '
+          + 'e não as onze somas possíveis.';
+    }
+
+    montarGrade();
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      15. Da população à distribuição amostral da média
      ================================================================= */
   var POPULACOES = {
@@ -1562,7 +1674,7 @@
     bayes: bayes, discreta: discreta, binomial: binomial, poisson: poisson,
     normal: normal, tcl: tcl, passeio: passeio, moeda: moeda, exponencial: exponencial,
     descritiva: descritiva, amostragem: amostragem, tstudent: tstudent,
-    quiquadrado: quiquadrado
+    quiquadrado: quiquadrado, gradedados: gradeDados
   };
 
   document.addEventListener('DOMContentLoaded', function () {

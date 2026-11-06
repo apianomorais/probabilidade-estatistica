@@ -66,7 +66,8 @@ aula05.html ............. Modulo 5 — variaveis continuas e Normal
 formulario.html ......... formulario completo + tabela z (imprimivel)
 assets/css/estilo.css ... toda a aparencia do site
 assets/js/comum.js ...... matematica, graficos, configuracao do MathJax
-assets/js/widgets.js .... os 13 simuladores interativos
+assets/js/widgets.js .... os simuladores interativos
+assets/fontes/ .......... fonte Audiowide (auto-hospedada)
 assets/img/logo-lfca.png  logo do LFCA
 assets/img/favicon.png .. icone da aba do navegador
 README.md ............... apresentacao do repositorio no GitHub

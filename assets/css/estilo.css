@@ -1,4 +1,25 @@
 /* ===================================================================
+   Audiowide — fonte de display da identidade do LFCA
+   Auto-hospedada: sem dependência do Google Fonts, funciona offline.
+   =================================================================== */
+@font-face{
+  font-family:'Audiowide';
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url('../fontes/audiowide-latin-ext-400-normal.woff2') format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face{
+  font-family:'Audiowide';
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url('../fontes/audiowide-latin-400-normal.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* ===================================================================
    Probabilidade & Estatística — Licenciatura em Física EAD / URCA
    Folha de estilo única. Sem dependências.
    =================================================================== */
@@ -20,6 +41,12 @@
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  /* fonte de display da identidade do LFCA */
+  --display:"Audiowide",system-ui,sans-serif;
+  /* cores da logo do laboratório */
+  --laranja:#fd6500;        /* laranja da marca — preenchimentos e bordas */
+  --laranja-texto:#bc4a00;  /* versão escurecida, legível sobre branco */
+  --preto-lfca:#000000;
 }
 
 *{box-sizing:border-box}
@@ -301,3 +328,79 @@ mjx-container[display="true"]{
 }
 .nav-aulas .em-breve small{display:block;color:var(--tinta-suave);font-size:.72rem;
   text-transform:uppercase;letter-spacing:.07em}
+
+/* ---------- Grade do espaço amostral de dois dados ---------- */
+.grade-dados{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:3px;
+  margin:.4rem auto 1rem;font-family:var(--sans);max-width:540px;
+}
+.grade-dados>div{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  aspect-ratio:1/1;border-radius:6px;line-height:1.1;
+}
+.gd-canto{background:transparent;color:var(--tinta-suave);font-size:1rem;font-weight:700}
+.gd-cab{font-weight:700;font-size:.95rem;color:#fff}
+.gd-vermelho{background:var(--vinho)}
+.gd-azul{background:var(--azul-claro)}
+.gd-cel{
+  background:var(--papel-alt);border:1px solid var(--borda);
+  transition:background .12s,border-color .12s,transform .12s;
+}
+.gd-cel .gd-soma{font-size:1.05rem;font-weight:700;color:var(--tinta-suave)}
+.gd-cel .gd-par{font-size:.62rem;color:#96a2ad;margin-top:1px}
+.gd-cel.favoravel{
+  background:#fbe9c8;border-color:var(--ambar);transform:scale(1.04);
+}
+.gd-cel.favoravel .gd-soma{color:#8a5f0d}
+.gd-cel.favoravel .gd-par{color:#a8822f}
+@media (max-width:520px){
+  .grade-dados{gap:2px}
+  .gd-cel .gd-soma{font-size:.82rem}
+  .gd-cel .gd-par{font-size:.5rem}
+  .gd-cab{font-size:.8rem}
+}
+
+/* ===================================================================
+   Identidade do LFCA — fonte de display e cores da marca
+   =================================================================== */
+
+/* Audiowide é uma fonte de exibição: só em textos curtos e grandes */
+.marca,
+.heroi h1,
+.chapeu,
+.cartao .numero,
+.destaque .anuncio,
+.widget-cabeca{
+  font-family:var(--display);
+  font-weight:400;
+}
+
+.marca{font-size:.86rem;letter-spacing:0}
+.marca span{font-family:var(--sans);font-weight:400}
+.heroi h1{letter-spacing:.005em;font-size:1.85rem;line-height:1.25}
+.chapeu{color:var(--laranja-texto);letter-spacing:.06em;font-size:.68rem}
+.cartao .numero{color:var(--laranja-texto);letter-spacing:.04em;font-size:.62rem}
+.widget-cabeca{font-size:.76rem;letter-spacing:.01em}
+
+/* anúncio especial: a chamada curta no alto de um bloco de destaque */
+.destaque .anuncio{
+  display:block;color:var(--laranja-texto);
+  font-size:.82rem;letter-spacing:.03em;margin-bottom:.45rem;
+}
+
+/* o laranja da marca como cor de acento */
+.destaque{
+  background:#fff8f2;border-color:#f2c49b;
+}
+.bloco.fisica{border-left-color:var(--laranja);background:#fff7f0}
+.bloco.fisica .rotulo{color:var(--laranja-texto)}
+.cartao:hover{border-color:var(--laranja)}
+.etiqueta{background:#ffeede;color:var(--laranja-texto)}
+.topo{border-bottom:3px solid var(--laranja)}
+.rodape{border-top:3px solid var(--laranja)}
+.placa-logo{border-bottom:3px solid var(--laranja)}
+
+@media (max-width:620px){
+  .marca{font-size:.72rem}
+  .heroi h1{font-size:1.4rem}
+}
