@@ -4201,6 +4201,205 @@
   }
 
   /* =================================================================
+     Propagação de erros: fórmula contra Monte Carlo
+     ================================================================= */
+  var FORMULAS = {
+    soma:  { rot: 'z = x + y', f: function (x, y) { return x + y; },
+             dx: function () { return 1; }, dy: function () { return 1; },
+             lei: 'Soma: as incertezas <b>absolutas</b> se compõem em quadratura.',
+             expr: '\\sigma_z = \\sqrt{\\sigma_x^2+\\sigma_y^2}' },
+    sub:   { rot: 'z = x − y', f: function (x, y) { return x - y; },
+             dx: function () { return 1; }, dy: function () { return -1; },
+             lei: 'Subtração: <b>a mesma</b> fórmula da soma — as incertezas somam, '
+                + 'nunca se cancelam.',
+             expr: '\\sigma_z = \\sqrt{\\sigma_x^2+\\sigma_y^2}' },
+    prod:  { rot: 'z = x · y', f: function (x, y) { return x * y; },
+             dx: function (x, y) { return y; }, dy: function (x) { return x; },
+             lei: 'Produto: as incertezas <b>relativas</b> se compõem em quadratura.',
+             expr: '\\frac{\\sigma_z}{|z|} = \\sqrt{\\left(\\frac{\\sigma_x}{x}\\right)^2'
+                 + '+\\left(\\frac{\\sigma_y}{y}\\right)^2}' },
+    div:   { rot: 'z = x / y', f: function (x, y) { return x / y; },
+             dx: function (x, y) { return 1 / y; },
+             dy: function (x, y) { return -x / (y * y); },
+             lei: 'Divisão: igual ao produto, em incertezas relativas.',
+             expr: '\\frac{\\sigma_z}{|z|} = \\sqrt{\\left(\\frac{\\sigma_x}{x}\\right)^2'
+                 + '+\\left(\\frac{\\sigma_y}{y}\\right)^2}' },
+    pot:   { rot: 'z = x²·y', f: function (x, y) { return x * x * y; },
+             dx: function (x, y) { return 2 * x * y; },
+             dy: function (x) { return x * x; },
+             lei: 'Potência: o expoente <b>multiplica</b> a incerteza relativa.',
+             expr: '\\frac{\\sigma_z}{|z|} = \\sqrt{\\left(2\\frac{\\sigma_x}{x}\\right)^2'
+                 + '+\\left(\\frac{\\sigma_y}{y}\\right)^2}' },
+    raiz:  { rot: 'z = x / √y   (ex.: T = 2π√(L/g))',
+             f: function (x, y) { return x / Math.sqrt(y); },
+             dx: function (x, y) { return 1 / Math.sqrt(y); },
+             dy: function (x, y) { return -0.5 * x / Math.pow(y, 1.5); },
+             lei: 'Raiz: o expoente ½ <b>divide por dois</b> a incerteza relativa.',
+             expr: '\\frac{\\sigma_z}{|z|} = \\sqrt{\\left(\\frac{\\sigma_x}{x}\\right)^2'
+                 + '+\\left(\\tfrac12\\frac{\\sigma_y}{y}\\right)^2}' },
+    log:   { rot: 'z = ln x  (y ignorado)', f: function (x) { return Math.log(x); },
+             dx: function (x) { return 1 / x; }, dy: function () { return 0; },
+             lei: 'Logaritmo: a incerteza <b>absoluta</b> de ln x é a incerteza '
+                + '<b>relativa</b> de x.',
+             expr: '\\sigma_z = \\frac{\\sigma_x}{x}' }
+  };
+
+  function propagacao(raiz) {
+    var c = moldura(raiz, 'Propagação de erros: a fórmula e o teste de Monte Carlo');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var tipo = 'raiz';
+
+    var campoT = el('div', { class: 'campo', style: 'flex:3 1 300px' });
+    campoT.appendChild(el('label', { html: 'Operação' }));
+    var selT = el('select');
+    Object.keys(FORMULAS).forEach(function (k) {
+      selT.appendChild(el('option', { value: k, texto: FORMULAS[k].rot }));
+    });
+    selT.value = 'raiz';
+    campoT.appendChild(selT); ctr.appendChild(campoT);
+    selT.addEventListener('change', function () { tipo = selT.value; atualizar(); });
+
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    function campoNum(rot, ini, passo) {
+      var cp = el('div', { class: 'campo' });
+      cp.appendChild(el('label', { html: rot }));
+      var inp = el('input', { type: 'number', value: ini, step: passo || 'any' });
+      cp.appendChild(inp); ctr2.appendChild(cp);
+      inp.addEventListener('input', atualizar);
+      return inp;
+    }
+    var iX = campoNum('x', 6.283);
+    var iSx = campoNum('σ de x', 0.02);
+    var iY = campoNum('y', 9.78);
+    var iSy = campoNum('σ de y', 0.05);
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda', html:
+      'Histograma: 40 000 simulações sorteando x e y de suas próprias normais e calculando z '
+      + 'a cada vez. Curva vinho: a Normal que a <b>fórmula</b> prevê. Se as duas coincidem, '
+      + 'a aproximação linear é boa.' });
+    c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'z', k: 'z' }, { rot: 'σ_z pela fórmula', k: 'sf' },
+      { rot: 'σ_z por Monte Carlo', k: 'smc' }, { rot: 'incerteza relativa', k: 'rel' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var F = FORMULAS[tipo];
+      var x = Number(iX.value), sx = Math.abs(Number(iSx.value));
+      var y = Number(iY.value), sy = Math.abs(Number(iSy.value));
+      var z = F.f(x, y);
+      if (!isFinite(z)) {
+        saida.innerHTML = 'Os valores escolhidos tornam a expressão indefinida.';
+        painel({ z: '—', sf: '—', smc: '—', rel: '—' });
+        G.preparar(cv, 290); return;
+      }
+
+      var a = F.dx(x, y), b = F.dy(x, y);
+      var sForm = Math.sqrt(a * a * sx * sx + b * b * sy * sy);
+
+      /* Monte Carlo com gerador reprodutível */
+      var N = 40000, s = 12345, amostras = [], i;
+      function rnd() { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; }
+      function normal() {
+        var u1 = Math.max(1e-12, rnd()), u2 = rnd();
+        return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+      }
+      var somaZ = 0;
+      for (i = 0; i < N; i++) {
+        var v = F.f(x + sx * normal(), y + sy * normal());
+        if (isFinite(v)) { amostras.push(v); somaZ += v; }
+      }
+      var mMC = somaZ / amostras.length, va = 0;
+      for (i = 0; i < amostras.length; i++) va += (amostras[i] - mMC) * (amostras[i] - mMC);
+      var sMC = Math.sqrt(va / (amostras.length - 1));
+
+      painel({
+        z: M.fmt(z, 5), sf: '±' + M.fmt(sForm, 5), smc: '±' + M.fmt(sMC, 5),
+        rel: M.pct(Math.abs(sForm / z), 3)
+      });
+
+      /* histograma contra a normal prevista */
+      var lim = 4.2 * Math.max(sForm, sMC);
+      var lo = z - lim, hi = z + lim, nb = 70;
+      var cont = new Array(nb).fill(0), dentro = 0;
+      for (i = 0; i < amostras.length; i++) {
+        var k = Math.floor((amostras[i] - lo) / (hi - lo) * nb);
+        if (k >= 0 && k < nb) { cont[k]++; dentro++; }
+      }
+      var larg = (hi - lo) / nb;
+      var barras = [], ymax = 0;
+      for (i = 0; i < nb; i++) {
+        var dens = cont[i] / (dentro * larg);
+        barras.push({ x: lo + (i + 0.5) * larg, y: dens });
+        ymax = Math.max(ymax, dens);
+      }
+      var curva = function (v) { return M.dNormal(v, z, sForm); };
+      ymax = Math.max(ymax, curva(z)) * 1.18;
+
+      var g = G.eixos(cv, {
+        xmin: lo, xmax: hi, ymax: ymax, altura: 290,
+        rotX: 'valor de z', rotY: 'densidade',
+        marcasX: G.marcasLineares(lo, hi, 6, 3),
+        formataY: function (v) { return M.fmt(v, 1); }
+      });
+      G.barras(g, barras, 'rgba(31,78,121,.42)', larg);
+      G.curva(g, curva, G.COR.vinho, 2.4);
+      G.vertical(g, z, '#2e7d4f', 'z');
+
+      /* contribuições de cada variável */
+      var cx = a * a * sx * sx, cy = b * b * sy * sy, tot = cx + cy;
+
+      var txt = '<b>' + F.lei + '</b>'
+        + '<br><br>A fórmula geral, para \\(z=f(x,y)\\) com x e y independentes, é'
+        + '<br>\\( \\sigma_z^2=\\left(\\frac{\\partial f}{\\partial x}\\right)^2\\sigma_x^2'
+        + '+\\left(\\frac{\\partial f}{\\partial y}\\right)^2\\sigma_y^2 \\)'
+        + '<br>e neste caso ela se reduz a \\( ' + F.expr + ' \\).';
+
+      txt += '<br><br><b>As derivadas aqui valem</b> ∂f/∂x = ' + M.fmt(a, 5)
+        + ' e ∂f/∂y = ' + M.fmt(b, 5) + ', de modo que'
+        + '<br>σ<sub>z</sub>² = (' + M.fmt(a, 4) + ')²(' + M.fmt(sx, 4) + ')² + ('
+        + M.fmt(b, 4) + ')²(' + M.fmt(sy, 4) + ')² = ' + M.fmt(tot, 8)
+        + ' &nbsp;⟹&nbsp; σ<sub>z</sub> = <b>' + M.fmt(sForm, 5) + '</b>.';
+
+      txt += '<br><br><b>Quem domina a incerteza.</b> A variável x contribui com <b>'
+        + M.pct(tot > 0 ? cx / tot : 0, 1) + '</b> da variância de z, e y com <b>'
+        + M.pct(tot > 0 ? cy / tot : 0, 1) + '</b>. '
+        + (Math.max(cx, cy) / tot > 0.8
+            ? 'Uma delas domina claramente: <b>melhorar a outra é desperdício de esforço</b>. '
+              + 'Como as contribuições entram ao quadrado, reduzir a maior pela metade '
+              + 'rende muito mais que zerar a menor.'
+            : 'As duas contribuem de forma comparável, de modo que vale a pena melhorar '
+              + 'ambas.');
+
+      var disc = Math.abs(sMC - sForm) / sForm;
+      txt += '<br><br><b>Monte Carlo confere?</b> A simulação deu σ = ' + M.fmt(sMC, 5)
+        + ' contra ' + M.fmt(sForm, 5) + ' da fórmula, uma diferença de '
+        + M.pct(disc, 1) + '. '
+        + (disc < 0.03
+            ? 'Concordam, o que valida a <b>aproximação linear</b>: nesta faixa a função é '
+              + 'praticamente uma reta, e a fórmula com derivadas basta.'
+            : '<b>Discordam.</b> A fórmula usa só o primeiro termo da série de Taylor, e '
+              + 'com incertezas grandes em relação aos valores a função deixa de ser '
+              + 'aproximadamente linear. Repare que o histograma também ficou assimétrico, '
+              + 'enquanto a fórmula sempre prevê uma normal simétrica.');
+
+      txt += '<br><br><i>Experimente aumentar muito um dos σ</i> e veja o histograma '
+        + 'deformar enquanto a curva vinho permanece simétrica. É o limite de validade da '
+        + 'propagação por derivadas — e a razão de o Monte Carlo ser o método de referência '
+        + 'quando as incertezas são grandes.';
+
+      saida.innerHTML = txt;
+      if (window.MathJax && window.MathJax.typesetPromise)
+        window.MathJax.typesetPromise([saida]).catch(function () {});
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Verossimilhança: encontrar o parâmetro mais provável
      ================================================================= */
   function verossimilhanca(raiz) {
@@ -6193,7 +6392,8 @@
     coefsw: coefSW, escadaks: escadaKS,
     tamanhoamostral: tamanhoAmostral, curvaspoder: curvasPoder,
     algarismos: algarismos, instrumentos: instrumentos, tiposerro: tiposErro,
-    verossimilhanca: verossimilhanca, limitenormal: limiteNormal
+    verossimilhanca: verossimilhanca, limitenormal: limiteNormal,
+    propagacao: propagacao
   };
 
   document.addEventListener('DOMContentLoaded', function () {
