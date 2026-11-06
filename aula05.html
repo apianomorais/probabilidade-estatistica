@@ -39,11 +39,13 @@
     <li><a href="#s2">2. Média e variância</a></li>
     <li><a href="#s3">3. Uniforme</a></li>
     <li><a href="#s4">4. Exponencial</a></li>
-    <li><a href="#s5">5. Distribuição normal</a></li>
-    <li><a href="#s6">6. Padronização e tabela z</a></li>
-    <li><a href="#s7">7. Teorema Central do Limite</a></li>
-    <li><a href="#s8">8. Aplicações em Física</a></li>
-    <li><a href="#s9">9. Exercícios propostos</a></li>
+    <li><a href="#sh">5. A história da curva em sino</a></li>
+    <li><a href="#s5">6. Distribuição normal</a></li>
+    <li><a href="#s6">7. Padronização e tabela z</a></li>
+    <li><a href="#s7">8. Teorema Central do Limite</a></li>
+    <li><a href="#sn">9. Os dados são normais?</a></li>
+    <li><a href="#s8">10. Aplicações em Física</a></li>
+    <li><a href="#s9">11. Exercícios propostos</a></li>
   </ol>
 </aside>
 
@@ -205,8 +207,68 @@
 
   <div data-widget="exponencial"></div>
 
+
   <!-- ================================================== -->
-  <h2 id="s5">5. A distribuição normal (gaussiana)</h2>
+  <h2 id="sh">5. A história da curva em sino</h2>
+
+  <p>A distribuição que veremos a seguir é tão onipresente que ganhou o apelido de
+  <em>normal</em> — como se as outras fossem anormais. O nome é infeliz, mas a fama é merecida.
+  Vale saber de onde ela veio, porque a história explica por que ela aparece em toda parte.</p>
+
+  <h3>De Moivre e o cálculo impossível</h3>
+
+  <p><strong>Abraham de Moivre</strong> (1667–1754) era um huguenote francês que fugiu para
+  Londres após a revogação do Édito de Nantes e nunca conseguiu um cargo universitário — vivia
+  de dar aulas particulares e de calcular probabilidades para jogadores e seguradoras, em uma
+  mesa do Slaughter's Coffee House.</p>
+
+  <p>Seu problema era prático. Para uma binomial com \(n\) grande, calcular
+  \(\binom{n}{k}p^k(1-p)^{n-k}\) termo a termo é inviável à mão: \(100!\) tem 158 algarismos.
+  Procurando uma aproximação, De Moivre chegou em <strong>1733</strong> à expressão</p>
+
+  <p>\[\binom{n}{k}p^{k}(1-p)^{n-k} \;\approx\;
+  \frac{1}{\sqrt{2\pi np(1-p)}}\;e^{-\,(k-np)^{2}/2np(1-p)},\]</p>
+
+  <p>que é exatamente a curva normal. Ele a via como um <em>truque de cálculo</em> para a
+  binomial, não como uma distribuição de pleno direito — e foi assim que o Teorema Central do
+  Limite nasceu: como um atalho computacional.</p>
+
+  <h3>Gauss, Legendre e a órbita de Ceres</h3>
+
+  <p>Em 1801, o astrônomo Giuseppe Piazzi observou um novo corpo celeste durante 41 dias e o
+  perdeu de vista quando ele passou atrás do Sol. Recuperá-lo exigia prever a órbita a partir de
+  poucas observações imprecisas. <strong>Carl Friedrich Gauss</strong>, então com 24 anos,
+  resolveu o problema e indicou onde procurar; <strong>Ceres</strong> foi reencontrado quase
+  exatamente onde ele previu.</p>
+
+  <p>O método que ele usou — e publicou em 1809 — supunha que os erros de observação seguem a
+  curva em sino, e disso deduzia que a melhor estimativa é a que minimiza a soma dos quadrados
+  dos erros: o <strong>método dos mínimos quadrados</strong>, que estudaremos no Módulo 13.
+  Adrien-Marie Legendre havia publicado o método em 1805, sem a justificativa probabilística, e a
+  disputa de prioridade entre os dois foi amarga. Gauss alegava usá-lo desde 1795.</p>
+
+  <p>Daí vem o nome <strong>gaussiana</strong>, e daí vem também a associação entre a curva e os
+  <em>erros de medida</em> — a razão pela qual ela interessa diretamente a um físico
+  experimental.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Quetelet, e um entusiasmo exagerado</span>
+    <p>O belga <strong>Adolphe Quetelet</strong> (1796–1874) foi quem levou a curva para fora da
+    astronomia. Mediu alturas, pesos e circunferências torácicas de milhares de soldados,
+    encontrou a forma em sino em todos eles e criou a noção de "homem médio". Foi ele quem
+    inventou o índice que hoje chamamos de IMC.</p>
+    <p>Mas Quetelet exagerou: passou a tratar a normalidade como uma <em>lei natural</em>, e a
+    geração seguinte generalizou ainda mais. O matemático Henri Poincaré ironizou a situação
+    dizendo que todos acreditavam na curva dos erros — os experimentadores por julgarem que era
+    um teorema matemático, e os matemáticos por julgarem que era um fato experimental.</p>
+    <p>A ironia é útil como advertência: <strong>nem tudo é normal</strong>. Renda não é.
+    Tamanho de cidades não é. O tempo entre decaimentos radioativos não é — é exponencial, como
+    vimos na seção 4. E tratar como normal o que não é produz conclusões erradas, motivo pelo
+    qual dedicaremos a seção 9 a <em>testar</em> a normalidade em vez de supô-la.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">6. A distribuição normal (gaussiana)</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
@@ -252,7 +314,7 @@
   <div data-widget="normal"></div>
 
   <!-- ================================================== -->
-  <h2 id="s6">6. Padronização e a regra 68–95–99,7</h2>
+  <h2 id="s6">7. Padronização e a regra 68–95–99,7</h2>
 
   <div class="bloco def">
     <span class="rotulo">Variável padronizada</span>
@@ -272,29 +334,38 @@
   serve para todas as normais do mundo. A tabela completa está na
   <a href="formulario.html">página de formulário</a>.</p>
 
-  <h3>Exercício resolvido 5.5 — Alturas</h3>
+  <h3>Exercício resolvido 5.5 — Alturas de estudantes</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
-    <p>A altura de homens adultos numa população segue \(N(175, 7^2)\) cm. Qual a proporção de
-    homens (a) com mais de 185 cm; (b) entre 170 e 180 cm; (c) qual a altura excedida por apenas
-    5% da população?</p>
+    <p>As alturas dos estudantes brasileiros seguem aproximadamente uma distribuição normal com
+    média \(\mu = 170\) cm e desvio padrão \(\sigma = 8\) cm. Determine:
+    (a) o intervalo que contém 68% dos estudantes; (b) a probabilidade de um estudante ter altura
+    entre 162 e 178 cm; (c) a probabilidade de ter altura maior que 186 cm; (d) a altura excedida
+    por apenas 5% da população.</p>
   </div>
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <p><strong>(a)</strong> \(z = (185-175)/7 = 1{,}43\). Da tabela,
-      \(\Phi(1{,}43) = 0{,}9236\), logo \(P(X > 185) = 1-0{,}9236 = \mathbf{7{,}6\%}\).</p>
-      <p><strong>(b)</strong> \(z_1 = (170-175)/7 = -0{,}71\) e \(z_2 = (180-175)/7 = +0{,}71\).
-      Então \(P = \Phi(0{,}71)-\Phi(-0{,}71) = 0{,}7611 - 0{,}2389 = \mathbf{52{,}2\%}\).</p>
-      <p><strong>(c)</strong> Procuramos \(z\) tal que \(\Phi(z) = 0{,}95\), ou seja
-      \(z = 1{,}645\). Desfazendo a padronização:</p>
-      <p>\[x = \mu + z\sigma = 175 + 1{,}645\times 7 \approx \mathbf{186{,}5\ \text{cm}} .\]</p>
-      <p>Confira no simulador acima: ajuste μ = 175 e σ = 7 e varie os limites.</p>
+      <p><strong>(a)</strong> Pela regra empírica, 68% dos dados estão em \(\mu \pm \sigma\):</p>
+      <p>\[170 - 8 = 162 \ \text{cm} \quad\text{a}\quad 170 + 8 = 178\ \text{cm}.\]</p>
+      <p><strong>(b)</strong> É exatamente o mesmo intervalo do item anterior! Padronizando,
+      \(z_1 = (162-170)/8 = -1\) e \(z_2 = (178-170)/8 = +1\), logo</p>
+      <p>\[P(162 \le X \le 178) = \Phi(1)-\Phi(-1) = 0{,}8413 - 0{,}1587 = \mathbf{0{,}6827}.\]</p>
+      <p>Note que o valor exato é <strong>68,27%</strong>, e não 68%. A regra empírica é uma
+      aproximação conveniente; os valores exatos são 68,27%, 95,45% e 99,73%.</p>
+      <p><strong>(c)</strong> \(z = (186-170)/8 = 2\), ou seja, dois desvios padrão acima:</p>
+      <p>\[P(X > 186) = 1 - \Phi(2) = 1 - 0{,}9772 = \mathbf{0{,}0228} = 2{,}28\%.\]</p>
+      <p>Cerca de 1 estudante em 44.</p>
+      <p><strong>(d)</strong> Agora o caminho é inverso: procuramos \(z\) com \(\Phi(z)=0{,}95\),
+      que a tabela dá como \(z = 1{,}645\). Desfazendo a padronização:</p>
+      <p>\[x = \mu + z\sigma = 170 + 1{,}645 \times 8 \approx \mathbf{183{,}2\ \text{cm}}.\]</p>
+      <p>Confira todos os quatro itens no simulador da seção 6: ajuste μ = 170 e σ = 8 e use os
+      botões ±1σ e ±2σ.</p>
     </div>
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s7">7. O Teorema Central do Limite</h2>
+  <h2 id="s7">8. O Teorema Central do Limite</h2>
 
   <div class="bloco def">
     <span class="rotulo">Enunciado</span>
@@ -370,8 +441,111 @@
     </div>
   </details>
 
+
   <!-- ================================================== -->
-  <h2 id="s8">8. Aplicações em Física</h2>
+  <h2 id="sn">9. Os dados são normais?</h2>
+
+  <p>Boa parte dos métodos dos próximos módulos — o teste t, o intervalo de confiança da
+  variância, a regressão — supõe que os dados vêm de uma população normal. Essa suposição precisa
+  ser <strong>verificada</strong>, não assumida.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Quando a normalidade importa (e quando não)</span>
+    <p>Pelo TCL, a <em>média amostral</em> tende à normalidade mesmo que a população não seja
+    normal — por isso o teste z e o teste t para médias são bastante <strong>robustos</strong>
+    com \(n\) grande.</p>
+    <p>A suposição é crítica, porém, quando: \(n\) é pequeno (digamos, abaixo de 20); o que
+    se analisa é a <em>variância</em>, e não a média; ou quando se quer fazer previsões sobre
+    <em>observações individuais</em>, e não sobre médias.</p>
+  </div>
+
+  <h3>Métodos gráficos</h3>
+
+  <p>São sempre o primeiro passo, e frequentemente o mais informativo.</p>
+
+  <ul>
+    <li><strong>Histograma:</strong> procura-se a forma de sino, simétrica e unimodal. Lembre do
+    Módulo 6: a aparência depende da largura de classe escolhida;</li>
+    <li><strong>Boxplot:</strong> mediana centrada na caixa, bigodes de comprimentos parecidos,
+    poucos outliers;</li>
+    <li><strong>Gráfico Q–Q</strong> (<em>quantil–quantil</em>): o mais sensível dos três.</li>
+  </ul>
+
+  <div class="bloco def">
+    <span class="rotulo">Como funciona o gráfico Q–Q</span>
+    <p>Ordenam-se os dados e, no eixo horizontal, colocam-se os quantis que seriam
+    <em>esperados</em> de uma normal; no vertical, os quantis <em>observados</em>. Se os dados
+    forem normais, os pontos caem sobre uma reta.</p>
+    <p>O formato do desvio diz <em>qual</em> é o problema:</p>
+    <ul>
+      <li>Curvatura em <strong>S</strong> deitado: caudas mais pesadas que a normal;</li>
+      <li>Curvatura em <strong>C</strong>: assimetria — a cauda de um lado é mais longa;</li>
+      <li>Pontos isolados nas pontas: outliers;</li>
+      <li>Degraus horizontais: dados discretizados ou arredondados demais.</li>
+    </ul>
+  </div>
+
+  <h3>Testes numéricos</h3>
+
+  <p>Complementam o olho, mas não o substituem. Todos têm a mesma estrutura de hipóteses:</p>
+
+  <div class="destaque">
+    <span class="anuncio">Atenção à direção do teste</span>
+    \(H_0\): os dados <strong>vêm</strong> de uma população normal.<br>
+    Um \(p\)-valor <strong>alto</strong> significa que não há evidência contra a normalidade.
+  </div>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Teste</th><th>Como funciona</th><th>Quando usar</th></tr></thead>
+    <tbody>
+      <tr><td><b>Shapiro–Wilk</b></td>
+        <td>compara a ordenação dos dados com a esperada de uma normal</td>
+        <td>o mais potente para \(n\) pequeno e médio (até ~2000); é o padrão</td></tr>
+      <tr><td><b>D'Agostino K²</b></td>
+        <td>combina assimetria e curtose em uma única estatística</td>
+        <td>\(n \geq 20\); diz <em>como</em> os dados se afastam da normal</td></tr>
+      <tr><td><b>Kolmogorov–Smirnov</b></td>
+        <td>maior distância entre a acumulada observada e a teórica</td>
+        <td>geral, mas pouco potente; serve também para comparar duas amostras</td></tr>
+      <tr><td><b>Anderson–Darling</b></td>
+        <td>variante do KS que dá mais peso às caudas</td>
+        <td>quando o comportamento das caudas é o que importa</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A armadilha do tamanho da amostra</span>
+    <p>Testes de normalidade têm um defeito incômodo, e que quase ninguém menciona em sala:</p>
+    <ul>
+      <li>Com \(n\) <strong>pequeno</strong>, o teste quase nunca rejeita — falta-lhe poder.
+      Não rejeitar não é evidência de normalidade;</li>
+      <li>Com \(n\) <strong>muito grande</strong>, o teste rejeita quase sempre — porque
+      nenhum conjunto real de dados é <em>exatamente</em> normal, e o teste detecta desvios
+      minúsculos e irrelevantes na prática.</li>
+    </ul>
+    <p>A conclusão prática: <strong>olhe o gráfico Q–Q</strong> e pergunte se o desvio tem
+    tamanho suficiente para importar. O teste numérico é um auxiliar, não um juiz.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">O que fazer quando os dados não são normais</span>
+    <ol>
+      <li><strong>Investigar a causa.</strong> Assimetria à direita costuma indicar um limite
+      inferior natural (tempos, concentrações, contagens). Bimodalidade sugere dois regimes
+      misturados — dois experimentadores, duas condições, dois mecanismos físicos;</li>
+      <li><strong>Transformar.</strong> \(\log x\), \(\sqrt{x}\) ou \(1/x\) frequentemente
+      normalizam dados assimétricos à direita. A transformação logarítmica é natural quando os
+      efeitos são multiplicativos em vez de aditivos;</li>
+      <li><strong>Usar métodos não paramétricos</strong>, que não exigem normalidade — assunto
+      do Módulo 14;</li>
+      <li><strong>Confiar no TCL</strong>, se \(n\) for grande e o interesse for a média.</li>
+    </ol>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s8">10. Aplicações em Física</h2>
 
   <div class="bloco fisica">
     <span class="rotulo">Distribuição de Maxwell–Boltzmann</span>
@@ -410,7 +584,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s9">9. Exercícios propostos</h2>
+  <h2 id="s9">11. Exercícios propostos</h2>
 
   <ol>
     <li>Seja \(P(x) = Cx^2\) para \(0\le x\le 3\). Encontre \(C\), \(\langle x\rangle\),
@@ -441,7 +615,8 @@
       <li>Uniforme: \(\sigma^2 = (b-a)^2/12\); exponencial: \(\langle x\rangle = \sigma = 1/\lambda\);</li>
       <li>Normal: \(N(\mu,\sigma^2)\), regra 68–95–99,7, padronização \(z=(x-\mu)/\sigma\);</li>
       <li>TCL: médias de \(n\) i.i.d. tendem a \(N(\mu, \sigma^2/n)\), qualquer que seja a origem;</li>
-      <li>Binomial \(\approx\) Normal quando \(np(1-p)\gtrsim 9\), com correção de continuidade.</li>
+      <li>Binomial \(\approx\) Normal quando \(np(1-p)\gtrsim 9\), com correção de continuidade;</li>
+      <li>Normalidade se <b>verifica</b>, não se supõe: gráfico Q–Q primeiro, teste numérico depois.</li>
     </ul>
   </div>
 
