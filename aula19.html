@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 19 — Testes não paramétricos | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061620">
+<script src="assets/js/comum.js?v=202611061620"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num ativo" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Quando abrir mão da normal</a></li>
+    <li><a href="#s2">2. A ideia dos postos</a></li>
+    <li><a href="#s3">3. Teste dos sinais</a></li>
+    <li><a href="#s4">4. Wilcoxon pareado</a></li>
+    <li><a href="#s5">5. Mann–Whitney</a></li>
+    <li><a href="#s6">6. Teste das sequências</a></li>
+    <li><a href="#s7">7. Kruskal–Wallis</a></li>
+    <li><a href="#s8">8. Empates e a eficiência</a></li>
+    <li><a href="#s9">9. Qual teste usar</a></li>
+    <li><a href="#s10">10. Aplicações em Física</a></li>
+    <li><a href="#s11">11. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 19 · 3 horas</p>
+  <h1>Testes não paramétricos</h1>
+  <p class="subtitulo">Quando os pressupostos falham, os postos continuam funcionando.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Reconhecer quando os pressupostos dos testes paramétricos não se sustentam;</li>
+      <li>Entender por que substituir valores por postos protege contra outliers;</li>
+      <li>Aplicar o teste dos sinais, o de Wilcoxon e o de Mann–Whitney;</li>
+      <li>Construir e ler a distribuição nula <em>exata</em> desses testes;</li>
+      <li>Usar o teste das sequências para verificar aleatoriedade;</li>
+      <li>Tratar empates corretamente e avaliar a perda de eficiência.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Quando abrir mão da normal</h2>
+
+  <p>Os testes dos módulos 12 e 8 exigem normalidade. O Módulo 17 ensinou a verificar essa
+  exigência. Falta a pergunta prática: <strong>e quando ela não se sustenta?</strong></p>
+
+  <div class="bloco def">
+    <span class="rotulo">Quatro situações que pedem um teste não paramétrico</span>
+    <ol>
+      <li><strong>Dados ordinais.</strong> Escalas de 1 a 5, conceitos A–E, classificações.
+      Não faz sentido calcular médias com eles, porque a distância entre categorias não é
+      conhecida;</li>
+      <li><strong>Amostras pequenas</strong> em que a normalidade não pode sequer ser testada
+      com poder razoável — e o Módulo 17 mostrou que com \(n=30\) nem uma uniforme é
+      rejeitada;</li>
+      <li><strong>Outliers legítimos</strong> que não podem ser descartados: uma medida
+      extrema que é real, não erro;</li>
+      <li><strong>Assimetria forte</strong> que nenhuma transformação resolve, ou cuja
+      transformação tornaria o resultado ininterpretável.</li>
+    </ol>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O nome engana</span>
+    <p>"Não paramétrico" <em>não</em> significa "sem pressupostos". Todos esses testes supõem
+    observações <strong>independentes</strong>, e vários supõem que as distribuições
+    comparadas têm <strong>forma semelhante</strong>, diferindo apenas por deslocamento.</p>
+    <p>Significa, isto sim, que não se supõe uma <em>família</em> de distribuições com
+    parâmetros a estimar. Por isso também se chamam <strong>testes de distribuição livre</strong>
+    — nome mais honesto, e menos usado.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. A ideia central: substituir valores por postos</h2>
+
+  <p>Toda a família se apoia num único truque. Em vez de usar os valores, usa-se a
+  <strong>posição</strong> de cada um na ordenação.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Por que isso funciona</span>
+    <ul>
+      <li><strong>Os postos têm distribuição conhecida.</strong> Sob \(H_0\), qualquer
+      atribuição de postos é igualmente provável. Isso permite calcular a distribuição nula
+      <strong>exatamente</strong>, por contagem — sem supor nada sobre os dados;</li>
+      <li><strong>Outliers perdem o poder de distorcer.</strong> Um valor de 120 numa amostra
+      de dezenas recebe o posto 18, não o posto 10 000. Ele continua sendo o maior; deixa de
+      ser desproporcionalmente grande;</li>
+      <li><strong>Funciona com dados ordinais,</strong> para os quais a média não existe mas a
+      ordem existe.</li>
+    </ul>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Uma origem curiosamente recente</span>
+    <p>Estes testes são todos do século XX, e quase todos do pós-guerra.
+    <strong>Frank Wilcoxon</strong>, químico da Boyce Thompson Institute, publicou em 1945 um
+    artigo de apenas três páginas — "Individual Comparisons by Ranking Methods" — propondo os
+    dois testes que hoje levam seu nome. Ele não era estatístico de formação; chegou ao
+    problema porque precisava comparar tratamentos em experimentos agrícolas com poucas
+    repetições.</p>
+    <p>Dois anos depois, <strong>Henry Mann</strong> e <strong>Donald Whitney</strong>
+    desenvolveram independentemente o teste para amostras independentes e, o que foi decisivo,
+    tabularam sua distribuição exata. Wilcoxon já o havia proposto para grupos de mesmo
+    tamanho; Mann e Whitney o generalizaram e lhe deram base rigorosa — por isso o teste é
+    hoje chamado de Wilcoxon–Mann–Whitney por quem quer ser justo com os três.</p>
+    <p>O teste dos sinais é muito mais antigo: <strong>John Arbuthnot</strong> o usou em 1710
+    para argumentar que o excesso de nascimentos masculinos em Londres, observado por 82 anos
+    consecutivos, não podia ser obra do acaso — \((1/2)^{82}\) é um número absurdamente
+    pequeno. É possivelmente o primeiro teste de hipótese publicado da história, e é um teste
+    não paramétrico.</p>
+  </div>
+
+  <div data-widget="naoparametrico"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Teste dos sinais</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">O mais simples de todos</span>
+    <p>Para dados pareados, calcule \(d_i = y_i - x_i\) e <strong>olhe apenas o sinal</strong>.
+    Descarte os zeros e seja \(n\) o número de diferenças não nulas.</p>
+    <p>Sob \(H_0\) (as duas condições são equivalentes), cada diferença tem probabilidade
+    \(1/2\) de ser positiva, de modo que</p>
+    <p>\[S = \#\{d_i > 0\} \sim \mathrm{Binomial}\!\left(n,\tfrac12\right).\]</p>
+    <p>O valor p bilateral é \(2\,P(X \le \min(S, n-S))\).</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O que ele joga fora</span>
+    <p>Uma diferença de \(+0{,}01\) e outra de \(+50\) contam exatamente o mesmo. O teste usa
+    só o sinal e ignora a magnitude — o que o torna o mais robusto e, em compensação, o
+    <strong>menos poderoso</strong> da família.</p>
+    <p>Sua eficiência relativa ao teste t, quando os dados <em>são</em> normais, é de apenas
+    \(2/\pi \approx 64\%\). Em termos práticos: para obter o mesmo poder, ele precisa de
+    cerca de <strong>metade a mais de observações</strong>.</p>
+    <p>Em troca, ele exige quase nada: nem normalidade, nem simetria, nem sequer que a escala
+    seja numérica. Basta conseguir dizer qual dos dois valores é maior.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Wilcoxon dos postos sinalizados</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Usando também a magnitude</span>
+    <ol>
+      <li>Calcule as diferenças \(d_i = y_i - x_i\) e descarte os zeros;</li>
+      <li>Ordene os \(|d_i|\) e atribua postos de 1 a \(n\), usando postos médios nos empates;</li>
+      <li>Some os postos das diferenças positivas: \(W^+\); e das negativas: \(W^-\);</li>
+      <li>Confira: \(W^+ + W^- = n(n+1)/2\);</li>
+      <li>A estatística é \(W = \min(W^+, W^-)\).</li>
+    </ol>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">A distribuição nula exata</span>
+    <p>Sob \(H_0\), cada diferença tem a mesma chance de ser positiva ou negativa, de modo que
+    cada uma das \(2^n\) atribuições de sinais aos postos \(1, 2, \dots, n\) é igualmente
+    provável. A distribuição de \(W^+\) é, portanto, obtida por <strong>contagem pura</strong>:
+    quantos subconjuntos de \(\{1,\dots,n\}\) somam \(w\)?</p>
+    <p>É assim que o simulador acima desenha a distribuição nula quando \(n \le 25\) e não há
+    empates. Nenhuma aproximação, nenhuma suposição sobre os dados.</p>
+    <p>Para \(n\) grande, usa-se a normal:</p>
+    <p>\[\mu_{W^+}=\frac{n(n+1)}{4}, \qquad
+    \sigma^2_{W^+}=\frac{n(n+1)(2n+1)}{24}.\]</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Um pressuposto que costuma ser esquecido</span>
+    <p>O Wilcoxon pareado supõe que a distribuição das diferenças é <strong>simétrica</strong>
+    em torno da mediana. É um pressuposto bem mais fraco que normalidade, mas não é vazio: se
+    as diferenças forem fortemente assimétricas, o teste perde validade e o dos sinais, que
+    não exige simetria, passa a ser a escolha correta.</p>
+  </div>
+
+  <h3>Exercício resolvido 14.1 — Três testes, três conclusões</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Dez estudantes fizeram uma avaliação antes e depois de uma atividade de laboratório
+    remoto:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th></th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th><th class="num">9</th><th class="num">10</th></tr></thead>
+      <tbody>
+        <tr><th>antes</th><td class="num">20,0</td><td class="num">21,5</td><td class="num">19,8</td><td class="num">22,3</td><td class="num">20,7</td><td class="num">21,0</td><td class="num">19,5</td><td class="num">22,8</td><td class="num">20,2</td><td class="num">21,8</td></tr>
+        <tr><th>depois</th><td class="num">22,4</td><td class="num">23,4</td><td class="num">22,6</td><td class="num">24,5</td><td class="num">23,3</td><td class="num">20,8</td><td class="num">21,6</td><td class="num">22,5</td><td class="num">22,7</td><td class="num">21,7</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Aplique o teste dos sinais, o de Wilcoxon e o t pareado. Compare.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>As diferenças.</strong></p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th class="num">i</th><th class="num">d</th><th class="num">sinal</th><th class="num">|d|</th><th class="num">posto</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="num">+2,4</td><td class="num">+</td><td class="num">2,4</td><td class="num">8</td></tr>
+          <tr><td class="num">2</td><td class="num">+1,9</td><td class="num">+</td><td class="num">1,9</td><td class="num">4</td></tr>
+          <tr><td class="num">3</td><td class="num">+2,8</td><td class="num">+</td><td class="num">2,8</td><td class="num">10</td></tr>
+          <tr><td class="num">4</td><td class="num">+2,2</td><td class="num">+</td><td class="num">2,2</td><td class="num">6</td></tr>
+          <tr><td class="num">5</td><td class="num">+2,6</td><td class="num">+</td><td class="num">2,6</td><td class="num">9</td></tr>
+          <tr><td class="num">6</td><td class="num">−0,2</td><td class="num">−</td><td class="num">0,2</td><td class="num">2</td></tr>
+          <tr><td class="num">7</td><td class="num">+2,1</td><td class="num">+</td><td class="num">2,1</td><td class="num">5</td></tr>
+          <tr><td class="num">8</td><td class="num">−0,3</td><td class="num">−</td><td class="num">0,3</td><td class="num">3</td></tr>
+          <tr><td class="num">9</td><td class="num">+2,5</td><td class="num">+</td><td class="num">2,5</td><td class="num">7</td></tr>
+          <tr><td class="num">10</td><td class="num">−0,1</td><td class="num">−</td><td class="num">0,1</td><td class="num">1</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Teste dos sinais.</strong> São 7 positivas e 3 negativas, com \(n = 10\):</p>
+      <p>\[p = 2\,P(X\le 3) = 2(0{,}1719) = \mathbf{0{,}344}.\]</p>
+      <p>Não rejeitamos \(H_0\). Sete em dez não é nada de extraordinário — sair sete caras em
+      dez lançamentos acontece o tempo todo.</p>
+      <p><strong>Wilcoxon.</strong> Os postos das negativas são 2, 3 e 1, de modo que</p>
+      <p>\[W^- = 1+2+3 = 6, \qquad W^+ = 55 - 6 = 49.\]</p>
+      <p>Conferindo: \(n(n+1)/2 = 55\). ✓</p>
+      <p>Pela distribuição exata, \(p = \mathbf{0{,}0273}\). <strong>Rejeitamos \(H_0\).</strong></p>
+      <p><strong>Teste t pareado.</strong> \(\bar d = 1{,}590\), \(s_d = 1{,}262\), logo</p>
+      <p>\[t=\frac{1{,}590}{1{,}262/\sqrt{10}}=3{,}985,\qquad \nu=9,\qquad
+      p = \mathbf{0{,}0032}.\]</p>
+      <p>Rejeita com folga.</p>
+      <div class="bloco alerta">
+        <span class="rotulo">Por que os três discordam</span>
+        <p>Olhe de novo as três diferenças negativas: −0,2, −0,3 e −0,1. São
+        <strong>minúsculas</strong>. As sete positivas vão de +1,9 a +2,8 — dez a vinte vezes
+        maiores.</p>
+        <p>O <strong>teste dos sinais</strong> não enxerga nada disso. Para ele há apenas
+        "7 contra 3", e 7 contra 3 é banal.</p>
+        <p>O <strong>Wilcoxon</strong> enxerga: as negativas ficaram com os postos 1, 2 e 3 —
+        os três menores possíveis. Não é só que foram poucas; foram as menores. É uma
+        coincidência improvável sob \(H_0\), e o teste a detecta.</p>
+        <p>O <strong>teste t</strong> enxerga ainda mais, porque usa as magnitudes em si, e
+        por isso dá o p menor dos três — <em>desde que</em> seus pressupostos valham.</p>
+        <p><strong>A escada de poder é esta:</strong> sinais &lt; Wilcoxon &lt; t. Cada degrau
+        usa mais informação e detecta mais, ao custo de exigir mais dos dados. Escolher o
+        teste é escolher onde parar nessa escada.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Teste de Mann–Whitney</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Para dois grupos independentes</span>
+    <ol>
+      <li>Junte as duas amostras e ordene <strong>tudo</strong>;</li>
+      <li>Atribua postos de 1 a \(n_1+n_2\), com postos médios nos empates;</li>
+      <li>Some os postos do grupo 1: \(R_1\);</li>
+      <li>Calcule \(\displaystyle U_1 = R_1 - \frac{n_1(n_1+1)}{2}\) e \(U_2 = n_1n_2 - U_1\);</li>
+      <li>A estatística é \(U = \min(U_1, U_2)\).</li>
+    </ol>
+    <p>Para \(n\) grande:</p>
+    <p>\[\mu_U = \frac{n_1 n_2}{2}, \qquad
+    \sigma^2_U = \frac{n_1 n_2 (n_1+n_2+1)}{12}.\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">O que U significa, concretamente</span>
+    <p>\(U_1\) é o <strong>número de pares</strong> \((x_i, y_j)\) em que o valor do grupo 1
+    é maior que o do grupo 2. Se os dois grupos forem equivalentes, esperamos que isso
+    aconteça em metade dos \(n_1 n_2\) pares — daí \(\mu_U = n_1n_2/2\).</p>
+    <p>Dividindo, \(U_1/(n_1n_2)\) estima \(P(X > Y)\), uma quantidade com significado direto:
+    "qual a probabilidade de um indivíduo do grupo 1 superar um do grupo 2?". Essa é a
+    <strong>medida de efeito</strong> natural do teste, e deveria ser reportada junto com o
+    valor p.</p>
+  </div>
+
+  <h3>Exercício resolvido 14.2 — Quando um outlier derruba o teste t</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Mediu-se uma mesma grandeza em dois arranjos experimentais:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <tbody>
+        <tr><th>grupo 1</th><td class="num">12</td><td class="num">14</td><td class="num">13</td><td class="num">15</td><td class="num">11</td><td class="num">16</td><td class="num">14</td><td class="num">13</td><td class="num">120</td></tr>
+        <tr><th>grupo 2</th><td class="num">22</td><td class="num">25</td><td class="num">21</td><td class="num">27</td><td class="num">24</td><td class="num">23</td><td class="num">26</td><td class="num">22</td><td class="num">28</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>O valor 120 é uma leitura real, não um erro de transcrição. Compare o teste t com o de
+    Mann–Whitney.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Teste t independente.</strong></p>
+      <p>\[\bar x_1 = 25{,}33 \qquad \bar x_2 = 24{,}22 \qquad t = 0{,}094 \qquad
+      p = \mathbf{0{,}927}\]</p>
+      <p>Conclusão: nenhuma diferença. Mas olhe os dados — oito dos nove valores do grupo 1
+      são <em>menores que todos</em> os do grupo 2. Algo está errado.</p>
+      <p><strong>O que aconteceu.</strong> O valor 120 sozinho puxou a média do grupo 1 de
+      13,5 para 25,33, deixando-a quase igual à do grupo 2. E, pior, inflou o desvio padrão
+      do grupo 1 de 1,6 para 35,5 — e o desvio é o <em>denominador</em> do \(t\). O outlier
+      destruiu o teste por dois caminhos ao mesmo tempo.</p>
+      <p><strong>Mann–Whitney.</strong> Ordenando tudo, os oito menores valores são do grupo 1
+      (postos 1 a 8), os nove seguintes do grupo 2 (postos 9 a 17), e o 120 fica com o
+      <strong>posto 18</strong> — e não com um posto astronômico, porque posto 18 é o maior
+      que existe aqui.</p>
+      <p>\[R_1 = 1+2+3{,}5+3{,}5+5{,}5+5{,}5+7+8+18 = 54\]</p>
+      <p>\[U_1 = 54 - \frac{9\times 10}{2} = 54-45 = 9\]</p>
+      <p>Com empates entre os valores, usa-se a aproximação normal com correção:
+      \(p = \mathbf{0{,}0061}\). <strong>Rejeitamos \(H_0\).</strong></p>
+      <p><strong>Medida de efeito.</strong> \(U_1/(n_1n_2) = 9/81 = 0{,}11\): a probabilidade
+      de uma medida do grupo 1 superar uma do grupo 2 é de apenas 11%. O efeito é grande e
+      claro.</p>
+      <p><strong>Medianas em vez de médias.</strong> 14,0 contra 24,0 — que é a descrição
+      honesta destes dados. Sempre que o não paramétrico rejeita e o paramétrico não, olhe a
+      distância entre média e mediana: ela costuma explicar tudo.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Teste das sequências</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Testando a aleatoriedade da ordem</span>
+    <p>Classifique cada observação como acima (A) ou abaixo (B) da mediana e conte as
+    <strong>sequências</strong> — blocos consecutivos de letras iguais. Por exemplo,
+    <code>A A B B B A B</code> tem 4 sequências.</p>
+    <p>Sob a hipótese de aleatoriedade, com \(n_1\) símbolos A e \(n_2\) símbolos B:</p>
+    <p>\[\mu_R = \frac{2n_1n_2}{n}+1, \qquad
+    \sigma^2_R = \frac{2n_1n_2(2n_1n_2-n)}{n^2(n-1)}, \qquad n=n_1+n_2.\]</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Os dois jeitos de não ser aleatório</span>
+    <p><strong>Poucas sequências</strong> significam que os valores vêm agrupados: há
+    tendência, deriva ou dependência entre observações vizinhas. É o caso de uma medida que
+    aumenta ao longo do experimento porque o equipamento esquenta.</p>
+    <p><strong>Sequências demais</strong> significam alternância sistemática — o que também
+    não é aleatório. Acontece, por exemplo, quando duas pessoas se revezam nas medidas e têm
+    vieses opostos.</p>
+    <p>É por isso que o teste é bilateral: os dois extremos denunciam problemas, de naturezas
+    diferentes.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">A aplicação mais útil: resíduos de regressão</span>
+    <p>Aplicado aos resíduos do Módulo 8, <em>na ordem de \(x\)</em>, este teste formaliza
+    exatamente o que o olho faz no gráfico de resíduos. Poucas sequências significam blocos
+    de resíduos de mesmo sinal, isto é, <strong>curvatura</strong>: o modelo linear está
+    errado.</p>
+    <p>É a versão rigorosa da contagem de trocas de sinal que o simulador de linearização já
+    fazia. Experimente: carregue o pêndulo sem transformar, anote os resíduos e rode o teste
+    das sequências sobre eles.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Kruskal–Wallis: mais de dois grupos</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A extensão natural do Mann–Whitney</span>
+    <p>Com \(k\) grupos independentes, ordene todas as \(n\) observações juntas e seja \(R_j\)
+    a soma dos postos do grupo \(j\), de tamanho \(n_j\):</p>
+    <p>\[H=\frac{12}{n(n+1)}\sum_{j=1}^{k}\frac{R_j^{2}}{n_j}-3(n+1)\]</p>
+    <p>Sob \(H_0\), \(H\) segue aproximadamente uma \(\chi^2\) com \(k-1\) graus de liberdade,
+    desde que cada grupo tenha ao menos 5 observações.</p>
+    <p>Com empates, divide-se \(H\) por \(1-\dfrac{\sum (t^3-t)}{n^3-n}\), somando sobre os
+    grupos de valores empatados.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Com k = 2 ele vira Mann–Whitney</span>
+    <p>Não é coincidência: \(H = z^2\), onde \(z\) é a estatística normal do Mann–Whitney. É a
+    mesma relação que há entre o teste F e o teste t na regressão simples.</p>
+    <p>E, como na ANOVA, \(H\) significativo diz apenas que <em>algum</em> grupo difere, sem
+    dizer qual. A identificação exige comparações par a par com correção para múltiplos
+    testes — a correção de Bonferroni, dividindo \(\alpha\) pelo número de comparações, é a
+    mais simples e a mais conservadora.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Empates e eficiência</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A regra dos postos médios, de novo</span>
+    <p>Valores iguais recebem a média das posições que ocupariam — a mesma regra do Spearman,
+    no Módulo 18. Mas os empates <strong>reduzem a variância</strong> da estatística, e as
+    fórmulas precisam ser corrigidas:</p>
+    <p>\[\sigma^2_U = \frac{n_1n_2}{12}\left[(n+1)-\frac{\sum_g (t_g^3-t_g)}{n(n-1)}\right]\]</p>
+    <p>onde \(t_g\) é o tamanho de cada grupo de empates. Sem empates todos os \(t_g=1\), a
+    soma zera e a fórmula volta à original.</p>
+    <p>Com empates, a distribuição exata deixa de valer e é obrigatório recorrer à aproximação
+    normal corrigida. O simulador avisa quando isso acontece.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Eficiência relativa assintótica</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Teste</th><th>Equivalente paramétrico</th><th class="num">se normal</th><th class="num">se cauda pesada</th></tr></thead>
+      <tbody>
+        <tr><td>Sinais</td><td>t pareado</td><td class="num">0,64</td><td class="num">&gt; 1</td></tr>
+        <tr><td>Wilcoxon pareado</td><td>t pareado</td><td class="num">0,955</td><td class="num">&gt; 1</td></tr>
+        <tr><td>Mann–Whitney</td><td>t independente</td><td class="num">0,955</td><td class="num">&gt; 1</td></tr>
+        <tr><td>Kruskal–Wallis</td><td>ANOVA</td><td class="num">0,955</td><td class="num">&gt; 1</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>O número 0,955 — mais precisamente \(3/\pi\) — é um dos resultados mais notáveis da
+    estatística. Significa que, <strong>mesmo no terreno em que o teste t é ótimo</strong>,
+    o Wilcoxon só precisa de 4,5% mais observações para igualá-lo.</p>
+  </div>
+
+  <div class="destaque">
+    <span class="anuncio">Um seguro que custa 4,5%</span>
+    E que, quando os dados têm caudas pesadas, paga mais do que custou: nesses casos a
+    eficiência passa de 1, e o teste não paramétrico é <b>mais</b> poderoso que o t.
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que, então, não usar sempre o não paramétrico?</span>
+    <p>É uma pergunta legítima, e a resposta tem três partes.</p>
+    <p><strong>Primeira:</strong> o teste t dá mais que um valor p. Ele dá um
+    <em>intervalo de confiança para a diferença de médias</em>, em unidades físicas. "A
+    diferença é de 2,3 ± 0,4 mm" é uma afirmação muito mais útil que "p = 0,003".</p>
+    <p><strong>Segunda:</strong> as hipóteses não são exatamente as mesmas. O t compara
+    médias; o Mann–Whitney compara distribuições inteiras e só se traduz em "comparação de
+    medianas" quando as formas são semelhantes.</p>
+    <p><strong>Terceira:</strong> em Física, o modelo probabilístico costuma ser
+    <em>conhecido</em>. Erros de medida independentes somam-se e o TCL atua; a normalidade não
+    é uma suposição conveniente, é uma consequência. Descartá-la é jogar fora informação
+    legítima.</p>
+    <p>A regra prática: use o paramétrico quando os pressupostos se sustentam, e tenha o não
+    paramétrico à mão para quando não se sustentarem. Rodar os dois e <strong>escolher o que
+    dá o menor p</strong> é, isso sim, uma forma de fraude estatística.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Qual teste usar</h2>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Situação</th><th>Paramétrico</th><th>Não paramétrico</th></tr></thead>
+    <tbody>
+      <tr><td>Uma amostra, comparar com valor de referência</td><td>t de uma amostra</td><td>Sinais ou Wilcoxon</td></tr>
+      <tr><td>Duas amostras pareadas</td><td>t pareado</td><td>Wilcoxon dos postos sinalizados</td></tr>
+      <tr><td>Duas amostras independentes</td><td>t independente</td><td>Mann–Whitney</td></tr>
+      <tr><td>Três ou mais grupos independentes</td><td>ANOVA</td><td>Kruskal–Wallis</td></tr>
+      <tr><td>Três ou mais medidas no mesmo sujeito</td><td>ANOVA de medidas repetidas</td><td>Friedman</td></tr>
+      <tr><td>Associação entre duas variáveis</td><td>Pearson</td><td>Spearman (Módulo 18)</td></tr>
+      <tr><td>Aleatoriedade de uma sequência</td><td>—</td><td>Sequências</td></tr>
+      <tr><td>Igualdade de distribuições</td><td>—</td><td>Kolmogorov–Smirnov (Módulo 17)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Decida antes de ver os dados</span>
+    <p>A escolha do teste deve ser feita com base no <strong>tipo de dado e no desenho do
+    experimento</strong>, não no resultado. Verificar pressupostos é legítimo e necessário;
+    trocar de teste depois de ver que o primeiro não deu significativo não é.</p>
+    <p>Em pesquisa séria isso se resolve registrando o plano de análise <em>antes</em> da
+    coleta. Num relatório de laboratório, basta decidir e declarar o teste na seção de
+    metodologia, antes de olhar os resultados.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Aplicações em Física e em ensino</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Três situações concretas</span>
+    <p><strong>Comparar dois métodos de medida.</strong> Mediu-se a mesma grandeza com dois
+    instrumentos, nos mesmos objetos. São dados pareados: Wilcoxon, sem precisar supor que os
+    erros sejam normais — útil justamente quando um dos instrumentos tem resolução grosseira e
+    produz muitos empates.</p>
+    <p><strong>Detectar deriva instrumental.</strong> Uma série de medidas da mesma grandeza,
+    tomada ao longo de horas. O teste das sequências responde se a ordem temporal importa — e
+    se importar, há deriva, e a média simples deixou de fazer sentido.</p>
+    <p><strong>Avaliar uma intervenção de ensino.</strong> Notas são, em rigor, ordinais, e
+    turmas são pequenas. O Wilcoxon pareado (antes e depois) ou o Mann–Whitney (turma
+    experimental contra controle) são as ferramentas adequadas — e o exercício 14.1 mostra
+    que escolher o teste errado pode custar a conclusão inteira.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s11">11. Exercícios propostos</h2>
+
+  <ol>
+    <li>Oito pares de medidas deram diferenças +3, +5, −1, +7, +2, −4, +6, +8. Calcule
+    \(W^+\) e \(W^-\) à mão, confira que somam \(n(n+1)/2\) e obtenha o valor p exato.</li>
+    <li>Mostre que, sob \(H_0\), \(E[W^+] = n(n+1)/4\). <em>(Sugestão: escreva
+    \(W^+=\sum_i i\,Z_i\) com \(Z_i\) indicadores de Bernoulli(½) independentes.)</em></li>
+    <li>Para \(n = 5\), liste todos os \(2^5 = 32\) subconjuntos de \(\{1,\dots,5\}\) e
+    construa a distribuição completa de \(W^+\). Confira contra o gráfico do simulador.</li>
+    <li>Dois grupos de 5 observações: A = 12, 15, 18, 20, 22 e B = 25, 28, 30, 33, 35.
+    Calcule \(U_1\), \(U_2\) e o valor p exato. Interprete \(U_1/(n_1n_2)\).</li>
+    <li>Prove que \(U_1 + U_2 = n_1 n_2\) sempre. <em>(Sugestão: use
+    \(R_1+R_2=(n_1+n_2)(n_1+n_2+1)/2\).)</em></li>
+    <li>No exercício 14.1, substitua as três diferenças negativas por −2,0, −2,5 e −1,8,
+    mantendo as positivas. Refaça os três testes no simulador e explique por que agora as
+    conclusões se invertem.</li>
+    <li>Uma série de 20 medidas produziu, em relação à mediana, a sequência
+    A A A A B B B B A A A A B B B B A A A A. Calcule R, \(\mu_R\) e \(\sigma_R\), e teste a
+    aleatoriedade. Que fenômeno físico produziria esse padrão?</li>
+    <li>Três turmas obtiveram as notas: T1 = 6, 7, 5, 8, 6; T2 = 8, 9, 7, 9, 8;
+    T3 = 5, 6, 4, 5, 7. Calcule \(H\) de Kruskal–Wallis, corrija para empates e conclua a 5%.</li>
+    <li>Explique, em termos do que cada teste "enxerga", por que a eficiência do teste dos
+    sinais é 0,64 e a do Wilcoxon é 0,955 sob normalidade.</li>
+    <li>Um colega rodou o teste t (p = 0,08), não gostou, rodou o Mann–Whitney (p = 0,04) e
+    reportou o segundo. Critique o procedimento e descreva o que ele deveria ter feito.</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>Postos substituem valores: a distribuição nula vira contagem, e outliers perdem
+      força;</li>
+      <li>Sinais: só o sinal de \(d_i\); Binomial(n, ½); eficiência 0,64;</li>
+      <li>Wilcoxon: sinal e magnitude via postos de \(|d_i|\); supõe simetria; eficiência
+      0,955;</li>
+      <li>Mann–Whitney: \(U_1 = R_1 - n_1(n_1+1)/2\), e \(U_1/(n_1n_2)\) estima
+      \(P(X>Y)\);</li>
+      <li>Sequências: poucas indicam tendência, muitas indicam alternância;</li>
+      <li>Kruskal–Wallis generaliza Mann–Whitney para \(k\) grupos, com \(\chi^2_{k-1}\);</li>
+      <li>Empates exigem postos médios e correção da variância, e invalidam a distribuição
+      exata;</li>
+      <li>Escolha o teste pelo desenho do estudo, nunca pelo valor p que ele produz.</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula18.html"><small>Módulo anterior</small>← 18. Correlação</a>
+    <a class="prox" href="aula20.html"><small>Próximo módulo</small>20. Tamanho amostral →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js?v=202611061620"></script>
+</body>
+</html>

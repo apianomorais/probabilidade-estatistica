@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Módulo 15 — Tamanho amostral e planejamento | Probabilidade &amp; Estatística</title>
+<title>Módulo 15 — Técnicas de contagem | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061532">
-<script src="assets/js/comum.js?v=202611061532"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061620">
+<script src="assets/js/comum.js?v=202611061620"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -16,23 +16,26 @@
     <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
     <nav class="menu">
       <a href="index.html">Início</a>
-      <span class="grupo">Probabilidade</span>
-      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
-      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
-      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
-      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
-      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
-      <span class="grupo">Estatística</span>
-      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
-      <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
-      <a href="aula08.html" class="num" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
-      <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
-      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
-      <a href="aula11.html" class="num" title="Módulo 11 — Testes de normalidade">11</a>
-      <a href="aula12.html" class="num" title="Módulo 12 — Correlação">12</a>
-      <a href="aula13.html" class="num" title="Módulo 13 — Regressão linear e mínimos quadrados">13</a>
-      <a href="aula14.html" class="num" title="Módulo 14 — Testes não paramétricos">14</a>
-      <a href="aula15.html" class="num ativo" title="Módulo 15 — Tamanho amostral e planejamento">15</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num ativo" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
       <a href="formulario.html">Formulário</a>
     </nav>
   </div>
@@ -43,598 +46,600 @@
 <aside class="lateral">
   <h4>Neste módulo</h4>
   <ol>
-    <li><a href="#s1">1. A pergunta que vem antes</a></li>
-    <li><a href="#s2">2. Estimar uma média</a></li>
-    <li><a href="#s3">3. Estimar uma proporção</a></li>
-    <li><a href="#s4">4. População finita</a></li>
-    <li><a href="#s5">5. Planejar pelo poder</a></li>
-    <li><a href="#s6">6. Tamanho de efeito</a></li>
-    <li><a href="#s7">7. Curvas de poder</a></li>
-    <li><a href="#s8">8. Planos de amostragem</a></li>
-    <li><a href="#s9">9. Erros que invalidam tudo</a></li>
-    <li><a href="#s10">10. Planejamento em Física</a></li>
-    <li><a href="#s11">11. Checklist e exercícios</a></li>
+    <li><a href="#s1">1. Por que contar</a></li>
+    <li><a href="#sh">2. Uma história antiga</a></li>
+    <li><a href="#s2">3. Princípio fundamental</a></li>
+    <li><a href="#s3">4. Permutações</a></li>
+    <li><a href="#s4">5. Arranjos</a></li>
+    <li><a href="#s5">6. Combinações</a></li>
+    <li><a href="#s6">7. Quadro-resumo</a></li>
+    <li><a href="#s7">8. Binômio e triângulo de Pascal</a></li>
+    <li><a href="#s8">9. Microestados e estatísticas</a></li>
+    <li><a href="#s9">10. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
-  <p class="chapeu">Módulo 15 · 3 horas · encerramento</p>
-  <h1>Tamanho amostral e planejamento de pesquisa</h1>
-  <p class="subtitulo">A única parte da estatística que precisa ser feita <em>antes</em> de
-  coletar os dados — e a mais negligenciada.</p>
+  <p class="chapeu">Módulo 15 · 3 horas</p>
+  <h1>Técnicas de contagem</h1>
+  <p class="subtitulo">Permutações, arranjos e combinações — e a multiplicidade de um sistema físico.</p>
 
   <div class="bloco def">
     <span class="rotulo">Objetivos</span>
     <ul>
-      <li>Dimensionar amostras para estimar médias e proporções com precisão dada;</li>
-      <li>Aplicar a correção para população finita e saber quando ela importa;</li>
-      <li>Planejar pelo poder: detectar um efeito de tamanho \(\delta\) com probabilidade
-      \(1-\beta\);</li>
-      <li>Entender o tamanho de efeito e por que ele é mais informativo que o valor p;</li>
-      <li>Reconhecer os erros de planejamento que nenhuma análise posterior corrige;</li>
-      <li>Montar um plano de pesquisa defensável antes da coleta.</li>
+      <li>Aplicar o princípio fundamental da contagem a problemas com etapas sucessivas;</li>
+      <li>Distinguir com segurança quando a <strong>ordem importa</strong> e quando não importa;</li>
+      <li>Calcular permutações simples, com repetição e circulares;</li>
+      <li>Calcular arranjos e combinações, e relacioná-los por \(A_{n,k}=k!\,C_{n,k}\);</li>
+      <li>Usar o binômio de Newton e as propriedades do triângulo de Pascal;</li>
+      <li>Contar microestados nas estatísticas de Maxwell–Boltzmann, Bose–Einstein e Fermi–Dirac.</li>
     </ul>
   </div>
 
   <hr class="linha">
 
   <!-- ================================================== -->
-  <h2 id="s1">1. A pergunta que vem antes de todas</h2>
+  <h2 id="s1">1. Por que contar</h2>
 
-  <p>Catorze módulos ensinaram o que fazer <em>depois</em> que os dados chegam. Este trata do
-  que fazer antes — e é, na prática de pesquisa, o momento em que mais se erra.</p>
+  <p>No módulo anterior chegamos à regra de Laplace: \(P(A)=|A|/|\Omega|\). Enquanto os espaços
+  eram pequenos — seis faces, 36 pares — bastava listar. Mas considere:</p>
+
+  <ul>
+    <li>Qual a probabilidade de um jogo da Mega-Sena premiado?</li>
+    <li>De quantas maneiras 30 estudantes podem se sentar em 30 carteiras?</li>
+    <li>Quantos microestados tem um sistema de 20 spins com energia fixa?</li>
+  </ul>
+
+  <p>Listar é inviável. Precisamos <strong>contar sem enumerar</strong>. Toda a combinatória que
+  veremos aqui serve a um único propósito: fornecer \(|A|\) e \(|\Omega|\) para a regra de Laplace.</p>
 
   <div class="destaque">
-    <span class="anuncio">Nenhuma análise conserta uma amostra mal dimensionada</span>
-    Dados insuficientes não revelam o que você procura; dados em excesso custam tempo,
-    dinheiro e, em pesquisa com pessoas ou animais, impõem ônus sem necessidade.
+    A pergunta que organiza este módulo inteiro é uma só: <strong>a ordem importa?</strong><br>
+    Se importa, é arranjo ou permutação. Se não importa, é combinação.
   </div>
 
-  <div class="bloco fisica">
-    <span class="rotulo">Uma frase que vale o módulo inteiro</span>
-    <p>Ronald Fisher, dirigindo-se à Indian Statistical Conference em 1938, disse algo que se
-    tornou célebre:</p>
-    <p style="padding-left:1.2rem;border-left:3px solid var(--borda);font-style:italic">
-    Chamar o estatístico depois que o experimento terminou talvez seja apenas pedir-lhe que
-    faça um exame <i>post mortem</i>: ele poderá, quem sabe, dizer de que o experimento
-    morreu.</p>
-    <p>A tarefa deste módulo é evitar o <i>post mortem</i>. Planejar significa decidir, antes
-    de coletar qualquer coisa: qual é a pergunta, qual efeito importa detectar, quanta
-    precisão se exige, e quantas observações isso custa.</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">Duas perguntas distintas</span>
-    <p>O tamanho da amostra responde a uma de duas perguntas, e elas usam fórmulas
-    diferentes:</p>
-    <ul>
-      <li><strong>Precisão</strong> — "quero estimar a média com erro de no máximo \(E\)".
-      É um problema de intervalo de confiança, do Módulo 8;</li>
-      <li><strong>Poder</strong> — "quero detectar uma diferença \(\delta\), se ela existir,
-      com probabilidade \(1-\beta\)". É um problema de teste de hipóteses, do Módulo 9.</li>
-    </ul>
-    <p>Confundir as duas é o erro mais comum. Pergunte-se sempre: <em>vou estimar, ou vou
-    comparar?</em></p>
-  </div>
-
-  <div data-widget="tamanhoamostral"></div>
 
   <!-- ================================================== -->
-  <h2 id="s2">2. Estimar uma média</h2>
+  <h2 id="sh">2. Uma história bem mais antiga que a probabilidade</h2>
 
-  <div class="bloco def">
-    <span class="rotulo">Dedução, em três linhas</span>
-    <p>O intervalo de confiança para \(\mu\) tem semiamplitude</p>
-    <p>\[E = z_{\alpha/2}\,\frac{\sigma}{\sqrt n}.\]</p>
-    <p>Isolando \(n\):</p>
-    <p>\[\boxed{\,n = \left(\frac{z_{\alpha/2}\,\sigma}{E}\right)^{2}\,}\]</p>
-  </div>
+  <p>É curioso: a <em>probabilidade</em> só nasce no século XVII, mas a <em>combinatória</em>
+  tem milhares de anos. Contar arranjos é uma necessidade que aparece sozinha em culturas muito
+  distantes, sem contato entre si — e sempre por motivos que pouco têm a ver com jogos.</p>
 
-  <div class="bloco alerta">
-    <span class="rotulo">A dependência é quadrática, e isso muda tudo</span>
-    <p>\(E\) aparece ao <strong>quadrado</strong> no denominador. Portanto:</p>
-    <ul>
-      <li>Para <strong>metade</strong> do erro, é preciso <strong>quatro vezes</strong> a
-      amostra;</li>
-      <li>Para <strong>um décimo</strong> do erro, <strong>cem vezes</strong>.</li>
-    </ul>
-    <p>É a mesma lei de \(1/\sqrt n\) que governa o erro padrão desde o Módulo 7, vista do
-    outro lado. Ela é a razão pela qual precisão é cara, e por que vale muito mais a pena
-    <em>reduzir \(\sigma\)</em> — medindo melhor — do que aumentar \(n\).</p>
-  </div>
+  <h3>O triângulo que tem muitos nomes</h3>
 
-  <div class="bloco alerta">
-    <span class="rotulo">De onde vem o σ, se ainda não coletei nada?</span>
-    <p>É a objeção óbvia, e tem três respostas legítimas:</p>
-    <ol>
-      <li><strong>Estudo piloto.</strong> Colete 20 ou 30 observações e estime \(\sigma\) com
-      elas. É o caminho mais seguro, e o piloto ainda serve para testar o protocolo;</li>
-      <li><strong>Literatura.</strong> Trabalhos anteriores sobre a mesma grandeza, com
-      instrumentação parecida;</li>
-      <li><strong>Regra da amplitude.</strong> Se você consegue estimar o maior e o menor
-      valor plausíveis, \(\sigma \approx (\text{máx}-\text{mín})/4\), porque cerca de 95% de
-      uma normal cabe em quatro desvios.</li>
-    </ol>
-    <p>Na dúvida, <strong>superestime \(\sigma\)</strong>. Errar para cima custa algumas
-    medidas a mais; errar para baixo custa o estudo inteiro.</p>
-  </div>
-
-  <h3>Exercício resolvido 15.1 — Quantas medidas do período?</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Um estudante quer medir o período de um pêndulo com erro máximo de 0,005 s e 95% de
-    confiança. Um piloto com 15 medidas deu \(s = 0{,}018\ \mathrm{s}\). Quantas medidas são
-    necessárias? E se ele quiser 0,002 s?</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Para E = 0,005 s.</strong></p>
-      <p>\[n = \left(\frac{1{,}96 \times 0{,}018}{0{,}005}\right)^{2}
-      = \left(\frac{0{,}03528}{0{,}005}\right)^{2} = (7{,}056)^{2} = 49{,}8
-      \;\Rightarrow\; \mathbf{n = 50}.\]</p>
-      <p><strong>Para E = 0,002 s.</strong></p>
-      <p>\[n = \left(\frac{1{,}96 \times 0{,}018}{0{,}002}\right)^{2} = (17{,}64)^{2}
-      = 311{,}2 \;\Rightarrow\; \mathbf{n = 312}.\]</p>
-      <p>Reduzir o erro de 0,005 para 0,002 — um fator de 2,5 — exigiu
-      \(2{,}5^2 = 6{,}25\) vezes mais medidas. De 50 para 312.</p>
-      <div class="bloco fisica">
-        <span class="rotulo">A saída inteligente</span>
-        <p>Trezentas e doze cronometragens manuais são inviáveis, e o pior é que não
-        resolveriam: boa parte de \(s = 0{,}018\) s é <strong>tempo de reação humano</strong>,
-        que não some com repetição porque tem componente sistemática.</p>
-        <p>Duas alternativas valem mais que 262 medidas extras:</p>
-        <ul>
-          <li><strong>Cronometrar 10 oscilações</strong> e dividir por 10. O erro de reação
-          é o mesmo em valor absoluto, mas se reparte entre dez períodos: \(\sigma\) cai por
-          um fator 10, e o \(n\) necessário cai por 100. Vinte medidas passam a bastar;</li>
-          <li><strong>Usar um sensor óptico</strong>, eliminando a reação humana por
-          completo.</li>
-        </ul>
-        <p><strong>A lição geral:</strong> quando o \(n\) exigido ficar absurdo, o problema
-        quase nunca é a amostra — é o <strong>método de medida</strong>. Reduzir \(\sigma\)
-        por um fator \(k\) vale tanto quanto multiplicar \(n\) por \(k^2\), e costuma ser
-        muito mais barato.</p>
-      </div>
-    </div>
-  </details>
-
-  <!-- ================================================== -->
-  <h2 id="s3">3. Estimar uma proporção</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Fórmula e pior caso</span>
-    <p>\[n = \frac{z_{\alpha/2}^{2}\;p(1-p)}{E^{2}}\]</p>
-    <p>Mas \(p\) é justamente o que não sabemos. A saída é o <strong>pior caso</strong>:
-    a função \(p(1-p)\) é máxima em \(p = 0{,}5\), onde vale 0,25. Adotando isso,</p>
-    <p>\[n = \left(\frac{z_{\alpha/2}}{2E}\right)^{2},\]</p>
-    <p>e a amostra é suficiente seja qual for o \(p\) verdadeiro.</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">A tabela que explica as pesquisas eleitorais</span>
-    <div class="tabela-rolavel">
-    <table>
-      <thead><tr><th>Margem de erro</th><th class="num">n (95%)</th><th class="num">n (99%)</th></tr></thead>
-      <tbody>
-        <tr><td>± 5 pontos</td><td class="num">385</td><td class="num">664</td></tr>
-        <tr><td>± 4 pontos</td><td class="num">601</td><td class="num">1 037</td></tr>
-        <tr><td>± 3 pontos</td><td class="num">1 068</td><td class="num">1 844</td></tr>
-        <tr><td>± 2 pontos</td><td class="num">2 401</td><td class="num">4 147</td></tr>
-        <tr><td>± 1 ponto</td><td class="num">9 604</td><td class="num">16 588</td></tr>
-      </tbody>
-    </table>
-    </div>
-    <p>É daqui que vem o número 2 000 que aparece em tantas pesquisas de opinião: ele compra
-    cerca de dois pontos de margem a 95%. E é daqui também que vem a razão de ninguém
-    prometer meio ponto — custaria quase 40 000 entrevistas.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s4">4. População finita</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">A correção</span>
-    <p>\[n_{\text{aj}} = \frac{n}{1 + \dfrac{n-1}{N}}\]</p>
-    <p>onde \(n\) é o tamanho calculado supondo população infinita e \(N\) é a população real.
-    A correção só é relevante quando \(n\) passa de cerca de <strong>5% de \(N\)</strong>.</p>
-  </div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">O resultado mais contraintuitivo da amostragem</span>
-    <p>Para estimar uma proporção com ±3 pontos a 95%, precisa-se de cerca de 1 068 pessoas —
-    numa cidade de 100 000 habitantes ou num país de 200 milhões. O tamanho da população
-    <strong>quase não entra na conta</strong>.</p>
-    <p>A razão é que a precisão depende de quantas observações <em>independentes</em> você
-    tem, não de que fração do todo elas representam. Uma colher de sopa basta para provar o
-    tempero, seja de uma panela ou de um caldeirão — desde que esteja bem mexido. O "bem
-    mexido" é a aleatorização, e é ela que importa.</p>
-    <p>Com \(N = 500\), a correção reduz 1 068 para 341. Com \(N = 10\,000\), para 966. Com
-    \(N = 1\) milhão, para 1 067 — praticamente nada.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s5">5. Planejar pelo poder</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Comparar duas médias</span>
-    <p>Para detectar uma diferença \(\delta\) entre dois grupos, com nível \(\alpha\) e poder
-    \(1-\beta\):</p>
-    <p>\[\boxed{\,n = \frac{2\,(z_{\alpha/2}+z_{\beta})^{2}\,\sigma^{2}}{\delta^{2}}\,}\]</p>
-    <p>por grupo. Valores de \(z_\beta\): 0,842 para 80% de poder, 1,282 para 90%, 1,645 para
-    95%.</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">Comparar duas proporções</span>
-    <p>\[n = \frac{(z_{\alpha/2}+z_{\beta})^{2}\left[p_1(1-p_1)+p_2(1-p_2)\right]}
-    {(p_1-p_2)^{2}}\]</p>
-    <p>por grupo.</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">Detectar uma correlação</span>
-    <p>Usa-se a transformação \(z\) de Fisher, que normaliza a distribuição de \(r\):</p>
-    <p>\[z_r = \tfrac12\ln\!\frac{1+r}{1-r}, \qquad
-    n = \left(\frac{z_{\alpha/2}+z_{\beta}}{z_r}\right)^{2} + 3.\]</p>
-    <p>Para \(r = 0{,}30\) com 80% de poder: \(n = 85\). Para \(r = 0{,}10\): \(n = 783\).</p>
-  </div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Por que o simulador dá 63 e o G*Power dá 64</span>
-    <p>Todas as fórmulas acima usam a <strong>aproximação normal</strong>. O cálculo exato
-    envolve a distribuição \(t\) <em>não central</em>, que exige iteração porque os graus de
-    liberdade dependem do próprio \(n\).</p>
-    <p>A diferença é de uma ou duas observações, e sempre para baixo — a aproximação normal
-    é ligeiramente otimista. Na prática isso não importa, porque a incerteza sobre \(\sigma\)
-    é muito maior que isso. Mas convém saber de onde vem a discrepância quando você conferir
-    seu resultado num programa especializado.</p>
-  </div>
-
-  <h3>Exercício resolvido 15.2 — Dimensionar um estudo de ensino</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Quer-se comparar duas metodologias de ensino de Física. Espera-se diferença de
-    5 pontos na nota final, e estudos anteriores indicam \(\sigma \approx 12\) pontos.
-    Quantos estudantes por grupo, com \(\alpha = 0{,}05\) e 80% de poder? E se houver apenas
-    40 por grupo disponíveis?</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Parte 1 — o n necessário.</strong></p>
-      <p>\[n = \frac{2(1{,}960+0{,}842)^{2}(12)^{2}}{5^{2}}
-      = \frac{2 \times 7{,}849 \times 144}{25} = \frac{2260{,}5}{25} = 90{,}4
-      \;\Rightarrow\; \mathbf{91 \text{ por grupo}},\]</p>
-      <p>ou seja, 182 estudantes ao todo.</p>
-      <p><strong>Parte 2 — o que dá para fazer com 40.</strong> Invertendo a fórmula, o poder
-      com \(n = 40\) é</p>
-      <p>\[z_\beta = \frac{\delta}{\sigma}\sqrt{\frac n2} - z_{\alpha/2}
-      = \frac{5}{12}\sqrt{20} - 1{,}96 = 1{,}863 - 1{,}960 = -0{,}097,\]</p>
-      <p>\[1-\beta = \Phi(-0{,}097) = \mathbf{46\%}.\]</p>
-      <p>Menos que cara ou coroa. Se a diferença de 5 pontos for real, este estudo tem
-      <strong>mais chance de não detectá-la do que de detectá-la</strong>.</p>
-      <div class="bloco alerta">
-        <span class="rotulo">O que fazer diante disso</span>
-        <p>Há quatro saídas honestas, e uma desonesta.</p>
-        <ol>
-          <li><strong>Conseguir mais estudantes</strong> — outras turmas, outro semestre,
-          colaboração com outra instituição;</li>
-          <li><strong>Reduzir \(\sigma\)</strong> — usar a nota do pré-teste como covariável,
-          ou um delineamento pareado. Isso costuma cortar \(\sigma\) à metade, e com ela o
-          \(n\) a um quarto;</li>
-          <li><strong>Aceitar detectar só efeitos maiores.</strong> Com \(n=40\) e 80% de
-          poder, o menor efeito detectável é \(\delta = 7{,}5\) pontos. Declare isso
-          explicitamente;</li>
-          <li><strong>Declarar o estudo como piloto</strong>, cujo objetivo é estimar
-          \(\sigma\) e testar o protocolo, não concluir.</li>
-        </ol>
-        <p>A saída desonesta é rodar assim mesmo, não encontrar nada, e escrever "não houve
-        diferença significativa entre as metodologias". <strong>Ausência de evidência não é
-        evidência de ausência</strong> — e com 46% de poder, não encontrar nada era o
-        resultado mais provável desde o início, houvesse efeito ou não.</p>
-      </div>
-    </div>
-  </details>
-
-  <!-- ================================================== -->
-  <h2 id="s6">6. Tamanho de efeito</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">d de Cohen</span>
-    <p>\[d = \frac{\delta}{\sigma} = \frac{\bar x_1 - \bar x_2}{s_p}\]</p>
-    <p>É a diferença medida <strong>em desvios padrão</strong>, e por isso adimensional e
-    comparável entre estudos.</p>
-    <div class="tabela-rolavel">
-    <table>
-      <thead><tr><th class="num">d</th><th>Convenção</th><th class="num">n por grupo (80%, α=5%)</th></tr></thead>
-      <tbody>
-        <tr><td class="num">0,2</td><td>pequeno</td><td class="num">393</td></tr>
-        <tr><td class="num">0,5</td><td>médio</td><td class="num">63</td></tr>
-        <tr><td class="num">0,8</td><td>grande</td><td class="num">25</td></tr>
-        <tr><td class="num">1,0</td><td>muito grande</td><td class="num">16</td></tr>
-      </tbody>
-    </table>
-    </div>
-    <p>Veja a assimetria: um efeito pequeno custa <strong>vinte e cinco vezes</strong> mais
-    observações que um grande.</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">Outras medidas de efeito que você já viu</span>
-    <ul>
-      <li>\(r^2\) na regressão — fração da variação explicada (Módulo 13);</li>
-      <li>\(r\) na correlação — ele próprio já é adimensional (Módulo 12);</li>
-      <li>\(U_1/(n_1n_2)\) no Mann–Whitney — estima \(P(X>Y)\) (Módulo 14);</li>
-      <li>Razão de chances, em tabelas \(2\times2\) (Módulo 10).</li>
-    </ul>
-  </div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Significância não é importância</span>
-    <p>Com \(n\) suficientemente grande, <strong>qualquer</strong> diferença não nula se torna
-    estatisticamente significativa. É o mesmo ponto do Módulo 12 sobre correlações: com mil
-    pares, um \(r = 0{,}062\) é "significativo" e explica 0,4% da variação.</p>
-    <p>A pergunta que importa não é "é significativo?", mas <strong>"é grande o bastante para
-    fazer diferença?"</strong> — e essa é uma pergunta sobre o fenômeno, não sobre
-    estatística. Um ganho de 0,3 ponto numa prova de 100 pode ser significativo com 5 000
-    alunos e ainda assim não justificar mudar o currículo.</p>
-    <p>Reporte sempre <strong>a estimativa, seu intervalo de confiança e o tamanho de
-    efeito</strong>. O valor p sozinho é a informação menos útil das três.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s7">7. Curvas de poder</h2>
-
-  <p>As três quantidades — \(\alpha\), \(n\) e o tamanho de efeito — estão amarradas. Fixadas
-  duas, a terceira fica determinada. O simulador abaixo mostra a amarração.</p>
-
-  <div data-widget="curvaspoder"></div>
-
-  <div class="bloco def">
-    <span class="rotulo">Três leituras do gráfico</span>
-    <ul>
-      <li><strong>As curvas saturam.</strong> Depois de certo ponto, aumentar \(n\) quase não
-      acrescenta poder. Planejar para 99% é desperdício;</li>
-      <li><strong>Efeitos pequenos são outra categoria.</strong> A curva de \(d = 0{,}2\) mal
-      sai do chão na faixa de \(n\) que um laboratório didático consegue;</li>
-      <li><strong>Reduzir \(\alpha\) desloca as curvas para a direita.</strong> Exigir mais
-      rigor contra falsos positivos custa poder — ou amostra.</li>
-    </ul>
-  </div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Poder observado: não faça isso</span>
-    <p>Há uma prática disseminada e errada: concluída a análise sem significância, calcular o
-    "poder observado" usando o efeito <em>estimado</em> na própria amostra.</p>
-    <p>Isso não informa nada. O poder observado é uma função monótona do valor p — p alto
-    implica poder observado baixo, sempre, por construção. Dizer "não deu significativo e o
-    poder era baixo" é dizer a mesma coisa duas vezes.</p>
-    <p>O poder deve ser calculado <strong>antes</strong>, com o efeito que se considera
-    relevante detectar, não com o que por acaso saiu. Depois dos dados, o que informa é o
-    <strong>intervalo de confiança</strong>: se ele for estreito e contiver o zero, há
-    evidência real de ausência de efeito relevante; se for largo, o estudo simplesmente não
-    conclui nada.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s8">8. Planos de amostragem</h2>
-
-  <p>O tamanho responde "quantos"; o plano responde <strong>"quais"</strong> — e esta segunda
-  pergunta é a que decide se os resultados valem alguma coisa.</p>
+  <p>O arranjo triangular de números que no Ocidente chamamos de <strong>triângulo de
+  Pascal</strong> foi descoberto independentemente em pelo menos quatro lugares:</p>
 
   <div class="tabela-rolavel">
   <table>
-    <thead><tr><th>Plano</th><th>Como</th><th>Quando usar</th></tr></thead>
+    <thead><tr><th>Onde</th><th>Quando</th><th>Quem, e por quê</th></tr></thead>
     <tbody>
-      <tr><td><b>Aleatória simples</b></td><td>sorteio entre todos</td><td>população homogênea e lista completa disponível</td></tr>
-      <tr><td><b>Sistemática</b></td><td>a cada k-ésimo, partindo de início sorteado</td><td>lista ordenada sem periodicidade</td></tr>
-      <tr><td><b>Estratificada</b></td><td>divide em estratos e sorteia dentro de cada</td><td>há subgrupos relevantes e distintos</td></tr>
-      <tr><td><b>Por conglomerados</b></td><td>sorteia grupos inteiros</td><td>população dispersa geograficamente</td></tr>
-      <tr><td><b>Por conveniência</b></td><td>quem estiver à mão</td><td><b>nunca</b>, para inferência</td></tr>
+      <tr><td>Índia</td><td>séc. II a.C.</td>
+        <td><b>Pingala</b>, estudando métrica poética em sânscrito: de quantas
+        maneiras se combinam sílabas longas e breves em um verso</td></tr>
+      <tr><td>Pérsia</td><td>séc. XI</td>
+        <td><b>Omar Khayyam</b> e <b>Al-Karaji</b>, para extrair raízes e expandir
+        potências de binômios</td></tr>
+      <tr><td>China</td><td>séc. XI–XIII</td>
+        <td><b>Jia Xian</b> e <b>Yang Hui</b> — na China ele é chamado até hoje de
+        "triângulo de Yang Hui"</td></tr>
+      <tr><td>Europa</td><td>séc. XVI–XVII</td>
+        <td><b>Tartaglia</b>, <b>Stifel</b> e enfim <b>Pascal</b>, que em 1654 escreveu o
+        <em>Traité du triangle arithmétique</em> organizando tudo e conectando-o ao
+        problema dos pontos</td></tr>
     </tbody>
   </table>
   </div>
 
+  <p>O mérito de Pascal não foi descobrir o triângulo — foi perceber que aquele objeto
+  aritmético e o problema do jogador eram <strong>a mesma coisa</strong>. Que contar arranjos e
+  calcular chances eram duas faces de um só problema. Esse é o elo que o nosso Módulo 14 e este
+  Módulo 15 reproduzem.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">A combinatória como contagem de possibilidades físicas</span>
+    <p>Há um fio que atravessa todos esses usos. Pingala contava versos; Khayyam, termos de um
+    binômio; Pascal, resultados de uma partida. Em todos os casos, a pergunta é a mesma:
+    <strong>de quantas maneiras um sistema pode se organizar?</strong></p>
+    <p>É exatamente essa a pergunta que Boltzmann faria duzentos anos depois, ao contar de
+    quantas maneiras as moléculas de um gás podem se distribuir. A combinatória que você vai
+    aprender aqui para resolver problemas de baralho é, literalmente, a mesma que fornece a
+    entropia de um sistema físico. Voltaremos a isso na seção 9.</p>
+  </div>
+
+  <h3>De onde vem a notação</h3>
+
+  <p>O símbolo <strong>\(n!\)</strong> foi proposto por <strong>Christian Kramp</strong> em
+  1808, e a palavra <em>factorielle</em> por Louis Arbogast, pouco antes. Até então escrevia-se
+  o produto por extenso, ou com notações desajeitadas que não pegaram. É um lembrete de que boa
+  notação é invenção, não natureza: o avanço de uma área frequentemente espera por um símbolo
+  conveniente.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s2">3. O princípio fundamental da contagem</h2>
+
   <div class="bloco def">
-    <span class="rotulo">Amostragem estratificada: a que mais rende</span>
-    <p>Dividindo a população em estratos homogêneos e sorteando dentro de cada um, a variância
-    da estimativa cai, porque a variação <em>entre</em> estratos deixa de contar. Com
-    alocação proporcional, o estrato \(h\) recebe \(n_h = n\,N_h/N\).</p>
-    <p>Em pesquisa educacional é quase sempre a escolha certa: estratificar por turma, por
-    turno ou por semestre garante representação de cada grupo e, de quebra, reduz o \(n\)
-    necessário.</p>
+    <span class="rotulo">Princípio multiplicativo</span>
+    <p>Se uma decisão pode ser tomada de \(n_1\) maneiras, e em seguida outra de \(n_2\) maneiras,
+    e assim por diante até \(n_k\), então o número total de sequências de decisões é</p>
+    <p>\[N = n_1 \times n_2 \times \cdots \times n_k .\]</p>
   </div>
 
-  <div class="bloco alerta">
-    <span class="rotulo">Amostragem sistemática tem uma armadilha</span>
-    <p>Se a lista tiver periodicidade que coincida com o passo \(k\), a amostra fica
-    sistematicamente enviesada. O exemplo clássico: medir a temperatura de um forno a cada
-    24 horas sempre no mesmo horário, quando o forno tem ciclo diário. Você mede sempre a
-    mesma fase do ciclo, e conclui que o forno é estável.</p>
-    <p>Em séries temporais e em qualquer processo com ciclo, verifique o passo antes de
-    adotá-lo.</p>
+  <p>A justificativa é a estrutura de árvore: cada um dos \(n_1\) primeiros galhos se abre em
+  \(n_2\) ramos, e assim sucessivamente.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Princípio aditivo</span>
+    <p>Se uma tarefa pode ser feita <em>ou</em> de \(n_1\) maneiras <em>ou</em> de \(n_2\) maneiras
+    <strong>mutuamente excludentes</strong>, o total é \(n_1 + n_2\). Note o paralelo exato com
+    os eventos disjuntos do Módulo 14.</p>
   </div>
 
-  <!-- ================================================== -->
-  <h2 id="s9">9. Erros que nenhuma análise corrige</h2>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Os seis mais caros</span>
-    <ol>
-      <li><strong>Amostra de conveniência apresentada como aleatória.</strong> Pesquisar com
-      os alunos da própria turma e generalizar para "estudantes de licenciatura" é o viés de
-      seleção do Módulo 7, com outro nome;</li>
-      <li><strong>Não aleatorizar a alocação.</strong> Se os estudantes escolhem o grupo, as
-      diferenças entre grupos refletem a escolha, não o tratamento. Sem aleatorização não há
-      conclusão causal — Módulo 12;</li>
-      <li><strong>Ignorar perdas.</strong> Se 20% não respondem, e os que não respondem forem
-      diferentes dos que respondem, nenhum \(n\) salva o estudo. Planeje para a perda
-      <em>e</em> investigue quem se perdeu;</li>
-      <li><strong>Pseudo-replicação.</strong> Vinte medidas no mesmo pêndulo não são vinte
-      pêndulos. O \(n\) para inferência é o número de unidades <em>independentes</em>, não de
-      medidas;</li>
-      <li><strong>Testar até dar certo.</strong> Coletar, testar, e continuar coletando se
-      não deu significativo infla \(\alpha\) muito acima do nominal. O \(n\) deve ser fixado
-      antes, ou usa-se um desenho sequencial com fronteiras ajustadas;</li>
-      <li><strong>Comparações múltiplas não declaradas.</strong> Testar vinte hipóteses a 5%
-      e reportar a que deu significativa produz, em média, uma falsa descoberta por estudo.
-      Declare todas as comparações e corrija — Bonferroni, dividindo \(\alpha\) pelo número
-      de testes, é o mais simples.</li>
-    </ol>
-  </div>
-
-  <div class="bloco fisica">
-    <span class="rotulo">Pseudo-replicação, com um exemplo de Física</span>
-    <p>Para estimar a resistividade de um material, medir mil vezes a mesma amostra dá uma
-    excelente estimativa da resistividade <em>daquela amostra</em>, com incerteza
-    minúscula — e não diz quase nada sobre o material, porque não captura a variação entre
-    amostras, que costuma ser a dominante.</p>
-    <p>Se o interesse é o material, o \(n\) relevante é o número de <strong>amostras
-    distintas</strong>. Dez amostras medidas três vezes cada é um desenho muito melhor que
-    uma amostra medida trinta vezes — e o erro padrão correto usa \(n = 10\), não
-    \(n = 30\).</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s10">10. Planejamento em Física experimental</h2>
-
-  <div class="bloco fisica">
-    <span class="rotulo">Quatro princípios que valem mais que fórmulas</span>
-    <p><strong>1. Reduzir σ bate aumentar n.</strong> Um fator \(k\) em \(\sigma\) vale
-    \(k^2\) em \(n\). Cronometrar 10 oscilações em vez de 1, usar um sensor no lugar do
-    cronômetro, blindar o arranjo de vibração — tudo isso rende mais que repetir medidas.</p>
-    <p><strong>2. Espalhar os \(x\) bate aumentar \(n\), em regressão.</strong> Do Módulo 13:
-    \(s_a = s_e/\sqrt{S_{xx}}\), e \(S_{xx}\) cresce com o quadrado da amplitude. Dez
-    comprimentos de pêndulo entre 0,2 m e 1,2 m valem mais que trinta entre 0,5 m e
-    0,6 m.</p>
-    <p><strong>3. Identifique o erro dominante antes de atacar.</strong> Se a incerteza é 80%
-    sistemática e 20% aleatória, repetir medidas não resolve nada — a parte sistemática não
-    cai com \(\sqrt n\). Calibre primeiro, repita depois.</p>
-    <p><strong>4. Faça o piloto.</strong> Vinte medidas preliminares dão \(\sigma\), revelam
-    problemas do protocolo e custam uma tarde. É o melhor investimento de tempo em qualquer
-    experimento.</p>
-  </div>
-
-  <h3>Exercício resolvido 15.3 — Planejar a medida de g</h3>
+  <h3>Exercício resolvido 2.1 — Placas de veículos</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
-    <p>Pretende-se medir \(g\) pelo método do pêndulo com incerteza relativa de no máximo
-    0,5%. Um piloto com cinco comprimentos deu \(s_a/a = 1{,}2\%\) na inclinação de
-    \(T^2 \times L\). Como planejar o experimento?</p>
+    <p>O padrão Mercosul de placas no Brasil usa quatro letras e três algarismos no formato
+    LLLNLNN (letra, letra, letra, número, letra, número, número). Considerando 26 letras e 10
+    algarismos, quantas placas distintas são possíveis?</p>
   </div>
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <p><strong>Passo 1 — Traduzir a meta.</strong> Como \(g = 4\pi^2/a\), a incerteza
-      relativa se transfere diretamente: \(\sigma_g/g = s_a/a\). A meta é, portanto,
-      \(s_a/a \le 0{,}5\%\).</p>
-      <p><strong>Passo 2 — Identificar as alavancas.</strong> Do Módulo 13,</p>
-      <p>\[s_a = \frac{s_e}{\sqrt{S_{xx}}}.\]</p>
-      <p>Há três caminhos: reduzir \(s_e\), aumentar \(n\), ou aumentar \(S_{xx}\).</p>
-      <p><strong>Passo 3 — Comparar o custo de cada um.</strong></p>
-      <p><em>Pelo n.</em> Como \(S_{xx}\) cresce linearmente com \(n\) quando se adicionam
-      pontos na mesma faixa, \(s_a \propto 1/\sqrt n\). Para cair de 1,2% a 0,5%, fator 2,4:</p>
-      <p>\[n_{\text{novo}} = 5 \times (2{,}4)^2 = 29 \text{ comprimentos}.\]</p>
-      <p><em>Pela amplitude.</em> Se o piloto usou comprimentos de 0,4 m a 0,6 m e passarmos
-      a usar de 0,2 m a 1,2 m, a amplitude quintuplica e \(S_{xx}\) cresce cerca de 25 vezes,
-      de modo que \(s_a\) cai por um fator 5 — <strong>de 1,2% para 0,24%</strong>, com os
-      mesmos cinco pontos.</p>
-      <p><em>Por \(s_e\).</em> Cronometrar 10 oscilações em vez de 1 divide a incerteza de
-      cada \(T\) por 10; como \(T^2\) propaga \(2\sigma_T/T\), \(s_e\) cai por um fator
-      próximo de 10.</p>
-      <p><strong>Passo 4 — O plano.</strong></p>
-      <ul>
-        <li>Dez comprimentos, <strong>bem espalhados</strong> entre 0,20 m e 1,20 m — não
-        agrupados;</li>
-        <li>Três cronometragens de <strong>10 oscilações</strong> em cada comprimento;</li>
-        <li>Medir \(L\) com o mesmo cuidado: ele entra na mesma conta, e de nada adianta um
-        \(T\) excelente com um \(L\) ruim;</li>
-        <li>Ajustar \(T^2\) contra \(L\), conferir que o intercepto é compatível com zero e
-        olhar o gráfico de resíduos.</li>
-      </ul>
-      <p>Esse é exatamente o plano que gerou os dados do Módulo 13 — e ele devolveu
-      \(g = (9{,}78 \pm 0{,}06)\ \mathrm{m/s^2}\), isto é, 0,57% de incerteza relativa, com
-      dez pontos e uma tarde de laboratório. Trinta comprimentos amontoados numa faixa
-      estreita teriam dado bem pior.</p>
+      <p>São sete posições independentes: quatro letras e três algarismos. Pelo princípio
+      multiplicativo,</p>
+      <p>\[N = 26^4 \times 10^3 = 456\,976 \times 1000 = 456\,976\,000 .\]</p>
+      <p>Cerca de 457 milhões de placas — suficiente para a frota brasileira por muito tempo.
+      Observe que repetições <strong>são permitidas</strong> aqui: a placa ABC1D23 e a AAA1A11
+      são ambas válidas. Esse é o caso \(n^k\) da calculadora adiante.</p>
     </div>
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s11">11. Checklist e exercícios</h2>
+  <h2 id="s3">4. Permutações</h2>
 
+  <h3>4.1 Permutação simples</h3>
   <div class="bloco def">
-    <span class="rotulo">Checklist antes de coletar o primeiro dado</span>
-    <ol>
-      <li>Qual é a <strong>pergunta</strong>, em uma frase?</li>
-      <li>É de <strong>estimação</strong> ou de <strong>comparação</strong>?</li>
-      <li>Qual é a <strong>população</strong> sobre a qual quero concluir?</li>
-      <li>Qual <strong>efeito</strong> é relevante detectar — e por que esse valor?</li>
-      <li>Qual é o \(\sigma\) esperado, e <strong>de onde</strong> veio essa estimativa?</li>
-      <li>Que \(\alpha\) e que <strong>poder</strong>?</li>
-      <li>Qual o <strong>n</strong> resultante — e ele é viável?</li>
-      <li>Qual o <strong>plano de amostragem</strong>, e como será a aleatorização?</li>
-      <li>Quanta <strong>perda</strong> espero, e qual a margem para ela?</li>
-      <li>Que <strong>teste</strong> usarei, e seus pressupostos são plausíveis?</li>
-      <li>Quantas <strong>comparações</strong> farei, e como vou corrigir?</li>
-      <li>O que farei se o resultado <strong>não</strong> for significativo?</li>
-    </ol>
-    <p>Se qualquer resposta for "não sei", o planejamento ainda não terminou. Responder à
-    décima segunda pergunta antes de coletar é o que separa a pesquisa honesta da caça ao
-    valor p.</p>
+    <span class="rotulo">Definição</span>
+    <p>Uma <strong>permutação</strong> de \(n\) objetos distintos é uma ordenação de todos eles.
+    O número de permutações é</p>
+    <p>\[P_n = n! = n\,(n-1)\,(n-2)\cdots 2\cdot 1, \qquad 0! = 1 .\]</p>
   </div>
 
-  <h3>Exercícios propostos</h3>
+  <p><em>Por quê:</em> há \(n\) escolhas para a primeira posição, \(n-1\) para a segunda (um objeto
+  já foi usado), \(n-2\) para a terceira, e assim por diante. Pelo princípio multiplicativo, o
+  produto é \(n!\).</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A velocidade do fatorial</span>
+    <p>\(10! \approx 3{,}6\times 10^{6}\); \(20!\approx 2{,}4\times10^{18}\);
+    \(60! \approx 8{,}3\times 10^{81}\) — mais do que o número estimado de átomos no universo
+    observável. Embaralhar um baralho de 52 cartas gera \(52!\approx 8\times10^{67}\) ordens:
+    toda vez que você embaralha bem, é praticamente certo que produziu uma ordem <em>inédita na
+    história da humanidade</em>.</p>
+  </div>
+
+  <h3>4.2 Permutação com elementos repetidos</h3>
+  <div class="bloco def">
+    <span class="rotulo">Fórmula</span>
+    <p>Se entre \(n\) objetos há \(n_1\) iguais de um tipo, \(n_2\) de outro, …, \(n_r\) do
+    \(r\)-ésimo tipo, com \(n_1+\cdots+n_r=n\), o número de ordenações distintas é</p>
+    <p>\[P_n^{n_1,n_2,\dots,n_r} = \frac{n!}{n_1!\,n_2!\cdots n_r!}\]</p>
+    <p>Divide-se por \(n_i!\) porque permutar entre si os objetos iguais do tipo \(i\) não gera
+    uma ordenação nova — mas foi contado como se gerasse.</p>
+  </div>
+
+  <h3>4.3 Permutação circular</h3>
+  <p>Ao dispor \(n\) objetos em círculo, rotações do mesmo arranjo são indistinguíveis. Fixando
+  um objeto como referência e permutando os demais:</p>
+  <p>\[P_n^{\text{circ}} = (n-1)!\]</p>
+
+  <h3>Exercício resolvido 2.2 — Anagramas</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Quantos anagramas distintos tem a palavra <strong>ESTATÍSTICA</strong> (11 letras,
+    ignorando o acento)? E quantos começam por vogal?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Contagem das letras de E-S-T-A-T-I-S-T-I-C-A: temos \(n=11\) letras, com
+      <strong>A</strong>: 2, <strong>T</strong>: 3, <strong>S</strong>: 2, <strong>I</strong>: 2,
+      <strong>E</strong>: 1, <strong>C</strong>: 1.</p>
+      <p>\[P = \frac{11!}{2!\,3!\,2!\,2!} = \frac{39\,916\,800}{2\cdot 6\cdot 2\cdot 2}
+      = \frac{39\,916\,800}{48} = 831\,600 .\]</p>
+      <p><strong>Começando por vogal.</strong> As vogais disponíveis são A (2), I (2) e E (1),
+      num total de 5 letras-vogais. Separe por caso, fixando a primeira letra e permutando as 10
+      restantes:</p>
+      <ul>
+        <li>Começa por <strong>A</strong>: sobram A:1, T:3, S:2, I:2, E:1, C:1 →
+        \(10!/(1!\,3!\,2!\,2!) = 3\,628\,800/24 = 151\,200\);</li>
+        <li>Começa por <strong>I</strong>: sobram A:2, T:3, S:2, I:1, E:1, C:1 →
+        \(10!/(2!\,3!\,2!) = 3\,628\,800/24 = 151\,200\);</li>
+        <li>Começa por <strong>E</strong>: sobram A:2, T:3, S:2, I:2, C:1 →
+        \(10!/(2!\,3!\,2!\,2!) = 3\,628\,800/48 = 75\,600\).</li>
+      </ul>
+      <p>Pelo princípio aditivo (os casos são mutuamente excludentes):
+      \(151\,200+151\,200+75\,600 = \mathbf{378\,000}\).</p>
+      <p><em>Verificação de sanidade:</em> \(378\,000/831\,600 \approx 0{,}4545 = 5/11\) — exatamente
+      a fração de letras que são vogais. Faz sentido: por simetria, a probabilidade de a primeira
+      posição ser vogal é a proporção de vogais no conjunto.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s4">5. Arranjos</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Um <strong>arranjo</strong> de \(n\) objetos distintos tomados \(k\) a \(k\) é uma
+    sequência <strong>ordenada</strong> de \(k\) objetos distintos escolhidos entre os \(n\):</p>
+    <p>\[A_{n,k} = \frac{n!}{(n-k)!} = n(n-1)\cdots(n-k+1) \quad (k \text{ fatores}).\]</p>
+  </div>
+
+  <p>É a permutação "truncada": paramos de escolher depois de \(k\) posições. Note que
+  \(A_{n,n}=n!/0!=n!\), recuperando a permutação simples.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Arranjo com repetição</span>
+    <p>Se os objetos podem repetir-se — como nas placas do Exercício 2.1 ou nas senhas de um
+    cofre — cada uma das \(k\) posições tem \(n\) opções, e o total é \(n^k\). Não confunda:
+    \(A_{n,k}\) proíbe repetição, \(n^k\) permite.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">6. Combinações</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Uma <strong>combinação</strong> de \(n\) objetos tomados \(k\) a \(k\) é um
+    <strong>subconjunto</strong> de \(k\) elementos — a ordem é irrelevante:</p>
+    <p>\[C_{n,k} = \binom{n}{k} = \frac{n!}{k!\,(n-k)!}\]</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">A relação central</span>
+    <p>\[A_{n,k} = k!\;C_{n,k} \qquad\Longleftrightarrow\qquad C_{n,k} = \frac{A_{n,k}}{k!}\]</p>
+    <p>Cada subconjunto de \(k\) elementos pode ser ordenado de \(k!\) maneiras. O arranjo conta
+    todas essas ordens como distintas; a combinação as agrupa em uma só. <strong>Dividir por
+    \(k!\) é precisamente o ato de "esquecer a ordem".</strong></p>
+  </div>
+
+  <h3>Propriedades úteis</h3>
+  <ul>
+    <li><strong>Simetria:</strong> \(\binom{n}{k}=\binom{n}{n-k}\) — escolher quem entra é o mesmo
+    que escolher quem fica de fora;</li>
+    <li><strong>Relação de Stifel:</strong> \(\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}\) — é a
+    regra de formação do triângulo de Pascal (separe os subconjuntos conforme contenham ou não
+    um elemento fixado);</li>
+    <li><strong>Soma total:</strong> \(\sum_{k=0}^{n}\binom{n}{k}=2^n\) — o número de subconjuntos
+    de um conjunto de \(n\) elementos.</li>
+  </ul>
+
+  <div data-widget="contagem"></div>
+
+  <h3>Exercício resolvido 2.3 — Mega-Sena</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Na Mega-Sena escolhem-se 6 números entre 60. Qual a probabilidade de acertar a sena com
+    um único jogo? E a quadra (exatamente 4 acertos)?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>A ordem do sorteio não importa, logo</p>
+      <p>\[|\Omega| = \binom{60}{6} = \frac{60\cdot59\cdot58\cdot57\cdot56\cdot55}{720}
+      = 50\,063\,860 .\]</p>
+      <p><strong>Sena:</strong> há exatamente um caso favorável, então
+      \(P = 1/50\,063\,860 \approx 2{,}0\times 10^{-8}\) — cerca de 1 em 50 milhões.</p>
+      <p><strong>Quadra:</strong> o jogo precisa conter 4 dos 6 números sorteados e 2 dos 54 não
+      sorteados:</p>
+      <p>\[|A| = \binom{6}{4}\binom{54}{2} = 15 \times 1431 = 21\,465
+      \;\Longrightarrow\; P = \frac{21\,465}{50\,063\,860}\approx 4{,}3\times 10^{-4}.\]</p>
+      <p>Ou seja, cerca de 1 em 2332 jogos. Note a estrutura — <em>escolher alguns daqui e alguns
+      dali</em>, multiplicando as combinações — que reaparecerá em toda a disciplina.</p>
+      <p><strong>Para dimensionar:</strong> a probabilidade de acertar a sena é comparável à de
+      você escolher um segundo específico em um intervalo de 19 meses.</p>
+    </div>
+  </details>
+
+
+  <h3>Exercício resolvido 2.4 — O problema do aniversário</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Em uma sala com \(n\) pessoas, qual a probabilidade de que ao menos duas façam
+    aniversário no mesmo dia? Quantas pessoas são necessárias para que essa probabilidade
+    ultrapasse 50%?</p>
+    <p><em>Suponha 365 dias equiprováveis e ignore anos bissextos.</em></p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — Reformular pelo complementar.</strong></p>
+      <p>Contar diretamente "ao menos duas coincidem" seria horrível: teríamos de somar o caso de
+      exatamente duas pessoas coincidindo, mais exatamente três, mais dois pares separados, e
+      assim por diante. Mas o evento complementar é simples e único:</p>
+      <p>\[A = \text{"ao menos duas coincidem"}, \qquad
+      A^{c} = \text{"todas em dias diferentes"},\]</p>
+      <p>e, pelo Teorema 3 do Módulo 14, \(P(A) = 1 - P(A^{c})\). Vamos calcular \(P(A^c)\).</p>
+
+      <p><strong>Passo 2 — Quantos são os casos possíveis?</strong></p>
+      <p>Pense em preencher uma ficha com o aniversário de cada pessoa, <em>nesta ordem</em>:</p>
+      <p>\[\underbrace{\fbox{365}}_{\text{pessoa 1}} \times
+         \underbrace{\fbox{365}}_{\text{pessoa 2}} \times \cdots \times
+         \underbrace{\fbox{365}}_{\text{pessoa } n} = 365^{\,n}.\]</p>
+      <p>Cada pessoa pode ter nascido em qualquer um dos 365 dias, <strong>independentemente das
+      demais</strong>: duas pessoas podem perfeitamente dividir o mesmo dia. É o caso "a ordem
+      importa, com repetição" do quadro-resumo, cuja fórmula é \(n^k\) — aqui, \(365^n\).</p>
+      <p><em>Por que a ordem importa?</em> Porque "Ana em 3 de maio e Bruno em 10 de julho" é um
+      resultado diferente de "Ana em 10 de julho e Bruno em 3 de maio". As pessoas são
+      distinguíveis, como os dois dados de cores diferentes do Módulo 14.</p>
+
+      <p><strong>Passo 3 — Quantos são os casos favoráveis?</strong></p>
+      <p>Agora preenchemos a mesma ficha, mas <strong>proibindo repetições</strong>. A primeira
+      pessoa pode nascer em qualquer dia; a segunda, em qualquer dia menos o da primeira; a
+      terceira, em qualquer dia menos os dois já usados:</p>
+      <p>\[\underbrace{\fbox{365}}_{\text{qualquer}} \times
+         \underbrace{\fbox{364}}_{\text{menos 1}} \times
+         \underbrace{\fbox{363}}_{\text{menos 2}} \times \cdots \times
+         \underbrace{\fbox{365-n+1}}_{\text{menos } n-1}.\]</p>
+      <p>São \(n\) fatores decrescentes a partir de 365 — exatamente a definição de
+      <strong>arranjo</strong>:</p>
+      <p>\[A_{365,\,n} = \frac{365!}{(365-n)!} = 365 \times 364 \times \cdots \times (365-n+1).\]</p>
+
+      <p><strong>Passo 4 — Dividir e simplificar.</strong></p>
+      <p>\[P(A^{c}) = \frac{\text{casos favoráveis}}{\text{casos possíveis}}
+      = \frac{A_{365,\,n}}{365^{\,n}}
+      = \frac{365}{365}\cdot\frac{364}{365}\cdot\frac{363}{365}\cdots\frac{365-n+1}{365}.\]</p>
+      <p>Escrito desse modo, o resultado ganha uma leitura bonita: o primeiro fator vale 1 (a
+      primeira pessoa não pode colidir com ninguém), o segundo é a chance de a segunda pessoa
+      escapar de 1 dia ocupado, o terceiro de escapar de 2 dias, e assim por diante. Em notação
+      compacta:</p>
+      <p>\[P(A^{c}) = \prod_{i=0}^{n-1}\frac{365-i}{365}
+      \qquad\Longrightarrow\qquad
+      \boxed{\,P(A) = 1 - \prod_{i=0}^{n-1}\frac{365-i}{365}\,}\]</p>
+
+      <p><strong>Passo 5 — Conferir em um caso pequeno.</strong></p>
+      <p>Com \(n = 2\), a fórmula dá \(P(A) = 1 - \tfrac{365}{365}\cdot\tfrac{364}{365}
+      = \tfrac{1}{365} \approx 0{,}27\%\) — que é exatamente o esperado: a segunda pessoa precisa
+      acertar o único dia da primeira. Com \(n = 366\), um fator do produto se anula e
+      \(P(A) = 1\), como manda o princípio da casa dos pombos. A fórmula passa nos dois testes.</p>
+
+      <p><strong>Passo 6 — Calcular.</strong></p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th class="num">n</th><th class="num">P(coincidência)</th></tr></thead>
+        <tbody>
+          <tr><td class="num">10</td><td class="num">11,7%</td></tr>
+          <tr><td class="num">20</td><td class="num">41,1%</td></tr>
+          <tr><td class="num"><b>23</b></td><td class="num"><b>50,7%</b></td></tr>
+          <tr><td class="num">30</td><td class="num">70,6%</td></tr>
+          <tr><td class="num">50</td><td class="num">97,0%</td></tr>
+          <tr><td class="num">70</td><td class="num">99,9%</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Bastam 23 pessoas.</strong> O resultado choca quase todo mundo — menos de uma
+      turma de escola.</p>
+      <p><strong>Por que a intuição erra.</strong> Pensamos espontaneamente em "alguém faz
+      aniversário no <em>meu</em> dia", que envolve apenas \(n-1\) comparações. Mas a pergunta
+      é sobre <em>duas pessoas quaisquer</em>, e o número de pares é</p>
+      <p>\[\binom{n}{2} = \frac{n(n-1)}{2},\]</p>
+      <p>que cresce com o <strong>quadrado</strong> de \(n\). Com 23 pessoas são 253 pares —
+      e aí 50% deixa de ser surpreendente.</p>
+      <p><em>(Para a outra pergunta — "alguém coincide comigo" — seriam necessárias 253 <b>outras</b>
+      pessoas, isto é, uma sala de 254. A diferença entre as duas perguntas é todo o problema.)</em></p>
+    </div>
+  </details>
+
+  <div data-widget="aniversarios"></div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Onde isso aparece na prática</span>
+    <p>O mesmo cálculo governa o <strong>paradoxo do aniversário em criptografia</strong>: a
+    probabilidade de duas entradas distintas produzirem o mesmo valor de uma função <em>hash</em>
+    de \(b\) bits torna-se apreciável já com cerca de \(2^{b/2}\) tentativas, e não
+    \(2^{b}\). É por isso que funções de 64 bits são consideradas inseguras.</p>
+    <p>Em Física, o raciocínio reaparece sempre que contamos <strong>coincidências</strong>:
+    eventos simultâneos em dois detectores, ou picos espúrios em um espectro. Com muitos canais,
+    alguma coincidência por acaso é quase certa — e confundi-la com sinal é um erro clássico.</p>
+  </div>
+
+  <h3>Exercício resolvido 2.5 — Comissão com restrição</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Em uma turma de Licenciatura em Física há 7 mulheres e 5 homens. Deve-se formar uma
+    comissão de 4 pessoas. (a) Quantas comissões são possíveis? (b) Quantas têm exatamente 2
+    mulheres? (c) Qual a probabilidade de a comissão ter pelo menos uma mulher?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> \(\binom{12}{4} = \dfrac{12\cdot11\cdot10\cdot9}{24} = \mathbf{495}\).</p>
+      <p><strong>(b)</strong> Escolher 2 entre as 7 mulheres e 2 entre os 5 homens:
+      \(\binom{7}{2}\binom{5}{2} = 21 \times 10 = \mathbf{210}\).</p>
+      <p><strong>(c)</strong> Use o complementar: "nenhuma mulher" significa 4 homens entre os 5,
+      ou seja \(\binom{5}{4}=5\) comissões. Então</p>
+      <p>\[P(\text{pelo menos uma mulher}) = 1 - \frac{5}{495} = \frac{490}{495}
+      = \frac{98}{99} \approx \mathbf{0{,}9899}.\]</p>
+      <p>Mais uma vez: "pelo menos" pede o complementar.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">7. Quadro-resumo: qual fórmula usar?</h2>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead>
+      <tr><th>Situação</th><th>Ordem importa?</th><th>Repete?</th><th>Fórmula</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Ordenar todos os \(n\) objetos</td><td>sim</td><td>não</td><td>\(n!\)</td></tr>
+      <tr><td>Ordenar \(n\) com repetidos</td><td>sim</td><td>—</td><td>\(\dfrac{n!}{n_1!\cdots n_r!}\)</td></tr>
+      <tr><td>Dispor \(n\) em círculo</td><td>sim</td><td>não</td><td>\((n-1)!\)</td></tr>
+      <tr><td>Escolher e ordenar \(k\) entre \(n\)</td><td>sim</td><td>não</td><td>\(A_{n,k}=\dfrac{n!}{(n-k)!}\)</td></tr>
+      <tr><td>Preencher \(k\) posições com \(n\) opções</td><td>sim</td><td>sim</td><td>\(n^k\)</td></tr>
+      <tr><td>Escolher \(k\) entre \(n\) (subconjunto)</td><td>não</td><td>não</td><td>\(C_{n,k}=\dbinom{n}{k}\)</td></tr>
+      <tr><td>Escolher \(k\) entre \(n\) com repetição</td><td>não</td><td>sim</td><td>\(\dbinom{n+k-1}{k}\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Teste rápido para decidir</span>
+    <p>Pegue dois resultados concretos e troque a ordem dos elementos. Se o resultado é
+    <em>diferente</em> para o problema (senhas, pódios, sequências), use arranjo ou permutação.
+    Se é <em>o mesmo</em> (comissões, jogos de loteria, mãos de cartas), use combinação.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">8. Binômio de Newton e o triângulo de Pascal</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Teorema binomial</span>
+    <p>\[(x+y)^n = \sum_{k=0}^{n}\binom{n}{k}x^k y^{\,n-k}\]</p>
+  </div>
+
+  <p><em>Por que os coeficientes são combinações:</em> ao expandir o produto
+  \((x+y)(x+y)\cdots(x+y)\) com \(n\) fatores, cada termo resulta de escolher \(x\) ou \(y\) em
+  cada fator. Um termo \(x^k y^{n-k}\) aparece tantas vezes quantas forem as maneiras de escolher
+  <em>quais \(k\) fatores</em> contribuem com \(x\) — isto é, \(\binom{n}{k}\) vezes.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que isso nos importa</span>
+    <p>Guarde esta identidade: ela garantirá, no Módulo 3, que a distribuição binomial está
+    corretamente normalizada. Fazendo \(x=p\) e \(y=1-p\):</p>
+    <p>\[\sum_{k=0}^{n}\binom{n}{k}p^k(1-p)^{n-k} = (p + 1 - p)^n = 1^n = 1 .\]</p>
+    <p>A soma de todas as probabilidades vale 1 — o Axioma 2 reaparece, agora como consequência
+    de um teorema de álgebra.</p>
+  </div>
+
+
+  <h3>O triângulo de Pascal</h3>
+
+  <p>Dispor os coeficientes \(\binom{n}{k}\) em linhas produz o triângulo. Cada número é a
+  soma dos dois imediatamente acima — a <strong>relação de Stifel</strong> da seção 6 — e cada
+  linha fornece de uma vez todos os coeficientes de \((x+y)^n\).</p>
+
+  <p>Clique em qualquer célula do triângulo abaixo para ver o que ela significa:</p>
+
+  <div data-widget="pascal"></div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Três leituras do mesmo número</span>
+    <p>A célula \(\binom{4}{2}=6\), por exemplo, responde simultaneamente a três perguntas
+    que parecem diferentes:</p>
+    <ul>
+      <li>De quantas maneiras escolher 2 objetos entre 4? <em>(combinatória)</em></li>
+      <li>Qual o coeficiente de \(x^2y^2\) em \((x+y)^4\)? <em>(álgebra)</em></li>
+      <li>Quantos caminhos levam do topo até aquela célula, descendo sempre? <em>(contagem de trajetos)</em></li>
+    </ul>
+    <p>E, no Módulo 3, uma quarta: de quantas maneiras obter 2 caras em 4 lançamentos de uma
+    moeda. É o mesmo número porque é o mesmo problema vestido de roupas diferentes — e perceber
+    isso é boa parte do que significa aprender matemática.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s8">9. Contando microestados</h2>
+
+  <p>Toda a combinatória acima tem uma aplicação direta e central em Física: contar os
+  microestados de um sistema. O número de microestados compatíveis com um macroestado é a
+  <strong>multiplicidade</strong> \(\Omega_{\text{mic}}\), e dela sai a entropia,
+  \(S = k_B \ln \Omega_{\text{mic}}\).</p>
+
+  <h3>Exercício resolvido 2.6 — Sistema de spins</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um sistema tem \(N=20\) spins distinguíveis, cada um podendo apontar para cima ou para
+    baixo. (a) Quantos microestados tem o sistema? (b) Quantos têm exatamente 10 spins para
+    cima? (c) Qual a fração dos microestados com \(n_\uparrow\) entre 8 e 12?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> Cada spin tem 2 opções independentes:
+      \(\Omega_{\text{total}} = 2^{20} = \mathbf{1\,048\,576}\).</p>
+      <p><strong>(b)</strong> Escolher quais 10 dos 20 spins apontam para cima:
+      \(\binom{20}{10} = \mathbf{184\,756}\). Esse é o macroestado de maior multiplicidade —
+      o de magnetização nula.</p>
+      <p><strong>(c)</strong> Somando as multiplicidades:</p>
+      <p>\[\binom{20}{8}+\binom{20}{9}+\binom{20}{10}+\binom{20}{11}+\binom{20}{12}
+      = 125\,970+167\,960+184\,756+167\,960+125\,970 = 772\,616,\]</p>
+      <p>o que dá \(772\,616/1\,048\,576 \approx \mathbf{73,7\%}\). Mais de dois terços dos
+      microestados estão concentrados em cinco macroestados entre os 21 possíveis — e a
+      concentração só aumenta com \(N\). Para \(N\sim10^{23}\), ela se torna absoluta: é a
+      origem microscópica da Segunda Lei.</p>
+    </div>
+  </details>
+
+  <h3>As três estatísticas, agora com fórmulas</h3>
+  <p>Distribuir \(N\) partículas em \(g\) estados de partícula única:</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Estatística</th><th>Partículas</th><th>Multiplicidade</th></tr></thead>
+    <tbody>
+      <tr><td>Maxwell–Boltzmann</td><td>distinguíveis, sem restrição</td><td>\(g^N\)</td></tr>
+      <tr><td>Bose–Einstein</td><td>idênticas, sem restrição</td><td>\(\dbinom{N+g-1}{N}\)</td></tr>
+      <tr><td>Fermi–Dirac</td><td>idênticas, no máximo uma por estado</td><td>\(\dbinom{g}{N}\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>O caso bosônico é exatamente a "combinação com repetição" da última linha do quadro-resumo:
+  distribuir \(N\) bolas idênticas em \(g\) caixas equivale a arranjar \(N\) bolas e \(g-1\)
+  divisórias em fila, o que dá \(\binom{N+g-1}{N}\) — o famoso argumento das
+  <em>barras e estrelas</em>.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">O paradoxo de Gibbs</span>
+    <p>Se contarmos microestados de um gás tratando átomos idênticos como distinguíveis, a
+    entropia resultante não é <strong>extensiva</strong>: ao remover a partição entre dois
+    volumes do mesmo gás, obtém-se um ganho espúrio de entropia, embora nada físico tenha
+    mudado. A correção é dividir a multiplicidade por \(N!\) — ou seja, corrigir o espaço
+    amostral. É o mesmo erro de d'Alembert, em escala termodinâmica.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">10. Exercícios propostos</h2>
+
   <ol>
-    <li>Quantas medidas são necessárias para estimar uma massa com erro máximo de 0,1 g e 99%
-    de confiança, se um piloto deu \(s = 0{,}4\) g?</li>
-    <li>Uma pesquisa quer margem de ±2 pontos a 95% numa cidade de 8 000 eleitores. Calcule
-    \(n\) com e sem correção para população finita e comente a diferença.</li>
-    <li>Mostre que \(p(1-p)\) é máximo em \(p=0{,}5\) e vale 0,25. Por que isso justifica o
-    "pior caso"?</li>
-    <li>Deduza, a partir de \(n = 2(z_{\alpha/2}+z_\beta)^2\sigma^2/\delta^2\), a fórmula do
-    poder em função de \(n\). Confira com o simulador para \(d = 0{,}5\) e \(n = 63\).</li>
-    <li>Um estudo com 25 por grupo quer detectar \(d = 0{,}5\) a 5%. Qual é o poder? E qual o
-    menor \(d\) detectável com 80% de poder nesse \(n\)?</li>
-    <li>Explique por que reduzir \(\sigma\) por um fator 2 equivale a multiplicar \(n\) por 4,
-    e dê um exemplo de laboratório em que isso é mais barato.</li>
-    <li>Quantos pares são necessários para detectar \(r = 0{,}25\) com 90% de poder a 5%?</li>
-    <li>Critique o seguinte trecho de um relatório: <em>"Não houve diferença significativa
-    entre os grupos (p = 0,12, n = 12 por grupo), o que demonstra que as duas metodologias
-    são equivalentes."</em> Reescreva-o de forma defensável.</li>
-    <li>Um pesquisador mediu a condutividade de uma amostra 50 vezes e reportou erro padrão
-    com \(n = 50\). O que está errado, e qual seria o desenho correto?</li>
-    <li>Planeje um experimento para verificar a lei de Hooke com incerteza de 1% na constante
-    elástica. Especifique número de massas, faixa de valores, repetições por ponto e o método
-    de análise. Justifique cada escolha.</li>
+    <li>Quantos números de 4 algarismos distintos podem ser formados com os dígitos
+    \(\{1,2,3,4,5,6,7\}\)? Quantos são pares?</li>
+    <li>De quantas maneiras 8 pessoas podem se sentar em torno de uma mesa redonda? E se duas
+    delas insistem em sentar juntas?</li>
+    <li>Quantos anagramas tem a palavra MATEMÁTICA? Quantos têm as três vogais A juntas?</li>
+    <li>Em um baralho de 52 cartas, quantas mãos de 5 cartas contêm exatamente dois pares?</li>
+    <li>Prove a relação de Stifel \(\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}\) por um
+    argumento combinatório (sem manipular fatoriais).</li>
+    <li>Mostre que \(\sum_{k=0}^{n}\binom{n}{k}=2^n\) de duas maneiras: pelo binômio de Newton
+    com \(x=y=1\), e contando subconjuntos.</li>
+    <li>Um sistema tem \(N\) spins e energia fixa correspondente a \(n_\uparrow\) spins para
+    cima. Escreva \(\Omega_{\text{mic}}(n_\uparrow)\) e, usando a aproximação de Stirling
+    \(\ln n! \approx n\ln n - n\), mostre que a entropia por spin depende apenas da fração
+    \(x = n_\uparrow/N\).</li>
+    <li>Seis partículas devem ser distribuídas em 4 estados de energia. Calcule a multiplicidade
+    nos três casos — Maxwell–Boltzmann, Bose–Einstein e Fermi–Dirac — e explique por que um dos
+    três resultados é zero.</li>
   </ol>
 
   <div class="bloco def">
     <span class="rotulo">Resumo do módulo</span>
     <ul>
-      <li>Precisão: \(n=(z_{\alpha/2}\sigma/E)^2\) — quadrático em \(1/E\);</li>
-      <li>Proporção: pior caso \(p=0{,}5\), dando \(n=(z_{\alpha/2}/2E)^2\);</li>
-      <li>População finita: \(n_{\text{aj}}=n/[1+(n-1)/N]\), relevante só acima de 5% de
-      \(N\);</li>
-      <li>Poder: \(n=2(z_{\alpha/2}+z_\beta)^2\sigma^2/\delta^2\) por grupo;</li>
-      <li>\(d=\delta/\sigma\) é o tamanho de efeito; reporte-o sempre, junto do IC;</li>
-      <li>Poder observado após o fato não informa nada — use o intervalo de confiança;</li>
-      <li>Reduzir \(\sigma\) e espalhar os \(x\) rendem mais que aumentar \(n\);</li>
-      <li>O plano de amostragem decide a validade; o tamanho decide só a precisão.</li>
+      <li>Princípio multiplicativo para etapas sucessivas; aditivo para casos excludentes;</li>
+      <li>\(P_n = n!\); com repetidos, \(n!/(n_1!\cdots n_r!)\); circular, \((n-1)!\);</li>
+      <li>\(A_{n,k} = n!/(n-k)!\) ordena; \(C_{n,k} = A_{n,k}/k!\) esquece a ordem;</li>
+      <li>Com repetição permitida: \(n^k\) se a ordem importa, \(\binom{n+k-1}{k}\) se não;</li>
+      <li>Binômio de Newton garante a normalização da binomial no próximo módulo;</li>
+      <li>Multiplicidade \(\Omega_{\text{mic}}\) e entropia \(S=k_B\ln\Omega_{\text{mic}}\).</li>
     </ul>
   </div>
 
-  <div class="destaque">
-    <span class="anuncio">Fim do programa</span>
-    Quinze módulos, de Kolmogorov ao planejamento experimental. O <a href="formulario.html"
-    style="color:inherit;text-decoration:underline">formulário</a> reúne tudo numa página só,
-    com as tabelas e as calculadoras.
-  </div>
-
   <nav class="nav-aulas">
-    <a href="aula14.html"><small>Módulo anterior</small>← 14. Testes não paramétricos</a>
-    <a class="prox" href="formulario.html"><small>Material de apoio</small>Formulário e tabelas →</a>
+    <a href="aula14.html"><small>Módulo anterior</small>← 14. Espaço amostral e axiomas</a>
+    <a class="prox" href="aula16.html"><small>Próximo módulo</small>16. Probabilidade condicional e Bayes →</a>
   </nav>
 
 </main>
@@ -646,6 +651,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061532"></script>
+<script src="assets/js/widgets.js?v=202611061620"></script>
 </body>
 </html>

@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Módulo 11 — Testes de normalidade | Probabilidade &amp; Estatística</title>
+<title>Módulo 11 — Estimação e intervalos de confiança | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061532">
-<script src="assets/js/comum.js?v=202611061532"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061620">
+<script src="assets/js/comum.js?v=202611061620"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -16,23 +16,26 @@
     <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
     <nav class="menu">
       <a href="index.html">Início</a>
-      <span class="grupo">Probabilidade</span>
-      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
-      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
-      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
-      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
-      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
-      <span class="grupo">Estatística</span>
-      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
-      <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
-      <a href="aula08.html" class="num" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
-      <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
-      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
-      <a href="aula11.html" class="num ativo" title="Módulo 11 — Testes de normalidade">11</a>
-      <a href="aula12.html" class="num" title="Módulo 12 — Correlação">12</a>
-      <a href="aula13.html" class="num" title="Módulo 13 — Regressão linear e mínimos quadrados">13</a>
-      <a href="aula14.html" class="num" title="Módulo 14 — Testes não paramétricos">14</a>
-      <a href="aula15.html" class="num" title="Módulo 15 — Tamanho amostral e planejamento">15</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num ativo" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
       <a href="formulario.html">Formulário</a>
     </nav>
   </div>
@@ -43,559 +46,510 @@
 <aside class="lateral">
   <h4>Neste módulo</h4>
   <ol>
-    <li><a href="#s1">1. Por que testar</a></li>
-    <li><a href="#s2">2. Métodos gráficos</a></li>
-    <li><a href="#s3">3. O gráfico Q–Q</a></li>
-    <li><a href="#s4">4. Assimetria e curtose</a></li>
-    <li><a href="#s5">5. Shapiro–Wilk</a></li>
-    <li><a href="#s6">6. D'Agostino K²</a></li>
-    <li><a href="#s7">7. Kolmogorov–Smirnov</a></li>
-    <li><a href="#s8">8. Anderson–Darling</a></li>
-    <li><a href="#s9">9. O paradoxo do n</a></li>
-    <li><a href="#s10">10. O que fazer se não for normal</a></li>
-    <li><a href="#s11">11. Exercícios propostos</a></li>
+    <li><a href="#s1">1. Estimar é apostar</a></li>
+    <li><a href="#s2">2. Estimadores pontuais</a></li>
+    <li><a href="#s3">3. A ideia do intervalo</a></li>
+    <li><a href="#s4">4. O que 95% significa</a></li>
+    <li><a href="#s5">5. IC para a média</a></li>
+    <li><a href="#s6">6. IC para proporção</a></li>
+    <li><a href="#s7">7. IC para variância</a></li>
+    <li><a href="#s8">8. Tamanho da amostra</a></li>
+    <li><a href="#s9">9. Aplicações em Física</a></li>
+    <li><a href="#s10">10. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
   <p class="chapeu">Módulo 11 · 3 horas</p>
-  <h1>Testes de normalidade</h1>
-  <p class="subtitulo">Verificar a hipótese que sustenta quase tudo o que fizemos até aqui.</p>
+  <h1>Estimação e intervalos de confiança</h1>
+  <p class="subtitulo">Como dizer o que não sabemos, e com que grau de certeza.</p>
 
   <div class="bloco def">
     <span class="rotulo">Objetivos</span>
     <ul>
-      <li>Identificar quando a normalidade importa e quando o TCL nos protege;</li>
-      <li>Construir e ler um gráfico Q–Q, diagnosticando o tipo de desvio;</li>
-      <li>Interpretar os coeficientes de assimetria e curtose;</li>
-      <li>Aplicar os testes de Shapiro–Wilk, D'Agostino, Kolmogorov–Smirnov e Anderson–Darling;</li>
-      <li>Compreender por que o tamanho da amostra distorce esses testes;</li>
-      <li>Escolher entre transformar os dados e usar métodos não paramétricos.</li>
+      <li>Distinguir estimativa pontual de estimativa por intervalo;</li>
+      <li>Avaliar um estimador por viés, eficiência e consistência;</li>
+      <li>Construir intervalos de confiança para média, proporção e variância;</li>
+      <li>Interpretar corretamente o nível de confiança — e saber o que ele <em>não</em> diz;</li>
+      <li>Determinar o tamanho de amostra necessário para uma precisão desejada;</li>
+      <li>Reconhecer o intervalo de confiança como a forma rigorosa da barra de erro.</li>
     </ul>
   </div>
 
   <hr class="linha">
 
   <!-- ================================================== -->
-  <h2 id="s1">1. Por que testar a normalidade</h2>
+  <h2 id="s1">1. Estimar é apostar com método</h2>
 
-  <p>Vários métodos dos módulos anteriores supõem população normal: o teste t, o intervalo de
-  confiança para a variância, o teste qui-quadrado para \(\sigma^2\), e a regressão que veremos
-  no Módulo 13. Essa suposição precisa ser verificada — e não apenas assumida porque "quase tudo
-  é normal".</p>
+  <p>No Módulo 6 estabelecemos que \(\bar X\) é uma variável aleatória, centrada em \(\mu\), com
+  dispersão \(\sigma/\sqrt n\). Agora invertemos a pergunta. Já não temos a população: temos
+  <strong>uma</strong> amostra, e queremos dizer algo sobre \(\mu\).</p>
 
-  <div class="bloco alerta">
-    <span class="rotulo">Mas nem sempre importa tanto</span>
-    <p>É importante saber <strong>quando</strong> a normalidade é crítica, porque o rigor
-    excessivo também atrapalha.</p>
-    <p><strong>Pouco sensível à normalidade</strong> (o TCL protege):</p>
-    <ul>
-      <li>Testes e intervalos para <em>médias</em>, com \(n \gtrsim 30\);</li>
-      <li>Comparação de médias de duas amostras grandes.</li>
-    </ul>
-    <p><strong>Muito sensível</strong>:</p>
-    <ul>
-      <li>Qualquer inferência sobre <em>variância</em> — o teste qui-quadrado de \(\sigma^2\) é
-      notoriamente frágil;</li>
-      <li>Testes com \(n\) pequeno, abaixo de 20;</li>
-      <li>Previsão de <em>observações individuais</em>, e não de médias;</li>
-      <li>Intervalos nas caudas extremas da distribuição.</li>
-    </ul>
+  <p>Há duas maneiras de responder, e a diferença entre elas é o assunto deste módulo:</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Tipo</th><th>Forma da resposta</th><th>Problema</th></tr></thead>
+    <tbody>
+      <tr><td><b>Estimativa pontual</b></td><td>\(\mu \approx 9{,}81\ \mathrm{m/s^2}\)</td>
+        <td>é quase certamente <em>errada</em> — e não diz o quanto</td></tr>
+      <tr><td><b>Estimativa por intervalo</b></td><td>\(\mu \in [9{,}79;\ 9{,}83]\) com 95% de confiança</td>
+        <td>exige entender o que "95%" significa</td></tr>
+    </tbody>
+  </table>
   </div>
-
-  <p>A lógica de todos os testes deste módulo é a mesma, e vale fixá-la antes de tudo:</p>
 
   <div class="destaque">
-    <span class="anuncio">Atenção à direção</span>
-    \(H_0\): os dados <strong>vêm</strong> de uma população normal.<br>
-    Um valor p <strong>alto</strong> significa que <em>não há evidência contra</em> a normalidade.
+    <span class="anuncio">O ponto de partida</span>
+    Uma estimativa pontual sozinha é cientificamente incompleta. Dizer que \(g = 9{,}81\) sem
+    dizer <strong>com que precisão</strong> é omitir metade do resultado.
   </div>
-
-  <p>Repare na inversão em relação ao Módulo 9. Aqui, a hipótese nula é a que
-  <em>queremos</em> que seja verdadeira — e, como vimos, o teste nunca prova \(H_0\). Isso tem
-  consequências que exploraremos na seção 9.</p>
 
   <!-- ================================================== -->
-  <h2 id="s2">2. Métodos gráficos vêm primeiro</h2>
+  <h2 id="s2">2. Estimadores pontuais e suas qualidades</h2>
 
-  <p>Antes de qualquer teste numérico, <strong>olhe os dados</strong>. Três gráficos bastam:</p>
-
-  <div class="tabela-rolavel">
-  <table>
-    <thead><tr><th>Gráfico</th><th>O que procurar</th><th>Limitação</th></tr></thead>
-    <tbody>
-      <tr><td><b>Histograma</b></td>
-        <td>forma de sino, simétrica, unimodal</td>
-        <td>a aparência muda com a largura de classe (Módulo 6)</td></tr>
-      <tr><td><b>Boxplot</b></td>
-        <td>mediana centrada, bigodes iguais, poucos outliers</td>
-        <td>resume demais; não mostra bimodalidade</td></tr>
-      <tr><td><b>Q–Q</b></td>
-        <td>pontos sobre a reta</td>
-        <td>exige prática para interpretar</td></tr>
-    </tbody>
-  </table>
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Um <strong>estimador</strong> \(\hat\theta\) é uma função da amostra usada para estimar um
+    parâmetro \(\theta\) da população. Ele é uma <em>variável aleatória</em>; o valor que assume
+    numa amostra concreta é a <strong>estimativa</strong>.</p>
   </div>
 
-  <p>O gráfico Q–Q é o mais sensível dos três, e é por isso que merece uma seção própria.</p>
+  <p>Os estimadores usuais são os que já conhecemos: \(\bar x\) para \(\mu\), \(s^2\) para
+  \(\sigma^2\), \(\hat p = k/n\) para \(p\). Mas nem todo estimador presta, e há três critérios
+  para julgá-los.</p>
+
+  <div class="bloco">
+    <span class="rotulo">1. Não-viesado (não tendencioso)</span>
+    <p>\[\langle \hat\theta\rangle = \theta .\]</p>
+    <p>Em média, ao longo de muitas amostras, o estimador acerta o alvo. Foi exatamente para
+    garantir isso que dividimos por \(n-1\) na variância amostral, no Módulo 2 — dividir por
+    \(n\) produziria um estimador <em>viesado para baixo</em>.</p>
+    <p><em>Curiosidade que vale mencionar:</em> \(s^2\) é não-viesado para \(\sigma^2\), mas
+    \(s\) é <strong>levemente viesado</strong> para \(\sigma\). A raiz quadrada de um estimador
+    não-viesado não é, em geral, não-viesada — o viés é pequeno e quase sempre ignorado.</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">2. Eficiente</span>
+    <p>Entre dois estimadores não-viesados, o melhor é o de <strong>menor variância</strong>.</p>
+    <p>Para uma população normal, tanto a média quanto a mediana amostrais são estimadores
+    não-viesados de \(\mu\). Mas</p>
+    <p>\[\sigma^2_{\bar x} = \frac{\sigma^2}{n}
+    \qquad\text{e}\qquad
+    \sigma^2_{\text{mediana}} \approx \frac{\pi}{2}\,\frac{\sigma^2}{n} \approx 1{,}57\,\frac{\sigma^2}{n}.\]</p>
+    <p>A média é cerca de <strong>57% mais eficiente</strong>. Usar a mediana numa população
+    normal custa, grosso modo, 36% das suas medidas jogadas fora. <em>Mas</em> se houver
+    outliers ou caudas pesadas, a mediana ganha de longe — eficiência é relativa à distribuição.</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">3. Consistente</span>
+    <p>\(\hat\theta \to \theta\) quando \(n \to \infty\). É a lei dos grandes números de Jacob
+    Bernoulli (Módulo 3) aplicada ao estimador: com dados suficientes, ele converge para a
+    verdade.</p>
+  </div>
 
   <!-- ================================================== -->
-  <h2 id="s3">3. O gráfico Q–Q</h2>
+  <h2 id="s3">3. A ideia do intervalo de confiança</h2>
 
-  <div class="bloco def">
-    <span class="rotulo">Como é construído</span>
-    <ol>
-      <li>Ordenam-se os dados: \(x_{(1)} \le x_{(2)} \le \cdots \le x_{(n)}\);</li>
-      <li>Para cada posição \(i\), calcula-se o <strong>quantil teórico</strong> que uma normal
-      padrão teria naquela posição:
-      \[z_i = \Phi^{-1}\!\left(\frac{i - 0{,}375}{n + 0{,}25}\right)\]
-      (a fórmula de Blom; há outras convenções equivalentes);</li>
-      <li>Marca-se o ponto \((z_i,\; x_{(i)})\).</li>
-    </ol>
-    <p>Se os dados forem normais, \(x_{(i)} \approx \mu + \sigma z_i\) — ou seja, os pontos caem
-    sobre uma <strong>reta</strong> de inclinação \(\sigma\) e intercepto \(\mu\).</p>
+  <p>A construção parte de um fato que já demonstramos. Se a população é normal com \(\sigma\)
+  conhecido, então</p>
+
+  <p>\[Z = \frac{\bar X - \mu}{\sigma/\sqrt n} \sim N(0,1),\]</p>
+
+  <p>e portanto, pela regra da seção 7 do Módulo 4,</p>
+
+  <p>\[P\!\left(-1{,}96 \le \frac{\bar X - \mu}{\sigma/\sqrt n} \le 1{,}96\right) = 0{,}95 .\]</p>
+
+  <p>Agora vem o passo decisivo: <strong>isolar \(\mu\)</strong> no meio da desigualdade.
+  Multiplicando por \(\sigma/\sqrt n\), subtraindo \(\bar X\) e invertendo os sinais:</p>
+
+  <p>\[P\!\left(\bar X - 1{,}96\frac{\sigma}{\sqrt n} \;\le\; \mu \;\le\;
+  \bar X + 1{,}96\frac{\sigma}{\sqrt n}\right) = 0{,}95 .\]</p>
+
+  <div class="destaque">
+    \[\boxed{\;\bar x \;\pm\; z_{\alpha/2}\,\frac{\sigma}{\sqrt n}\;}\]
+    estimativa pontual &nbsp;±&nbsp; valor crítico × erro padrão
+  </div>
+
+  <p>Essa estrutura — <em>estimativa ± crítico × erro padrão</em> — reaparecerá em todos os
+  intervalos deste módulo e em todos os testes do próximo. Vale memorizá-la como forma, não
+  como fórmula isolada.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. O que "95% de confiança" realmente significa</h2>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A interpretação errada, que quase todo mundo faz</span>
+    <p>É tentador ler \([9{,}79;\,9{,}83]\) como <em>"há 95% de probabilidade de \(g\) estar
+    neste intervalo"</em>. <strong>Está errado</strong>, e o motivo é sutil mas importante.</p>
+    <p>Na visão frequentista, \(\mu\) é um número fixo — desconhecido, mas fixo. Ele não tem
+    distribuição de probabilidade. Ou está dentro do intervalo, ou não está: a "probabilidade" é
+    0 ou 1, só não sabemos qual.</p>
+    <p><strong>O que é aleatório é o intervalo</strong>, porque ele foi construído a partir de
+    uma amostra aleatória. Outra amostra daria outro intervalo.</p>
   </div>
 
   <div class="bloco def">
-    <span class="rotulo">Lendo o formato do desvio</span>
-    <p>O Q–Q não diz apenas <em>se</em> há desvio — diz <strong>qual</strong>:</p>
-    <div class="tabela-rolavel">
-    <table>
-      <thead><tr><th>Padrão observado</th><th>Diagnóstico</th></tr></thead>
-      <tbody>
-        <tr><td>pontos sobre a reta</td><td>normalidade plausível</td></tr>
-        <tr><td>curvatura em <b>C</b> (côncava)</td><td>assimetria à direita — cauda longa nos valores altos</td></tr>
-        <tr><td>curvatura em <b>C</b> invertida</td><td>assimetria à esquerda</td></tr>
-        <tr><td><b>S</b> deitado: extremos acima à direita e abaixo à esquerda</td>
-          <td>caudas <b>pesadas</b> (leptocúrtica)</td></tr>
-        <tr><td><b>S</b> invertido: extremos achatados contra a reta</td>
-          <td>caudas <b>leves</b> (platicúrtica) — dados truncados ou uniformes</td></tr>
-        <tr><td>um ou dois pontos isolados nas pontas</td><td>outliers</td></tr>
-        <tr><td>degraus horizontais</td><td>dados arredondados ou discretizados demais</td></tr>
-        <tr><td>duas retas com inclinações diferentes</td><td>mistura de dois grupos (bimodal)</td></tr>
-      </tbody>
-    </table>
-    </div>
+    <span class="rotulo">A interpretação correta</span>
+    <p>O <strong>procedimento</strong> de construir o intervalo acerta em 95% das amostras
+    possíveis. Se repetíssemos o experimento muitas vezes, construindo um intervalo a cada vez,
+    cerca de 95% deles conteriam \(\mu\).</p>
+    <p>A confiança é uma propriedade do <em>método</em>, não de um intervalo em particular.</p>
   </div>
 
-  <div data-widget="qqplot"></div>
+  <p>Dito assim parece abstrato. O simulador abaixo torna a frase literal: ele sorteia cem
+  amostras de uma população com \(\mu = 100\) conhecido, constrói um intervalo para cada uma e
+  pinta de vermelho os que erraram.</p>
 
-  <p>Percorra os seis conjuntos nos botões, observando o Q–Q em cada um:</p>
+  <div data-widget="intervalos"></div>
+
+  <p>Experimente, nesta ordem:</p>
   <ol>
-    <li><strong>Tempo de reação</strong> — pontos sobre a reta, todos os testes concordam;</li>
-    <li><strong>Renda</strong> — curvatura em C acentuada, \(g_1 = 2{,}52\). Todos os testes
-    rejeitam com \(p &lt; 0{,}0001\);</li>
-    <li><strong>Bimodal</strong> — o Q–Q mostra duas retas com um salto no meio. A assimetria é
-    <em>zero</em>, e mesmo assim os dados não são normais: prova de que simetria não basta;</li>
-    <li><strong>Caudas pesadas</strong> — o S deitado clássico, com \(g_2 = 6{,}35\);</li>
-    <li><strong>Uniforme</strong> — guarde este para a seção 9, porque o resultado surpreende;</li>
-    <li><strong>Pesos</strong> — o conjunto histórico de Royston, usado para validar o algoritmo
-    de Shapiro–Wilk.</li>
+    <li>Clique em <strong>"Sortear 100 novas"</strong> várias vezes. O número de intervalos
+    vermelhos varia — às vezes 2, às vezes 8 — mas gira em torno de <strong>5</strong>;</li>
+    <li>Clique em <strong>"Acumular +10 000"</strong>. A taxa de acerto converge para 95,0%;</li>
+    <li>Mude a confiança para <strong>99%</strong>. Quase não há vermelhos — mas repare como os
+    intervalos ficaram <em>mais largos</em>. Essa é a troca fundamental;</li>
+    <li>Volte a 95% e aumente <strong>n</strong>. Os intervalos estreitam, e a taxa de acerto
+    continua 95%. Mais dados dão mais precisão, não mais confiança.</li>
   </ol>
 
-  <!-- ================================================== -->
-  <h2 id="s4">4. Assimetria e curtose</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Assimetria (skewness)</span>
-    <p>\[g_1 = \frac{\frac{1}{n}\sum_i (x_i - \bar x)^{3}}
-    {\left[\frac{1}{n}\sum_i (x_i - \bar x)^{2}\right]^{3/2}}\]</p>
-    <ul>
-      <li>\(g_1 = 0\): simétrica (como a normal);</li>
-      <li>\(g_1 &gt; 0\): cauda longa à <strong>direita</strong>; a massa se concentra à esquerda;</li>
-      <li>\(g_1 &lt; 0\): cauda longa à <strong>esquerda</strong>.</li>
-    </ul>
-    <p>O expoente ímpar preserva o sinal dos desvios — é o que distingue a assimetria da
-    variância.</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">Curtose (kurtosis)</span>
-    <p>\[g_2 = \frac{\frac{1}{n}\sum_i (x_i - \bar x)^{4}}
-    {\left[\frac{1}{n}\sum_i (x_i - \bar x)^{2}\right]^{2}} - 3\]</p>
-    <p>O \(-3\) torna a normal o ponto de referência, com \(g_2 = 0\) (é a chamada
-    <em>curtose em excesso</em>).</p>
-    <ul>
-      <li>\(g_2 &gt; 0\): <strong>leptocúrtica</strong> — pico mais alto e caudas mais pesadas;
-      mais outliers que a normal;</li>
-      <li>\(g_2 = 0\): <strong>mesocúrtica</strong> — como a normal;</li>
-      <li>\(g_2 &lt; 0\): <strong>platicúrtica</strong> — achatada, caudas leves.</li>
-    </ul>
-  </div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Curtose mede as caudas, não o pico</span>
-    <p>A descrição tradicional — "pontualidade da distribuição" — é enganosa e sobrevive nos
-    livros por inércia. O expoente 4 amplifica brutalmente os valores distantes: um ponto a
-    \(3\sigma\) contribui \(3^4 = 81\) vezes mais que um ponto a \(1\sigma\). A curtose é,
-    essencialmente, uma <strong>medida do peso das caudas</strong>.</p>
-    <p>Carregue o conjunto <em>bimodal</em> no simulador: ele tem dois picos bem definidos e
-    curtose <em>negativa</em> (\(g_2 = -1{,}89\)), porque não tem caudas. Isso derruba a
-    interpretação do pico.</p>
+  <div class="bloco fisica">
+    <span class="rotulo">Confiança e precisão são coisas diferentes</span>
+    <p>Confunde-se muito uma com a outra. Um intervalo de 99% não é "melhor" que um de 95% —
+    é apenas mais largo, e portanto menos informativo. No limite, o intervalo
+    \((-\infty, +\infty)\) tem 100% de confiança e utilidade zero.</p>
+    <p>Quem escolhe o nível é o pesquisador, pesando o custo de errar. Em Física de partículas,
+    onde um falso anúncio de descoberta é catastrófico para a credibilidade, exige-se
+    \(5\sigma\) — o que corresponde a um nível de confiança de 99,99994%.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s5">5. Teste de Shapiro–Wilk</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">O teste de referência</span>
-    <p>Desenvolvido por Samuel Shapiro e Martin Wilk em 1965, é o <strong>mais potente</strong>
-    para a maioria das alternativas, especialmente com amostras pequenas e moderadas. Se você
-    puder usar apenas um teste, use este.</p>
-    <p>\[W = \frac{\left(\sum_{i=1}^{n} a_i\,x_{(i)}\right)^{2}}
-    {\sum_{i=1}^{n}(x_i - \bar x)^{2}}\]</p>
-    <p>Os coeficientes \(a_i\) derivam dos valores esperados das estatísticas de ordem de uma
-    normal. Intuitivamente, o numerador mede o quanto os dados ordenados "se parecem" com o que
-    uma normal produziria; o denominador normaliza pela dispersão total.</p>
-    <p><strong>Interpretação:</strong> \(W\) varia entre 0 e 1, e \(W\) próximo de 1 indica
-    normalidade. Valores pequenos de \(W\) levam a \(p\) pequeno e à rejeição.</p>
-    <p><strong>Faixa de uso:</strong> \(4 \le n \le 5000\).</p>
-  </div>
-
-  <p>Esses coeficientes merecem ser olhados de perto, porque é neles que está a inteligência
-  do teste. O simulador abaixo os calcula para qualquer \(n\) e mostra três propriedades que
-  explicam o comportamento de \(W\):</p>
-
-  <div data-widget="coefsw"></div>
-
-  <div class="bloco def">
-    <span class="rotulo">O que o gráfico revela</span>
-    <ul>
-      <li>Os \(a_i\) são <strong>antissimétricos</strong> — \(a_i = -a_{n+1-i}\) — e portanto
-      somam zero. É por isso que \(W\) não muda se somarmos uma constante a todos os dados;</li>
-      <li>Eles satisfazem \(\sum_i a_i^2 = 1\), o que, junto ao denominador, deixa \(W\)
-      entre 0 e 1 e <strong>invariante de escala</strong>;</li>
-      <li>Os dois das pontas carregam a maior parte do peso. Com \(n=11\), eles sozinhos
-      respondem por 63% de \(\sum a_i^2\). <strong>É daí que vem a sensibilidade do teste às
-      caudas</strong> — e por que ele é tão bom em detectar assimetria e outliers.</li>
-    </ul>
-    <p>Comparando os \(a_i\) com os \(m_i\) na terceira vista, vê-se que os coeficientes são
-    quase os \(m_i\) reescalados: a correção de Royston altera de forma apreciável apenas os
-    dois valores de cada extremo.</p>
-  </div>
-
-  <h3>Exercício resolvido 11.1 — O conjunto histórico de Royston</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Os pesos (em gramas) de onze espécimes foram: 148, 154, 158, 160, 161, 162, 166, 170,
-    182, 195, 236. Teste a normalidade ao nível de 5% e interprete o gráfico Q–Q.</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Hipóteses.</strong> \(H_0\): os pesos vêm de uma população normal;
-      \(H_1\): não vêm.</p>
-      <p><strong>Resultado.</strong> Aplicando Shapiro–Wilk (carregue "Pesos" no simulador):</p>
-      <p>\[W = 0{,}7888, \qquad p = 0{,}0067 .\]</p>
-      <p>Como \(p &lt; 0{,}05\), <strong>rejeitamos \(H_0\)</strong>: os dados não são
-      compatíveis com uma população normal.</p>
-      <p><strong>O que o Q–Q mostra.</strong> Os pontos formam uma curva côncava, com os três
-      maiores valores (182, 195, 236) fugindo muito acima da reta. É a assinatura clássica de
-      <strong>assimetria à direita</strong>, confirmada por \(g_1 = 1{,}68\).</p>
-      <p><strong>Observação sobre o poder.</strong> Com apenas \(n = 11\), a maioria dos testes
-      teria dificuldade em detectar não-normalidade. O Shapiro–Wilk detectou — e é exatamente
-      por isso que ele é o preferido para amostras pequenas.</p>
-      <p><em>Este conjunto é o caso de teste publicado por Royston em 1982 para validar
-      implementações do algoritmo. O valor \(W = 0{,}7888\) calculado aqui reproduz o
-      publicado.</em></p>
-    </div>
-  </details>
-
-  <!-- ================================================== -->
-  <h2 id="s6">6. Teste D'Agostino–Pearson K²</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Um teste que diz o que está errado</span>
-    <p>É um teste <em>omnibus</em>: combina assimetria e curtose em uma única estatística.</p>
-    <p>\[K^{2} = Z_1^{2}(g_1) + Z_2^{2}(g_2) \;\sim\; \chi^{2}_{2},\]</p>
-    <p>onde \(Z_1\) e \(Z_2\) são transformações que tornam \(g_1\) e \(g_2\) aproximadamente
-    normais padrão sob \(H_0\).</p>
-    <p><strong>A vantagem única:</strong> como \(Z_1\) e \(Z_2\) são reportados separadamente,
-    o teste indica <em>qual</em> aspecto da normalidade falhou — assimetria, caudas, ou ambos.
-    Nenhum outro teste desta lista faz isso.</p>
-    <p><strong>Exige \(n \geq 8\)</strong>, e funciona melhor a partir de \(n = 20\).</p>
-  </div>
-
-  <h3>Exercício resolvido 11.2 — Tempo de reação a estímulos visuais</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Mediram-se os tempos de reação (ms) de 30 participantes a estímulos visuais. Os dados
-    estão carregados no simulador, no botão "Tempo de reação". Aplique os quatro testes e
-    conclua.</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <div class="tabela-rolavel">
-      <table>
-        <thead><tr><th>Teste</th><th class="num">Estatística</th><th class="num">valor p</th><th>Decisão a 5%</th></tr></thead>
-        <tbody>
-          <tr><td>Shapiro–Wilk</td><td class="num">W = 0,9785</td><td class="num">0,784</td><td>não rejeita</td></tr>
-          <tr><td>D'Agostino K²</td><td class="num">K² = 1,090</td><td class="num">0,580</td><td>não rejeita</td></tr>
-          <tr><td>Anderson–Darling</td><td class="num">A² = 0,204</td><td class="num">0,876</td><td>não rejeita</td></tr>
-          <tr><td>Kolmogorov–Smirnov</td><td class="num">D = 0,088</td><td class="num">crít. 0,155</td><td>não rejeita</td></tr>
-        </tbody>
-      </table>
-      </div>
-      <p>Os momentos são \(g_1 = -0{,}21\) (praticamente simétrico) e \(g_2 = -0{,}76\)
-      (levemente achatado) — ambos próximos de zero.</p>
-      <p><strong>Conclusão.</strong> Os quatro testes concordam: não há evidência contra a
-      normalidade. O Q–Q confirma, com os pontos acompanhando a reta de perto.</p>
-      <p><strong>A redação correta do resultado</strong> é: <em>"os dados são compatíveis com
-      uma distribuição normal (Shapiro–Wilk: W = 0,979; p = 0,784)"</em> — e não "os dados são
-      normais". A diferença não é preciosismo: o teste nunca prova \(H_0\).</p>
-      <p>Com essa verificação feita, estamos autorizados a aplicar o teste t, o intervalo de
-      confiança e a regressão a esses dados.</p>
-    </div>
-  </details>
-
-  <!-- ================================================== -->
-  <h2 id="s7">7. Teste de Kolmogorov–Smirnov</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">A maior distância entre duas curvas</span>
-    <p>Compara a função acumulada empírica \(F_n(x)\) — uma escada que sobe \(1/n\) a cada
-    observação — com a acumulada teórica \(F(x)\):</p>
-    <p>\[D = \max_x \big|F_n(x) - F(x)\big| .\]</p>
-    <p>É um teste geral: serve para <strong>qualquer</strong> distribuição, não só a normal.</p>
-  </div>
-
-  <p>A definição é mais fácil de ver do que de ler. O simulador desenha a escada empírica
-  sobre a curva teórica e marca exatamente onde a distância é máxima:</p>
-
-  <div data-widget="escadaks"></div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">A armadilha dos parâmetros estimados</span>
-    <p>O teste KS original supõe que \(\mu\) e \(\sigma\) são <strong>conhecidos de
-    antemão</strong>. Se você os estima dos próprios dados — como quase sempre faz — a
-    distribuição de \(D\) muda, e usar os valores críticos originais torna o teste
-    <strong>conservador demais</strong>: ele quase nunca rejeita.</p>
-    <p>A correção se chama <strong>teste de Lilliefors</strong>, e é ela que o simulador usa.
-    Muitos programas aplicam a versão errada silenciosamente — convém verificar.</p>
-  </div>
-
-  <h3>Duas amostras</h3>
-  <p>O KS tem uma variante útil que compara <strong>duas amostras entre si</strong>, sem
-  referência a nenhuma distribuição teórica:</p>
-  <p>\[D = \max_x \big|F_{n_1}(x) - F_{n_2}(x)\big| .\]</p>
-  <p>Ele responde: "estas duas amostras vêm da mesma população?" — e detecta diferenças de
-  forma, não só de média. É um dos poucos testes que percebe que duas distribuições com a mesma
-  média podem ser completamente diferentes.</p>
-
-  <!-- ================================================== -->
-  <h2 id="s8">8. Teste de Anderson–Darling</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">O KS com atenção às caudas</span>
-    <p>\[A^{2} = -n - \frac{1}{n}\sum_{i=1}^{n}(2i-1)
-    \Big[\ln F(x_{(i)}) + \ln\big(1 - F(x_{(n+1-i)})\big)\Big]\]</p>
-    <p>É uma variante do KS que pondera as discrepâncias, dando <strong>mais peso às
-    caudas</strong>. Por isso detecta melhor problemas nos extremos — justamente onde o KS é
-    fraco e onde mais costuma importar na prática, já que as caudas determinam a probabilidade
-    de eventos raros.</p>
-  </div>
+  <h2 id="s5">5. Intervalo de confiança para a média</h2>
 
   <div class="tabela-rolavel">
   <table>
-    <thead><tr><th>Teste</th><th>Melhor para</th><th>Ponto fraco</th><th>n mínimo</th></tr></thead>
+    <thead><tr><th>Situação</th><th>Fórmula</th><th>Graus de liberdade</th></tr></thead>
     <tbody>
-      <tr><td><b>Shapiro–Wilk</b></td><td>uso geral; o mais potente</td>
-        <td>só para normalidade; n ≤ 5000</td><td class="num">4</td></tr>
-      <tr><td><b>D'Agostino K²</b></td><td>dizer <i>qual</i> desvio ocorreu</td>
-        <td>exige n ≥ 20 para funcionar bem</td><td class="num">8</td></tr>
-      <tr><td><b>Anderson–Darling</b></td><td>problemas nas caudas</td>
-        <td>menos potente que SW no centro</td><td class="num">8</td></tr>
-      <tr><td><b>Kolmogorov–Smirnov</b></td><td>qualquer distribuição; duas amostras</td>
-        <td>pouco potente; exige correção de Lilliefors</td><td class="num">4</td></tr>
+      <tr><td>\(\sigma\) <b>conhecido</b> (raro)</td>
+        <td>\(\bar x \pm z_{\alpha/2}\,\dfrac{\sigma}{\sqrt n}\)</td><td>—</td></tr>
+      <tr><td>\(\sigma\) <b>desconhecido</b> (o caso usual)</td>
+        <td>\(\bar x \pm t_{\alpha/2;\,\nu}\,\dfrac{s}{\sqrt n}\)</td><td>\(\nu = n-1\)</td></tr>
     </tbody>
   </table>
   </div>
 
-  <!-- ================================================== -->
-  <h2 id="s9">9. O paradoxo do tamanho da amostra</h2>
+  <p>Na prática quase sempre usamos a segunda linha: se não conhecemos \(\mu\), dificilmente
+  conheceríamos \(\sigma\). Com \(n \gtrsim 30\) as duas dão praticamente o mesmo resultado,
+  porque a t converge para a normal — veja a última linha da tabela t do Módulo 6.</p>
 
-  <p>Esta seção é a mais importante do módulo, e a que raramente aparece nos livros-texto.</p>
+  <div data-widget="calcic"></div>
+
+  <h3>Exercício resolvido 8.1 — Peças usinadas, com σ conhecido</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Uma máquina produz peças cujo comprimento tem desvio padrão conhecido e estável,
+    \(\sigma = 1{,}2\) mm. Mediram-se 36 peças, obtendo-se média \(\bar x = 50{,}2\) mm.
+    Construa o intervalo de 95% de confiança para o comprimento médio.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Como \(\sigma\) é conhecido, usamos a normal. Para 95%, \(\alpha = 0{,}05\) e
+      \(z_{0{,}025} = 1{,}96\).</p>
+      <p><strong>Erro padrão:</strong></p>
+      <p>\[\frac{\sigma}{\sqrt n} = \frac{1{,}2}{\sqrt{36}} = \frac{1{,}2}{6} = 0{,}20\ \text{mm}.\]</p>
+      <p><strong>Margem de erro:</strong></p>
+      <p>\[E = 1{,}96 \times 0{,}20 = 0{,}392\ \text{mm}.\]</p>
+      <p><strong>Intervalo:</strong></p>
+      <p>\[50{,}2 \pm 0{,}392 \quad\Longrightarrow\quad
+      \mathbf{[49{,}808;\ 50{,}592]\ \text{mm}}.\]</p>
+      <p><strong>Leitura.</strong> O procedimento usado acerta em 95% das amostras. Se o projeto
+      exigisse comprimento de 50,0 mm, esse valor está <em>dentro</em> do intervalo — não há
+      evidência de que a máquina esteja desregulada. Se exigisse 49,5 mm, estaria fora, e haveria
+      evidência de problema. Note que acabamos de fazer um teste de hipóteses sem o vocabulário,
+      que é o assunto do Módulo 12.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 8.2 — Medindo g no laboratório</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Retomando as dez medidas do Módulo 2, com \(\bar x = 9{,}808\) m/s² e \(s = 0{,}027\) m/s²,
+    construa o intervalo de 95% para \(g\). O valor de referência local é 9,78 m/s². Há
+    discrepância?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Aqui \(\sigma\) é desconhecido e \(n = 10\) é pequeno, então usamos a t com
+      \(\nu = 9\) graus de liberdade. Da tabela do Módulo 6, \(t_{0{,}025;\,9} = 2{,}262\).</p>
+      <p><strong>Erro padrão:</strong></p>
+      <p>\[\frac{s}{\sqrt n} = \frac{0{,}027}{\sqrt{10}} = 0{,}00854\ \mathrm{m/s^2}.\]</p>
+      <p><strong>Margem:</strong> \(E = 2{,}262 \times 0{,}00854 = 0{,}0193\).</p>
+      <p>\[\mathbf{[9{,}7887;\ 9{,}8273]\ \mathrm{m/s^2}}.\]</p>
+      <p><strong>Há discrepância?</strong> O valor de referência, 9,78, está <strong>fora</strong>
+      do intervalo — ainda que por pouco. Isso sugere um <strong>erro sistemático</strong> no
+      experimento: talvez o comprimento do pêndulo tenha sido medido até o ponto errado da
+      esfera, ou o cronômetro tenha atraso de acionamento.</p>
+      <p><strong>A lição fundamental:</strong> o intervalo de confiança só cobre o erro
+      <em>aleatório</em>. Ele diz "se o meu procedimento não tiver viés, \(\mu\) está aqui".
+      Nenhum intervalo detecta um erro sistemático — e repetir mais medidas apenas estreitaria o
+      intervalo em torno do valor errado. Voltaremos a isso no Módulo 20.</p>
+      <p><em>Se tivéssemos usado z = 1,96 em vez de t = 2,262</em>, o intervalo seria
+      [9,7913; 9,8247] — mais estreito e <em>otimista demais</em> para apenas dez medidas.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Intervalo de confiança para proporção</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Fórmula</span>
+    <p>\[\hat p \;\pm\; z_{\alpha/2}\sqrt{\frac{\hat p\,(1-\hat p)}{n}},
+    \qquad \hat p = \frac{k}{n}.\]</p>
+    <p>Válida quando \(n\hat p \geq 5\) e \(n(1-\hat p) \geq 5\) — as condições da aproximação
+    normal da binomial, do Módulo 4.</p>
+  </div>
+
+  <p>Note que o erro padrão usa \(\hat p\) no lugar de \(p\), que é desconhecido. É uma
+  aproximação, e é a razão de essa fórmula falhar quando \(\hat p\) está muito perto de 0 ou de 1.</p>
+
+  <h3>Exercício resolvido 8.3 — Pesquisa com estudantes</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Em uma amostra de 400 estudantes da universidade, 240 declararam usar transporte público.
+    Construa o intervalo de 95% para a proporção de usuários na universidade inteira.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Estimativa pontual:</strong> \(\hat p = 240/400 = 0{,}60\).</p>
+      <p><strong>Condições:</strong> \(n\hat p = 240 \geq 5\) e \(n(1-\hat p) = 160 \geq 5\) ✓</p>
+      <p><strong>Erro padrão:</strong></p>
+      <p>\[\sqrt{\frac{0{,}60 \times 0{,}40}{400}} = \sqrt{\frac{0{,}24}{400}}
+      = \sqrt{0{,}0006} = 0{,}0245 .\]</p>
+      <p><strong>Margem:</strong> \(E = 1{,}96 \times 0{,}0245 = 0{,}0480\), ou 4,8 pontos
+      percentuais.</p>
+      <p>\[\mathbf{[55{,}2\%;\ 64{,}8\%]}.\]</p>
+      <p><strong>É daqui que vem a "margem de erro" das pesquisas eleitorais.</strong> Quando o
+      noticiário diz "margem de erro de 3 pontos para mais ou para menos", está informando
+      exatamente esse \(E\) — quase sempre com 95% de confiança, embora raramente o digam.</p>
+      <p>E é por isso que dois candidatos com 48% e 52% numa pesquisa com margem de 3 pontos
+      estão <em>tecnicamente empatados</em>: os intervalos [45%, 51%] e [49%, 55%] se sobrepõem.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Intervalo de confiança para a variância</h2>
+
+  <p>Do Módulo 6 sabemos que \((n-1)s^2/\sigma^2 \sim \chi^2_{n-1}\). Isolando \(\sigma^2\) entre
+  os dois valores críticos:</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Fórmula</span>
+    <p>\[\frac{(n-1)s^{2}}{\chi^{2}_{\alpha/2;\,\nu}}
+    \;\le\; \sigma^{2} \;\le\;
+    \frac{(n-1)s^{2}}{\chi^{2}_{1-\alpha/2;\,\nu}},
+    \qquad \nu = n-1,\]</p>
+    <p>onde \(\chi^2_{\alpha;\,\nu}\) deixa área \(\alpha\) na cauda <strong>direita</strong>.
+    Para o desvio padrão, tire a raiz dos dois limites.</p>
+  </div>
 
   <div class="bloco alerta">
-    <span class="rotulo">Os testes de normalidade têm um defeito estrutural</span>
-    <p><strong>Com \(n\) pequeno</strong>, o teste quase nunca rejeita — falta-lhe
-    <em>poder</em> (Módulo 9). Não rejeitar com \(n = 10\) não é evidência de normalidade: é
-    evidência de que você não tem dados suficientes para dizer coisa alguma.</p>
-    <p><strong>Com \(n\) muito grande</strong>, o teste rejeita quase sempre — porque
-    <em>nenhum</em> conjunto real de dados é exatamente normal, e o teste detecta desvios
-    minúsculos e irrelevantes na prática.</p>
-    <p>O resultado é perverso: justamente quando o TCL nos protegeria (n grande), o teste nos diz
-    para não confiar; e quando a normalidade seria crítica (n pequeno), o teste não detecta nada.</p>
+    <span class="rotulo">Duas armadilhas</span>
+    <p><strong>1. O intervalo não é simétrico</strong> em torno de \(s^2\), porque a
+    qui-quadrado é assimétrica. Não existe "\(s^2 \pm\) margem" aqui.</p>
+    <p><strong>2. O quadrado maior vai no denominador menor.</strong> Repare que o valor crítico
+    <em>superior</em> da qui-quadrado produz o limite <em>inferior</em> de \(\sigma^2\) — a
+    inversão confunde muita gente. Se o seu intervalo sair com o limite inferior maior que o
+    superior, foi aqui que você trocou.</p>
+    <p><strong>E uma advertência:</strong> esta fórmula é muito sensível à hipótese de
+    normalidade, bem mais que o intervalo da média. Verifique a normalidade (Módulo 4, seção 9)
+    antes de usá-la.</p>
   </div>
 
-  <h3>Exercício resolvido 11.3 — A uniforme que passou no teste</h3>
+  <h3>Exercício resolvido 8.4 — Precisão de um instrumento</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
-    <p>Carregue o conjunto <strong>"Uniforme"</strong> no simulador: são os inteiros de 1 a 30,
-    perfeitamente uniformes — a distribuição menos normal que se pode imaginar entre as
-    simétricas. O que os testes dizem?</p>
+    <p>Vinte medições de uma mesma grandeza, feitas com um instrumento, deram \(s = 0{,}45\)
+    unidade. Construa o intervalo de 95% para \(\sigma\), supondo normalidade.</p>
   </div>
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <div class="tabela-rolavel">
-      <table>
-        <thead><tr><th>Teste</th><th class="num">valor p</th><th>Decisão a 5%</th></tr></thead>
-        <tbody>
-          <tr><td>Shapiro–Wilk</td><td class="num">0,266</td><td>não rejeita</td></tr>
-          <tr><td>D'Agostino K²</td><td class="num">0,067</td><td>não rejeita</td></tr>
-          <tr><td>Anderson–Darling</td><td class="num">0,515</td><td>não rejeita</td></tr>
-          <tr><td>Kolmogorov–Smirnov</td><td class="num">D = 0,070 (crít. 0,155)</td><td>não rejeita</td></tr>
-        </tbody>
-      </table>
-      </div>
-      <p><strong>Nenhum dos quatro testes rejeita.</strong> Sabemos com certeza absoluta que
-      esses dados <em>não</em> são normais — nós mesmos os construímos — e os testes não
-      detectam.</p>
-      <p><strong>Por quê?</strong> Com \(n = 30\), o poder para detectar caudas leves é baixo. A
-      curtose é \(g_2 = -1{,}20\), claramente negativa, e o D'Agostino chega perto
-      (\(p = 0{,}067\)) — mas não cruza o limiar.</p>
-      <p><strong>Mas o Q–Q denuncia.</strong> Olhe o gráfico: os pontos formam um S invertido
-      nítido, com os extremos achatados contra a reta. <em>O olho vê o que o teste não detecta.</em></p>
-      <div class="destaque">
-        <span class="anuncio">A lição central deste módulo</span>
-        O gráfico Q–Q é o juiz; o teste numérico é um auxiliar. Pergunte sempre se o desvio tem
-        <strong>tamanho suficiente para importar</strong>, e não apenas se o p cruzou 0,05.
-      </div>
+      <p>Com \(n = 20\), temos \(\nu = 19\). Da tabela qui-quadrado do Módulo 6:</p>
+      <p>\[\chi^{2}_{0{,}025;\,19} = 32{,}852 \qquad\text{e}\qquad
+      \chi^{2}_{0{,}975;\,19} = 8{,}907 .\]</p>
+      <p>E \((n-1)s^2 = 19 \times 0{,}45^2 = 19 \times 0{,}2025 = 3{,}8475\).</p>
+      <p><strong>Para a variância:</strong></p>
+      <p>\[\frac{3{,}8475}{32{,}852} \le \sigma^{2} \le \frac{3{,}8475}{8{,}907}
+      \quad\Longrightarrow\quad 0{,}1171 \le \sigma^{2} \le 0{,}4320 .\]</p>
+      <p><strong>Para o desvio padrão</strong>, tirando raízes:</p>
+      <p>\[\mathbf{0{,}342 \le \sigma \le 0{,}657}.\]</p>
+      <p><strong>Observe a largura.</strong> A estimativa pontual era 0,45, mas o intervalo vai
+      de 0,34 a 0,66 — quase o dobro do limite inferior. Estimar <em>dispersão</em> é muito mais
+      difícil que estimar <em>posição</em>: com as mesmas 20 medidas, o intervalo da média seria
+      proporcionalmente bem mais estreito.</p>
+      <p>Essa é a razão prática de precisarmos de muitas medidas para caracterizar a precisão de
+      um instrumento, e de poucas para estimar o valor de uma grandeza.</p>
     </div>
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s10">10. O que fazer quando não é normal</h2>
+  <h2 id="s8">8. De quantos dados eu preciso?</h2>
+
+  <p>Até aqui, a amostra estava dada e calculávamos a precisão obtida. Agora invertemos:
+  <strong>fixamos a precisão desejada e perguntamos o \(n\) necessário</strong>. É a pergunta que
+  se faz <em>antes</em> de coletar — a mais importante do planejamento experimental.</p>
 
   <div class="bloco def">
-    <span class="rotulo">1. Investigar a causa antes de tudo</span>
-    <p>A forma do desvio costuma dizer o que aconteceu:</p>
+    <span class="rotulo">Para a média</span>
+    <p>Impondo que a margem de erro não exceda \(E\):</p>
+    <p>\[E = z_{\alpha/2}\frac{\sigma}{\sqrt n}
+    \qquad\Longrightarrow\qquad
+    \boxed{\;n = \left(\frac{z_{\alpha/2}\,\sigma}{E}\right)^{2}\;}\]</p>
+    <p>Arredonde sempre <strong>para cima</strong>.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Para a proporção</span>
+    <p>\[n = \frac{z^{2}_{\alpha/2}\;\hat p\,(1-\hat p)}{E^{2}}\]</p>
+    <p>Se não houver estimativa prévia de \(p\), use \(\hat p = 0{,}5\): o produto
+    \(p(1-p)\) é <strong>máximo</strong> nesse ponto, e o \(n\) resultante é o pior caso —
+    seguro para qualquer \(p\). A fórmula vira \(n = 0{,}25\,(z/E)^2\).</p>
+  </div>
+
+  <h3>Exercício resolvido 8.5 — Planejando dois experimentos</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p><strong>(a)</strong> Um estudo-piloto indicou \(\sigma \approx 3\) unidades. Quantas
+    medidas são necessárias para estimar a média com margem de 0,5 unidade e 95% de confiança?
+    E para margem de 0,25?</p>
+    <p><strong>(b)</strong> Quantos entrevistados são necessários para estimar uma proporção com
+    margem de 3 pontos percentuais e 95% de confiança, sem nenhuma estimativa prévia? E com
+    margem de 2 pontos?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a) Média.</strong> Com \(z = 1{,}96\) e \(\sigma = 3\):</p>
+      <p>\[n = \left(\frac{1{,}96 \times 3}{0{,}5}\right)^{2}
+      = (11{,}76)^{2} = 138{,}3 \;\Longrightarrow\; \mathbf{n = 139}.\]</p>
+      <p>Para \(E = 0{,}25\), metade da margem:</p>
+      <p>\[n = \left(\frac{5{,}88}{0{,}25}\right)^{2} = (23{,}52)^{2} = 553{,}2
+      \;\Longrightarrow\; \mathbf{n = 554}.\]</p>
+      <p><strong>Reduzir a margem pela metade exigiu quatro vezes mais medidas.</strong> Esse é o
+      \(\sqrt{n}\) cobrando seu preço: como \(E \propto 1/\sqrt n\), temos \(n \propto 1/E^2\).</p>
+      <p><strong>(b) Proporção.</strong> Pior caso, \(\hat p = 0{,}5\):</p>
+      <p>\[n = \frac{(1{,}96)^{2}(0{,}25)}{(0{,}03)^{2}} = \frac{0{,}9604}{0{,}0009}
+      = 1067{,}1 \;\Longrightarrow\; \mathbf{n = 1068}.\]</p>
+      <p>Para \(E = 0{,}02\): \(n = 0{,}9604/0{,}0004 = 2401 \Longrightarrow \mathbf{n = 2401}\).</p>
+      <p><strong>Por que as pesquisas eleitorais usam cerca de 2000 pessoas.</strong> Esse é o
+      número que dá margem de 2 pontos — e note que ele <em>não depende do tamanho da
+      população</em>. Uma amostra de 2000 estima tão bem a opinião de uma cidade de 50 mil
+      habitantes quanto a de um país de 200 milhões. É contraintuitivo e verdadeiro: o que
+      importa é o tamanho da <em>amostra</em>, não a fração da população que ela representa.</p>
+    </div>
+  </details>
+
+  <div class="bloco fisica">
+    <span class="rotulo">A decisão prática do experimentador</span>
+    <p>A fórmula \(n \propto 1/E^2\) tem uma consequência econômica direta. Para ganhar um
+    algarismo significativo — reduzir a margem por um fator 10 — são necessárias
+    <strong>100 vezes</strong> mais medidas.</p>
+    <p>Chega um ponto em que é mais barato reduzir \(\sigma\) do que aumentar \(n\): comprar um
+    instrumento melhor, isolar vibrações, controlar a temperatura. Saber identificar esse ponto é
+    boa parte do que distingue um experimentador experiente.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Aplicações em Física</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">A barra de erro é um intervalo de confiança</span>
+    <p>Quando você escreve \(g = 9{,}808 \pm 0{,}019\ \mathrm{m/s^2}\) ou desenha uma barra de
+    erro num gráfico, está comunicando um intervalo de confiança. E há uma ambiguidade real nessa
+    notação que convém conhecer:</p>
     <ul>
-      <li><strong>Assimetria à direita</strong> — há um limite inferior natural. Tempos,
-      concentrações, contagens e rendas não podem ser negativos, e isso basta para produzir
-      assimetria;</li>
-      <li><strong>Bimodalidade</strong> — há dois regimes misturados. Dois experimentadores, duas
-      condições experimentais, dois mecanismos físicos. <em>Separe os grupos</em> em vez de
-      transformar;</li>
-      <li><strong>Caudas pesadas</strong> — outliers legítimos, ou um processo com variância
-      instável;</li>
-      <li><strong>Degraus no Q–Q</strong> — resolução insuficiente do instrumento.</li>
+      <li>Em muitas áreas, \(\pm\) significa <strong>um erro padrão</strong>
+      (\(s/\sqrt n\)), o que corresponde a cerca de 68% de confiança;</li>
+      <li>Em outras, significa o <strong>intervalo de 95%</strong>, cerca de dois erros padrão.</li>
     </ul>
+    <p>A diferença é um fator 2. <strong>Sempre declare qual convenção está usando</strong> — e,
+    ao ler o trabalho de outra pessoa, procure a definição antes de comparar resultados.</p>
   </div>
 
-  <div class="bloco def">
-    <span class="rotulo">2. Transformar os dados</span>
-    <div class="tabela-rolavel">
-    <table>
-      <thead><tr><th>Transformação</th><th>Corrige</th><th>Quando é natural</th></tr></thead>
-      <tbody>
-        <tr><td>\(\log x\)</td><td>assimetria forte à direita</td>
-          <td>efeitos multiplicativos; escalas de décadas</td></tr>
-        <tr><td>\(\sqrt{x}\)</td><td>assimetria moderada</td><td>dados de contagem (Poisson)</td></tr>
-        <tr><td>\(1/x\)</td><td>assimetria muito forte</td><td>taxas e tempos</td></tr>
-        <tr><td>\(\arcsen\sqrt{p}\)</td><td>proporções perto de 0 ou 1</td><td>dados binomiais</td></tr>
-      </tbody>
-    </table>
-    </div>
+  <div class="bloco fisica">
+    <span class="rotulo">Quando dois resultados concordam?</span>
+    <p>Duas medidas independentes da mesma grandeza, \(a \pm \sigma_a\) e \(b \pm \sigma_b\),
+    são compatíveis se a diferença delas for pequena comparada à incerteza da diferença:</p>
+    <p>\[t = \frac{|a-b|}{\sqrt{\sigma_a^2 + \sigma_b^2}} .\]</p>
+    <p>Valores de \(t\) abaixo de 2 indicam concordância; acima de 3, discrepância que merece
+    investigação. Note que as incertezas se combinam <em>em quadratura</em> — o mesmo
+    \(\sqrt{\;}\) de somas independentes do Módulo 3.</p>
+    <p>Um erro frequente é concluir que há discrepância porque "os intervalos não se tocam".
+    Esse critério é conservador demais: dois intervalos de 95% podem não se sobrepor e ainda
+    assim a diferença não ser significativa — e vice-versa. A conta acima é a correta.</p>
   </div>
 
-  <h3>Exercício resolvido 11.4 — A transformação logarítmica em ação</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Carregue o conjunto <strong>"Renda"</strong>. Ele é fortemente assimétrico
-    (\(g_1 = 2{,}52\)) e todos os testes rejeitam com \(p &lt; 0{,}0001\). Aplique a
-    transformação logarítmica — o seletor <i>Transformação a aplicar</i> do simulador faz
-    isso — e reavalie.</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Como fazer no simulador.</strong> Não é preciso calcular os logaritmos à mão:
-      no simulador da seção 3, clique no botão <i>Renda</i> para carregar os dados e depois
-      escolha <b>"Logaritmo natural — ln x"</b> no seletor <i>Transformação a aplicar</i>,
-      logo abaixo da caixa de dados. Todo o painel — gráfico Q–Q, histograma e os quatro
-      testes — passa a se referir a \(\ln x\). Voltar para "Nenhuma" desfaz a transformação,
-      e dá para alternar entre as duas para comparar.</p>
-      <p>Tomando o logaritmo natural de cada valor:</p>
-      <div class="tabela-rolavel">
-      <table>
-        <thead><tr><th></th><th class="num">g₁</th><th class="num">Shapiro–Wilk p</th><th>Decisão</th></tr></thead>
-        <tbody>
-          <tr><td>dados originais</td><td class="num">2,52</td><td class="num">&lt; 0,0001</td>
-            <td><b style="color:#8c2f39">rejeita</b></td></tr>
-          <tr><td>após \(\log x\)</td><td class="num">0,72</td><td class="num">0,124</td>
-            <td><b style="color:#1f6f54">não rejeita</b></td></tr>
-        </tbody>
-      </table>
-      </div>
-      <p>A assimetria caiu de 2,52 para 0,72, e os testes deixam de rejeitar. A distribuição
-      original era <strong>log-normal</strong>.</p>
-      <p><strong>Por que o log funciona aqui.</strong> Em processos onde os efeitos são
-      <em>multiplicativos</em> — a renda cresce em percentuais, não em valores absolutos — o
-      logaritmo converte multiplicação em soma, e o TCL passa a valer na escala logarítmica.</p>
-      <p><strong>O preço da transformação.</strong> Toda a inferência passa a valer para
-      \(\log x\), não para \(x\). A média dos logaritmos, quando exponenciada, dá a
-      <strong>média geométrica</strong> — não a aritmética. Em muitos contextos a média
-      geométrica é até mais adequada, mas é preciso dizer isso explicitamente no relatório.</p>
-    </div>
-  </details>
-
-  <div class="bloco def">
-    <span class="rotulo">3. Usar métodos não paramétricos</span>
-    <p>Se a transformação não resolve, ou se ela distorce a interpretação, existem testes que
-    <strong>não exigem normalidade</strong> — baseados em ordenações, não em valores. São o
-    assunto do Módulo 14: sinais, Wilcoxon, Mann-Whitney.</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">4. Confiar no TCL</span>
-    <p>Se \(n\) for grande e o interesse for a <em>média</em>, o Teorema Central do Limite já
-    garante que \(\bar X\) é aproximadamente normal, seja qual for a população. Nesse caso,
-    rejeitar a normalidade dos dados brutos não invalida o teste t.</p>
+  <div class="bloco fisica">
+    <span class="rotulo">Medidas de constantes fundamentais</span>
+    <p>Os valores recomendados pelo CODATA para \(c\), \(h\), \(e\) e \(N_A\) são combinações
+    ponderadas de dezenas de experimentos independentes, cada um com seu intervalo. Quando um
+    novo experimento produz um intervalo que não se sobrepõe ao consenso, há duas
+    possibilidades — um erro sistemático não identificado, ou física nova. Distingui-las é
+    trabalho de anos.</p>
+    <p>O caso mais famoso recente é o do <strong>raio do próton</strong>: medidas com hidrogênio
+    muônico, a partir de 2010, deram um valor cerca de 4% menor que o consenso, com intervalos
+    que não se sobrepunham. A discrepância durou quase uma década e acabou resolvida com a
+    revisão das medidas antigas — não era física nova, mas quase foi.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s11">11. Exercícios propostos</h2>
+  <h2 id="s10">10. Exercícios propostos</h2>
 
   <ol>
-    <li>Explique por que o teste t para a média é robusto a desvios da normalidade com \(n = 100\),
-    mas o intervalo de confiança para \(\sigma^2\) não é.</li>
-    <li>Para cada padrão de gráfico Q–Q, diga o diagnóstico: (a) curvatura côncava; (b) S deitado;
-    (c) dois pontos isolados no alto; (d) degraus horizontais.</li>
-    <li>Mostre que a curtose da distribuição uniforme em \([0,1]\) é \(g_2 = -1{,}2\).
-    <em>(Calcule \(\langle x^4\rangle\) e use a definição.)</em></li>
-    <li>Carregue o conjunto "Bimodal" no simulador. Por que a assimetria é zero e, mesmo assim,
-    os dados não são normais? Que gráfico revela o problema mais claramente?</li>
-    <li>Dez medidas de um período deram: 2,01 · 2,03 · 1,99 · 2,02 · 2,05 · 2,00 · 1,98 · 2,04 ·
-    2,02 · 2,01. Teste a normalidade. Com \(n = 10\), que peso você daria ao resultado?</li>
-    <li>Um pesquisador testou a normalidade de 50 000 observações e obteve \(p = 0{,}003\),
-    concluindo que não poderia usar o teste t. Critique essa conclusão.</li>
-    <li>Por que o teste de Kolmogorov–Smirnov precisa da correção de Lilliefors quando a média e
-    o desvio são estimados dos dados? O que aconteceria sem ela?</li>
-    <li>Tome o conjunto "Caudas pesadas" do simulador e remova os dois valores extremos
-    (−18,2 e 18,2). Reavalie a normalidade. O que isso ensina sobre remover outliers?</li>
+    <li>Uma amostra de 50 medidas deu \(\bar x = 25{,}3\) e \(s = 4{,}1\). Construa os intervalos
+    de 90%, 95% e 99% para a média. O que acontece com a largura à medida que a confiança sobe?</li>
+    <li>Mostre que a largura do intervalo para a média é inversamente proporcional a
+    \(\sqrt n\). Quantas medidas são necessárias para reduzi-la a um terço?</li>
+    <li>Prove que \(\hat p = k/n\) é um estimador não-viesado de \(p\).
+    <em>(Use \(\langle k\rangle = np\), do Módulo 3.)</em></li>
+    <li>Em 150 lançamentos de uma moeda obtiveram-se 87 caras. Construa o intervalo de 95% para
+    \(p\). A moeda pode ser considerada honesta?</li>
+    <li>Quinze medições de um período deram \(s = 0{,}08\) s. Construa o intervalo de 95% para
+    \(\sigma\) e comente a largura obtida.</li>
+    <li>Um pesquisador quer estimar a proporção de estudantes de licenciatura que trabalham, com
+    margem de 4 pontos e 99% de confiança. Quantos deve entrevistar, sem estimativa prévia? E se
+    um estudo anterior sugerisse \(p \approx 0{,}30\)?</li>
+    <li>Duas equipes medem a mesma constante e obtêm \(4{,}52 \pm 0{,}08\) e
+    \(4{,}71 \pm 0{,}11\). Os resultados são compatíveis? Calcule \(t\) e justifique.</li>
+    <li>Explique por que uma amostra de 2000 pessoas estima igualmente bem a opinião de uma
+    cidade de 50 mil e de um país de 200 milhões. Em que situação o tamanho da população
+    passaria a importar? <em>(Pense em amostragem sem reposição.)</em></li>
   </ol>
 
   <div class="bloco def">
     <span class="rotulo">Resumo do módulo</span>
     <ul>
-      <li>\(H_0\) é a normalidade; p alto significa ausência de evidência contra ela;</li>
-      <li>O Q–Q vem primeiro, e seu formato diagnostica o tipo de desvio;</li>
-      <li>\(g_1\) mede assimetria; \(g_2\) mede o peso das caudas, não o pico;</li>
-      <li>Shapiro–Wilk é o mais potente; D'Agostino diz <em>qual</em> aspecto falhou;
-      Anderson–Darling vigia as caudas; KS exige a correção de Lilliefors;</li>
-      <li>Com \(n\) pequeno o teste não detecta nada; com \(n\) enorme rejeita tudo;</li>
-      <li>Não normal? Investigue a causa, transforme, use métodos não paramétricos ou confie no
-      TCL — nessa ordem.</li>
+      <li>Estimador bom é não-viesado, eficiente e consistente;</li>
+      <li>Toda a construção tem a forma <b>estimativa ± crítico × erro padrão</b>;</li>
+      <li>Média: \(\bar x \pm t_{\alpha/2;\,n-1}\,s/\sqrt n\) (ou \(z\) se \(\sigma\) for conhecido);</li>
+      <li>Proporção: \(\hat p \pm z_{\alpha/2}\sqrt{\hat p(1-\hat p)/n}\);</li>
+      <li>Variância: \((n-1)s^2\) dividido pelos dois valores críticos da qui-quadrado — intervalo
+      assimétrico;</li>
+      <li>Tamanho de amostra: \(n = (z\sigma/E)^2\), e \(n \propto 1/E^2\);</li>
+      <li>95% é propriedade do <b>procedimento</b>, não de um intervalo particular.</li>
     </ul>
   </div>
 
   <nav class="nav-aulas">
-    <a href="aula10.html"><small>Módulo anterior</small>← 10. Qui-quadrado</a>
-    <a class="prox" href="aula12.html"><small>Próximo módulo</small>12. Correlação →</a>
+    <a href="aula08.html"><small>Módulo anterior</small>← 8. Regressão linear</a>
+    <a class="prox" href="aula12.html"><small>Próximo módulo</small>12. Testes de hipóteses →</a>
   </nav>
 
 </main>
@@ -607,6 +561,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061532"></script>
+<script src="assets/js/widgets.js?v=202611061620"></script>
 </body>
 </html>

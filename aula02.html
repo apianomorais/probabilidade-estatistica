@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Módulo 2 — Técnicas de contagem | Probabilidade &amp; Estatística</title>
+<title>Módulo 2 — Estatística descritiva | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061532">
-<script src="assets/js/comum.js?v=202611061532"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061620">
+<script src="assets/js/comum.js?v=202611061620"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -16,23 +16,26 @@
     <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
     <nav class="menu">
       <a href="index.html">Início</a>
-      <span class="grupo">Probabilidade</span>
-      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
-      <a href="aula02.html" class="num ativo" title="Módulo 2 — Técnicas de contagem">2</a>
-      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
-      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
-      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
-      <span class="grupo">Estatística</span>
-      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
-      <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
-      <a href="aula08.html" class="num" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
-      <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
-      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
-      <a href="aula11.html" class="num" title="Módulo 11 — Testes de normalidade">11</a>
-      <a href="aula12.html" class="num" title="Módulo 12 — Correlação">12</a>
-      <a href="aula13.html" class="num" title="Módulo 13 — Regressão linear e mínimos quadrados">13</a>
-      <a href="aula14.html" class="num" title="Módulo 14 — Testes não paramétricos">14</a>
-      <a href="aula15.html" class="num" title="Módulo 15 — Tamanho amostral e planejamento">15</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula02.html" class="num ativo" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
       <a href="formulario.html">Formulário</a>
     </nav>
   </div>
@@ -43,600 +46,590 @@
 <aside class="lateral">
   <h4>Neste módulo</h4>
   <ol>
-    <li><a href="#s1">1. Por que contar</a></li>
-    <li><a href="#sh">2. Uma história antiga</a></li>
-    <li><a href="#s2">3. Princípio fundamental</a></li>
-    <li><a href="#s3">4. Permutações</a></li>
-    <li><a href="#s4">5. Arranjos</a></li>
-    <li><a href="#s5">6. Combinações</a></li>
-    <li><a href="#s6">7. Quadro-resumo</a></li>
-    <li><a href="#s7">8. Binômio e triângulo de Pascal</a></li>
-    <li><a href="#s8">9. Microestados e estatísticas</a></li>
-    <li><a href="#s9">10. Exercícios propostos</a></li>
+    <li><a href="#s1">1. A lógica se inverte</a></li>
+    <li><a href="#s2">2. População, amostra, variáveis</a></li>
+    <li><a href="#s3">3. Tabelas de frequência</a></li>
+    <li><a href="#s4">4. Histograma</a></li>
+    <li><a href="#s5">5. Medidas de posição</a></li>
+    <li><a href="#s6">6. Medidas de dispersão</a></li>
+    <li><a href="#s7">7. Quartis e boxplot</a></li>
+    <li><a href="#so">8. Outliers</a></li>
+    <li><a href="#s8">9. Assimetria</a></li>
+    <li><a href="#s9">10. Aplicações em Física</a></li>
+    <li><a href="#s10">11. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
   <p class="chapeu">Módulo 2 · 3 horas</p>
-  <h1>Técnicas de contagem</h1>
-  <p class="subtitulo">Permutações, arranjos e combinações — e a multiplicidade de um sistema físico.</p>
+  <h1>Estatística descritiva</h1>
+  <p class="subtitulo">Organizar, resumir e enxergar o que um conjunto de dados está dizendo.</p>
 
   <div class="bloco def">
     <span class="rotulo">Objetivos</span>
     <ul>
-      <li>Aplicar o princípio fundamental da contagem a problemas com etapas sucessivas;</li>
-      <li>Distinguir com segurança quando a <strong>ordem importa</strong> e quando não importa;</li>
-      <li>Calcular permutações simples, com repetição e circulares;</li>
-      <li>Calcular arranjos e combinações, e relacioná-los por \(A_{n,k}=k!\,C_{n,k}\);</li>
-      <li>Usar o binômio de Newton e as propriedades do triângulo de Pascal;</li>
-      <li>Contar microestados nas estatísticas de Maxwell–Boltzmann, Bose–Einstein e Fermi–Dirac.</li>
+      <li>Distinguir população de amostra e classificar variáveis;</li>
+      <li>Construir tabelas de frequência e histogramas, escolhendo as classes;</li>
+      <li>Calcular e interpretar média, mediana e moda, sabendo quando cada uma engana;</li>
+      <li>Calcular variância e desvio padrão amostrais e entender o porquê do \(n-1\);</li>
+      <li>Construir boxplots, identificar outliers pela regra de 1,5×IQR;</li>
+      <li>Ler a assimetria de uma distribuição e escolher a medida-resumo adequada.</li>
     </ul>
   </div>
 
   <hr class="linha">
 
   <!-- ================================================== -->
-  <h2 id="s1">1. Por que contar</h2>
+  <h2 id="s1">1. A lógica se inverte</h2>
 
-  <p>No módulo anterior chegamos à regra de Laplace: \(P(A)=|A|/|\Omega|\). Enquanto os espaços
-  eram pequenos — seis faces, 36 pares — bastava listar. Mas considere:</p>
+  <p>Nos cinco módulos anteriores fizemos sempre o mesmo movimento: <strong>conhecíamos o
+  modelo</strong> — uma moeda honesta, uma binomial com \(n\) e \(p\) dados, uma normal com
+  \(\mu\) e \(\sigma\) — e perguntávamos o que esperar dos dados.</p>
 
-  <ul>
-    <li>Qual a probabilidade de um jogo da Mega-Sena premiado?</li>
-    <li>De quantas maneiras 30 estudantes podem se sentar em 30 carteiras?</li>
-    <li>Quantos microestados tem um sistema de 20 spins com energia fixa?</li>
-  </ul>
-
-  <p>Listar é inviável. Precisamos <strong>contar sem enumerar</strong>. Toda a combinatória que
-  veremos aqui serve a um único propósito: fornecer \(|A|\) e \(|\Omega|\) para a regra de Laplace.</p>
+  <p>A partir de agora o caminho é o inverso. <strong>Temos os dados e queremos descobrir o
+  modelo.</strong></p>
 
   <div class="destaque">
-    A pergunta que organiza este módulo inteiro é uma só: <strong>a ordem importa?</strong><br>
-    Se importa, é arranjo ou permutação. Se não importa, é combinação.
+    <strong>Probabilidade:</strong> dado o modelo, o que esperar dos dados?<br>
+    <strong>Estatística:</strong> dados os dados, o que dizer do modelo?
   </div>
 
+  <p>A estatística descritiva é o primeiro passo desse caminho inverso, e o mais humilde: antes
+  de inferir qualquer coisa, é preciso <em>olhar</em> para os dados. Resumi-los em poucos números
+  e em um ou dois gráficos. Esse passo parece trivial e é onde se cometem a maioria dos erros —
+  quase sempre por resumir demais.</p>
 
   <!-- ================================================== -->
-  <h2 id="sh">2. Uma história bem mais antiga que a probabilidade</h2>
+  <h2 id="s2">2. População, amostra e tipos de variáveis</h2>
 
-  <p>É curioso: a <em>probabilidade</em> só nasce no século XVII, mas a <em>combinatória</em>
-  tem milhares de anos. Contar arranjos é uma necessidade que aparece sozinha em culturas muito
-  distantes, sem contato entre si — e sempre por motivos que pouco têm a ver com jogos.</p>
-
-  <h3>O triângulo que tem muitos nomes</h3>
-
-  <p>O arranjo triangular de números que no Ocidente chamamos de <strong>triângulo de
-  Pascal</strong> foi descoberto independentemente em pelo menos quatro lugares:</p>
+  <div class="bloco def">
+    <span class="rotulo">Definições</span>
+    <p><strong>População:</strong> o conjunto completo de elementos de interesse. Todos os
+    licenciandos em Física do Ceará; todos os átomos de um gás; todas as medidas que o seu
+    paquímetro poderia produzir.</p>
+    <p><strong>Amostra:</strong> um subconjunto da população, efetivamente observado.</p>
+    <p><strong>Parâmetro</strong> é uma característica da população (\(\mu\), \(\sigma\),
+    \(p\)); <strong>estatística</strong> é a mesma característica calculada na amostra
+    (\(\bar x\), \(s\), \(\hat p\)). Letras gregas para o que não conhecemos, letras latinas
+    para o que medimos.</p>
+  </div>
 
   <div class="tabela-rolavel">
   <table>
-    <thead><tr><th>Onde</th><th>Quando</th><th>Quem, e por quê</th></tr></thead>
+    <thead><tr><th>Tipo</th><th>Subtipo</th><th>Exemplos</th></tr></thead>
     <tbody>
-      <tr><td>Índia</td><td>séc. II a.C.</td>
-        <td><b>Pingala</b>, estudando métrica poética em sânscrito: de quantas
-        maneiras se combinam sílabas longas e breves em um verso</td></tr>
-      <tr><td>Pérsia</td><td>séc. XI</td>
-        <td><b>Omar Khayyam</b> e <b>Al-Karaji</b>, para extrair raízes e expandir
-        potências de binômios</td></tr>
-      <tr><td>China</td><td>séc. XI–XIII</td>
-        <td><b>Jia Xian</b> e <b>Yang Hui</b> — na China ele é chamado até hoje de
-        "triângulo de Yang Hui"</td></tr>
-      <tr><td>Europa</td><td>séc. XVI–XVII</td>
-        <td><b>Tartaglia</b>, <b>Stifel</b> e enfim <b>Pascal</b>, que em 1654 escreveu o
-        <em>Traité du triangle arithmétique</em> organizando tudo e conectando-o ao
-        problema dos pontos</td></tr>
+      <tr><td rowspan="2">Qualitativa</td><td>Nominal (sem ordem)</td><td>naipe da carta, cor, material da amostra</td></tr>
+      <tr><td>Ordinal (com ordem)</td><td>conceito A/B/C, escala de dureza de Mohs</td></tr>
+      <tr><td rowspan="2">Quantitativa</td><td>Discreta (contagem)</td><td>número de decaimentos, de filhos, de erros</td></tr>
+      <tr><td>Contínua (medida)</td><td>massa, tempo, temperatura, comprimento</td></tr>
     </tbody>
   </table>
   </div>
 
-  <p>O mérito de Pascal não foi descobrir o triângulo — foi perceber que aquele objeto
-  aritmético e o problema do jogador eram <strong>a mesma coisa</strong>. Que contar arranjos e
-  calcular chances eram duas faces de um só problema. Esse é o elo que o nosso Módulo 1 e este
-  Módulo 2 reproduzem.</p>
-
-  <div class="bloco fisica">
-    <span class="rotulo">A combinatória como contagem de possibilidades físicas</span>
-    <p>Há um fio que atravessa todos esses usos. Pingala contava versos; Khayyam, termos de um
-    binômio; Pascal, resultados de uma partida. Em todos os casos, a pergunta é a mesma:
-    <strong>de quantas maneiras um sistema pode se organizar?</strong></p>
-    <p>É exatamente essa a pergunta que Boltzmann faria duzentos anos depois, ao contar de
-    quantas maneiras as moléculas de um gás podem se distribuir. A combinatória que você vai
-    aprender aqui para resolver problemas de baralho é, literalmente, a mesma que fornece a
-    entropia de um sistema físico. Voltaremos a isso na seção 9.</p>
-  </div>
-
-  <h3>De onde vem a notação</h3>
-
-  <p>O símbolo <strong>\(n!\)</strong> foi proposto por <strong>Christian Kramp</strong> em
-  1808, e a palavra <em>factorielle</em> por Louis Arbogast, pouco antes. Até então escrevia-se
-  o produto por extenso, ou com notações desajeitadas que não pegaram. É um lembrete de que boa
-  notação é invenção, não natureza: o avanço de uma área frequentemente espera por um símbolo
-  conveniente.</p>
-
-  <!-- ================================================== -->
-  <h2 id="s2">3. O princípio fundamental da contagem</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Princípio multiplicativo</span>
-    <p>Se uma decisão pode ser tomada de \(n_1\) maneiras, e em seguida outra de \(n_2\) maneiras,
-    e assim por diante até \(n_k\), então o número total de sequências de decisões é</p>
-    <p>\[N = n_1 \times n_2 \times \cdots \times n_k .\]</p>
-  </div>
-
-  <p>A justificativa é a estrutura de árvore: cada um dos \(n_1\) primeiros galhos se abre em
-  \(n_2\) ramos, e assim sucessivamente.</p>
-
-  <div class="bloco def">
-    <span class="rotulo">Princípio aditivo</span>
-    <p>Se uma tarefa pode ser feita <em>ou</em> de \(n_1\) maneiras <em>ou</em> de \(n_2\) maneiras
-    <strong>mutuamente excludentes</strong>, o total é \(n_1 + n_2\). Note o paralelo exato com
-    os eventos disjuntos do Módulo 1.</p>
-  </div>
-
-  <h3>Exercício resolvido 2.1 — Placas de veículos</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>O padrão Mercosul de placas no Brasil usa quatro letras e três algarismos no formato
-    LLLNLNN (letra, letra, letra, número, letra, número, número). Considerando 26 letras e 10
-    algarismos, quantas placas distintas são possíveis?</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p>São sete posições independentes: quatro letras e três algarismos. Pelo princípio
-      multiplicativo,</p>
-      <p>\[N = 26^4 \times 10^3 = 456\,976 \times 1000 = 456\,976\,000 .\]</p>
-      <p>Cerca de 457 milhões de placas — suficiente para a frota brasileira por muito tempo.
-      Observe que repetições <strong>são permitidas</strong> aqui: a placa ABC1D23 e a AAA1A11
-      são ambas válidas. Esse é o caso \(n^k\) da calculadora adiante.</p>
-    </div>
-  </details>
-
-  <!-- ================================================== -->
-  <h2 id="s3">4. Permutações</h2>
-
-  <h3>4.1 Permutação simples</h3>
-  <div class="bloco def">
-    <span class="rotulo">Definição</span>
-    <p>Uma <strong>permutação</strong> de \(n\) objetos distintos é uma ordenação de todos eles.
-    O número de permutações é</p>
-    <p>\[P_n = n! = n\,(n-1)\,(n-2)\cdots 2\cdot 1, \qquad 0! = 1 .\]</p>
-  </div>
-
-  <p><em>Por quê:</em> há \(n\) escolhas para a primeira posição, \(n-1\) para a segunda (um objeto
-  já foi usado), \(n-2\) para a terceira, e assim por diante. Pelo princípio multiplicativo, o
-  produto é \(n!\).</p>
-
   <div class="bloco alerta">
-    <span class="rotulo">A velocidade do fatorial</span>
-    <p>\(10! \approx 3{,}6\times 10^{6}\); \(20!\approx 2{,}4\times10^{18}\);
-    \(60! \approx 8{,}3\times 10^{81}\) — mais do que o número estimado de átomos no universo
-    observável. Embaralhar um baralho de 52 cartas gera \(52!\approx 8\times10^{67}\) ordens:
-    toda vez que você embaralha bem, é praticamente certo que produziu uma ordem <em>inédita na
-    história da humanidade</em>.</p>
-  </div>
-
-  <h3>4.2 Permutação com elementos repetidos</h3>
-  <div class="bloco def">
-    <span class="rotulo">Fórmula</span>
-    <p>Se entre \(n\) objetos há \(n_1\) iguais de um tipo, \(n_2\) de outro, …, \(n_r\) do
-    \(r\)-ésimo tipo, com \(n_1+\cdots+n_r=n\), o número de ordenações distintas é</p>
-    <p>\[P_n^{n_1,n_2,\dots,n_r} = \frac{n!}{n_1!\,n_2!\cdots n_r!}\]</p>
-    <p>Divide-se por \(n_i!\) porque permutar entre si os objetos iguais do tipo \(i\) não gera
-    uma ordenação nova — mas foi contado como se gerasse.</p>
-  </div>
-
-  <h3>4.3 Permutação circular</h3>
-  <p>Ao dispor \(n\) objetos em círculo, rotações do mesmo arranjo são indistinguíveis. Fixando
-  um objeto como referência e permutando os demais:</p>
-  <p>\[P_n^{\text{circ}} = (n-1)!\]</p>
-
-  <h3>Exercício resolvido 2.2 — Anagramas</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Quantos anagramas distintos tem a palavra <strong>ESTATÍSTICA</strong> (11 letras,
-    ignorando o acento)? E quantos começam por vogal?</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p>Contagem das letras de E-S-T-A-T-I-S-T-I-C-A: temos \(n=11\) letras, com
-      <strong>A</strong>: 2, <strong>T</strong>: 3, <strong>S</strong>: 2, <strong>I</strong>: 2,
-      <strong>E</strong>: 1, <strong>C</strong>: 1.</p>
-      <p>\[P = \frac{11!}{2!\,3!\,2!\,2!} = \frac{39\,916\,800}{2\cdot 6\cdot 2\cdot 2}
-      = \frac{39\,916\,800}{48} = 831\,600 .\]</p>
-      <p><strong>Começando por vogal.</strong> As vogais disponíveis são A (2), I (2) e E (1),
-      num total de 5 letras-vogais. Separe por caso, fixando a primeira letra e permutando as 10
-      restantes:</p>
-      <ul>
-        <li>Começa por <strong>A</strong>: sobram A:1, T:3, S:2, I:2, E:1, C:1 →
-        \(10!/(1!\,3!\,2!\,2!) = 3\,628\,800/24 = 151\,200\);</li>
-        <li>Começa por <strong>I</strong>: sobram A:2, T:3, S:2, I:1, E:1, C:1 →
-        \(10!/(2!\,3!\,2!) = 3\,628\,800/24 = 151\,200\);</li>
-        <li>Começa por <strong>E</strong>: sobram A:2, T:3, S:2, I:2, C:1 →
-        \(10!/(2!\,3!\,2!\,2!) = 3\,628\,800/48 = 75\,600\).</li>
-      </ul>
-      <p>Pelo princípio aditivo (os casos são mutuamente excludentes):
-      \(151\,200+151\,200+75\,600 = \mathbf{378\,000}\).</p>
-      <p><em>Verificação de sanidade:</em> \(378\,000/831\,600 \approx 0{,}4545 = 5/11\) — exatamente
-      a fração de letras que são vogais. Faz sentido: por simetria, a probabilidade de a primeira
-      posição ser vogal é a proporção de vogais no conjunto.</p>
-    </div>
-  </details>
-
-  <!-- ================================================== -->
-  <h2 id="s4">5. Arranjos</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Definição</span>
-    <p>Um <strong>arranjo</strong> de \(n\) objetos distintos tomados \(k\) a \(k\) é uma
-    sequência <strong>ordenada</strong> de \(k\) objetos distintos escolhidos entre os \(n\):</p>
-    <p>\[A_{n,k} = \frac{n!}{(n-k)!} = n(n-1)\cdots(n-k+1) \quad (k \text{ fatores}).\]</p>
-  </div>
-
-  <p>É a permutação "truncada": paramos de escolher depois de \(k\) posições. Note que
-  \(A_{n,n}=n!/0!=n!\), recuperando a permutação simples.</p>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Arranjo com repetição</span>
-    <p>Se os objetos podem repetir-se — como nas placas do Exercício 2.1 ou nas senhas de um
-    cofre — cada uma das \(k\) posições tem \(n\) opções, e o total é \(n^k\). Não confunda:
-    \(A_{n,k}\) proíbe repetição, \(n^k\) permite.</p>
+    <span class="rotulo">Por que a classificação importa</span>
+    <p>Ela decide o que faz sentido calcular. Média de naipes não existe. Mediana de conceitos
+    A/B/C existe, média não. E há a armadilha dos códigos numéricos: se você codifica
+    "masculino = 1, feminino = 2", o computador calculará alegremente uma média de 1,47 — um
+    número sem significado algum.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s5">6. Combinações</h2>
+  <h2 id="s3">3. Tabelas de frequência</h2>
 
-  <div class="bloco def">
-    <span class="rotulo">Definição</span>
-    <p>Uma <strong>combinação</strong> de \(n\) objetos tomados \(k\) a \(k\) é um
-    <strong>subconjunto</strong> de \(k\) elementos — a ordem é irrelevante:</p>
-    <p>\[C_{n,k} = \binom{n}{k} = \frac{n!}{k!\,(n-k)!}\]</p>
+  <p>Para uma variável discreta com poucos valores, a tabela de frequência já é o resumo
+  completo dos dados — nada se perde.</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Símbolo</th><th>Nome</th><th>Definição</th></tr></thead>
+    <tbody>
+      <tr><td>\(f_i\)</td><td>frequência absoluta</td><td>quantas vezes o valor aparece</td></tr>
+      <tr><td>\(f_i/n\)</td><td>frequência relativa</td><td>a fração do total</td></tr>
+      <tr><td>\(F_i\)</td><td>frequência acumulada</td><td>soma das frequências até aquele valor</td></tr>
+    </tbody>
+  </table>
   </div>
 
-  <div class="bloco">
-    <span class="rotulo">A relação central</span>
-    <p>\[A_{n,k} = k!\;C_{n,k} \qquad\Longleftrightarrow\qquad C_{n,k} = \frac{A_{n,k}}{k!}\]</p>
-    <p>Cada subconjunto de \(k\) elementos pode ser ordenado de \(k!\) maneiras. O arranjo conta
-    todas essas ordens como distintas; a combinação as agrupa em uma só. <strong>Dividir por
-    \(k!\) é precisamente o ato de "esquecer a ordem".</strong></p>
-  </div>
-
-  <h3>Propriedades úteis</h3>
-  <ul>
-    <li><strong>Simetria:</strong> \(\binom{n}{k}=\binom{n}{n-k}\) — escolher quem entra é o mesmo
-    que escolher quem fica de fora;</li>
-    <li><strong>Relação de Stifel:</strong> \(\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}\) — é a
-    regra de formação do triângulo de Pascal (separe os subconjuntos conforme contenham ou não
-    um elemento fixado);</li>
-    <li><strong>Soma total:</strong> \(\sum_{k=0}^{n}\binom{n}{k}=2^n\) — o número de subconjuntos
-    de um conjunto de \(n\) elementos.</li>
-  </ul>
-
-  <div data-widget="contagem"></div>
-
-  <h3>Exercício resolvido 2.3 — Mega-Sena</h3>
+  <h3>Exercício resolvido 6.1 — Tabela de frequência</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
-    <p>Na Mega-Sena escolhem-se 6 números entre 60. Qual a probabilidade de acertar a sena com
-    um único jogo? E a quadra (exatamente 4 acertos)?</p>
+    <p>Perguntou-se a 25 estudantes quantos irmãos cada um tem. As respostas foram:</p>
+    <p style="font-family:var(--mono);font-size:.85rem">0, 1, 1, 2, 0, 3, 1, 2, 1, 0, 2, 1, 4, 1, 2, 0, 1, 3, 2, 1, 1, 2, 0, 1, 2</p>
+    <p>Construa a tabela de frequências e calcule a média a partir dela.</p>
   </div>
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <p>A ordem do sorteio não importa, logo</p>
-      <p>\[|\Omega| = \binom{60}{6} = \frac{60\cdot59\cdot58\cdot57\cdot56\cdot55}{720}
-      = 50\,063\,860 .\]</p>
-      <p><strong>Sena:</strong> há exatamente um caso favorável, então
-      \(P = 1/50\,063\,860 \approx 2{,}0\times 10^{-8}\) — cerca de 1 em 50 milhões.</p>
-      <p><strong>Quadra:</strong> o jogo precisa conter 4 dos 6 números sorteados e 2 dos 54 não
-      sorteados:</p>
-      <p>\[|A| = \binom{6}{4}\binom{54}{2} = 15 \times 1431 = 21\,465
-      \;\Longrightarrow\; P = \frac{21\,465}{50\,063\,860}\approx 4{,}3\times 10^{-4}.\]</p>
-      <p>Ou seja, cerca de 1 em 2332 jogos. Note a estrutura — <em>escolher alguns daqui e alguns
-      dali</em>, multiplicando as combinações — que reaparecerá em toda a disciplina.</p>
-      <p><strong>Para dimensionar:</strong> a probabilidade de acertar a sena é comparável à de
-      você escolher um segundo específico em um intervalo de 19 meses.</p>
-    </div>
-  </details>
-
-
-  <h3>Exercício resolvido 2.4 — O problema do aniversário</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Em uma sala com \(n\) pessoas, qual a probabilidade de que ao menos duas façam
-    aniversário no mesmo dia? Quantas pessoas são necessárias para que essa probabilidade
-    ultrapasse 50%?</p>
-    <p><em>Suponha 365 dias equiprováveis e ignore anos bissextos.</em></p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Passo 1 — Reformular pelo complementar.</strong></p>
-      <p>Contar diretamente "ao menos duas coincidem" seria horrível: teríamos de somar o caso de
-      exatamente duas pessoas coincidindo, mais exatamente três, mais dois pares separados, e
-      assim por diante. Mas o evento complementar é simples e único:</p>
-      <p>\[A = \text{"ao menos duas coincidem"}, \qquad
-      A^{c} = \text{"todas em dias diferentes"},\]</p>
-      <p>e, pelo Teorema 3 do Módulo 1, \(P(A) = 1 - P(A^{c})\). Vamos calcular \(P(A^c)\).</p>
-
-      <p><strong>Passo 2 — Quantos são os casos possíveis?</strong></p>
-      <p>Pense em preencher uma ficha com o aniversário de cada pessoa, <em>nesta ordem</em>:</p>
-      <p>\[\underbrace{\fbox{365}}_{\text{pessoa 1}} \times
-         \underbrace{\fbox{365}}_{\text{pessoa 2}} \times \cdots \times
-         \underbrace{\fbox{365}}_{\text{pessoa } n} = 365^{\,n}.\]</p>
-      <p>Cada pessoa pode ter nascido em qualquer um dos 365 dias, <strong>independentemente das
-      demais</strong>: duas pessoas podem perfeitamente dividir o mesmo dia. É o caso "a ordem
-      importa, com repetição" do quadro-resumo, cuja fórmula é \(n^k\) — aqui, \(365^n\).</p>
-      <p><em>Por que a ordem importa?</em> Porque "Ana em 3 de maio e Bruno em 10 de julho" é um
-      resultado diferente de "Ana em 10 de julho e Bruno em 3 de maio". As pessoas são
-      distinguíveis, como os dois dados de cores diferentes do Módulo 1.</p>
-
-      <p><strong>Passo 3 — Quantos são os casos favoráveis?</strong></p>
-      <p>Agora preenchemos a mesma ficha, mas <strong>proibindo repetições</strong>. A primeira
-      pessoa pode nascer em qualquer dia; a segunda, em qualquer dia menos o da primeira; a
-      terceira, em qualquer dia menos os dois já usados:</p>
-      <p>\[\underbrace{\fbox{365}}_{\text{qualquer}} \times
-         \underbrace{\fbox{364}}_{\text{menos 1}} \times
-         \underbrace{\fbox{363}}_{\text{menos 2}} \times \cdots \times
-         \underbrace{\fbox{365-n+1}}_{\text{menos } n-1}.\]</p>
-      <p>São \(n\) fatores decrescentes a partir de 365 — exatamente a definição de
-      <strong>arranjo</strong>:</p>
-      <p>\[A_{365,\,n} = \frac{365!}{(365-n)!} = 365 \times 364 \times \cdots \times (365-n+1).\]</p>
-
-      <p><strong>Passo 4 — Dividir e simplificar.</strong></p>
-      <p>\[P(A^{c}) = \frac{\text{casos favoráveis}}{\text{casos possíveis}}
-      = \frac{A_{365,\,n}}{365^{\,n}}
-      = \frac{365}{365}\cdot\frac{364}{365}\cdot\frac{363}{365}\cdots\frac{365-n+1}{365}.\]</p>
-      <p>Escrito desse modo, o resultado ganha uma leitura bonita: o primeiro fator vale 1 (a
-      primeira pessoa não pode colidir com ninguém), o segundo é a chance de a segunda pessoa
-      escapar de 1 dia ocupado, o terceiro de escapar de 2 dias, e assim por diante. Em notação
-      compacta:</p>
-      <p>\[P(A^{c}) = \prod_{i=0}^{n-1}\frac{365-i}{365}
-      \qquad\Longrightarrow\qquad
-      \boxed{\,P(A) = 1 - \prod_{i=0}^{n-1}\frac{365-i}{365}\,}\]</p>
-
-      <p><strong>Passo 5 — Conferir em um caso pequeno.</strong></p>
-      <p>Com \(n = 2\), a fórmula dá \(P(A) = 1 - \tfrac{365}{365}\cdot\tfrac{364}{365}
-      = \tfrac{1}{365} \approx 0{,}27\%\) — que é exatamente o esperado: a segunda pessoa precisa
-      acertar o único dia da primeira. Com \(n = 366\), um fator do produto se anula e
-      \(P(A) = 1\), como manda o princípio da casa dos pombos. A fórmula passa nos dois testes.</p>
-
-      <p><strong>Passo 6 — Calcular.</strong></p>
       <div class="tabela-rolavel">
       <table>
-        <thead><tr><th class="num">n</th><th class="num">P(coincidência)</th></tr></thead>
+        <thead><tr><th class="num">\(x_i\)</th><th class="num">\(f_i\)</th><th class="num">\(f_i/n\)</th><th class="num">\(F_i\)</th><th class="num">\(x_i f_i\)</th></tr></thead>
         <tbody>
-          <tr><td class="num">10</td><td class="num">11,7%</td></tr>
-          <tr><td class="num">20</td><td class="num">41,1%</td></tr>
-          <tr><td class="num"><b>23</b></td><td class="num"><b>50,7%</b></td></tr>
-          <tr><td class="num">30</td><td class="num">70,6%</td></tr>
-          <tr><td class="num">50</td><td class="num">97,0%</td></tr>
-          <tr><td class="num">70</td><td class="num">99,9%</td></tr>
+          <tr><td class="num">0</td><td class="num">5</td><td class="num">0,20</td><td class="num">5</td><td class="num">0</td></tr>
+          <tr><td class="num">1</td><td class="num">10</td><td class="num">0,40</td><td class="num">15</td><td class="num">10</td></tr>
+          <tr><td class="num">2</td><td class="num">7</td><td class="num">0,28</td><td class="num">22</td><td class="num">14</td></tr>
+          <tr><td class="num">3</td><td class="num">2</td><td class="num">0,08</td><td class="num">24</td><td class="num">6</td></tr>
+          <tr><td class="num">4</td><td class="num">1</td><td class="num">0,04</td><td class="num">25</td><td class="num">4</td></tr>
+          <tr><td class="num"><b>Σ</b></td><td class="num"><b>25</b></td><td class="num"><b>1,00</b></td><td class="num">—</td><td class="num"><b>34</b></td></tr>
         </tbody>
       </table>
       </div>
-      <p><strong>Bastam 23 pessoas.</strong> O resultado choca quase todo mundo — menos de uma
-      turma de escola.</p>
-      <p><strong>Por que a intuição erra.</strong> Pensamos espontaneamente em "alguém faz
-      aniversário no <em>meu</em> dia", que envolve apenas \(n-1\) comparações. Mas a pergunta
-      é sobre <em>duas pessoas quaisquer</em>, e o número de pares é</p>
-      <p>\[\binom{n}{2} = \frac{n(n-1)}{2},\]</p>
-      <p>que cresce com o <strong>quadrado</strong> de \(n\). Com 23 pessoas são 253 pares —
-      e aí 50% deixa de ser surpreendente.</p>
-      <p><em>(Para a outra pergunta — "alguém coincide comigo" — seriam necessárias 253 <b>outras</b>
-      pessoas, isto é, uma sala de 254. A diferença entre as duas perguntas é todo o problema.)</em></p>
-    </div>
-  </details>
-
-  <div data-widget="aniversarios"></div>
-
-  <div class="bloco fisica">
-    <span class="rotulo">Onde isso aparece na prática</span>
-    <p>O mesmo cálculo governa o <strong>paradoxo do aniversário em criptografia</strong>: a
-    probabilidade de duas entradas distintas produzirem o mesmo valor de uma função <em>hash</em>
-    de \(b\) bits torna-se apreciável já com cerca de \(2^{b/2}\) tentativas, e não
-    \(2^{b}\). É por isso que funções de 64 bits são consideradas inseguras.</p>
-    <p>Em Física, o raciocínio reaparece sempre que contamos <strong>coincidências</strong>:
-    eventos simultâneos em dois detectores, ou picos espúrios em um espectro. Com muitos canais,
-    alguma coincidência por acaso é quase certa — e confundi-la com sinal é um erro clássico.</p>
-  </div>
-
-  <h3>Exercício resolvido 2.5 — Comissão com restrição</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Em uma turma de Licenciatura em Física há 7 mulheres e 5 homens. Deve-se formar uma
-    comissão de 4 pessoas. (a) Quantas comissões são possíveis? (b) Quantas têm exatamente 2
-    mulheres? (c) Qual a probabilidade de a comissão ter pelo menos uma mulher?</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>(a)</strong> \(\binom{12}{4} = \dfrac{12\cdot11\cdot10\cdot9}{24} = \mathbf{495}\).</p>
-      <p><strong>(b)</strong> Escolher 2 entre as 7 mulheres e 2 entre os 5 homens:
-      \(\binom{7}{2}\binom{5}{2} = 21 \times 10 = \mathbf{210}\).</p>
-      <p><strong>(c)</strong> Use o complementar: "nenhuma mulher" significa 4 homens entre os 5,
-      ou seja \(\binom{5}{4}=5\) comissões. Então</p>
-      <p>\[P(\text{pelo menos uma mulher}) = 1 - \frac{5}{495} = \frac{490}{495}
-      = \frac{98}{99} \approx \mathbf{0{,}9899}.\]</p>
-      <p>Mais uma vez: "pelo menos" pede o complementar.</p>
+      <p>A média a partir da tabela é</p>
+      <p>\[\bar x = \frac{\sum_i x_i f_i}{n} = \frac{34}{25} = \mathbf{1{,}36}\ \text{irmãos}.\]</p>
+      <p>Note a estrutura: \(\bar x = \sum_i x_i\,(f_i/n)\) é <strong>exatamente</strong> a fórmula
+      da esperança \(\langle x\rangle = \sum_i x_i P_i\) do Módulo 3, com a frequência relativa no
+      lugar da probabilidade. É a definição frequentista reaparecendo: a amostra é um retrato
+      ruidoso da distribuição.</p>
+      <p>A mediana é o 13º valor em ordem, que cai na faixa do 1; a moda é 1, o valor mais
+      frequente.</p>
     </div>
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s6">7. Quadro-resumo: qual fórmula usar?</h2>
+  <h2 id="s4">4. Histograma</h2>
 
-  <div class="tabela-rolavel">
-  <table>
-    <thead>
-      <tr><th>Situação</th><th>Ordem importa?</th><th>Repete?</th><th>Fórmula</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Ordenar todos os \(n\) objetos</td><td>sim</td><td>não</td><td>\(n!\)</td></tr>
-      <tr><td>Ordenar \(n\) com repetidos</td><td>sim</td><td>—</td><td>\(\dfrac{n!}{n_1!\cdots n_r!}\)</td></tr>
-      <tr><td>Dispor \(n\) em círculo</td><td>sim</td><td>não</td><td>\((n-1)!\)</td></tr>
-      <tr><td>Escolher e ordenar \(k\) entre \(n\)</td><td>sim</td><td>não</td><td>\(A_{n,k}=\dfrac{n!}{(n-k)!}\)</td></tr>
-      <tr><td>Preencher \(k\) posições com \(n\) opções</td><td>sim</td><td>sim</td><td>\(n^k\)</td></tr>
-      <tr><td>Escolher \(k\) entre \(n\) (subconjunto)</td><td>não</td><td>não</td><td>\(C_{n,k}=\dbinom{n}{k}\)</td></tr>
-      <tr><td>Escolher \(k\) entre \(n\) com repetição</td><td>não</td><td>sim</td><td>\(\dbinom{n+k-1}{k}\)</td></tr>
-    </tbody>
-  </table>
-  </div>
+  <p>Para variáveis contínuas, agrupamos os dados em <strong>classes</strong> (intervalos) e
+  desenhamos barras justapostas — sem espaço entre elas, porque a variável é contínua. O número
+  de classes \(k\) é uma escolha, não um dado. Duas regras práticas:</p>
+
+  <p>\[k \approx \sqrt{n} \qquad\text{ou}\qquad k \approx 1 + 3{,}322\,\log_{10} n \;\;(\text{regra de Sturges}).\]</p>
 
   <div class="bloco alerta">
-    <span class="rotulo">Teste rápido para decidir</span>
-    <p>Pegue dois resultados concretos e troque a ordem dos elementos. Se o resultado é
-    <em>diferente</em> para o problema (senhas, pódios, sequências), use arranjo ou permutação.
-    Se é <em>o mesmo</em> (comissões, jogos de loteria, mãos de cartas), use combinação.</p>
+    <span class="rotulo">O histograma é uma escolha, não um fato</span>
+    <p>Classes demais e você vê ruído; classes de menos e some a estrutura. No laboratório abaixo,
+    carregue o conjunto de alturas e mova o controle de classes de 3 até 25: é o <em>mesmo</em>
+    conjunto de dados produzindo gráficos de aparências muito diferentes. Isso não é um defeito
+    do método — é algo a ter em mente sempre que alguém lhe mostrar um histograma.</p>
   </div>
 
+  <div data-widget="descritiva"></div>
+
   <!-- ================================================== -->
-  <h2 id="s7">8. Binômio de Newton e o triângulo de Pascal</h2>
+  <h2 id="s5">5. Medidas de posição</h2>
 
   <div class="bloco def">
-    <span class="rotulo">Teorema binomial</span>
-    <p>\[(x+y)^n = \sum_{k=0}^{n}\binom{n}{k}x^k y^{\,n-k}\]</p>
+    <span class="rotulo">As três medidas</span>
+    <p><strong>Média amostral:</strong> \(\displaystyle \bar x = \frac1n\sum_{i=1}^{n} x_i\)</p>
+    <p><strong>Mediana:</strong> o valor central dos dados ordenados. Se \(n\) é par, a média dos
+    dois centrais.</p>
+    <p><strong>Moda:</strong> o valor mais frequente. Pode não existir (amodal) ou haver mais de
+    uma (bimodal).</p>
   </div>
 
-  <p><em>Por que os coeficientes são combinações:</em> ao expandir o produto
-  \((x+y)(x+y)\cdots(x+y)\) com \(n\) fatores, cada termo resulta de escolher \(x\) ou \(y\) em
-  cada fator. Um termo \(x^k y^{n-k}\) aparece tantas vezes quantas forem as maneiras de escolher
-  <em>quais \(k\) fatores</em> contribuem com \(x\) — isto é, \(\binom{n}{k}\) vezes.</p>
-
-  <div class="bloco fisica">
-    <span class="rotulo">Por que isso nos importa</span>
-    <p>Guarde esta identidade: ela garantirá, no Módulo 4, que a distribuição binomial está
-    corretamente normalizada. Fazendo \(x=p\) e \(y=1-p\):</p>
-    <p>\[\sum_{k=0}^{n}\binom{n}{k}p^k(1-p)^{n-k} = (p + 1 - p)^n = 1^n = 1 .\]</p>
-    <p>A soma de todas as probabilidades vale 1 — o Axioma 2 reaparece, agora como consequência
-    de um teorema de álgebra.</p>
+  <div class="bloco">
+    <span class="rotulo">Duas propriedades da média</span>
+    <p>A soma dos desvios em torno da média é sempre nula: \(\sum_i (x_i - \bar x) = 0\) — é o
+    mesmo fato que nos obrigou, no Módulo 3, a elevar o desvio ao quadrado.</p>
+    <p>E a média é o ponto que <strong>minimiza</strong> \(\sum_i (x_i - c)^2\). (A mediana, por
+    sua vez, minimiza \(\sum_i |x_i - c|\) — razão de ser mais robusta.)</p>
   </div>
 
-
-  <h3>O triângulo de Pascal</h3>
-
-  <p>Dispor os coeficientes \(\binom{n}{k}\) em linhas produz o triângulo. Cada número é a
-  soma dos dois imediatamente acima — a <strong>relação de Stifel</strong> da seção 6 — e cada
-  linha fornece de uma vez todos os coeficientes de \((x+y)^n\).</p>
-
-  <p>Clique em qualquer célula do triângulo abaixo para ver o que ela significa:</p>
-
-  <div data-widget="pascal"></div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Três leituras do mesmo número</span>
-    <p>A célula \(\binom{4}{2}=6\), por exemplo, responde simultaneamente a três perguntas
-    que parecem diferentes:</p>
-    <ul>
-      <li>De quantas maneiras escolher 2 objetos entre 4? <em>(combinatória)</em></li>
-      <li>Qual o coeficiente de \(x^2y^2\) em \((x+y)^4\)? <em>(álgebra)</em></li>
-      <li>Quantos caminhos levam do topo até aquela célula, descendo sempre? <em>(contagem de trajetos)</em></li>
-    </ul>
-    <p>E, no Módulo 4, uma quarta: de quantas maneiras obter 2 caras em 4 lançamentos de uma
-    moeda. É o mesmo número porque é o mesmo problema vestido de roupas diferentes — e perceber
-    isso é boa parte do que significa aprender matemática.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s8">9. Contando microestados</h2>
-
-  <p>Toda a combinatória acima tem uma aplicação direta e central em Física: contar os
-  microestados de um sistema. O número de microestados compatíveis com um macroestado é a
-  <strong>multiplicidade</strong> \(\Omega_{\text{mic}}\), e dela sai a entropia,
-  \(S = k_B \ln \Omega_{\text{mic}}\).</p>
-
-  <h3>Exercício resolvido 2.6 — Sistema de spins</h3>
+  <h3>Exercício resolvido 6.2 — Quando a média engana</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
-    <p>Um sistema tem \(N=20\) spins distinguíveis, cada um podendo apontar para cima ou para
-    baixo. (a) Quantos microestados tem o sistema? (b) Quantos têm exatamente 10 spins para
-    cima? (c) Qual a fração dos microestados com \(n_\uparrow\) entre 8 e 12?</p>
+    <p>Uma pequena empresa tem dez funcionários, com salários mensais (em reais):</p>
+    <p style="font-family:var(--mono);font-size:.85rem">1800, 2100, 1950, 2300, 2050, 1900, 2200, 2000, 2150, 24000</p>
+    <p>Calcule média e mediana. Qual delas descreve melhor "o salário típico"? O que acontece se
+    o último funcionário sai da empresa?</p>
   </div>
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <p><strong>(a)</strong> Cada spin tem 2 opções independentes:
-      \(\Omega_{\text{total}} = 2^{20} = \mathbf{1\,048\,576}\).</p>
-      <p><strong>(b)</strong> Escolher quais 10 dos 20 spins apontam para cima:
-      \(\binom{20}{10} = \mathbf{184\,756}\). Esse é o macroestado de maior multiplicidade —
-      o de magnetização nula.</p>
-      <p><strong>(c)</strong> Somando as multiplicidades:</p>
-      <p>\[\binom{20}{8}+\binom{20}{9}+\binom{20}{10}+\binom{20}{11}+\binom{20}{12}
-      = 125\,970+167\,960+184\,756+167\,960+125\,970 = 772\,616,\]</p>
-      <p>o que dá \(772\,616/1\,048\,576 \approx \mathbf{73,7\%}\). Mais de dois terços dos
-      microestados estão concentrados em cinco macroestados entre os 21 possíveis — e a
-      concentração só aumenta com \(N\). Para \(N\sim10^{23}\), ela se torna absoluta: é a
-      origem microscópica da Segunda Lei.</p>
+      <p><strong>Média:</strong> a soma é 42 450, logo \(\bar x = 42\,450/10 = \mathbf{R\$\,4\,245}\).</p>
+      <p><strong>Mediana:</strong> ordenando, os dois valores centrais (5º e 6º) são 2050 e 2100,
+      logo a mediana é \(\mathbf{R\$\,2\,075}\).</p>
+      <p>A média é <strong>o dobro</strong> do que praticamente todo mundo ganha: nove dos dez
+      funcionários recebem abaixo dela. Um único valor extremo arrastou a média para longe de
+      todos os dados. A mediana, que só enxerga a <em>posição</em> dos valores e não a magnitude,
+      ficou onde devia.</p>
+      <p><strong>Sem o salário de 24 000:</strong> a média cai para R$ 2 050 e a mediana vai para
+      R$ 2 050 — praticamente idênticas. A média se moveu R$ 2 195; a mediana, R$ 25.</p>
+      <p>Esse é o sentido técnico de <strong>robustez</strong>: a mediana resiste a valores
+      extremos, a média não. É por isso que se divulga a renda <em>mediana</em> de um país, e não
+      a média.</p>
     </div>
   </details>
 
-  <h3>As três estatísticas, agora com fórmulas</h3>
-  <p>Distribuir \(N\) partículas em \(g\) estados de partícula única:</p>
+  <!-- ================================================== -->
+  <h2 id="s6">6. Medidas de dispersão</h2>
+
+  <p>Duas turmas podem ter a mesma média 7,0 e situações completamente distintas: uma com todas
+  as notas entre 6,5 e 7,5, outra com metade tirando 4 e metade tirando 10. Posição não basta;
+  é preciso medir o <strong>espalhamento</strong>.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Variância e desvio padrão amostrais</span>
+    <p>\[s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar x)^2, \qquad s = \sqrt{s^2}\]</p>
+    <p>Forma prática para cálculo manual:
+    \(\displaystyle s^2 = \frac{1}{n-1}\left(\sum_i x_i^2 - n\bar x^2\right)\).</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que \(n-1\) e não \(n\)?</span>
+    <p>Esta é a pergunta que todo estudante faz, e a resposta é bonita.</p>
+    <p>A variância populacional é \(\sigma^2 = \langle (x-\mu)^2\rangle\), com desvios medidos em
+    torno da <strong>média verdadeira</strong> \(\mu\). Mas \(\mu\) nós não conhecemos — usamos
+    \(\bar x\) no lugar dela. E \(\bar x\) é calculada <em>a partir dos próprios dados</em>,
+    posicionando-se exatamente onde minimiza a soma dos quadrados dos desvios (seção 5).</p>
+    <p>Consequência: os desvios em torno de \(\bar x\) são <strong>sistematicamente menores</strong>
+    que os desvios em torno de \(\mu\). Dividir por \(n\) produziria uma estimativa
+    <strong>enviesada para baixo</strong> — subestimaríamos a dispersão real. Dividir por
+    \(n-1\) corrige exatamente esse viés, de modo que \(\langle s^2\rangle = \sigma^2\).</p>
+    <p>Outra leitura, equivalente: os \(n\) desvios \((x_i - \bar x)\) não são independentes, pois
+    satisfazem a restrição \(\sum_i(x_i-\bar x)=0\). Conhecidos \(n-1\) deles, o último está
+    determinado. Só há \(n-1\) <strong>graus de liberdade</strong> — e dividimos pelo número de
+    informações independentes, não pelo número de dados. Esse conceito reaparecerá no Módulo 6,
+    na distribuição t, e no Módulo 13, no ajuste de curvas.</p>
+    <p>Um caso-limite esclarece tudo: com \(n=1\), uma única medida não diz <em>nada</em> sobre a
+    dispersão. A fórmula com \(n-1\) devolve \(0/0\), indefinido — que é a resposta honesta.
+    A fórmula com \(n\) devolveria zero, afirmando dispersão nula. É uma mentira.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Coeficiente de variação</span>
+    <p>\[CV = \frac{s}{\bar x}\]</p>
+    <p>É a dispersão <em>relativa</em>, adimensional, geralmente expressa em porcentagem. Permite
+    comparar o espalhamento de grandezas de naturezas ou unidades diferentes — o que o desvio
+    padrão sozinho não permite.</p>
+  </div>
+
+  <h3>Exercício resolvido 6.3 — Comparando precisões</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Em um laboratório, mediu-se dez vezes a aceleração da gravidade por um pêndulo, obtendo
+    (em m/s²):</p>
+    <p style="font-family:var(--mono);font-size:.85rem">9,79 9,83 9,78 9,81 9,85 9,80 9,77 9,82 9,84 9,79</p>
+    <p>Calcule \(\bar x\), \(s\) e o coeficiente de variação. Compare a precisão desse experimento
+    com a de uma medida de massa com \(\bar m = 250\) g e \(s_m = 3\) g.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>A soma dos dez valores é 98,08, logo</p>
+      <p>\[\bar x = \frac{98{,}08}{10} = \mathbf{9{,}808\ \mathrm{m/s^2}}.\]</p>
+      <p>Calculando os desvios quadráticos e dividindo por \(n-1 = 9\):
+      \(s^2 \approx 7{,}07\times10^{-4}\), portanto</p>
+      <p>\[s \approx \mathbf{0{,}027\ \mathrm{m/s^2}}, \qquad
+      CV = \frac{0{,}027}{9{,}808} \approx \mathbf{0{,}27\%}.\]</p>
+      <p>Para a massa: \(CV = 3/250 = \mathbf{1{,}2\%}\).</p>
+      <p>A medida de \(g\) é cerca de <strong>quatro vezes mais precisa</strong> em termos
+      relativos, embora os desvios padrão — 0,027 e 3 — não sejam nem comparáveis diretamente,
+      por terem unidades diferentes. É exatamente para isso que serve o CV.</p>
+      <p><strong>Atenção a uma distinção que confunde muita gente:</strong> \(s = 0{,}027\) é o
+      espalhamento das <em>medidas individuais</em>. A incerteza da <em>média</em> é bem menor,
+      \(s/\sqrt{n} = 0{,}027/\sqrt{10} \approx 0{,}008\) — o resultado do Módulo 3. Reportaríamos
+      \(g = 9{,}808 \pm 0{,}008\ \mathrm{m/s^2}\). Voltaremos a isso no Módulo 17.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Quartis, boxplot e outliers</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Separatrizes</span>
+    <p><strong>Quartis:</strong> \(Q_1\) deixa 25% dos dados abaixo, \(Q_2\) é a mediana, \(Q_3\)
+    deixa 75% abaixo. A <strong>amplitude interquartil</strong> é \(IQR = Q_3 - Q_1\), e contém
+    os 50% centrais dos dados.</p>
+    <p>Há várias convenções de cálculo quando \(n\) não é múltiplo de 4; o laboratório desta
+    página usa interpolação linear, a mesma do R e do Excel.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Boxplot e a regra de 1,5×IQR</span>
+    <p>A caixa vai de \(Q_1\) a \(Q_3\), com um traço na mediana. Os <strong>bigodes</strong> se
+    estendem até o dado mais extremo que ainda esteja dentro de</p>
+    <p>\[[\,Q_1 - 1{,}5\,IQR,\;\; Q_3 + 1{,}5\,IQR\,].\]</p>
+    <p>Pontos fora desses limites são marcados individualmente e chamados <strong>outliers</strong>.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Outlier não significa "erro"</span>
+    <p>A regra de 1,5×IQR é uma convenção útil, não um veredito. Um outlier pode ser: um erro de
+    digitação, uma falha do instrumento — ou a descoberta mais interessante do seu conjunto de
+    dados. O buraco na camada de ozônio demorou anos a ser notado porque o software de análise
+    descartava automaticamente as leituras "anômalas".</p>
+    <p><strong>Nunca remova um outlier só porque ele é um outlier.</strong> Investigue a causa,
+    e se decidir removê-lo, diga isso no relatório.</p>
+  </div>
+
+
+  <div class="bloco def">
+    <span class="rotulo">Método de Tukey — o cálculo manual</span>
+    <p>Para calcular os quartis à mão, o procedimento mais usado em sala é o de
+    <strong>Tukey</strong>:</p>
+    <ol>
+      <li>Ordene os dados e encontre a mediana \(Q_2\);</li>
+      <li>\(Q_1\) é a mediana da <strong>metade inferior</strong> dos dados — e, se \(n\)
+      for ímpar, a mediana central <em>não</em> entra nessa metade;</li>
+      <li>\(Q_3\) é a mediana da <strong>metade superior</strong>, com a mesma ressalva.</li>
+    </ol>
+  </div>
+
+  <h3>Exercício resolvido 6.4 — Quartis passo a passo</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>As notas de 13 alunos em uma prova de Física foram:</p>
+    <p style="font-family:var(--mono);font-size:.85rem">4,5 · 6,0 · 6,5 · 7,0 · 7,0 · 7,5 · 8,0 · 8,0 · 8,5 · 9,0 · 9,0 · 9,5 · 10,0</p>
+    <p>Calcule os três quartis pelo método de Tukey e interprete cada um.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Os dados já estão ordenados, e \(n = 13\) é ímpar.</p>
+      <p><strong>Passo 1 — a mediana \(Q_2\).</strong> A posição central é
+      \(\frac{13+1}{2} = 7^{\underline{a}}\). O sétimo valor é</p>
+      <p>\[Q_2 = \mathbf{8{,}0}.\]</p>
+      <p><strong>Passo 2 — o primeiro quartil \(Q_1\).</strong> A metade inferior são os seis
+      valores <em>antes</em> da mediana (que fica de fora, por \(n\) ser ímpar):</p>
+      <p style="font-family:var(--mono);font-size:.85rem">4,5 · 6,0 · 6,5 · 7,0 · 7,0 · 7,5</p>
+      <p>São 6 valores, então a mediana deles é a média do 3º e do 4º:</p>
+      <p>\[Q_1 = \frac{6{,}5 + 7{,}0}{2} = \mathbf{6{,}75}.\]</p>
+      <p><strong>Passo 3 — o terceiro quartil \(Q_3\).</strong> A metade superior são os seis
+      valores <em>depois</em> da mediana:</p>
+      <p style="font-family:var(--mono);font-size:.85rem">8,0 · 8,5 · 9,0 · 9,0 · 9,5 · 10,0</p>
+      <p>\[Q_3 = \frac{9{,}0 + 9{,}0}{2} = \mathbf{9{,}0}.\]</p>
+      <p><strong>A leitura.</strong> Os quartis dividem a turma em quatro grupos de tamanho
+      igual:</p>
+      <ul>
+        <li>25% dos alunos tiraram nota <strong>até 6,75</strong>;</li>
+        <li>50% tiraram <strong>até 8,0</strong> — e 50%, acima disso;</li>
+        <li>75% tiraram <strong>até 9,0</strong>;</li>
+        <li>os 25% melhores tiraram <strong>acima de 9,0</strong>.</li>
+      </ul>
+      <p>E \(IQR = 9{,}0 - 6{,}75 = 2{,}25\): a metade central da turma está contida em uma
+      faixa de 2,25 pontos.</p>
+      <p><em>Observação sobre convenções:</em> o método de Tukey não é o único. Programas como
+      o Excel e o R usam interpolação linear, e podem dar valores ligeiramente diferentes — o
+      laboratório interativo desta página usa interpolação. As duas respostas estão corretas;
+      apenas seguem convenções distintas, o que importa declarar num relatório.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 6.5 — Boxplot de tempos de reação</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Doze medidas de tempo de reação (ms):</p>
+    <p style="font-family:var(--mono);font-size:.85rem">245, 252, 238, 261, 249, 255, 243, 258, 247, 251, 240, 410</p>
+    <p>Calcule os quartis, o IQR e os limites da regra 1,5×IQR. Há outliers?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Ordenando:</strong> 238, 240, 243, 245, 247, 249, 251, 252, 255, 258, 261, 410.</p>
+      <p>Com \(n=12\), a mediana é a média do 6º e 7º valores:
+      \(Q_2 = (249+251)/2 = \mathbf{250{,}0}\).</p>
+      <p>Por interpolação linear, \(Q_1 = \mathbf{244{,}5}\) e \(Q_3 = \mathbf{255{,}75}\),
+      de modo que</p>
+      <p>\[IQR = 255{,}75 - 244{,}5 = \mathbf{11{,}25}.\]</p>
+      <p><strong>Limites:</strong></p>
+      <p>\[Q_1 - 1{,}5\,IQR = 244{,}5 - 16{,}875 = 227{,}6; \qquad
+          Q_3 + 1{,}5\,IQR = 255{,}75 + 16{,}875 = 272{,}6 .\]</p>
+      <p>O valor <strong>410 está muito acima de 272,6</strong>: é um outlier. Provavelmente o
+      sujeito se distraiu nessa tentativa.</p>
+      <p><strong>O efeito dele:</strong> com o 410, a média é 262,4 ms; sem ele, 249,0 ms — uma
+      diferença de 13 ms. A mediana, por sua vez, praticamente não se move. Cole esses dados no
+      laboratório da seção 4 e veja o ponto isolado aparecer no boxplot.</p>
+    </div>
+  </details>
+
+
+  <!-- ================================================== -->
+  <h2 id="so">8. Outliers: o que fazer com eles</h2>
+
+  <p>A regra de 1,5×IQR identifica candidatos a outlier. Decidir o que fazer com eles é uma
+  questão <strong>científica</strong>, não estatística — e mal resolvida arruína um trabalho.</p>
+
+  <h3>Exercício resolvido 6.6 — Fator de impacto de revistas</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>O <em>fator de impacto</em> mede quantas vezes, em média, os artigos de uma revista são
+    citados. Eis os valores de algumas revistas de Física:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Revista</th><th class="num">FI</th><th>Revista</th><th class="num">FI</th></tr></thead>
+      <tbody>
+        <tr><td>Nature</td><td class="num">64,8</td><td>Physical Review B</td><td class="num">3,7</td></tr>
+        <tr><td>Science</td><td class="num">56,9</td><td>Classical and Quantum Gravity</td><td class="num">3,6</td></tr>
+        <tr><td>Reviews of Modern Physics</td><td class="num">45,9</td><td>New Journal of Physics</td><td class="num">3,3</td></tr>
+        <tr><td>Physics Reports</td><td class="num">23,9</td><td>Physica A</td><td class="num">3,3</td></tr>
+        <tr><td>Nature Physics</td><td class="num">19,6</td><td>Physical Review C</td><td class="num">3,2</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Analise a distribuição. Média ou mediana descreve melhor o "fator de impacto típico"?
+    Há outliers? Eles devem ser removidos?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Ordenando os dez valores:</p>
+      <p style="font-family:var(--mono);font-size:.85rem">3,2 · 3,3 · 3,3 · 3,6 · 3,7 · 19,6 · 23,9 · 45,9 · 56,9 · 64,8</p>
+      <p><strong>Medidas.</strong> A soma é 228,2, logo \(\bar x = \mathbf{22{,}82}\). A
+      mediana é a média do 5º e 6º valores:</p>
+      <p>\[Q_2 = \frac{3{,}7 + 19{,}6}{2} = \mathbf{11{,}65}.\]</p>
+      <p>Pelo método de Tukey, \(Q_1 = 3{,}3\) e \(Q_3 = 45{,}9\), de modo que
+      \(IQR = 42{,}6\) e os limites da regra são</p>
+      <p>\[3{,}3 - 1{,}5(42{,}6) = -60{,}6 \qquad\text{e}\qquad 45{,}9 + 1{,}5(42{,}6) = 109{,}8 .\]</p>
+      <p><strong>Nenhum valor está fora desses limites</strong> — nem mesmo a Nature, com 64,8.
+      A regra não acusa outlier algum, porque o IQR é enorme: a própria dispersão é tão grande
+      que engole os extremos.</p>
+      <p><strong>Média ou mediana?</strong> A média, 22,82, é maior que <em>seis</em> dos dez
+      valores — e nenhuma revista da lista tem fator de impacto próximo dela. A mediana, 11,65,
+      é ainda pior: cai exatamente no <em>vazio</em> entre 3,7 e 19,6, uma região onde não
+      existe revista alguma.</p>
+      <p>O motivo é que <strong>não existe um valor típico</strong>: a distribuição é
+      claramente <em>bimodal</em>, com cinco revistas agrupadas em torno de 3,4 e cinco
+      espalhadas entre 19,6 e 64,8.</p>
+      <p><strong>A lição.</strong> Nenhuma medida-resumo descreve bem uma distribuição bimodal.
+      Resumir esses dados em um único número — qualquer que seja — é perder a informação mais
+      importante, que é a existência de <em>dois grupos distintos</em>: revistas generalistas de
+      alto impacto e revistas especializadas. Este é o melhor argumento que conheço para
+      <strong>sempre olhar o gráfico antes de calcular</strong>.</p>
+    </div>
+  </details>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Possíveis causas de um outlier</span>
+    <ol>
+      <li><strong>Erro de digitação ou transcrição</strong> — 1750 virou 17500. Corrija, se
+      puder recuperar o valor original;</li>
+      <li><strong>Falha do instrumento</strong> — sensor saturado, contato mau, leitura durante
+      uma oscilação de rede. Documente e remova, explicando;</li>
+      <li><strong>Erro de procedimento</strong> — o cronômetro disparado tarde, a amostra
+      contaminada. Mesmo tratamento;</li>
+      <li><strong>Variabilidade legítima</strong> — a cauda da distribuição existe, e valores
+      extremos ocorrem. <em>Não remova</em>;</li>
+      <li><strong>Um fenômeno novo</strong> — o dado anômalo é real e o modelo é que está errado.
+      <em>Jamais remova.</em></li>
+    </ol>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Uma história que vale lembrar</span>
+    <p>O buraco na camada de ozônio sobre a Antártida foi detectado por satélites da NASA desde
+    o fim dos anos 1970 — mas o software de processamento descartava automaticamente as leituras
+    muito baixas, classificando-as como <em>erro de instrumento</em>. A descoberta só foi
+    publicada em 1985, por uma equipe britânica que media do solo e viu os valores caírem ano
+    após ano.</p>
+    <p>Os dados estavam lá o tempo todo. O que faltou foi alguém perguntar <em>por quê</em>
+    antes de descartar.</p>
+    <p><strong>Regra prática para o relatório:</strong> nunca remova um ponto apenas porque ele
+    é um outlier. Investigue a causa; se decidir removê-lo, diga <em>quantos</em> removeu e
+    <em>por quê</em>; e, sempre que possível, apresente os resultados com e sem o ponto.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s8">9. Assimetria</h2>
+
+  <p>A relação entre média, mediana e moda revela a forma da distribuição:</p>
 
   <div class="tabela-rolavel">
   <table>
-    <thead><tr><th>Estatística</th><th>Partículas</th><th>Multiplicidade</th></tr></thead>
+    <thead><tr><th>Forma</th><th>Relação</th><th>Exemplo típico</th><th>Melhor resumo</th></tr></thead>
     <tbody>
-      <tr><td>Maxwell–Boltzmann</td><td>distinguíveis, sem restrição</td><td>\(g^N\)</td></tr>
-      <tr><td>Bose–Einstein</td><td>idênticas, sem restrição</td><td>\(\dbinom{N+g-1}{N}\)</td></tr>
-      <tr><td>Fermi–Dirac</td><td>idênticas, no máximo uma por estado</td><td>\(\dbinom{g}{N}\)</td></tr>
+      <tr><td>Simétrica</td><td>\(\bar x \approx\) mediana \(\approx\) moda</td><td>erros de medida, alturas</td><td>média</td></tr>
+      <tr><td>Assimétrica à direita</td><td>moda &lt; mediana &lt; \(\bar x\)</td><td>renda, tempo de espera</td><td>mediana</td></tr>
+      <tr><td>Assimétrica à esquerda</td><td>\(\bar x\) &lt; mediana &lt; moda</td><td>idade ao morrer, notas de prova fácil</td><td>mediana</td></tr>
     </tbody>
   </table>
   </div>
 
-  <p>O caso bosônico é exatamente a "combinação com repetição" da última linha do quadro-resumo:
-  distribuir \(N\) bolas idênticas em \(g\) caixas equivale a arranjar \(N\) bolas e \(g-1\)
-  divisórias em fila, o que dá \(\binom{N+g-1}{N}\) — o famoso argumento das
-  <em>barras e estrelas</em>.</p>
+  <p>A regra mnemônica: <strong>a média é arrastada na direção da cauda</strong>. É ela que
+  "sente" a magnitude dos valores extremos; a mediana só conta posições.</p>
+
+
+  <div class="bloco def">
+    <span class="rotulo">Fórmula empírica de Pearson</span>
+    <p>Para distribuições moderadamente assimétricas, vale a relação aproximada</p>
+    <p>\[\bar x - \text{Mo} \approx 3\,(\bar x - \text{Md}),\]</p>
+    <p>de onde se obtém um coeficiente de assimetria simples de calcular:</p>
+    <p>\[A_P = \frac{3(\bar x - \text{Md})}{s}.\]</p>
+    <p>Interpreta-se como \(g_1\): zero para simetria, positivo para cauda à direita.
+    É útil quando se tem apenas as medidas-resumo, sem os dados brutos.</p>
+  </div>
+
+  <p>Uma medida numérica da assimetria é o coeficiente</p>
+  <p>\[g_1 = \frac{n}{(n-1)(n-2)}\sum_{i=1}^{n}\left(\frac{x_i-\bar x}{s}\right)^{3},\]</p>
+  <p>nulo para distribuições simétricas, positivo para cauda à direita e negativo para cauda à
+  esquerda. O expoente ímpar é essencial: ele preserva o sinal dos desvios, ao contrário do
+  quadrado da variância. Carregue o conjunto "Renda mensal" no laboratório e observe \(g_1\)
+  bem acima de zero, com a média visivelmente à direita da mediana.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s9">10. Aplicações em Física</h2>
 
   <div class="bloco fisica">
-    <span class="rotulo">O paradoxo de Gibbs</span>
-    <p>Se contarmos microestados de um gás tratando átomos idênticos como distinguíveis, a
-    entropia resultante não é <strong>extensiva</strong>: ao remover a partição entre dois
-    volumes do mesmo gás, obtém-se um ganho espúrio de entropia, embora nada físico tenha
-    mudado. A correção é dividir a multiplicidade por \(N!\) — ou seja, corrigir o espaço
-    amostral. É o mesmo erro de d'Alembert, em escala termodinâmica.</p>
+    <span class="rotulo">Descritiva no laboratório didático</span>
+    <p>Ao repetir \(n\) vezes a medida de uma grandeza, o procedimento padrão é:</p>
+    <ol>
+      <li>Calcular \(\bar x\) — a melhor estimativa do valor verdadeiro;</li>
+      <li>Calcular \(s\) — o espalhamento das medidas individuais, que caracteriza o
+      <em>instrumento e o procedimento</em>, e não melhora com mais medidas;</li>
+      <li>Calcular \(s/\sqrt{n}\) — a incerteza da média, que <em>melhora</em> com mais medidas;</li>
+      <li>Fazer o histograma, para verificar se a distribuição é aproximadamente normal, como o
+      TCL faz esperar quando o erro vem de muitas fontes pequenas;</li>
+      <li>Fazer o boxplot, para localizar medidas suspeitas antes de calcular qualquer coisa.</li>
+    </ol>
+    <p>Um histograma fortemente assimétrico ou bimodal é um <strong>alerta</strong>: pode indicar
+    erro sistemático variável, mudança de condições no meio do experimento, ou dois
+    experimentadores diferentes com vícios diferentes de leitura.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Histogramas como objetos físicos</span>
+    <p>Em muitas áreas da Física, o histograma <em>é</em> o resultado experimental, não apenas
+    uma ferramenta de visualização:</p>
+    <ul>
+      <li>Um <strong>espectro</strong> de raios gama é um histograma de energias de fótons
+      detectados, e cada pico é um nível nuclear;</li>
+      <li>A descoberta do bóson de Higgs foi, literalmente, um <strong>excesso de contagens em
+      algumas classes</strong> de um histograma de massa invariante;</li>
+      <li>A distribuição de velocidades de Maxwell–Boltzmann é verificada experimentalmente
+      construindo-se o histograma das velocidades de um feixe atômico.</li>
+    </ul>
+    <p>Nesses casos, a escolha da largura de classe não é cosmética: classes largas demais
+    escondem um pico estreito, e estreitas demais afogam o sinal no ruído de contagem
+    \(\sqrt{N}\) do Módulo 3.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s9">10. Exercícios propostos</h2>
+  <h2 id="s10">11. Exercícios propostos</h2>
 
   <ol>
-    <li>Quantos números de 4 algarismos distintos podem ser formados com os dígitos
-    \(\{1,2,3,4,5,6,7\}\)? Quantos são pares?</li>
-    <li>De quantas maneiras 8 pessoas podem se sentar em torno de uma mesa redonda? E se duas
-    delas insistem em sentar juntas?</li>
-    <li>Quantos anagramas tem a palavra MATEMÁTICA? Quantos têm as três vogais A juntas?</li>
-    <li>Em um baralho de 52 cartas, quantas mãos de 5 cartas contêm exatamente dois pares?</li>
-    <li>Prove a relação de Stifel \(\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}\) por um
-    argumento combinatório (sem manipular fatoriais).</li>
-    <li>Mostre que \(\sum_{k=0}^{n}\binom{n}{k}=2^n\) de duas maneiras: pelo binômio de Newton
-    com \(x=y=1\), e contando subconjuntos.</li>
-    <li>Um sistema tem \(N\) spins e energia fixa correspondente a \(n_\uparrow\) spins para
-    cima. Escreva \(\Omega_{\text{mic}}(n_\uparrow)\) e, usando a aproximação de Stirling
-    \(\ln n! \approx n\ln n - n\), mostre que a entropia por spin depende apenas da fração
-    \(x = n_\uparrow/N\).</li>
-    <li>Seis partículas devem ser distribuídas em 4 estados de energia. Calcule a multiplicidade
-    nos três casos — Maxwell–Boltzmann, Bose–Einstein e Fermi–Dirac — e explique por que um dos
-    três resultados é zero.</li>
+    <li>Classifique as variáveis: (a) tipo sanguíneo; (b) número de filhos; (c) temperatura em
+    °C; (d) conceito A/B/C/D; (e) tempo de queda de um corpo; (f) marca do multímetro.</li>
+    <li>Prove que \(\sum_{i=1}^{n}(x_i - \bar x) = 0\) para qualquer conjunto de dados.</li>
+    <li>Mostre que a função \(h(c) = \sum_i (x_i - c)^2\) é minimizada em \(c = \bar x\).</li>
+    <li>Demonstre a forma prática
+    \(s^2 = \frac{1}{n-1}\left(\sum_i x_i^2 - n\bar x^2\right)\) a partir da definição.</li>
+    <li>Um conjunto tem média 50 e desvio padrão 8. Se todos os valores forem multiplicados por 3
+    e depois somados a 10, quais serão a nova média e o novo desvio padrão?
+    <em>(Use a transformação linear do Módulo 3.)</em></li>
+    <li>Construa a tabela de frequências, o histograma e o boxplot do conjunto "Notas de uma
+    turma" disponível no laboratório desta página. A distribuição é simétrica?</li>
+    <li>Dez medidas de um período têm \(\bar T = 1{,}42\) s e \(s = 0{,}05\) s. Qual o
+    coeficiente de variação? Qual a incerteza da média? Quantas medidas seriam necessárias para
+    reduzir a incerteza da média à metade?</li>
+    <li>Um conjunto de dados tem mediana 20 e média 35. Esboce a forma provável do histograma e
+    justifique. Que tipo de fenômeno produz esse padrão?</li>
   </ol>
 
   <div class="bloco def">
     <span class="rotulo">Resumo do módulo</span>
     <ul>
-      <li>Princípio multiplicativo para etapas sucessivas; aditivo para casos excludentes;</li>
-      <li>\(P_n = n!\); com repetidos, \(n!/(n_1!\cdots n_r!)\); circular, \((n-1)!\);</li>
-      <li>\(A_{n,k} = n!/(n-k)!\) ordena; \(C_{n,k} = A_{n,k}/k!\) esquece a ordem;</li>
-      <li>Com repetição permitida: \(n^k\) se a ordem importa, \(\binom{n+k-1}{k}\) se não;</li>
-      <li>Binômio de Newton garante a normalização da binomial no próximo módulo;</li>
-      <li>Multiplicidade \(\Omega_{\text{mic}}\) e entropia \(S=k_B\ln\Omega_{\text{mic}}\).</li>
+      <li>Parâmetro (\(\mu,\sigma\)) descreve a população; estatística (\(\bar x, s\)) descreve a amostra;</li>
+      <li>\(\bar x = \frac1n\sum x_i\); mediana e moda; a média é arrastada pela cauda;</li>
+      <li>\(s^2 = \frac{1}{n-1}\sum(x_i-\bar x)^2\) — o \(n-1\) corrige o viés e conta os graus de liberdade;</li>
+      <li>\(CV = s/\bar x\) compara dispersões de grandezas diferentes;</li>
+      <li>Boxplot: caixa \(Q_1\)–\(Q_3\), bigodes até 1,5×IQR, pontos isolados são outliers;</li>
+      <li>Assimetria positiva: moda &lt; mediana &lt; média, e a mediana resume melhor.</li>
     </ul>
   </div>
 
   <nav class="nav-aulas">
-    <a href="aula01.html"><small>Módulo anterior</small>← 1. Fundamentos</a>
-    <a class="prox" href="aula03.html"><small>Próximo módulo</small>3. Probabilidade condicional →</a>
+    <a href="index.html"><small>Voltar</small>← Início</a>
+    <a class="prox" href="aula03.html"><small>Próximo módulo</small>3. Variáveis aleatórias discretas →</a>
   </nav>
 
 </main>
@@ -648,6 +641,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061532"></script>
+<script src="assets/js/widgets.js?v=202611061620"></script>
 </body>
 </html>

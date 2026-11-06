@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Módulo 14 — Testes não paramétricos | Probabilidade &amp; Estatística</title>
+<title>Módulo 14 — Espaço amostral, eventos e axiomas | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061532">
-<script src="assets/js/comum.js?v=202611061532"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061620">
+<script src="assets/js/comum.js?v=202611061620"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -16,23 +16,26 @@
     <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
     <nav class="menu">
       <a href="index.html">Início</a>
-      <span class="grupo">Probabilidade</span>
-      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
-      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
-      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
-      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
-      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
-      <span class="grupo">Estatística</span>
-      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
-      <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
-      <a href="aula08.html" class="num" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
-      <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
-      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
-      <a href="aula11.html" class="num" title="Módulo 11 — Testes de normalidade">11</a>
-      <a href="aula12.html" class="num" title="Módulo 12 — Correlação">12</a>
-      <a href="aula13.html" class="num" title="Módulo 13 — Regressão linear e mínimos quadrados">13</a>
-      <a href="aula14.html" class="num ativo" title="Módulo 14 — Testes não paramétricos">14</a>
-      <a href="aula15.html" class="num" title="Módulo 15 — Tamanho amostral e planejamento">15</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num ativo" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
       <a href="formulario.html">Formulário</a>
     </nav>
   </div>
@@ -43,527 +46,738 @@
 <aside class="lateral">
   <h4>Neste módulo</h4>
   <ol>
-    <li><a href="#s1">1. Quando abrir mão da normal</a></li>
-    <li><a href="#s2">2. A ideia dos postos</a></li>
-    <li><a href="#s3">3. Teste dos sinais</a></li>
-    <li><a href="#s4">4. Wilcoxon pareado</a></li>
-    <li><a href="#s5">5. Mann–Whitney</a></li>
-    <li><a href="#s6">6. Teste das sequências</a></li>
-    <li><a href="#s7">7. Kruskal–Wallis</a></li>
-    <li><a href="#s8">8. Empates e a eficiência</a></li>
-    <li><a href="#s9">9. Qual teste usar</a></li>
-    <li><a href="#s10">10. Aplicações em Física</a></li>
-    <li><a href="#s11">11. Exercícios propostos</a></li>
+    <li><a href="#s1">1. Experimentos aleatórios</a></li>
+    <li><a href="#sh">2. De onde veio a probabilidade</a></li>
+    <li><a href="#s2">3. Espaço amostral</a></li>
+    <li><a href="#s3">4. Álgebra de eventos</a></li>
+    <li><a href="#s4">5. Axiomas de Kolmogorov</a></li>
+    <li><a href="#s5">6. Consequências dos axiomas</a></li>
+    <li><a href="#s6">7. Regra de Laplace</a></li>
+    <li><a href="#s7">8. Probabilidade geométrica</a></li>
+    <li><a href="#s8">9. Aplicações em Física</a></li>
+    <li><a href="#s9">10. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
   <p class="chapeu">Módulo 14 · 3 horas</p>
-  <h1>Testes não paramétricos</h1>
-  <p class="subtitulo">Quando os pressupostos falham, os postos continuam funcionando.</p>
+  <h1>Espaço amostral, eventos e os axiomas da probabilidade</h1>
+  <p class="subtitulo">Do lançamento de um dado à irreversibilidade da Segunda Lei.</p>
 
   <div class="bloco def">
     <span class="rotulo">Objetivos</span>
     <ul>
-      <li>Reconhecer quando os pressupostos dos testes paramétricos não se sustentam;</li>
-      <li>Entender por que substituir valores por postos protege contra outliers;</li>
-      <li>Aplicar o teste dos sinais, o de Wilcoxon e o de Mann–Whitney;</li>
-      <li>Construir e ler a distribuição nula <em>exata</em> desses testes;</li>
-      <li>Usar o teste das sequências para verificar aleatoriedade;</li>
-      <li>Tratar empates corretamente e avaliar a perda de eficiência.</li>
+      <li>Descrever o espaço amostral de um experimento, nos casos finito, enumerável e contínuo;</li>
+      <li>Manipular eventos como conjuntos, usando união, interseção, complementar e De Morgan;</li>
+      <li>Enunciar os axiomas de Kolmogorov e deduzir deles as propriedades elementares;</li>
+      <li>Calcular probabilidades pela regra de Laplace e reconhecer suas limitações;</li>
+      <li>Resolver problemas de probabilidade geométrica por integração;</li>
+      <li>Relacionar tudo isso à contagem de microestados em Física Estatística.</li>
     </ul>
   </div>
 
   <hr class="linha">
 
   <!-- ================================================== -->
-  <h2 id="s1">1. Quando abrir mão da normal</h2>
+  <h2 id="s1">1. Determinismo e acaso</h2>
 
-  <p>Os testes dos módulos 9 e 13 exigem normalidade. O Módulo 11 ensinou a verificar essa
-  exigência. Falta a pergunta prática: <strong>e quando ela não se sustenta?</strong></p>
+  <p>Um <strong>experimento determinístico</strong>, repetido sob as mesmas condições, produz
+  sempre o mesmo resultado. Soltar um corpo de uma altura \(h\) no vácuo é assim: o tempo de
+  queda é \(t=\sqrt{2h/g}\), hoje e amanhã.</p>
 
-  <div class="bloco def">
-    <span class="rotulo">Quatro situações que pedem um teste não paramétrico</span>
-    <ol>
-      <li><strong>Dados ordinais.</strong> Escalas de 1 a 5, conceitos A–E, classificações.
-      Não faz sentido calcular médias com eles, porque a distância entre categorias não é
-      conhecida;</li>
-      <li><strong>Amostras pequenas</strong> em que a normalidade não pode sequer ser testada
-      com poder razoável — e o Módulo 11 mostrou que com \(n=30\) nem uma uniforme é
-      rejeitada;</li>
-      <li><strong>Outliers legítimos</strong> que não podem ser descartados: uma medida
-      extrema que é real, não erro;</li>
-      <li><strong>Assimetria forte</strong> que nenhuma transformação resolve, ou cuja
-      transformação tornaria o resultado ininterpretável.</li>
-    </ol>
-  </div>
+  <p>Um <strong>experimento aleatório</strong>, repetido sob as mesmas condições, pode produzir
+  resultados diferentes — mas o conjunto de resultados possíveis é conhecido de antemão.
+  Lançar um dado, medir o instante em que um núcleo de \(^{14}\mathrm{C}\) decai, medir a
+  componente \(z\) do spin de um átomo de prata num aparato de Stern–Gerlach.</p>
 
   <div class="bloco alerta">
-    <span class="rotulo">O nome engana</span>
-    <p>"Não paramétrico" <em>não</em> significa "sem pressupostos". Todos esses testes supõem
-    observações <strong>independentes</strong>, e vários supõem que as distribuições
-    comparadas têm <strong>forma semelhante</strong>, diferindo apenas por deslocamento.</p>
-    <p>Significa, isto sim, que não se supõe uma <em>família</em> de distribuições com
-    parâmetros a estimar. Por isso também se chamam <strong>testes de distribuição livre</strong>
-    — nome mais honesto, e menos usado.</p>
+    <span class="rotulo">Atenção conceitual</span>
+    <p>A aleatoriedade pode ser <strong>epistêmica</strong> — o dado obedece à mecânica clássica,
+    mas ignoramos as condições iniciais com precisão suficiente — ou <strong>intrínseca</strong> —
+    o resultado quântico não é determinado nem em princípio. O formalismo matemático que vamos
+    construir é <em>o mesmo</em> nos dois casos. Essa é justamente a força da teoria: ela não
+    precisa saber por que você ignora algo.</p>
   </div>
+
 
   <!-- ================================================== -->
-  <h2 id="s2">2. A ideia central: substituir valores por postos</h2>
+  <h2 id="sh">2. De onde veio a probabilidade</h2>
 
-  <p>Toda a família se apoia num único truque. Em vez de usar os valores, usa-se a
-  <strong>posição</strong> de cada um na ordenação.</p>
+  <p>Nenhum ramo da matemática demorou tanto a nascer. Os gregos resolveram problemas de
+  geometria que ainda hoje impressionam, mas não desenvolveram nada parecido com uma teoria do
+  acaso — e jogavam dados havia séculos. Há várias explicações possíveis: a ausência de uma
+  notação algébrica conveniente, a convicção de que o futuro pertencia aos deuses, o desprezo
+  pela experimentação. O fato é que a probabilidade só aparece no século XVI.</p>
 
-  <div class="bloco def">
-    <span class="rotulo">Por que isso funciona</span>
-    <ul>
-      <li><strong>Os postos têm distribuição conhecida.</strong> Sob \(H_0\), qualquer
-      atribuição de postos é igualmente provável. Isso permite calcular a distribuição nula
-      <strong>exatamente</strong>, por contagem — sem supor nada sobre os dados;</li>
-      <li><strong>Outliers perdem o poder de distorcer.</strong> Um valor de 120 numa amostra
-      de dezenas recebe o posto 18, não o posto 10 000. Ele continua sendo o maior; deixa de
-      ser desproporcionalmente grande;</li>
-      <li><strong>Funciona com dados ordinais,</strong> para os quais a média não existe mas a
-      ordem existe.</li>
-    </ul>
-  </div>
+  <h3>Cardano, o jogador</h3>
 
-  <div class="bloco fisica">
-    <span class="rotulo">Uma origem curiosamente recente</span>
-    <p>Estes testes são todos do século XX, e quase todos do pós-guerra.
-    <strong>Frank Wilcoxon</strong>, químico da Boyce Thompson Institute, publicou em 1945 um
-    artigo de apenas três páginas — "Individual Comparisons by Ranking Methods" — propondo os
-    dois testes que hoje levam seu nome. Ele não era estatístico de formação; chegou ao
-    problema porque precisava comparar tratamentos em experimentos agrícolas com poucas
-    repetições.</p>
-    <p>Dois anos depois, <strong>Henry Mann</strong> e <strong>Donald Whitney</strong>
-    desenvolveram independentemente o teste para amostras independentes e, o que foi decisivo,
-    tabularam sua distribuição exata. Wilcoxon já o havia proposto para grupos de mesmo
-    tamanho; Mann e Whitney o generalizaram e lhe deram base rigorosa — por isso o teste é
-    hoje chamado de Wilcoxon–Mann–Whitney por quem quer ser justo com os três.</p>
-    <p>O teste dos sinais é muito mais antigo: <strong>John Arbuthnot</strong> o usou em 1710
-    para argumentar que o excesso de nascimentos masculinos em Londres, observado por 82 anos
-    consecutivos, não podia ser obra do acaso — \((1/2)^{82}\) é um número absurdamente
-    pequeno. É possivelmente o primeiro teste de hipótese publicado da história, e é um teste
-    não paramétrico.</p>
-  </div>
+  <p><strong>Girolamo Cardano</strong> (1501–1576) foi médico, astrólogo, algebrista e jogador
+  compulsivo — por décadas, segundo ele próprio, o jogo foi sua principal fonte de renda. Escreveu
+  o <em>Liber de ludo aleae</em>, "Livro sobre os jogos de azar", que contém a primeira
+  formulação conhecida da ideia que usaremos neste módulo: a chance de um evento é a razão entre
+  o número de casos favoráveis e o número de casos possíveis.</p>
 
-  <div data-widget="naoparametrico"></div>
+  <p>Cardano também notou, corretamente, que ao lançar dois dados há <strong>36</strong>
+  resultados possíveis, e não 21 — distinguindo o par \((2,5)\) do par \((5,2)\). É uma
+  observação sutil e decisiva, à qual voltaremos adiante. O livro, porém, só foi impresso em
+  1663, quase 90 anos após sua morte, e não influenciou ninguém.</p>
 
-  <!-- ================================================== -->
-  <h2 id="s3">3. Teste dos sinais</h2>
+  <h3>O problema dos pontos</h3>
 
-  <div class="bloco def">
-    <span class="rotulo">O mais simples de todos</span>
-    <p>Para dados pareados, calcule \(d_i = y_i - x_i\) e <strong>olhe apenas o sinal</strong>.
-    Descarte os zeros e seja \(n\) o número de diferenças não nulas.</p>
-    <p>Sob \(H_0\) (as duas condições são equivalentes), cada diferença tem probabilidade
-    \(1/2\) de ser positiva, de modo que</p>
-    <p>\[S = \#\{d_i > 0\} \sim \mathrm{Binomial}\!\left(n,\tfrac12\right).\]</p>
-    <p>O valor p bilateral é \(2\,P(X \le \min(S, n-S))\).</p>
-  </div>
+  <p>A certidão de nascimento da teoria é uma troca de cartas entre <strong>Blaise Pascal</strong>
+  (1623–1662) e <strong>Pierre de Fermat</strong> (1601–1665), no verão de 1654. O estopim foi uma
+  pergunta feita a Pascal por <strong>Antoine Gombaud, o Cavaleiro de Méré</strong>, nobre e
+  jogador: como dividir o dinheiro de uma partida interrompida antes do fim?</p>
 
-  <div class="bloco alerta">
-    <span class="rotulo">O que ele joga fora</span>
-    <p>Uma diferença de \(+0{,}01\) e outra de \(+50\) contam exatamente o mesmo. O teste usa
-    só o sinal e ignora a magnitude — o que o torna o mais robusto e, em compensação, o
-    <strong>menos poderoso</strong> da família.</p>
-    <p>Sua eficiência relativa ao teste t, quando os dados <em>são</em> normais, é de apenas
-    \(2/\pi \approx 64\%\). Em termos práticos: para obter o mesmo poder, ele precisa de
-    cerca de <strong>metade a mais de observações</strong>.</p>
-    <p>Em troca, ele exige quase nada: nem normalidade, nem simetria, nem sequer que a escala
-    seja numérica. Basta conseguir dizer qual dos dois valores é maior.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s4">4. Wilcoxon dos postos sinalizados</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Usando também a magnitude</span>
-    <ol>
-      <li>Calcule as diferenças \(d_i = y_i - x_i\) e descarte os zeros;</li>
-      <li>Ordene os \(|d_i|\) e atribua postos de 1 a \(n\), usando postos médios nos empates;</li>
-      <li>Some os postos das diferenças positivas: \(W^+\); e das negativas: \(W^-\);</li>
-      <li>Confira: \(W^+ + W^- = n(n+1)/2\);</li>
-      <li>A estatística é \(W = \min(W^+, W^-)\).</li>
-    </ol>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">A distribuição nula exata</span>
-    <p>Sob \(H_0\), cada diferença tem a mesma chance de ser positiva ou negativa, de modo que
-    cada uma das \(2^n\) atribuições de sinais aos postos \(1, 2, \dots, n\) é igualmente
-    provável. A distribuição de \(W^+\) é, portanto, obtida por <strong>contagem pura</strong>:
-    quantos subconjuntos de \(\{1,\dots,n\}\) somam \(w\)?</p>
-    <p>É assim que o simulador acima desenha a distribuição nula quando \(n \le 25\) e não há
-    empates. Nenhuma aproximação, nenhuma suposição sobre os dados.</p>
-    <p>Para \(n\) grande, usa-se a normal:</p>
-    <p>\[\mu_{W^+}=\frac{n(n+1)}{4}, \qquad
-    \sigma^2_{W^+}=\frac{n(n+1)(2n+1)}{24}.\]</p>
-  </div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Um pressuposto que costuma ser esquecido</span>
-    <p>O Wilcoxon pareado supõe que a distribuição das diferenças é <strong>simétrica</strong>
-    em torno da mediana. É um pressuposto bem mais fraco que normalidade, mas não é vazio: se
-    as diferenças forem fortemente assimétricas, o teste perde validade e o dos sinais, que
-    não exige simetria, passa a ser a escolha correta.</p>
-  </div>
-
-  <h3>Exercício resolvido 14.1 — Três testes, três conclusões</h3>
   <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Dez estudantes fizeram uma avaliação antes e depois de uma atividade de laboratório
-    remoto:</p>
-    <div class="tabela-rolavel">
-    <table>
-      <thead><tr><th></th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th><th class="num">9</th><th class="num">10</th></tr></thead>
-      <tbody>
-        <tr><th>antes</th><td class="num">20,0</td><td class="num">21,5</td><td class="num">19,8</td><td class="num">22,3</td><td class="num">20,7</td><td class="num">21,0</td><td class="num">19,5</td><td class="num">22,8</td><td class="num">20,2</td><td class="num">21,8</td></tr>
-        <tr><th>depois</th><td class="num">22,4</td><td class="num">23,4</td><td class="num">22,6</td><td class="num">24,5</td><td class="num">23,3</td><td class="num">20,8</td><td class="num">21,6</td><td class="num">22,5</td><td class="num">22,7</td><td class="num">21,7</td></tr>
-      </tbody>
-    </table>
-    </div>
-    <p>Aplique o teste dos sinais, o de Wilcoxon e o t pareado. Compare.</p>
+    <span class="rotulo">Exercício resolvido 1.0 — O problema dos pontos</span>
+    <p>Dois jogadores apostam 32 moedas cada um. Vence quem primeiro fizer <strong>3 pontos</strong>,
+    e cada rodada é decidida por uma moeda honesta. A partida é interrompida quando o jogador A
+    tem <strong>2 pontos</strong> e B tem <strong>1 ponto</strong>. Como dividir as 64 moedas?</p>
   </div>
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <p><strong>As diferenças.</strong></p>
+      <p><strong>A resposta intuitiva, e errada.</strong> Vários contemporâneos propunham dividir
+      na proporção dos pontos já feitos, 2:1, dando 42,7 moedas a A. Outros diziam que, faltando
+      1 ponto a A e 2 a B, a razão deveria ser 2:1 ao contrário. O desacordo era justamente o
+      problema: não havia critério.</p>
+      <p><strong>A ideia de Pascal e Fermat.</strong> O que importa não é o passado, mas o
+      <em>futuro</em>: a divisão justa é proporcional à <strong>probabilidade de cada um vencer
+      se a partida continuasse</strong>.</p>
+      <p>Bastam no máximo <strong>duas rodadas</strong> para decidir tudo. Fermat propôs
+      enumerá-las todas, mesmo as que não seriam jogadas na prática — e é esse truque que torna o
+      espaço amostral equiprovável:</p>
       <div class="tabela-rolavel">
       <table>
-        <thead><tr><th class="num">i</th><th class="num">d</th><th class="num">sinal</th><th class="num">|d|</th><th class="num">posto</th></tr></thead>
+        <thead><tr><th>Rodada 4</th><th>Rodada 5</th><th>Vencedor</th><th>Probabilidade</th></tr></thead>
         <tbody>
-          <tr><td class="num">1</td><td class="num">+2,4</td><td class="num">+</td><td class="num">2,4</td><td class="num">8</td></tr>
-          <tr><td class="num">2</td><td class="num">+1,9</td><td class="num">+</td><td class="num">1,9</td><td class="num">4</td></tr>
-          <tr><td class="num">3</td><td class="num">+2,8</td><td class="num">+</td><td class="num">2,8</td><td class="num">10</td></tr>
-          <tr><td class="num">4</td><td class="num">+2,2</td><td class="num">+</td><td class="num">2,2</td><td class="num">6</td></tr>
-          <tr><td class="num">5</td><td class="num">+2,6</td><td class="num">+</td><td class="num">2,6</td><td class="num">9</td></tr>
-          <tr><td class="num">6</td><td class="num">−0,2</td><td class="num">−</td><td class="num">0,2</td><td class="num">2</td></tr>
-          <tr><td class="num">7</td><td class="num">+2,1</td><td class="num">+</td><td class="num">2,1</td><td class="num">5</td></tr>
-          <tr><td class="num">8</td><td class="num">−0,3</td><td class="num">−</td><td class="num">0,3</td><td class="num">3</td></tr>
-          <tr><td class="num">9</td><td class="num">+2,5</td><td class="num">+</td><td class="num">2,5</td><td class="num">7</td></tr>
-          <tr><td class="num">10</td><td class="num">−0,1</td><td class="num">−</td><td class="num">0,1</td><td class="num">1</td></tr>
+          <tr><td>A</td><td>A</td><td>A (chega a 3)</td><td class="num">1/4</td></tr>
+          <tr><td>A</td><td>B</td><td>A (já chegou a 3)</td><td class="num">1/4</td></tr>
+          <tr><td>B</td><td>A</td><td>A (3 contra 2)</td><td class="num">1/4</td></tr>
+          <tr><td>B</td><td>B</td><td>B (3 contra 2)</td><td class="num">1/4</td></tr>
         </tbody>
       </table>
       </div>
-      <p><strong>Teste dos sinais.</strong> São 7 positivas e 3 negativas, com \(n = 10\):</p>
-      <p>\[p = 2\,P(X\le 3) = 2(0{,}1719) = \mathbf{0{,}344}.\]</p>
-      <p>Não rejeitamos \(H_0\). Sete em dez não é nada de extraordinário — sair sete caras em
-      dez lançamentos acontece o tempo todo.</p>
-      <p><strong>Wilcoxon.</strong> Os postos das negativas são 2, 3 e 1, de modo que</p>
-      <p>\[W^- = 1+2+3 = 6, \qquad W^+ = 55 - 6 = 49.\]</p>
-      <p>Conferindo: \(n(n+1)/2 = 55\). ✓</p>
-      <p>Pela distribuição exata, \(p = \mathbf{0{,}0273}\). <strong>Rejeitamos \(H_0\).</strong></p>
-      <p><strong>Teste t pareado.</strong> \(\bar d = 1{,}590\), \(s_d = 1{,}262\), logo</p>
-      <p>\[t=\frac{1{,}590}{1{,}262/\sqrt{10}}=3{,}985,\qquad \nu=9,\qquad
-      p = \mathbf{0{,}0032}.\]</p>
-      <p>Rejeita com folga.</p>
-      <div class="bloco alerta">
-        <span class="rotulo">Por que os três discordam</span>
-        <p>Olhe de novo as três diferenças negativas: −0,2, −0,3 e −0,1. São
-        <strong>minúsculas</strong>. As sete positivas vão de +1,9 a +2,8 — dez a vinte vezes
-        maiores.</p>
-        <p>O <strong>teste dos sinais</strong> não enxerga nada disso. Para ele há apenas
-        "7 contra 3", e 7 contra 3 é banal.</p>
-        <p>O <strong>Wilcoxon</strong> enxerga: as negativas ficaram com os postos 1, 2 e 3 —
-        os três menores possíveis. Não é só que foram poucas; foram as menores. É uma
-        coincidência improvável sob \(H_0\), e o teste a detecta.</p>
-        <p>O <strong>teste t</strong> enxerga ainda mais, porque usa as magnitudes em si, e
-        por isso dá o p menor dos três — <em>desde que</em> seus pressupostos valham.</p>
-        <p><strong>A escada de poder é esta:</strong> sinais &lt; Wilcoxon &lt; t. Cada degrau
-        usa mais informação e detecta mais, ao custo de exigir mais dos dados. Escolher o
-        teste é escolher onde parar nessa escada.</p>
-      </div>
+      <p>Em três dos quatro cenários A vence. Portanto</p>
+      <p>\[P(A \text{ vence}) = \frac34, \qquad P(B \text{ vence}) = \frac14,\]</p>
+      <p>e a divisão justa é <strong>48 moedas para A e 16 para B</strong>.</p>
+      <p><strong>Por que isso é um marco.</strong> Três ideias aparecem aqui pela primeira vez, e
+      todas as três reaparecerão neste curso: enumerar <em>todos</em> os casos possíveis em um
+      espaço equiprovável; incluir cenários que não ocorreriam de fato, só para manter a
+      equiprobabilidade; e usar a probabilidade como base para uma <strong>decisão</strong> — o
+      embrião do conceito de valor esperado, que Huygens formalizaria três anos depois e que
+      estudaremos no Módulo 3.</p>
     </div>
   </details>
 
-  <!-- ================================================== -->
-  <h2 id="s5">5. Teste de Mann–Whitney</h2>
+  <h3>Huygens, e a saída do cassino</h3>
 
-  <div class="bloco def">
-    <span class="rotulo">Para dois grupos independentes</span>
-    <ol>
-      <li>Junte as duas amostras e ordene <strong>tudo</strong>;</li>
-      <li>Atribua postos de 1 a \(n_1+n_2\), com postos médios nos empates;</li>
-      <li>Some os postos do grupo 1: \(R_1\);</li>
-      <li>Calcule \(\displaystyle U_1 = R_1 - \frac{n_1(n_1+1)}{2}\) e \(U_2 = n_1n_2 - U_1\);</li>
-      <li>A estatística é \(U = \min(U_1, U_2)\).</li>
-    </ol>
-    <p>Para \(n\) grande:</p>
-    <p>\[\mu_U = \frac{n_1 n_2}{2}, \qquad
-    \sigma^2_U = \frac{n_1 n_2 (n_1+n_2+1)}{12}.\]</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">O que U significa, concretamente</span>
-    <p>\(U_1\) é o <strong>número de pares</strong> \((x_i, y_j)\) em que o valor do grupo 1
-    é maior que o do grupo 2. Se os dois grupos forem equivalentes, esperamos que isso
-    aconteça em metade dos \(n_1 n_2\) pares — daí \(\mu_U = n_1n_2/2\).</p>
-    <p>Dividindo, \(U_1/(n_1n_2)\) estima \(P(X > Y)\), uma quantidade com significado direto:
-    "qual a probabilidade de um indivíduo do grupo 1 superar um do grupo 2?". Essa é a
-    <strong>medida de efeito</strong> natural do teste, e deveria ser reportada junto com o
-    valor p.</p>
-  </div>
-
-  <h3>Exercício resolvido 14.2 — Quando um outlier derruba o teste t</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Mediu-se uma mesma grandeza em dois arranjos experimentais:</p>
-    <div class="tabela-rolavel">
-    <table>
-      <tbody>
-        <tr><th>grupo 1</th><td class="num">12</td><td class="num">14</td><td class="num">13</td><td class="num">15</td><td class="num">11</td><td class="num">16</td><td class="num">14</td><td class="num">13</td><td class="num">120</td></tr>
-        <tr><th>grupo 2</th><td class="num">22</td><td class="num">25</td><td class="num">21</td><td class="num">27</td><td class="num">24</td><td class="num">23</td><td class="num">26</td><td class="num">22</td><td class="num">28</td></tr>
-      </tbody>
-    </table>
-    </div>
-    <p>O valor 120 é uma leitura real, não um erro de transcrição. Compare o teste t com o de
-    Mann–Whitney.</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Teste t independente.</strong></p>
-      <p>\[\bar x_1 = 25{,}33 \qquad \bar x_2 = 24{,}22 \qquad t = 0{,}094 \qquad
-      p = \mathbf{0{,}927}\]</p>
-      <p>Conclusão: nenhuma diferença. Mas olhe os dados — oito dos nove valores do grupo 1
-      são <em>menores que todos</em> os do grupo 2. Algo está errado.</p>
-      <p><strong>O que aconteceu.</strong> O valor 120 sozinho puxou a média do grupo 1 de
-      13,5 para 25,33, deixando-a quase igual à do grupo 2. E, pior, inflou o desvio padrão
-      do grupo 1 de 1,6 para 35,5 — e o desvio é o <em>denominador</em> do \(t\). O outlier
-      destruiu o teste por dois caminhos ao mesmo tempo.</p>
-      <p><strong>Mann–Whitney.</strong> Ordenando tudo, os oito menores valores são do grupo 1
-      (postos 1 a 8), os nove seguintes do grupo 2 (postos 9 a 17), e o 120 fica com o
-      <strong>posto 18</strong> — e não com um posto astronômico, porque posto 18 é o maior
-      que existe aqui.</p>
-      <p>\[R_1 = 1+2+3{,}5+3{,}5+5{,}5+5{,}5+7+8+18 = 54\]</p>
-      <p>\[U_1 = 54 - \frac{9\times 10}{2} = 54-45 = 9\]</p>
-      <p>Com empates entre os valores, usa-se a aproximação normal com correção:
-      \(p = \mathbf{0{,}0061}\). <strong>Rejeitamos \(H_0\).</strong></p>
-      <p><strong>Medida de efeito.</strong> \(U_1/(n_1n_2) = 9/81 = 0{,}11\): a probabilidade
-      de uma medida do grupo 1 superar uma do grupo 2 é de apenas 11%. O efeito é grande e
-      claro.</p>
-      <p><strong>Medianas em vez de médias.</strong> 14,0 contra 24,0 — que é a descrição
-      honesta destes dados. Sempre que o não paramétrico rejeita e o paramétrico não, olhe a
-      distância entre média e mediana: ela costuma explicar tudo.</p>
-    </div>
-  </details>
-
-  <!-- ================================================== -->
-  <h2 id="s6">6. Teste das sequências</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Testando a aleatoriedade da ordem</span>
-    <p>Classifique cada observação como acima (A) ou abaixo (B) da mediana e conte as
-    <strong>sequências</strong> — blocos consecutivos de letras iguais. Por exemplo,
-    <code>A A B B B A B</code> tem 4 sequências.</p>
-    <p>Sob a hipótese de aleatoriedade, com \(n_1\) símbolos A e \(n_2\) símbolos B:</p>
-    <p>\[\mu_R = \frac{2n_1n_2}{n}+1, \qquad
-    \sigma^2_R = \frac{2n_1n_2(2n_1n_2-n)}{n^2(n-1)}, \qquad n=n_1+n_2.\]</p>
-  </div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Os dois jeitos de não ser aleatório</span>
-    <p><strong>Poucas sequências</strong> significam que os valores vêm agrupados: há
-    tendência, deriva ou dependência entre observações vizinhas. É o caso de uma medida que
-    aumenta ao longo do experimento porque o equipamento esquenta.</p>
-    <p><strong>Sequências demais</strong> significam alternância sistemática — o que também
-    não é aleatório. Acontece, por exemplo, quando duas pessoas se revezam nas medidas e têm
-    vieses opostos.</p>
-    <p>É por isso que o teste é bilateral: os dois extremos denunciam problemas, de naturezas
-    diferentes.</p>
-  </div>
-
-  <div class="bloco fisica">
-    <span class="rotulo">A aplicação mais útil: resíduos de regressão</span>
-    <p>Aplicado aos resíduos do Módulo 13, <em>na ordem de \(x\)</em>, este teste formaliza
-    exatamente o que o olho faz no gráfico de resíduos. Poucas sequências significam blocos
-    de resíduos de mesmo sinal, isto é, <strong>curvatura</strong>: o modelo linear está
-    errado.</p>
-    <p>É a versão rigorosa da contagem de trocas de sinal que o simulador de linearização já
-    fazia. Experimente: carregue o pêndulo sem transformar, anote os resíduos e rode o teste
-    das sequências sobre eles.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s7">7. Kruskal–Wallis: mais de dois grupos</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">A extensão natural do Mann–Whitney</span>
-    <p>Com \(k\) grupos independentes, ordene todas as \(n\) observações juntas e seja \(R_j\)
-    a soma dos postos do grupo \(j\), de tamanho \(n_j\):</p>
-    <p>\[H=\frac{12}{n(n+1)}\sum_{j=1}^{k}\frac{R_j^{2}}{n_j}-3(n+1)\]</p>
-    <p>Sob \(H_0\), \(H\) segue aproximadamente uma \(\chi^2\) com \(k-1\) graus de liberdade,
-    desde que cada grupo tenha ao menos 5 observações.</p>
-    <p>Com empates, divide-se \(H\) por \(1-\dfrac{\sum (t^3-t)}{n^3-n}\), somando sobre os
-    grupos de valores empatados.</p>
-  </div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Com k = 2 ele vira Mann–Whitney</span>
-    <p>Não é coincidência: \(H = z^2\), onde \(z\) é a estatística normal do Mann–Whitney. É a
-    mesma relação que há entre o teste F e o teste t na regressão simples.</p>
-    <p>E, como na ANOVA, \(H\) significativo diz apenas que <em>algum</em> grupo difere, sem
-    dizer qual. A identificação exige comparações par a par com correção para múltiplos
-    testes — a correção de Bonferroni, dividindo \(\alpha\) pelo número de comparações, é a
-    mais simples e a mais conservadora.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s8">8. Empates e eficiência</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">A regra dos postos médios, de novo</span>
-    <p>Valores iguais recebem a média das posições que ocupariam — a mesma regra do Spearman,
-    no Módulo 12. Mas os empates <strong>reduzem a variância</strong> da estatística, e as
-    fórmulas precisam ser corrigidas:</p>
-    <p>\[\sigma^2_U = \frac{n_1n_2}{12}\left[(n+1)-\frac{\sum_g (t_g^3-t_g)}{n(n-1)}\right]\]</p>
-    <p>onde \(t_g\) é o tamanho de cada grupo de empates. Sem empates todos os \(t_g=1\), a
-    soma zera e a fórmula volta à original.</p>
-    <p>Com empates, a distribuição exata deixa de valer e é obrigatório recorrer à aproximação
-    normal corrigida. O simulador avisa quando isso acontece.</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">Eficiência relativa assintótica</span>
-    <div class="tabela-rolavel">
-    <table>
-      <thead><tr><th>Teste</th><th>Equivalente paramétrico</th><th class="num">se normal</th><th class="num">se cauda pesada</th></tr></thead>
-      <tbody>
-        <tr><td>Sinais</td><td>t pareado</td><td class="num">0,64</td><td class="num">&gt; 1</td></tr>
-        <tr><td>Wilcoxon pareado</td><td>t pareado</td><td class="num">0,955</td><td class="num">&gt; 1</td></tr>
-        <tr><td>Mann–Whitney</td><td>t independente</td><td class="num">0,955</td><td class="num">&gt; 1</td></tr>
-        <tr><td>Kruskal–Wallis</td><td>ANOVA</td><td class="num">0,955</td><td class="num">&gt; 1</td></tr>
-      </tbody>
-    </table>
-    </div>
-    <p>O número 0,955 — mais precisamente \(3/\pi\) — é um dos resultados mais notáveis da
-    estatística. Significa que, <strong>mesmo no terreno em que o teste t é ótimo</strong>,
-    o Wilcoxon só precisa de 4,5% mais observações para igualá-lo.</p>
-  </div>
-
-  <div class="destaque">
-    <span class="anuncio">Um seguro que custa 4,5%</span>
-    E que, quando os dados têm caudas pesadas, paga mais do que custou: nesses casos a
-    eficiência passa de 1, e o teste não paramétrico é <b>mais</b> poderoso que o t.
-  </div>
-
-  <div class="bloco fisica">
-    <span class="rotulo">Por que, então, não usar sempre o não paramétrico?</span>
-    <p>É uma pergunta legítima, e a resposta tem três partes.</p>
-    <p><strong>Primeira:</strong> o teste t dá mais que um valor p. Ele dá um
-    <em>intervalo de confiança para a diferença de médias</em>, em unidades físicas. "A
-    diferença é de 2,3 ± 0,4 mm" é uma afirmação muito mais útil que "p = 0,003".</p>
-    <p><strong>Segunda:</strong> as hipóteses não são exatamente as mesmas. O t compara
-    médias; o Mann–Whitney compara distribuições inteiras e só se traduz em "comparação de
-    medianas" quando as formas são semelhantes.</p>
-    <p><strong>Terceira:</strong> em Física, o modelo probabilístico costuma ser
-    <em>conhecido</em>. Erros de medida independentes somam-se e o TCL atua; a normalidade não
-    é uma suposição conveniente, é uma consequência. Descartá-la é jogar fora informação
-    legítima.</p>
-    <p>A regra prática: use o paramétrico quando os pressupostos se sustentam, e tenha o não
-    paramétrico à mão para quando não se sustentarem. Rodar os dois e <strong>escolher o que
-    dá o menor p</strong> é, isso sim, uma forma de fraude estatística.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s9">9. Qual teste usar</h2>
+  <p><strong>Christiaan Huygens</strong> (1629–1695) ouviu falar da correspondência, refez os
+  resultados por conta própria e publicou em 1657 o <em>De ratiociniis in ludo aleae</em>, o
+  primeiro tratado impresso sobre probabilidade — que seria, por cinquenta anos, o livro-texto da
+  área. Mais importante: Huygens aplicou a ideia a <strong>tábuas de mortalidade</strong>,
+  calculando expectativa de vida a partir de registros de óbitos. Pela primeira vez, a matemática
+  do acaso descrevia o mundo real, e não um jogo.</p>
 
   <div class="tabela-rolavel">
   <table>
-    <thead><tr><th>Situação</th><th>Paramétrico</th><th>Não paramétrico</th></tr></thead>
+    <thead><tr><th>Ano</th><th>Quem</th><th>Contribuição</th></tr></thead>
     <tbody>
-      <tr><td>Uma amostra, comparar com valor de referência</td><td>t de uma amostra</td><td>Sinais ou Wilcoxon</td></tr>
-      <tr><td>Duas amostras pareadas</td><td>t pareado</td><td>Wilcoxon dos postos sinalizados</td></tr>
-      <tr><td>Duas amostras independentes</td><td>t independente</td><td>Mann–Whitney</td></tr>
-      <tr><td>Três ou mais grupos independentes</td><td>ANOVA</td><td>Kruskal–Wallis</td></tr>
-      <tr><td>Três ou mais medidas no mesmo sujeito</td><td>ANOVA de medidas repetidas</td><td>Friedman</td></tr>
-      <tr><td>Associação entre duas variáveis</td><td>Pearson</td><td>Spearman (Módulo 12)</td></tr>
-      <tr><td>Aleatoriedade de uma sequência</td><td>—</td><td>Sequências</td></tr>
-      <tr><td>Igualdade de distribuições</td><td>—</td><td>Kolmogorov–Smirnov (Módulo 11)</td></tr>
+      <tr><td>~1564</td><td>Cardano</td><td>casos favoráveis sobre casos possíveis (publicado só em 1663)</td></tr>
+      <tr><td>1654</td><td>Pascal e Fermat</td><td>o problema dos pontos; o método de enumeração</td></tr>
+      <tr><td>1657</td><td>Huygens</td><td>primeiro tratado impresso; valor esperado; expectativa de vida</td></tr>
+      <tr><td>1713</td><td>Jacob Bernoulli</td><td>lei dos grandes números (<em>Ars Conjectandi</em>, póstumo)</td></tr>
+      <tr><td>1733</td><td>De Moivre</td><td>a curva normal como limite da binomial</td></tr>
+      <tr><td>1763</td><td>Thomas Bayes</td><td>probabilidade inversa (póstumo); Módulo 16</td></tr>
+      <tr><td>1812</td><td>Laplace</td><td><em>Théorie analytique</em>; define o campo por um século</td></tr>
+      <tr><td>1809</td><td>Gauss</td><td>normal aplicada a erros de observação astronômica</td></tr>
+      <tr><td>1877</td><td>Boltzmann</td><td>\(S = k_B \ln \Omega\): entropia é contagem</td></tr>
+      <tr><td>1926</td><td>Born</td><td>interpretação probabilística da função de onda</td></tr>
+      <tr><td>1933</td><td>Kolmogorov</td><td>os três axiomas; a teoria vira matemática pura</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">O fio que liga tudo a você</span>
+    <p>Repare na coluna das datas. Entre a pergunta de um jogador sobre moedas de ouro e a
+    afirmação de Born de que a função de onda só fornece probabilidades passam-se 272 anos — e a
+    matemática usada é, no essencial, a mesma. Os axiomas de Kolmogorov, que você estudará na
+    seção 5, descrevem igualmente bem o dado do Cavaleiro de Méré, a agitação térmica de um gás
+    e o decaimento de um núcleo.</p>
+    <p>É raro que uma ferramenta construída para um fim tão modesto sirva tão bem a fins tão
+    distantes. Vale guardar esse espanto.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">3. Espaço amostral</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>O <strong>espaço amostral</strong> \(\Omega\) de um experimento aleatório é o conjunto de
+    todos os seus resultados possíveis. Cada elemento \(\omega \in \Omega\) é um
+    <strong>ponto amostral</strong>, ou resultado elementar.</p>
+  </div>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Experimento</th><th>Espaço amostral</th><th>Tipo</th></tr></thead>
+    <tbody>
+      <tr><td>Lançar uma moeda</td><td>\(\Omega=\{K,C\}\)</td><td>finito</td></tr>
+      <tr><td>Lançar um dado</td><td>\(\Omega=\{1,2,3,4,5,6\}\)</td><td>finito</td></tr>
+      <tr><td>Lançar dois dados</td><td>\(\Omega=\{(i,j)\}\), \(|\Omega|=36\)</td><td>finito</td></tr>
+      <tr><td>Contar fótons em 1 s</td><td>\(\Omega=\{0,1,2,\dots\}\)</td><td>enumerável</td></tr>
+      <tr><td>Tempo de vida de um núcleo</td><td>\(\Omega=[0,\infty)\)</td><td>contínuo</td></tr>
+      <tr><td>Velocidade de uma molécula</td><td>\(\Omega=\mathbb{R}^3\)</td><td>contínuo</td></tr>
     </tbody>
   </table>
   </div>
 
   <div class="bloco alerta">
-    <span class="rotulo">Decida antes de ver os dados</span>
-    <p>A escolha do teste deve ser feita com base no <strong>tipo de dado e no desenho do
-    experimento</strong>, não no resultado. Verificar pressupostos é legítimo e necessário;
-    trocar de teste depois de ver que o primeiro não deu significativo não é.</p>
-    <p>Em pesquisa séria isso se resolve registrando o plano de análise <em>antes</em> da
-    coleta. Num relatório de laboratório, basta decidir e declarar o teste na seção de
-    metodologia, antes de olhar os resultados.</p>
+    <span class="rotulo">O espaço amostral não é único</span>
+    <p>Ele depende da <strong>pergunta</strong> que fazemos. Ao lançar dois dados, podemos tomar
+    \(\Omega\) como os 36 pares ordenados ou como as 11 somas possíveis \(\{2,3,\dots,12\}\).
+    No segundo caso, porém, os resultados <strong>não são equiprováveis</strong> — e isso muda
+    tudo. O simulador abaixo mostra por quê.</p>
+  </div>
+
+  <h3>Os dois espaços amostrais dos dois dados</h3>
+
+  <p>Este é o exemplo mais instrutivo de todo o módulo, e vale percorrê-lo devagar.</p>
+
+  <p>Imagine que os dados são de cores diferentes — um vermelho e um azul. Isso não muda a
+  física do lançamento, mas torna visível uma distinção que estava lá o tempo todo: o resultado
+  "vermelho 2, azul 5" é <strong>diferente</strong> do resultado "vermelho 5, azul 2", ainda que
+  ambos somem 7.</p>
+
+  <p>Montando uma linha para cada face do dado vermelho e uma coluna para cada face do azul,
+  obtemos um quadro de \(6 \times 6 = 36\) células. <strong>São essas 36 células que são
+  equiprováveis</strong>, cada uma com probabilidade \(1/36\) — e não as onze somas possíveis.
+  Cardano já havia percebido isso em 1564.</p>
+
+  <p>No quadro abaixo, escolha um evento e veja quais células o compõem. Contar as células
+  destacadas <em>é</em> calcular a probabilidade:</p>
+
+  <div data-widget="gradedados"></div>
+
+  <p>Note a simetria do quadro. A diagonal secundária — de \((1,6)\) a \((6,1)\) — é a mais
+  longa, com seis células: por isso a soma 7 é a mais provável. Os cantos \((1,1)\) e \((6,6)\)
+  estão sozinhos: por isso as somas 2 e 12 são as mais raras, cada uma com probabilidade
+  \(1/36\).</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Um erro que custou caro ao Cavaleiro de Méré</span>
+    <p>Gombaud apostava que, em quatro lançamentos de <em>um</em> dado, sairia pelo menos um 6 —
+    e ganhava consistentemente. Raciocinando por analogia, passou a apostar que, em 24
+    lançamentos de <em>dois</em> dados, sairia pelo menos um duplo-6. E começou a perder.</p>
+    <p>Seu raciocínio era: a chance de um 6 é \(1/6\), e \(4 \times 1/6 = 2/3\); a chance de um
+    duplo-6 é \(1/36\), e \(24 \times 1/36 = 2/3\) também. As apostas deveriam ser equivalentes.</p>
+    <p>O erro está em <em>somar</em> probabilidades de eventos que não são mutuamente
+    exclusivos — os quatro lançamentos podem dar 6 simultaneamente. Fazendo a conta certa, pelo
+    complementar (seção 7):</p>
+    <p>\[P(\text{pelo menos um 6 em 4}) = 1-\left(\tfrac56\right)^4 \approx 0{,}5177,\]</p>
+    <p>\[P(\text{pelo menos um duplo-6 em 24}) = 1-\left(\tfrac{35}{36}\right)^{24} \approx 0{,}4914 .\]</p>
+    <p>A primeira aposta é ligeiramente favorável; a segunda, ligeiramente desfavorável. A
+    diferença é de apenas 2,6 pontos percentuais — imperceptível em poucas partidas, ruinosa ao
+    longo de milhares. <strong>Foi perdendo dinheiro que Gombaud procurou Pascal.</strong></p>
+  </div>
+
+  <p>Agora compare o quadro teórico com um experimento real. O simulador abaixo lança os dados
+  de verdade, e você vê a frequência observada convergir para a previsão:</p>
+
+  <div data-widget="dados2"></div>
+
+  <p>Com poucos lançamentos, as barras ficam desarrumadas. Com dez mil, encaixam-se quase
+  perfeitamente na linha teórica. Essa convergência tem nome — <strong>lei dos grandes
+  números</strong>, demonstrada por Jacob Bernoulli em 1713 — e é o que liga a definição
+  frequentista à definição clássica.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s3">4. Eventos e a álgebra de conjuntos</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Um <strong>evento</strong> é um subconjunto do espaço amostral, \(A \subseteq \Omega\).
+    Dizemos que \(A\) <strong>ocorreu</strong> se o resultado observado \(\omega\) pertence a \(A\).</p>
+  </div>
+
+  <p>Com um dado, \(\Omega=\{1,\dots,6\}\):</p>
+  <ul>
+    <li>\(A=\) "sair número par" \(=\{2,4,6\}\);</li>
+    <li>\(B=\) "sair número maior que 4" \(=\{5,6\}\);</li>
+    <li>\(C=\) "sair 7" \(=\varnothing\), o evento <strong>impossível</strong>;</li>
+    <li>\(D=\) "sair número menor que 10" \(=\Omega\), o evento <strong>certo</strong>.</li>
+  </ul>
+
+  <h3>Dicionário: palavras e conjuntos</h3>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Em palavras</th><th>Em conjuntos</th></tr></thead>
+    <tbody>
+      <tr><td>Ocorre \(A\) <em>ou</em> \(B\) (ou ambos)</td><td>\(A \cup B\)</td></tr>
+      <tr><td>Ocorre \(A\) <em>e</em> \(B\) simultaneamente</td><td>\(A \cap B\)</td></tr>
+      <tr><td><em>Não</em> ocorre \(A\)</td><td>\(A^c = \Omega \setminus A\)</td></tr>
+      <tr><td>Ocorre \(A\) mas não \(B\)</td><td>\(A \cap B^c\)</td></tr>
+      <tr><td>Se ocorre \(A\), então ocorre \(B\)</td><td>\(A \subseteq B\)</td></tr>
+      <tr><td>\(A\) e \(B\) não podem ocorrer juntos</td><td>\(A \cap B = \varnothing\)</td></tr>
+      <tr><td>Ocorre exatamente um entre \(A\) e \(B\)</td><td>\((A\cap B^c)\cup(A^c\cap B)\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Leis de De Morgan</span>
+    <p>\[(A \cup B)^c = A^c \cap B^c, \qquad (A \cap B)^c = A^c \cup B^c\]</p>
+    <p>e, para uma família qualquer,</p>
+    <p>\[\left(\bigcup_i A_i\right)^{c} = \bigcap_i A_i^c, \qquad
+        \left(\bigcap_i A_i\right)^{c} = \bigcup_i A_i^c .\]</p>
+    <p><strong>Leitura física:</strong> "nenhum detector disparou" é o mesmo que "o detector 1 não
+    disparou <em>e</em> o 2 não disparou <em>e</em>…".</p>
+  </div>
+
+  <h3>Partição do espaço amostral</h3>
+  <p>Uma família \(\{A_1,\dots,A_n\}\) é uma <strong>partição</strong> de \(\Omega\) quando os
+  eventos são mutuamente exclusivos (\(A_i \cap A_j = \varnothing\) para \(i\neq j\)) e
+  coletivamente exaustivos (\(\bigcup_i A_i = \Omega\)). O par \(\{A, A^c\}\) é sempre uma
+  partição. Em um sistema quântico, os autoestados de um observável formam uma partição dos
+  resultados possíveis de medida. Esse conceito será decisivo no Módulo 16.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s4">5. Os axiomas de Kolmogorov</h2>
+
+  <h3>Três caminhos para definir probabilidade</h3>
+
+  <div class="bloco">
+    <span class="rotulo">1. Clássica (Laplace, 1812)</span>
+    <p>Se \(\Omega\) é finito e os resultados são igualmente prováveis,
+    \(P(A) = |A|/|\Omega|\). <strong>Problema:</strong> é circular — define probabilidade usando
+    "igualmente prováveis" — e não se aplica a \(\Omega\) infinito.</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">2. Frequentista (von Mises)</span>
+    <p>\(P(A) = \lim_{N \to \infty} n_A/N\). <strong>Problema:</strong> o limite é empírico, não
+    matemático, e exige repetições infinitas.</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">3. Axiomática (Kolmogorov, 1933)</span>
+    <p>Não se define <em>o que é</em> probabilidade: postulam-se as <strong>propriedades</strong>
+    que ela deve satisfazer. As duas definições anteriores tornam-se modelos consistentes com
+    os axiomas.</p>
+  </div>
+
+  <h3>Espaço de probabilidade</h3>
+  <p>Uma família \(\mathcal{F}\) de subconjuntos de \(\Omega\) é uma <strong>\(\sigma\)-álgebra</strong>
+  se contém \(\Omega\), é fechada por complementação e por uniões enumeráveis. Se \(\Omega\) é
+  finito ou enumerável, tomamos \(\mathcal{F}=2^{\Omega}\); se \(\Omega=\mathbb{R}\), tomamos a
+  \(\sigma\)-álgebra de <strong>Borel</strong>, gerada pelos intervalos.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Por que precisamos de \(\mathcal{F}\)?</span>
+    <p>Em \(\mathbb{R}\) existem subconjuntos patológicos (não mensuráveis) aos quais é
+    <em>impossível</em> atribuir probabilidade de forma consistente. A \(\sigma\)-álgebra
+    seleciona os conjuntos bem-comportados. Na prática da Física, todo conjunto de interesse é
+    boreliano — mas é bom saber que a ressalva existe.</p>
+  </div>
+
+  <p>O <strong>espaço de probabilidade</strong> é a tripla \((\Omega, \mathcal{F}, P)\), em que
+  \(P:\mathcal{F}\to[0,1]\) é uma medida de probabilidade satisfazendo:</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Axioma 1 — Não-negatividade</span>
+    <p>\[P(A) \geq 0 \qquad \forall\, A \in \mathcal{F}\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Axioma 2 — Medida unitária</span>
+    <p>\[P(\Omega) = 1\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Axioma 3 — Aditividade enumerável</span>
+    <p>Para qualquer sequência enumerável de eventos <strong>disjuntos</strong>
+    \(A_1,A_2,\dots\), com \(A_i \cap A_j=\varnothing\) para \(i\neq j\),</p>
+    <p>\[P\!\left(\bigcup_{i=1}^{\infty} A_i\right) = \sum_{i=1}^{\infty} P(A_i)\]</p>
+  </div>
+
+  <div class="destaque">
+    Tudo o que se segue — em todo o curso — é <strong>consequência lógica</strong> destes três enunciados.
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s10">10. Aplicações em Física e em ensino</h2>
+  <h2 id="s5">6. Consequências dos axiomas</h2>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 1 — \(P(\varnothing)=0\)</span>
+    <p><em>Demonstração.</em> Tome \(A_1=\Omega\) e \(A_i=\varnothing\) para \(i\geq 2\). Esses
+    conjuntos são disjuntos e sua união é \(\Omega\). Por (A3),
+    \(P(\Omega)=P(\Omega)+\sum_{i\geq2}P(\varnothing)\), donde
+    \(\sum_{i\geq2}P(\varnothing)=0\). Como \(P(\varnothing)\geq 0\) por (A1), só resta
+    \(P(\varnothing)=0\). ∎</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 2 — Aditividade finita</span>
+    <p>Se \(A_1,\dots,A_n\) são disjuntos, \(P(\bigcup_{i=1}^n A_i)=\sum_{i=1}^n P(A_i)\).</p>
+    <p><em>Demonstração.</em> Complete a sequência com \(A_i=\varnothing\) para \(i>n\) e aplique
+    (A3) junto ao Teorema 1. ∎</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 3 — Complementar</span>
+    <p>\(P(A^c)=1-P(A)\).</p>
+    <p><em>Demonstração.</em> \(A\cup A^c=\Omega\) e \(A\cap A^c=\varnothing\). Por (A2) e pelo
+    Teorema 2, \(1=P(A)+P(A^c)\). ∎</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 4 — Monotonicidade</span>
+    <p>Se \(A \subseteq B\), então \(P(A)\leq P(B)\).</p>
+    <p><em>Demonstração.</em> \(B=A\cup(B\cap A^c)\), união disjunta. Logo
+    \(P(B)=P(A)+P(B\cap A^c)\geq P(A)\). ∎ <br>
+    <em>Corolário:</em> como \(A\subseteq\Omega\), temos \(0\leq P(A)\leq 1\).</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Teorema 5 — Regra da adição</span>
+    <p>\[P(A \cup B) = P(A) + P(B) - P(A \cap B)\]</p>
+    <p><em>Demonstração.</em> Decomponha \(A\cup B\) em três partes disjuntas:
+    \((A\cap B^c)\), \((A\cap B)\) e \((A^c\cap B)\). Como \(P(A)=P(A\cap B^c)+P(A\cap B)\) e
+    \(P(B)=P(A^c\cap B)+P(A\cap B)\), somar \(P(A)+P(B)\) conta a interseção duas vezes; subtraí-la
+    uma vez corrige a conta. ∎</p>
+  </div>
+
+  <p>Para três eventos, o mesmo raciocínio dá o <strong>princípio da inclusão–exclusão</strong>:</p>
+  <p>\[P(A\cup B\cup C)=P(A)+P(B)+P(C)-P(A\cap B)-P(A\cap C)-P(B\cap C)+P(A\cap B\cap C)\]</p>
+
+  <p>E, em geral, vale a <strong>desigualdade de Boole</strong> (subaditividade):
+  \(P(\bigcup_i A_i) \leq \sum_i P(A_i)\), útil para limitar a probabilidade de que
+  <em>alguma</em> entre muitas fontes de erro estrague uma medida.</p>
+
+  <div data-widget="eventos"></div>
+
+  <h3>Exercício resolvido 1.1 — Manipulando os axiomas</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Sejam \(A\) e \(B\) eventos com \(P(A)=0{,}6\), \(P(B)=0{,}5\) e \(P(A\cap B)=0{,}3\).
+    Calcule: (a) \(P(A\cup B)\); (b) \(P(A^c\cap B^c)\); (c) \(P(A\cap B^c)\);
+    (d) a probabilidade de ocorrer exatamente um dos dois.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> Pelo Teorema 5:
+      \(P(A\cup B)=0{,}6+0{,}5-0{,}3=\mathbf{0{,}8}\).</p>
+      <p><strong>(b)</strong> Por De Morgan, \(A^c\cap B^c=(A\cup B)^c\), logo
+      \(P(A^c\cap B^c)=1-0{,}8=\mathbf{0{,}2}\).</p>
+      <p><strong>(c)</strong> Como \(A=(A\cap B)\cup(A\cap B^c)\) é união disjunta,
+      \(P(A\cap B^c)=0{,}6-0{,}3=\mathbf{0{,}3}\).</p>
+      <p><strong>(d)</strong> Analogamente \(P(A^c\cap B)=0{,}2\). Os eventos "só \(A\)" e
+      "só \(B\)" são disjuntos, então a resposta é \(0{,}3+0{,}2=\mathbf{0{,}5}\).</p>
+      <p><em>Verificação:</em> \(0{,}3+0{,}2+0{,}3+0{,}2=1\) ✓ — as quatro regiões particionam
+      \(\Omega\). Confira os números no simulador acima.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 1.2 — Detectores em coincidência</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um experimento usa três detectores, com probabilidades de falha
+    \(p_1=0{,}02\), \(p_2=0{,}03\) e \(p_3=0{,}05\) durante uma tomada de dados.
+    <strong>Sem qualquer hipótese sobre independência</strong>, dê cotas para a probabilidade de
+    que pelo menos um detector falhe.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Seja \(F_i\) o evento "o detector \(i\) falha". Queremos \(P(F_1\cup F_2\cup F_3)\).
+      Sem informação sobre as interseções não há valor exato — mas há limites.</p>
+      <p><strong>Cota superior</strong> (Boole):
+      \(P(F_1\cup F_2\cup F_3)\leq 0{,}02+0{,}03+0{,}05=\mathbf{0{,}10}\).</p>
+      <p><strong>Cota inferior</strong> (monotonicidade): como \(F_3 \subseteq F_1\cup F_2\cup F_3\),
+      \(P(F_1\cup F_2\cup F_3)\geq \max_i p_i=\mathbf{0{,}05}\).</p>
+      <p>Portanto \(0{,}05 \leq P \leq 0{,}10\). Os axiomas sozinhos já produzem informação útil,
+      mesmo sem conhecer a estrutura de dependência entre os detectores.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">7. A regra de Laplace</h2>
+
+  <p>Se \(\Omega=\{\omega_1,\dots,\omega_N\}\) é finito e cada resultado tem a mesma
+  probabilidade \(p\), então por (A2) e pelo Teorema 2:
+  \(1=P(\Omega)=\sum_{i=1}^N p = Np\), donde \(p = 1/N\). Para qualquer evento \(A\):</p>
+
+  <div class="destaque">
+    \[P(A) = \frac{|A|}{|\Omega|} = \frac{\text{casos favoráveis}}{\text{casos possíveis}}\]
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Quando podemos supor equiprobabilidade?</span>
+    <ul>
+      <li>Por <strong>simetria física</strong>: moeda, dado, roleta balanceados;</li>
+      <li>Por <strong>princípio de indiferença</strong>: na ausência de razão para privilegiar um resultado;</li>
+      <li>Na Física Estatística, pelo <strong>postulado fundamental</strong>: todos os microestados
+      acessíveis de um sistema isolado em equilíbrio são igualmente prováveis.</li>
+    </ul>
+  </div>
+
+  <h3>Exercício resolvido 1.3 — Soma de dois dados</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Dois dados honestos são lançados. Calcule a probabilidade de a soma ser (a) igual a 7;
+    (b) igual a 7 ou 11; (c) pelo menos 4.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Tomamos \(\Omega\) como os pares ordenados, \(|\Omega|=36\), todos equiprováveis.</p>
+      <p><strong>(a)</strong> \(A_7=\{(1,6),(2,5),(3,4),(4,3),(5,2),(6,1)\}\), com \(|A_7|=6\).
+      Logo \(P(A_7)=6/36=1/6\approx \mathbf{0{,}167}\).</p>
+      <p><strong>(b)</strong> \(A_{11}=\{(5,6),(6,5)\}\), \(|A_{11}|=2\). Como \(A_7\cap A_{11}=\varnothing\),
+      \(P=6/36+2/36=8/36=2/9\approx \mathbf{0{,}222}\).</p>
+      <p><strong>(c)</strong> Aqui o complementar é muito mais econômico: "soma \(\geq 4\)" tem
+      complementar "soma \(\leq 3\)" \(=\{(1,1),(1,2),(2,1)\}\). Então
+      \(P=1-3/36=33/36=11/12\approx \mathbf{0{,}917}\).</p>
+      <p><strong>Regra prática:</strong> sempre que aparecer "pelo menos", pense no complementar.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 1.4 — O erro de d'Alembert</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Lançam-se duas moedas honestas. D'Alembert argumentou: "os resultados possíveis são duas
+    caras, duas coroas e uma de cada; logo \(P(\text{uma de cada})=1/3\)". Onde está o erro?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>O espaço amostral \(\Omega'=\{KK, CC, \text{mista}\}\) é legítimo como conjunto, mas seus
+      elementos <strong>não são equiprováveis</strong> — e a regra de Laplace exige equiprobabilidade.</p>
+      <p>Tomando o espaço amostral simétrico, com moedas distinguíveis (uma de 1 real, outra de
+      50 centavos), \(\Omega=\{KK, KC, CK, CC\}\), com \(|\Omega|=4\) e cada resultado valendo
+      \(1/4\) por simetria. Então</p>
+      <p>\[P(\text{uma de cada}) = P(\{KC,CK\}) = \frac{2}{4} = \frac{1}{2} \neq \frac13 .\]</p>
+      <p><strong>Moral:</strong> escolher \(\Omega\) é um ato <em>físico</em>, não apenas
+      notacional. A pergunta decisiva é: os constituintes são distinguíveis?</p>
+    </div>
+  </details>
 
   <div class="bloco fisica">
-    <span class="rotulo">Três situações concretas</span>
-    <p><strong>Comparar dois métodos de medida.</strong> Mediu-se a mesma grandeza com dois
-    instrumentos, nos mesmos objetos. São dados pareados: Wilcoxon, sem precisar supor que os
-    erros sejam normais — útil justamente quando um dos instrumentos tem resolução grosseira e
-    produz muitos empates.</p>
-    <p><strong>Detectar deriva instrumental.</strong> Uma série de medidas da mesma grandeza,
-    tomada ao longo de horas. O teste das sequências responde se a ordem temporal importa — e
-    se importar, há deriva, e a média simples deixou de fazer sentido.</p>
-    <p><strong>Avaliar uma intervenção de ensino.</strong> Notas são, em rigor, ordinais, e
-    turmas são pequenas. O Wilcoxon pareado (antes e depois) ou o Mann–Whitney (turma
-    experimental contra controle) são as ferramentas adequadas — e o exercício 14.1 mostra
-    que escolher o teste errado pode custar a conclusão inteira.</p>
+    <span class="rotulo">Eco na Física: distinguibilidade e as três estatísticas</span>
+    <p>Duas partículas em dois estados de partícula única. Quantas configurações, e qual a
+    probabilidade de encontrar uma em cada estado?</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Estatística</th><th>Partículas</th><th>Configurações</th><th>\(P\)(uma em cada)</th></tr></thead>
+      <tbody>
+        <tr><td>Maxwell–Boltzmann</td><td>distinguíveis</td><td>\(\{AB|\cdot\},\{\cdot|AB\},\{A|B\},\{B|A\}\)</td><td>2/4 = 1/2</td></tr>
+        <tr><td>Bose–Einstein</td><td>idênticas</td><td>\(\{\bullet\bullet|\cdot\},\{\cdot|\bullet\bullet\},\{\bullet|\bullet\}\)</td><td>1/3</td></tr>
+        <tr><td>Fermi–Dirac</td><td>idênticas + Pauli</td><td>\(\{\bullet|\bullet\}\)</td><td>1/1 = 1</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p><strong>A ironia histórica:</strong> a contagem de d'Alembert está errada para moedas, mas
+    é exatamente correta para <strong>bósons</strong>. A Natureza, para fótons e átomos de
+    \(^4\)He, conta como d'Alembert queria contar.</p>
+    <p>As consequências são mensuráveis: o agrupamento (<em>bunching</em>) de fótons no experimento
+    de Hanbury Brown–Twiss, a condensação de Bose–Einstein, a emissão estimulada do laser; e, do
+    lado fermiônico, a estrutura da tabela periódica e a pressão de degenerescência que sustenta
+    anãs brancas contra o colapso gravitacional.</p>
   </div>
 
+  <h3>Exercício resolvido 1.5 — Baralho</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>De um baralho de 52 cartas retira-se uma ao acaso. Seja \(A=\) "é de copas" e \(B=\) "é
+    figura" (valete, dama ou rei). Calcule \(P(A)\), \(P(B)\), \(P(A\cap B)\) e \(P(A\cup B)\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Há 13 copas: \(P(A)=13/52=1/4\). Há 3 figuras por naipe, ou seja 12:
+      \(P(B)=12/52=3/13\). Figuras de copas são 3: \(P(A\cap B)=3/52\).</p>
+      <p>\[P(A\cup B)=\frac{13}{52}+\frac{12}{52}-\frac{3}{52}=\frac{22}{52}=\frac{11}{26}\approx 0{,}423 .\]</p>
+      <p>Note que \(P(A\cap B)=P(A)\,P(B)=\tfrac14\cdot\tfrac{3}{13}=\tfrac{3}{52}\): os eventos são
+      <strong>independentes</strong>, conceito que formalizaremos no Módulo 16.</p>
+    </div>
+  </details>
+
   <!-- ================================================== -->
-  <h2 id="s11">11. Exercícios propostos</h2>
+  <h2 id="s7">8. Probabilidade geométrica</h2>
+
+  <p>Se \(\Omega\) é um contínuo, cada ponto tem probabilidade zero e a regra \(|A|/|\Omega|\)
+  vira \(\infty/\infty\). A generalização natural troca <em>contagem</em> por <strong>medida</strong>
+  — comprimento, área, volume. Se o ponto é escolhido uniformemente em \(\Omega\subset\mathbb{R}^n\):</p>
+
+  <p>\[P(A) = \frac{\mu(A)}{\mu(\Omega)}, \qquad \mu(A)=\int_A d^n x .\]</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Probabilidade zero ≠ impossível</span>
+    <p>Ao escolher um real ao acaso em \([0,1]\), a probabilidade de obter exatamente \(1/2\) é
+    zero — mas o evento não é impossível. Reciprocamente, \(P(A)=1\) significa "quase
+    certamente", não "sempre". Este é o embrião da <strong>densidade de probabilidade</strong>,
+    formalizada no Módulo 4.</p>
+  </div>
+
+  <h3>Exercício resolvido 1.6 — O problema do encontro</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Dois estudantes combinam encontrar-se no laboratório entre 14h e 15h; cada um chega em um
+    instante uniformemente distribuído nesse intervalo, independentemente do outro. Cada um
+    espera no máximo 15 minutos e vai embora. Qual a probabilidade de se encontrarem?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Sejam \(x,y\in[0,1]\) os instantes de chegada em horas a partir das 14h. O espaço
+      amostral é o quadrado unitário, com \(\mu(\Omega)=1\). Eles se encontram se
+      \(|x-y|\leq \tfrac14\).</p>
+      <p>A região <em>complementar</em> são dois triângulos retângulos de catetos \(3/4\):</p>
+      <p>\[\mu(A^c)=2\cdot\frac12\left(\frac34\right)^2=\frac{9}{16}
+      \quad\Longrightarrow\quad P(A)=1-\frac{9}{16}=\frac{7}{16}\approx \mathbf{0{,}4375}.\]</p>
+      <p><strong>Generalização:</strong> com tolerância \(\tau\) em horas,
+      \(P = 1-(1-\tau)^2 = 2\tau-\tau^2\). Verifique no simulador abaixo mudando a tolerância.</p>
+    </div>
+  </details>
+
+  <div data-widget="encontro"></div>
+
+  <h3>Exercício resolvido 1.7 — Emissão isotrópica e o fator \(\sen\theta\)</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um átomo emite um fóton em direção aleatória, isotrópica no espaço. Qual a probabilidade
+    de que o fóton saia dentro de um cone de semiabertura \(\theta_0\) em torno do eixo \(z\)?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Isotropia significa probabilidade uniforme sobre o <strong>ângulo sólido</strong>, não
+      sobre o ângulo \(\theta\). O elemento de ângulo sólido é
+      \(d\Omega_s=\sen\theta\,d\theta\,d\phi\), e o total é \(4\pi\). Assim:</p>
+      <p>\[P(\theta \leq \theta_0)=\frac{1}{4\pi}\int_0^{2\pi}\!\!\int_0^{\theta_0}
+      \sen\theta\,d\theta\,d\phi = \frac{2\pi}{4\pi}\big[-\cos\theta\big]_0^{\theta_0}
+      = \frac{1-\cos\theta_0}{2}.\]</p>
+      <p><strong>Verificações:</strong> \(\theta_0=\pi \Rightarrow P=1\) ✓;
+      \(\theta_0=\pi/2 \Rightarrow P=1/2\) ✓ (metade do espaço).</p>
+      <p><strong>Erro comum:</strong> escrever \(P=\theta_0/\pi\), tratando \(\theta\) como
+      uniforme. Isso acerta por acidente em \(\theta_0=\pi/2\) e erra em todos os outros casos.
+      A densidade correta é \(P(\theta)\,d\theta=\tfrac12\sen\theta\,d\theta\).</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">9. Aplicações em Física</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Microestados e o postulado fundamental</span>
+    <p>Para um sistema isolado em equilíbrio, todos os microestados acessíveis são igualmente
+    prováveis. Se há \(\Omega_{\text{mic}}\) microestados compatíveis com os vínculos
+    macroscópicos, cada um tem probabilidade \(1/\Omega_{\text{mic}}\) — exatamente o espaço
+    amostral equiprovável de Laplace. A probabilidade de um macroestado \(M\) é</p>
+    <p>\[P(M)=\frac{\Omega_{\text{mic}}(M)}{\Omega_{\text{mic}}^{\text{total}}}
+    =\frac{\text{casos favoráveis}}{\text{casos possíveis}}.\]</p>
+    <p>E a ponte com a termodinâmica é a fórmula de Boltzmann,
+    \(S = k_B \ln \Omega_{\text{mic}}\): maximizar a entropia equivale a encontrar o macroestado
+    com o maior número de casos favoráveis, isto é, o mais provável.</p>
+  </div>
+
+  <h3>Exercício resolvido 1.8 — Flutuação de densidade em um gás</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um recipiente de volume \(V\) contém \(N\) moléculas de gás ideal. Qual a probabilidade de
+    que, num dado instante, <strong>todas</strong> estejam na metade esquerda? Avalie para
+    \(N=10\), \(N=100\) e \(N=N_A\approx 6{,}0\times10^{23}\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Cada molécula tem probabilidade \(1/2\) de estar na metade esquerda, por simetria
+      geométrica. O espaço amostral tem \(2^N\) configurações equiprováveis, das quais apenas
+      uma é favorável:</p>
+      <p>\[P = \frac{1}{2^N}=2^{-N}.\]</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>\(N\)</th><th>\(P=2^{-N}\)</th><th>Interpretação</th></tr></thead>
+        <tbody>
+          <tr><td>10</td><td>\(\approx 10^{-3}\)</td><td>ocorre 1 vez em mil</td></tr>
+          <tr><td>100</td><td>\(\approx 10^{-30}\)</td><td>jamais observado</td></tr>
+          <tr><td>\(6\times10^{23}\)</td><td>\(\approx 10^{-1{,}8\times10^{23}}\)</td><td>"impossível" na prática</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>A irreversibilidade da Segunda Lei é um enunciado probabilístico.</strong> Nada
+      na mecânica proíbe o gás de se concentrar espontaneamente; é apenas esmagadoramente
+      improvável. Essa é uma das ideias mais importantes de toda a Física Estatística.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 1.9 — Decaimento radioativo</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um núcleo instável tem probabilidade \(\lambda\,dt\) de decair em um intervalo
+    infinitesimal \(dt\), independentemente de sua idade. Mostre que a probabilidade de
+    sobreviver até o instante \(t\) é \(e^{-\lambda t}\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Seja \(S(t)=P(\text{não decaiu até } t)\). Sobreviver até \(t+dt\) exige sobreviver até
+      \(t\) <em>e</em> não decair em \(dt\):</p>
+      <p>\[S(t+dt)=S(t)\,(1-\lambda\,dt) \;\Longrightarrow\; \frac{dS}{dt}=-\lambda S .\]</p>
+      <p>Com \(S(0)=1\), integrando: \(\;S(t)=e^{-\lambda t}\), e portanto
+      \(P(\text{decai entre } t \text{ e } t+dt)=\lambda e^{-\lambda t}\,dt\).</p>
+      <p>A meia-vida satisfaz \(S(t_{1/2})=1/2\), ou seja \(t_{1/2}=\ln 2/\lambda\).</p>
+      <p>Reencontraremos essa expressão no Módulo 4 como a <strong>distribuição exponencial</strong>,
+      e a contagem de decaimentos em um intervalo fixo, no Módulo 3, como a <strong>distribuição
+      de Poisson</strong>.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s9">10. Exercícios propostos</h2>
 
   <ol>
-    <li>Oito pares de medidas deram diferenças +3, +5, −1, +7, +2, −4, +6, +8. Calcule
-    \(W^+\) e \(W^-\) à mão, confira que somam \(n(n+1)/2\) e obtenha o valor p exato.</li>
-    <li>Mostre que, sob \(H_0\), \(E[W^+] = n(n+1)/4\). <em>(Sugestão: escreva
-    \(W^+=\sum_i i\,Z_i\) com \(Z_i\) indicadores de Bernoulli(½) independentes.)</em></li>
-    <li>Para \(n = 5\), liste todos os \(2^5 = 32\) subconjuntos de \(\{1,\dots,5\}\) e
-    construa a distribuição completa de \(W^+\). Confira contra o gráfico do simulador.</li>
-    <li>Dois grupos de 5 observações: A = 12, 15, 18, 20, 22 e B = 25, 28, 30, 33, 35.
-    Calcule \(U_1\), \(U_2\) e o valor p exato. Interprete \(U_1/(n_1n_2)\).</li>
-    <li>Prove que \(U_1 + U_2 = n_1 n_2\) sempre. <em>(Sugestão: use
-    \(R_1+R_2=(n_1+n_2)(n_1+n_2+1)/2\).)</em></li>
-    <li>No exercício 14.1, substitua as três diferenças negativas por −2,0, −2,5 e −1,8,
-    mantendo as positivas. Refaça os três testes no simulador e explique por que agora as
-    conclusões se invertem.</li>
-    <li>Uma série de 20 medidas produziu, em relação à mediana, a sequência
-    A A A A B B B B A A A A B B B B A A A A. Calcule R, \(\mu_R\) e \(\sigma_R\), e teste a
-    aleatoriedade. Que fenômeno físico produziria esse padrão?</li>
-    <li>Três turmas obtiveram as notas: T1 = 6, 7, 5, 8, 6; T2 = 8, 9, 7, 9, 8;
-    T3 = 5, 6, 4, 5, 7. Calcule \(H\) de Kruskal–Wallis, corrija para empates e conclua a 5%.</li>
-    <li>Explique, em termos do que cada teste "enxerga", por que a eficiência do teste dos
-    sinais é 0,64 e a do Wilcoxon é 0,955 sob normalidade.</li>
-    <li>Um colega rodou o teste t (p = 0,08), não gostou, rodou o Mann–Whitney (p = 0,04) e
-    reportou o segundo. Critique o procedimento e descreva o que ele deveria ter feito.</li>
+    <li>Três moedas honestas são lançadas. Descreva \(\Omega\) e calcule a probabilidade de:
+    (a) exatamente duas caras; (b) pelo menos uma cara; (c) nenhuma coroa.</li>
+    <li>Prove, a partir dos axiomas, que \(P(A\cap B)\geq P(A)+P(B)-1\) (desigualdade de Bonferroni).</li>
+    <li>Mostre que \(P(A \triangle B)=P(A)+P(B)-2P(A\cap B)\), onde \(A\triangle B\) é a diferença simétrica.</li>
+    <li>Em um dado viciado, a probabilidade de cada face é proporcional ao número que ela exibe.
+    Determine \(P(\{i\})\) para cada \(i\) e calcule \(P(\text{face par})\).</li>
+    <li>Escolhe-se um ponto ao acaso, uniformemente, no interior de um círculo de raio \(R\).
+    Qual a probabilidade de estar a menos de \(R/2\) do centro? E a menos de \(R/2\) da borda?</li>
+    <li>Um segmento de comprimento \(L\) é quebrado em dois pontos escolhidos ao acaso. Qual a
+    probabilidade de que os três pedaços formem um triângulo? <em>(Resposta: 1/4.)</em></li>
+    <li>Um gás de \(N\) moléculas ocupa um recipiente. Mostre que a probabilidade de encontrar
+    exatamente \(n\) moléculas em uma fração \(f\) do volume é \(\binom{N}{n}f^n(1-f)^{N-n}\).
+    <em>(Antecipa o Módulo 3.)</em></li>
+    <li>Um núcleo com meia-vida \(t_{1/2}\) é observado por um tempo \(t=2\,t_{1/2}\). Qual a
+    probabilidade de que decaia nesse intervalo? E de que decaia na <em>segunda</em> meia-vida,
+    dado que sobreviveu à primeira? <em>(Antecipa o Módulo 16.)</em></li>
   </ol>
 
   <div class="bloco def">
     <span class="rotulo">Resumo do módulo</span>
     <ul>
-      <li>Postos substituem valores: a distribuição nula vira contagem, e outliers perdem
-      força;</li>
-      <li>Sinais: só o sinal de \(d_i\); Binomial(n, ½); eficiência 0,64;</li>
-      <li>Wilcoxon: sinal e magnitude via postos de \(|d_i|\); supõe simetria; eficiência
-      0,955;</li>
-      <li>Mann–Whitney: \(U_1 = R_1 - n_1(n_1+1)/2\), e \(U_1/(n_1n_2)\) estima
-      \(P(X>Y)\);</li>
-      <li>Sequências: poucas indicam tendência, muitas indicam alternância;</li>
-      <li>Kruskal–Wallis generaliza Mann–Whitney para \(k\) grupos, com \(\chi^2_{k-1}\);</li>
-      <li>Empates exigem postos médios e correção da variância, e invalidam a distribuição
-      exata;</li>
-      <li>Escolha o teste pelo desenho do estudo, nunca pelo valor p que ele produz.</li>
+      <li>\(\Omega\) é o espaço amostral; um evento é um subconjunto de \(\Omega\);</li>
+      <li>Eventos combinam-se por \(\cup\), \(\cap\) e complementar; valem as leis de De Morgan;</li>
+      <li>Axiomas: \(P(A)\geq 0\), \(P(\Omega)=1\), aditividade enumerável para disjuntos;</li>
+      <li>Consequências: \(P(\varnothing)=0\), \(P(A^c)=1-P(A)\), monotonicidade,
+      \(P(A\cup B)=P(A)+P(B)-P(A\cap B)\), desigualdade de Boole;</li>
+      <li>Caso discreto equiprovável: \(P(A)=|A|/|\Omega|\); caso contínuo uniforme:
+      \(P(A)=\mu(A)/\mu(\Omega)\).</li>
     </ul>
+    <p>O gargalo do cálculo clássico é <strong>contar</strong> \(|A|\) e \(|\Omega|\).
+    Esse é o tema do próximo módulo.</p>
   </div>
 
   <nav class="nav-aulas">
-    <a href="aula13.html"><small>Módulo anterior</small>← 13. Regressão linear</a>
-    <a class="prox" href="aula15.html"><small>Próximo módulo</small>15. Tamanho amostral →</a>
+    <a href="aula13.html"><small>Módulo anterior</small>← 13. Testes qui-quadrado</a>
+    <a class="prox" href="aula15.html"><small>Próximo módulo</small>15. Técnicas de contagem →</a>
   </nav>
 
 </main>
@@ -575,6 +789,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061532"></script>
+<script src="assets/js/widgets.js?v=202611061620"></script>
 </body>
 </html>

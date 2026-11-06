@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 17 — Testes de normalidade | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061620">
+<script src="assets/js/comum.js?v=202611061620"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num ativo" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Por que testar</a></li>
+    <li><a href="#s2">2. Métodos gráficos</a></li>
+    <li><a href="#s3">3. O gráfico Q–Q</a></li>
+    <li><a href="#s4">4. Assimetria e curtose</a></li>
+    <li><a href="#s5">5. Shapiro–Wilk</a></li>
+    <li><a href="#s6">6. D'Agostino K²</a></li>
+    <li><a href="#s7">7. Kolmogorov–Smirnov</a></li>
+    <li><a href="#s8">8. Anderson–Darling</a></li>
+    <li><a href="#s9">9. O paradoxo do n</a></li>
+    <li><a href="#s10">10. O que fazer se não for normal</a></li>
+    <li><a href="#s11">11. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 17 · 3 horas</p>
+  <h1>Testes de normalidade</h1>
+  <p class="subtitulo">Verificar a hipótese que sustenta quase tudo o que fizemos até aqui.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Identificar quando a normalidade importa e quando o TCL nos protege;</li>
+      <li>Construir e ler um gráfico Q–Q, diagnosticando o tipo de desvio;</li>
+      <li>Interpretar os coeficientes de assimetria e curtose;</li>
+      <li>Aplicar os testes de Shapiro–Wilk, D'Agostino, Kolmogorov–Smirnov e Anderson–Darling;</li>
+      <li>Compreender por que o tamanho da amostra distorce esses testes;</li>
+      <li>Escolher entre transformar os dados e usar métodos não paramétricos.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Por que testar a normalidade</h2>
+
+  <p>Vários métodos dos módulos anteriores supõem população normal: o teste t, o intervalo de
+  confiança para a variância, o teste qui-quadrado para \(\sigma^2\), e a regressão que veremos
+  no Módulo 8. Essa suposição precisa ser verificada — e não apenas assumida porque "quase tudo
+  é normal".</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Mas nem sempre importa tanto</span>
+    <p>É importante saber <strong>quando</strong> a normalidade é crítica, porque o rigor
+    excessivo também atrapalha.</p>
+    <p><strong>Pouco sensível à normalidade</strong> (o TCL protege):</p>
+    <ul>
+      <li>Testes e intervalos para <em>médias</em>, com \(n \gtrsim 30\);</li>
+      <li>Comparação de médias de duas amostras grandes.</li>
+    </ul>
+    <p><strong>Muito sensível</strong>:</p>
+    <ul>
+      <li>Qualquer inferência sobre <em>variância</em> — o teste qui-quadrado de \(\sigma^2\) é
+      notoriamente frágil;</li>
+      <li>Testes com \(n\) pequeno, abaixo de 20;</li>
+      <li>Previsão de <em>observações individuais</em>, e não de médias;</li>
+      <li>Intervalos nas caudas extremas da distribuição.</li>
+    </ul>
+  </div>
+
+  <p>A lógica de todos os testes deste módulo é a mesma, e vale fixá-la antes de tudo:</p>
+
+  <div class="destaque">
+    <span class="anuncio">Atenção à direção</span>
+    \(H_0\): os dados <strong>vêm</strong> de uma população normal.<br>
+    Um valor p <strong>alto</strong> significa que <em>não há evidência contra</em> a normalidade.
+  </div>
+
+  <p>Repare na inversão em relação ao Módulo 12. Aqui, a hipótese nula é a que
+  <em>queremos</em> que seja verdadeira — e, como vimos, o teste nunca prova \(H_0\). Isso tem
+  consequências que exploraremos na seção 9.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Métodos gráficos vêm primeiro</h2>
+
+  <p>Antes de qualquer teste numérico, <strong>olhe os dados</strong>. Três gráficos bastam:</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Gráfico</th><th>O que procurar</th><th>Limitação</th></tr></thead>
+    <tbody>
+      <tr><td><b>Histograma</b></td>
+        <td>forma de sino, simétrica, unimodal</td>
+        <td>a aparência muda com a largura de classe (Módulo 2)</td></tr>
+      <tr><td><b>Boxplot</b></td>
+        <td>mediana centrada, bigodes iguais, poucos outliers</td>
+        <td>resume demais; não mostra bimodalidade</td></tr>
+      <tr><td><b>Q–Q</b></td>
+        <td>pontos sobre a reta</td>
+        <td>exige prática para interpretar</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>O gráfico Q–Q é o mais sensível dos três, e é por isso que merece uma seção própria.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. O gráfico Q–Q</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Como é construído</span>
+    <ol>
+      <li>Ordenam-se os dados: \(x_{(1)} \le x_{(2)} \le \cdots \le x_{(n)}\);</li>
+      <li>Para cada posição \(i\), calcula-se o <strong>quantil teórico</strong> que uma normal
+      padrão teria naquela posição:
+      \[z_i = \Phi^{-1}\!\left(\frac{i - 0{,}375}{n + 0{,}25}\right)\]
+      (a fórmula de Blom; há outras convenções equivalentes);</li>
+      <li>Marca-se o ponto \((z_i,\; x_{(i)})\).</li>
+    </ol>
+    <p>Se os dados forem normais, \(x_{(i)} \approx \mu + \sigma z_i\) — ou seja, os pontos caem
+    sobre uma <strong>reta</strong> de inclinação \(\sigma\) e intercepto \(\mu\).</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Lendo o formato do desvio</span>
+    <p>O Q–Q não diz apenas <em>se</em> há desvio — diz <strong>qual</strong>:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Padrão observado</th><th>Diagnóstico</th></tr></thead>
+      <tbody>
+        <tr><td>pontos sobre a reta</td><td>normalidade plausível</td></tr>
+        <tr><td>curvatura em <b>C</b> (côncava)</td><td>assimetria à direita — cauda longa nos valores altos</td></tr>
+        <tr><td>curvatura em <b>C</b> invertida</td><td>assimetria à esquerda</td></tr>
+        <tr><td><b>S</b> deitado: extremos acima à direita e abaixo à esquerda</td>
+          <td>caudas <b>pesadas</b> (leptocúrtica)</td></tr>
+        <tr><td><b>S</b> invertido: extremos achatados contra a reta</td>
+          <td>caudas <b>leves</b> (platicúrtica) — dados truncados ou uniformes</td></tr>
+        <tr><td>um ou dois pontos isolados nas pontas</td><td>outliers</td></tr>
+        <tr><td>degraus horizontais</td><td>dados arredondados ou discretizados demais</td></tr>
+        <tr><td>duas retas com inclinações diferentes</td><td>mistura de dois grupos (bimodal)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div data-widget="qqplot"></div>
+
+  <p>Percorra os seis conjuntos nos botões, observando o Q–Q em cada um:</p>
+  <ol>
+    <li><strong>Tempo de reação</strong> — pontos sobre a reta, todos os testes concordam;</li>
+    <li><strong>Renda</strong> — curvatura em C acentuada, \(g_1 = 2{,}52\). Todos os testes
+    rejeitam com \(p &lt; 0{,}0001\);</li>
+    <li><strong>Bimodal</strong> — o Q–Q mostra duas retas com um salto no meio. A assimetria é
+    <em>zero</em>, e mesmo assim os dados não são normais: prova de que simetria não basta;</li>
+    <li><strong>Caudas pesadas</strong> — o S deitado clássico, com \(g_2 = 6{,}35\);</li>
+    <li><strong>Uniforme</strong> — guarde este para a seção 9, porque o resultado surpreende;</li>
+    <li><strong>Pesos</strong> — o conjunto histórico de Royston, usado para validar o algoritmo
+    de Shapiro–Wilk.</li>
+  </ol>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Assimetria e curtose</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Assimetria (skewness)</span>
+    <p>\[g_1 = \frac{\frac{1}{n}\sum_i (x_i - \bar x)^{3}}
+    {\left[\frac{1}{n}\sum_i (x_i - \bar x)^{2}\right]^{3/2}}\]</p>
+    <ul>
+      <li>\(g_1 = 0\): simétrica (como a normal);</li>
+      <li>\(g_1 &gt; 0\): cauda longa à <strong>direita</strong>; a massa se concentra à esquerda;</li>
+      <li>\(g_1 &lt; 0\): cauda longa à <strong>esquerda</strong>.</li>
+    </ul>
+    <p>O expoente ímpar preserva o sinal dos desvios — é o que distingue a assimetria da
+    variância.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Curtose (kurtosis)</span>
+    <p>\[g_2 = \frac{\frac{1}{n}\sum_i (x_i - \bar x)^{4}}
+    {\left[\frac{1}{n}\sum_i (x_i - \bar x)^{2}\right]^{2}} - 3\]</p>
+    <p>O \(-3\) torna a normal o ponto de referência, com \(g_2 = 0\) (é a chamada
+    <em>curtose em excesso</em>).</p>
+    <ul>
+      <li>\(g_2 &gt; 0\): <strong>leptocúrtica</strong> — pico mais alto e caudas mais pesadas;
+      mais outliers que a normal;</li>
+      <li>\(g_2 = 0\): <strong>mesocúrtica</strong> — como a normal;</li>
+      <li>\(g_2 &lt; 0\): <strong>platicúrtica</strong> — achatada, caudas leves.</li>
+    </ul>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Curtose mede as caudas, não o pico</span>
+    <p>A descrição tradicional — "pontualidade da distribuição" — é enganosa e sobrevive nos
+    livros por inércia. O expoente 4 amplifica brutalmente os valores distantes: um ponto a
+    \(3\sigma\) contribui \(3^4 = 81\) vezes mais que um ponto a \(1\sigma\). A curtose é,
+    essencialmente, uma <strong>medida do peso das caudas</strong>.</p>
+    <p>Carregue o conjunto <em>bimodal</em> no simulador: ele tem dois picos bem definidos e
+    curtose <em>negativa</em> (\(g_2 = -1{,}89\)), porque não tem caudas. Isso derruba a
+    interpretação do pico.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Teste de Shapiro–Wilk</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">O teste de referência</span>
+    <p>Desenvolvido por Samuel Shapiro e Martin Wilk em 1965, é o <strong>mais potente</strong>
+    para a maioria das alternativas, especialmente com amostras pequenas e moderadas. Se você
+    puder usar apenas um teste, use este.</p>
+    <p>\[W = \frac{\left(\sum_{i=1}^{n} a_i\,x_{(i)}\right)^{2}}
+    {\sum_{i=1}^{n}(x_i - \bar x)^{2}}\]</p>
+    <p>Os coeficientes \(a_i\) derivam dos valores esperados das estatísticas de ordem de uma
+    normal. Intuitivamente, o numerador mede o quanto os dados ordenados "se parecem" com o que
+    uma normal produziria; o denominador normaliza pela dispersão total.</p>
+    <p><strong>Interpretação:</strong> \(W\) varia entre 0 e 1, e \(W\) próximo de 1 indica
+    normalidade. Valores pequenos de \(W\) levam a \(p\) pequeno e à rejeição.</p>
+    <p><strong>Faixa de uso:</strong> \(4 \le n \le 5000\).</p>
+  </div>
+
+  <p>Esses coeficientes merecem ser olhados de perto, porque é neles que está a inteligência
+  do teste. O simulador abaixo os calcula para qualquer \(n\) e mostra três propriedades que
+  explicam o comportamento de \(W\):</p>
+
+  <div data-widget="coefsw"></div>
+
+  <div class="bloco def">
+    <span class="rotulo">O que o gráfico revela</span>
+    <ul>
+      <li>Os \(a_i\) são <strong>antissimétricos</strong> — \(a_i = -a_{n+1-i}\) — e portanto
+      somam zero. É por isso que \(W\) não muda se somarmos uma constante a todos os dados;</li>
+      <li>Eles satisfazem \(\sum_i a_i^2 = 1\), o que, junto ao denominador, deixa \(W\)
+      entre 0 e 1 e <strong>invariante de escala</strong>;</li>
+      <li>Os dois das pontas carregam a maior parte do peso. Com \(n=11\), eles sozinhos
+      respondem por 63% de \(\sum a_i^2\). <strong>É daí que vem a sensibilidade do teste às
+      caudas</strong> — e por que ele é tão bom em detectar assimetria e outliers.</li>
+    </ul>
+    <p>Comparando os \(a_i\) com os \(m_i\) na terceira vista, vê-se que os coeficientes são
+    quase os \(m_i\) reescalados: a correção de Royston altera de forma apreciável apenas os
+    dois valores de cada extremo.</p>
+  </div>
+
+  <h3>Exercício resolvido 11.1 — O conjunto histórico de Royston</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Os pesos (em gramas) de onze espécimes foram: 148, 154, 158, 160, 161, 162, 166, 170,
+    182, 195, 236. Teste a normalidade ao nível de 5% e interprete o gráfico Q–Q.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Hipóteses.</strong> \(H_0\): os pesos vêm de uma população normal;
+      \(H_1\): não vêm.</p>
+      <p><strong>Resultado.</strong> Aplicando Shapiro–Wilk (carregue "Pesos" no simulador):</p>
+      <p>\[W = 0{,}7888, \qquad p = 0{,}0067 .\]</p>
+      <p>Como \(p &lt; 0{,}05\), <strong>rejeitamos \(H_0\)</strong>: os dados não são
+      compatíveis com uma população normal.</p>
+      <p><strong>O que o Q–Q mostra.</strong> Os pontos formam uma curva côncava, com os três
+      maiores valores (182, 195, 236) fugindo muito acima da reta. É a assinatura clássica de
+      <strong>assimetria à direita</strong>, confirmada por \(g_1 = 1{,}68\).</p>
+      <p><strong>Observação sobre o poder.</strong> Com apenas \(n = 11\), a maioria dos testes
+      teria dificuldade em detectar não-normalidade. O Shapiro–Wilk detectou — e é exatamente
+      por isso que ele é o preferido para amostras pequenas.</p>
+      <p><em>Este conjunto é o caso de teste publicado por Royston em 1982 para validar
+      implementações do algoritmo. O valor \(W = 0{,}7888\) calculado aqui reproduz o
+      publicado.</em></p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Teste D'Agostino–Pearson K²</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Um teste que diz o que está errado</span>
+    <p>É um teste <em>omnibus</em>: combina assimetria e curtose em uma única estatística.</p>
+    <p>\[K^{2} = Z_1^{2}(g_1) + Z_2^{2}(g_2) \;\sim\; \chi^{2}_{2},\]</p>
+    <p>onde \(Z_1\) e \(Z_2\) são transformações que tornam \(g_1\) e \(g_2\) aproximadamente
+    normais padrão sob \(H_0\).</p>
+    <p><strong>A vantagem única:</strong> como \(Z_1\) e \(Z_2\) são reportados separadamente,
+    o teste indica <em>qual</em> aspecto da normalidade falhou — assimetria, caudas, ou ambos.
+    Nenhum outro teste desta lista faz isso.</p>
+    <p><strong>Exige \(n \geq 8\)</strong>, e funciona melhor a partir de \(n = 20\).</p>
+  </div>
+
+  <h3>Exercício resolvido 11.2 — Tempo de reação a estímulos visuais</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Mediram-se os tempos de reação (ms) de 30 participantes a estímulos visuais. Os dados
+    estão carregados no simulador, no botão "Tempo de reação". Aplique os quatro testes e
+    conclua.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>Teste</th><th class="num">Estatística</th><th class="num">valor p</th><th>Decisão a 5%</th></tr></thead>
+        <tbody>
+          <tr><td>Shapiro–Wilk</td><td class="num">W = 0,9785</td><td class="num">0,784</td><td>não rejeita</td></tr>
+          <tr><td>D'Agostino K²</td><td class="num">K² = 1,090</td><td class="num">0,580</td><td>não rejeita</td></tr>
+          <tr><td>Anderson–Darling</td><td class="num">A² = 0,204</td><td class="num">0,876</td><td>não rejeita</td></tr>
+          <tr><td>Kolmogorov–Smirnov</td><td class="num">D = 0,088</td><td class="num">crít. 0,155</td><td>não rejeita</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>Os momentos são \(g_1 = -0{,}21\) (praticamente simétrico) e \(g_2 = -0{,}76\)
+      (levemente achatado) — ambos próximos de zero.</p>
+      <p><strong>Conclusão.</strong> Os quatro testes concordam: não há evidência contra a
+      normalidade. O Q–Q confirma, com os pontos acompanhando a reta de perto.</p>
+      <p><strong>A redação correta do resultado</strong> é: <em>"os dados são compatíveis com
+      uma distribuição normal (Shapiro–Wilk: W = 0,979; p = 0,784)"</em> — e não "os dados são
+      normais". A diferença não é preciosismo: o teste nunca prova \(H_0\).</p>
+      <p>Com essa verificação feita, estamos autorizados a aplicar o teste t, o intervalo de
+      confiança e a regressão a esses dados.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Teste de Kolmogorov–Smirnov</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A maior distância entre duas curvas</span>
+    <p>Compara a função acumulada empírica \(F_n(x)\) — uma escada que sobe \(1/n\) a cada
+    observação — com a acumulada teórica \(F(x)\):</p>
+    <p>\[D = \max_x \big|F_n(x) - F(x)\big| .\]</p>
+    <p>É um teste geral: serve para <strong>qualquer</strong> distribuição, não só a normal.</p>
+  </div>
+
+  <p>A definição é mais fácil de ver do que de ler. O simulador desenha a escada empírica
+  sobre a curva teórica e marca exatamente onde a distância é máxima:</p>
+
+  <div data-widget="escadaks"></div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A armadilha dos parâmetros estimados</span>
+    <p>O teste KS original supõe que \(\mu\) e \(\sigma\) são <strong>conhecidos de
+    antemão</strong>. Se você os estima dos próprios dados — como quase sempre faz — a
+    distribuição de \(D\) muda, e usar os valores críticos originais torna o teste
+    <strong>conservador demais</strong>: ele quase nunca rejeita.</p>
+    <p>A correção se chama <strong>teste de Lilliefors</strong>, e é ela que o simulador usa.
+    Muitos programas aplicam a versão errada silenciosamente — convém verificar.</p>
+  </div>
+
+  <h3>Duas amostras</h3>
+  <p>O KS tem uma variante útil que compara <strong>duas amostras entre si</strong>, sem
+  referência a nenhuma distribuição teórica:</p>
+  <p>\[D = \max_x \big|F_{n_1}(x) - F_{n_2}(x)\big| .\]</p>
+  <p>Ele responde: "estas duas amostras vêm da mesma população?" — e detecta diferenças de
+  forma, não só de média. É um dos poucos testes que percebe que duas distribuições com a mesma
+  média podem ser completamente diferentes.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Teste de Anderson–Darling</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">O KS com atenção às caudas</span>
+    <p>\[A^{2} = -n - \frac{1}{n}\sum_{i=1}^{n}(2i-1)
+    \Big[\ln F(x_{(i)}) + \ln\big(1 - F(x_{(n+1-i)})\big)\Big]\]</p>
+    <p>É uma variante do KS que pondera as discrepâncias, dando <strong>mais peso às
+    caudas</strong>. Por isso detecta melhor problemas nos extremos — justamente onde o KS é
+    fraco e onde mais costuma importar na prática, já que as caudas determinam a probabilidade
+    de eventos raros.</p>
+  </div>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Teste</th><th>Melhor para</th><th>Ponto fraco</th><th>n mínimo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Shapiro–Wilk</b></td><td>uso geral; o mais potente</td>
+        <td>só para normalidade; n ≤ 5000</td><td class="num">4</td></tr>
+      <tr><td><b>D'Agostino K²</b></td><td>dizer <i>qual</i> desvio ocorreu</td>
+        <td>exige n ≥ 20 para funcionar bem</td><td class="num">8</td></tr>
+      <tr><td><b>Anderson–Darling</b></td><td>problemas nas caudas</td>
+        <td>menos potente que SW no centro</td><td class="num">8</td></tr>
+      <tr><td><b>Kolmogorov–Smirnov</b></td><td>qualquer distribuição; duas amostras</td>
+        <td>pouco potente; exige correção de Lilliefors</td><td class="num">4</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. O paradoxo do tamanho da amostra</h2>
+
+  <p>Esta seção é a mais importante do módulo, e a que raramente aparece nos livros-texto.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Os testes de normalidade têm um defeito estrutural</span>
+    <p><strong>Com \(n\) pequeno</strong>, o teste quase nunca rejeita — falta-lhe
+    <em>poder</em> (Módulo 12). Não rejeitar com \(n = 10\) não é evidência de normalidade: é
+    evidência de que você não tem dados suficientes para dizer coisa alguma.</p>
+    <p><strong>Com \(n\) muito grande</strong>, o teste rejeita quase sempre — porque
+    <em>nenhum</em> conjunto real de dados é exatamente normal, e o teste detecta desvios
+    minúsculos e irrelevantes na prática.</p>
+    <p>O resultado é perverso: justamente quando o TCL nos protegeria (n grande), o teste nos diz
+    para não confiar; e quando a normalidade seria crítica (n pequeno), o teste não detecta nada.</p>
+  </div>
+
+  <h3>Exercício resolvido 11.3 — A uniforme que passou no teste</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Carregue o conjunto <strong>"Uniforme"</strong> no simulador: são os inteiros de 1 a 30,
+    perfeitamente uniformes — a distribuição menos normal que se pode imaginar entre as
+    simétricas. O que os testes dizem?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>Teste</th><th class="num">valor p</th><th>Decisão a 5%</th></tr></thead>
+        <tbody>
+          <tr><td>Shapiro–Wilk</td><td class="num">0,266</td><td>não rejeita</td></tr>
+          <tr><td>D'Agostino K²</td><td class="num">0,067</td><td>não rejeita</td></tr>
+          <tr><td>Anderson–Darling</td><td class="num">0,515</td><td>não rejeita</td></tr>
+          <tr><td>Kolmogorov–Smirnov</td><td class="num">D = 0,070 (crít. 0,155)</td><td>não rejeita</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Nenhum dos quatro testes rejeita.</strong> Sabemos com certeza absoluta que
+      esses dados <em>não</em> são normais — nós mesmos os construímos — e os testes não
+      detectam.</p>
+      <p><strong>Por quê?</strong> Com \(n = 30\), o poder para detectar caudas leves é baixo. A
+      curtose é \(g_2 = -1{,}20\), claramente negativa, e o D'Agostino chega perto
+      (\(p = 0{,}067\)) — mas não cruza o limiar.</p>
+      <p><strong>Mas o Q–Q denuncia.</strong> Olhe o gráfico: os pontos formam um S invertido
+      nítido, com os extremos achatados contra a reta. <em>O olho vê o que o teste não detecta.</em></p>
+      <div class="destaque">
+        <span class="anuncio">A lição central deste módulo</span>
+        O gráfico Q–Q é o juiz; o teste numérico é um auxiliar. Pergunte sempre se o desvio tem
+        <strong>tamanho suficiente para importar</strong>, e não apenas se o p cruzou 0,05.
+      </div>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. O que fazer quando não é normal</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">1. Investigar a causa antes de tudo</span>
+    <p>A forma do desvio costuma dizer o que aconteceu:</p>
+    <ul>
+      <li><strong>Assimetria à direita</strong> — há um limite inferior natural. Tempos,
+      concentrações, contagens e rendas não podem ser negativos, e isso basta para produzir
+      assimetria;</li>
+      <li><strong>Bimodalidade</strong> — há dois regimes misturados. Dois experimentadores, duas
+      condições experimentais, dois mecanismos físicos. <em>Separe os grupos</em> em vez de
+      transformar;</li>
+      <li><strong>Caudas pesadas</strong> — outliers legítimos, ou um processo com variância
+      instável;</li>
+      <li><strong>Degraus no Q–Q</strong> — resolução insuficiente do instrumento.</li>
+    </ul>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">2. Transformar os dados</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Transformação</th><th>Corrige</th><th>Quando é natural</th></tr></thead>
+      <tbody>
+        <tr><td>\(\log x\)</td><td>assimetria forte à direita</td>
+          <td>efeitos multiplicativos; escalas de décadas</td></tr>
+        <tr><td>\(\sqrt{x}\)</td><td>assimetria moderada</td><td>dados de contagem (Poisson)</td></tr>
+        <tr><td>\(1/x\)</td><td>assimetria muito forte</td><td>taxas e tempos</td></tr>
+        <tr><td>\(\arcsen\sqrt{p}\)</td><td>proporções perto de 0 ou 1</td><td>dados binomiais</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <h3>Exercício resolvido 11.4 — A transformação logarítmica em ação</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Carregue o conjunto <strong>"Renda"</strong>. Ele é fortemente assimétrico
+    (\(g_1 = 2{,}52\)) e todos os testes rejeitam com \(p &lt; 0{,}0001\). Aplique a
+    transformação logarítmica — o seletor <i>Transformação a aplicar</i> do simulador faz
+    isso — e reavalie.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Como fazer no simulador.</strong> Não é preciso calcular os logaritmos à mão:
+      no simulador da seção 3, clique no botão <i>Renda</i> para carregar os dados e depois
+      escolha <b>"Logaritmo natural — ln x"</b> no seletor <i>Transformação a aplicar</i>,
+      logo abaixo da caixa de dados. Todo o painel — gráfico Q–Q, histograma e os quatro
+      testes — passa a se referir a \(\ln x\). Voltar para "Nenhuma" desfaz a transformação,
+      e dá para alternar entre as duas para comparar.</p>
+      <p>Tomando o logaritmo natural de cada valor:</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th></th><th class="num">g₁</th><th class="num">Shapiro–Wilk p</th><th>Decisão</th></tr></thead>
+        <tbody>
+          <tr><td>dados originais</td><td class="num">2,52</td><td class="num">&lt; 0,0001</td>
+            <td><b style="color:#8c2f39">rejeita</b></td></tr>
+          <tr><td>após \(\log x\)</td><td class="num">0,72</td><td class="num">0,124</td>
+            <td><b style="color:#1f6f54">não rejeita</b></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>A assimetria caiu de 2,52 para 0,72, e os testes deixam de rejeitar. A distribuição
+      original era <strong>log-normal</strong>.</p>
+      <p><strong>Por que o log funciona aqui.</strong> Em processos onde os efeitos são
+      <em>multiplicativos</em> — a renda cresce em percentuais, não em valores absolutos — o
+      logaritmo converte multiplicação em soma, e o TCL passa a valer na escala logarítmica.</p>
+      <p><strong>O preço da transformação.</strong> Toda a inferência passa a valer para
+      \(\log x\), não para \(x\). A média dos logaritmos, quando exponenciada, dá a
+      <strong>média geométrica</strong> — não a aritmética. Em muitos contextos a média
+      geométrica é até mais adequada, mas é preciso dizer isso explicitamente no relatório.</p>
+    </div>
+  </details>
+
+  <div class="bloco def">
+    <span class="rotulo">3. Usar métodos não paramétricos</span>
+    <p>Se a transformação não resolve, ou se ela distorce a interpretação, existem testes que
+    <strong>não exigem normalidade</strong> — baseados em ordenações, não em valores. São o
+    assunto do Módulo 19: sinais, Wilcoxon, Mann-Whitney.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">4. Confiar no TCL</span>
+    <p>Se \(n\) for grande e o interesse for a <em>média</em>, o Teorema Central do Limite já
+    garante que \(\bar X\) é aproximadamente normal, seja qual for a população. Nesse caso,
+    rejeitar a normalidade dos dados brutos não invalida o teste t.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s11">11. Exercícios propostos</h2>
+
+  <ol>
+    <li>Explique por que o teste t para a média é robusto a desvios da normalidade com \(n = 100\),
+    mas o intervalo de confiança para \(\sigma^2\) não é.</li>
+    <li>Para cada padrão de gráfico Q–Q, diga o diagnóstico: (a) curvatura côncava; (b) S deitado;
+    (c) dois pontos isolados no alto; (d) degraus horizontais.</li>
+    <li>Mostre que a curtose da distribuição uniforme em \([0,1]\) é \(g_2 = -1{,}2\).
+    <em>(Calcule \(\langle x^4\rangle\) e use a definição.)</em></li>
+    <li>Carregue o conjunto "Bimodal" no simulador. Por que a assimetria é zero e, mesmo assim,
+    os dados não são normais? Que gráfico revela o problema mais claramente?</li>
+    <li>Dez medidas de um período deram: 2,01 · 2,03 · 1,99 · 2,02 · 2,05 · 2,00 · 1,98 · 2,04 ·
+    2,02 · 2,01. Teste a normalidade. Com \(n = 10\), que peso você daria ao resultado?</li>
+    <li>Um pesquisador testou a normalidade de 50 000 observações e obteve \(p = 0{,}003\),
+    concluindo que não poderia usar o teste t. Critique essa conclusão.</li>
+    <li>Por que o teste de Kolmogorov–Smirnov precisa da correção de Lilliefors quando a média e
+    o desvio são estimados dos dados? O que aconteceria sem ela?</li>
+    <li>Tome o conjunto "Caudas pesadas" do simulador e remova os dois valores extremos
+    (−18,2 e 18,2). Reavalie a normalidade. O que isso ensina sobre remover outliers?</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>\(H_0\) é a normalidade; p alto significa ausência de evidência contra ela;</li>
+      <li>O Q–Q vem primeiro, e seu formato diagnostica o tipo de desvio;</li>
+      <li>\(g_1\) mede assimetria; \(g_2\) mede o peso das caudas, não o pico;</li>
+      <li>Shapiro–Wilk é o mais potente; D'Agostino diz <em>qual</em> aspecto falhou;
+      Anderson–Darling vigia as caudas; KS exige a correção de Lilliefors;</li>
+      <li>Com \(n\) pequeno o teste não detecta nada; com \(n\) enorme rejeita tudo;</li>
+      <li>Não normal? Investigue a causa, transforme, use métodos não paramétricos ou confie no
+      TCL — nessa ordem.</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula16.html"><small>Módulo anterior</small>← 16. Probabilidade condicional e Bayes</a>
+    <a class="prox" href="aula18.html"><small>Próximo módulo</small>18. Correlação →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js?v=202611061620"></script>
+</body>
+</html>

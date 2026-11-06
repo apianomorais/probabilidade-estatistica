@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Módulo 3 — Probabilidade condicional e Bayes | Probabilidade &amp; Estatística</title>
+<title>Módulo 3 — Variáveis aleatórias discretas | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061532">
-<script src="assets/js/comum.js?v=202611061532"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061620">
+<script src="assets/js/comum.js?v=202611061620"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -16,23 +16,26 @@
     <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
     <nav class="menu">
       <a href="index.html">Início</a>
-      <span class="grupo">Probabilidade</span>
-      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
-      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
-      <a href="aula03.html" class="num ativo" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
-      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
-      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
-      <span class="grupo">Estatística</span>
-      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
-      <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
-      <a href="aula08.html" class="num" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
-      <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
-      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
-      <a href="aula11.html" class="num" title="Módulo 11 — Testes de normalidade">11</a>
-      <a href="aula12.html" class="num" title="Módulo 12 — Correlação">12</a>
-      <a href="aula13.html" class="num" title="Módulo 13 — Regressão linear e mínimos quadrados">13</a>
-      <a href="aula14.html" class="num" title="Módulo 14 — Testes não paramétricos">14</a>
-      <a href="aula15.html" class="num" title="Módulo 15 — Tamanho amostral e planejamento">15</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num ativo" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
       <a href="formulario.html">Formulário</a>
     </nav>
   </div>
@@ -43,15 +46,15 @@
 <aside class="lateral">
   <h4>Neste módulo</h4>
   <ol>
-    <li><a href="#s1">1. Informação parcial</a></li>
-    <li><a href="#s2">2. Definição e regra do produto</a></li>
-    <li><a href="#s3">3. Independência</a></li>
-    <li><a href="#s4">4. Probabilidade total</a></li>
-    <li><a href="#sh">5. Quem foi Thomas Bayes</a></li>
-    <li><a href="#s5">6. Teorema de Bayes</a></li>
-    <li><a href="#s6">7. A armadilha do teste</a></li>
-    <li><a href="#s7">8. Monty Hall</a></li>
-    <li><a href="#s8">9. Aplicações em Física</a></li>
+    <li><a href="#s1">1. Variáveis aleatórias</a></li>
+    <li><a href="#s2">2. Esperança</a></li>
+    <li><a href="#s3">3. Variância</a></li>
+    <li><a href="#s4">4. Transformação linear</a></li>
+    <li><a href="#s5">5. Somas e independência</a></li>
+    <li><a href="#s6">6. Bernoulli e binomial</a></li>
+    <li><a href="#sg">7. A tábua de Galton</a></li>
+    <li><a href="#s7">8. Poisson</a></li>
+    <li><a href="#s8">9. Passeio aleatório</a></li>
     <li><a href="#s9">10. Exercícios propostos</a></li>
   </ol>
 </aside>
@@ -59,408 +62,579 @@
 <main class="conteudo">
 
   <p class="chapeu">Módulo 3 · 3 horas</p>
-  <h1>Probabilidade condicional e o teorema de Bayes</h1>
-  <p class="subtitulo">Como a informação nova reorganiza o espaço amostral.</p>
+  <h1>Variáveis aleatórias discretas</h1>
+  <p class="subtitulo">Esperança, variância, Bernoulli, binomial e Poisson — e por que a média salva a Física Estatística.</p>
 
   <div class="bloco def">
     <span class="rotulo">Objetivos</span>
     <ul>
-      <li>Interpretar \(P(A|B)\) como a restrição do espaço amostral a \(B\);</li>
-      <li>Aplicar a regra do produto e construir árvores de probabilidade;</li>
-      <li>Distinguir eventos <strong>independentes</strong> de <strong>mutuamente exclusivos</strong>;</li>
-      <li>Usar o teorema da probabilidade total com uma partição de \(\Omega\);</li>
-      <li>Aplicar o teorema de Bayes e interpretar o resultado em frequências naturais;</li>
-      <li>Reconhecer a falácia da taxa-base em situações reais.</li>
+      <li>Definir variável aleatória discreta e sua função de probabilidade;</li>
+      <li>Calcular \(\langle x\rangle\), \(\langle x^2\rangle\) e \(\sigma^2\);</li>
+      <li>Usar a identidade \(\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\);</li>
+      <li>Determinar média e variância sob transformação linear \(y=ax+b\);</li>
+      <li>Mostrar que a soma de \(n\) variáveis independentes tem \(\sigma_Y=\sqrt{n}\,\sigma_X\);</li>
+      <li>Dominar as distribuições de Bernoulli, binomial e Poisson.</li>
     </ul>
   </div>
 
   <hr class="linha">
 
   <!-- ================================================== -->
-  <h2 id="s1">1. Informação parcial muda tudo</h2>
+  <h2 id="s1">1. Variáveis aleatórias discretas</h2>
 
-  <p>Lanço um dado honesto e pergunto: qual a probabilidade de ter saído 2? Você responde
-  \(1/6\). Agora eu olho o resultado e digo: <em>"saiu um número par"</em>. A pergunta é a
-  mesma, mas a resposta não pode mais ser \(1/6\).</p>
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Uma <strong>variável aleatória</strong> é uma função \(X : \Omega \to \mathbb{R}\) que
+    associa um número a cada resultado do experimento. Ela é <strong>discreta</strong> quando
+    assume um conjunto finito ou enumerável de valores \(x_1, x_2, \dots\).</p>
+    <p>A <strong>função de probabilidade</strong> é \(P_i = P(X = x_i)\).</p>
+  </div>
 
-  <p>Com a informação de que saiu par, o espaço amostral efetivo encolheu de
-  \(\{1,2,3,4,5,6\}\) para \(\{2,4,6\}\). Dentro desse novo universo, os três resultados
-  continuam igualmente prováveis, e</p>
+  <p>Exemplos: o número obtido num dado (\(1,\dots,6\)); o número de fótons detectados em um
+  segundo (\(0,1,2,\dots\)); o número de spins para cima em um sistema de \(N\) spins.</p>
 
-  <p>\[P(\text{sair }2 \mid \text{par}) = \frac{1}{3}.\]</p>
+  <div class="bloco">
+    <span class="rotulo">Condição de normalização</span>
+    <p>\[\sum_i P_i = 1\]</p>
+    <p>Não é uma hipótese nova: é o Axioma 2 escrito para os eventos elementares, que formam
+    uma partição de \(\Omega\).</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Valor médio (esperança)</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definições</span>
+    <p>\[\langle x \rangle = \sum_i x_i P_i, \qquad
+       \langle x^2 \rangle = \sum_i x_i^2 P_i, \qquad
+       \langle f(x) \rangle = \sum_i f(x_i)\,P_i\]</p>
+    <p>Cada valor é ponderado por sua probabilidade. Notações alternativas: \(\bar{x}\) ou
+    \(E(X)\). Preferimos \(\langle x \rangle\), como na Física, porque deixa visualmente clara a
+    diferença entre \(\langle x^2\rangle\) e \(\langle x\rangle^2\) — distinção que será o coração
+    da variância.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O valor médio pode ser impossível</span>
+    <p>A média do número de filhos por família é frequentemente citada como 2,4. Nenhum casal
+    tem 2,4 filhos. O valor esperado não precisa ser um valor possível — ele é um
+    <em>centro de massa</em> da distribuição, não uma previsão.</p>
+  </div>
+
+  <h3>Exercício resolvido 4.1 — Uma distribuição simples</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Seja \(x\) assumindo os valores 0, 1 e 2 com probabilidades \(1/2\), \(1/4\) e \(1/4\).
+    Verifique a normalização e calcule \(\langle x\rangle\), \(\langle x^2\rangle\) e \(\sigma^2\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Normalização:</strong> \(\tfrac12+\tfrac14+\tfrac14 = 1\) ✓</p>
+      <p>\[\langle x\rangle = 0\cdot\tfrac12 + 1\cdot\tfrac14 + 2\cdot\tfrac14 = \tfrac34 = 0{,}75\]</p>
+      <p>\[\langle x^2\rangle = 0\cdot\tfrac12 + 1\cdot\tfrac14 + 4\cdot\tfrac14 = \tfrac54 = 1{,}25\]</p>
+      <p>\[\sigma^2 = \langle x^2\rangle - \langle x\rangle^2 = \frac54 - \frac{9}{16}
+      = \frac{20-9}{16} = \frac{11}{16} = 0{,}6875,
+      \qquad \sigma = \sqrt{11}/4 \approx 0{,}829 .\]</p>
+      <p>Mais uma vez, a média \(3/4\) não é um valor possível.</p>
+      <p>No laboratório da próxima seção, essa distribuição corresponde às contagens
+      <b>50, 25, 25</b> — ou a quaisquer outras na mesma proporção, como 2, 1, 1. O que importa
+      para a distribuição são as <em>razões</em> entre as contagens, não os valores absolutos.</p>
+    </div>
+  </details>
+
+  <div class="bloco def">
+    <span class="rotulo">Da contagem à probabilidade</span>
+    <p>Na prática raramente recebemos as probabilidades prontas: recebemos
+    <strong>contagens</strong>. Perguntamos a 25 estudantes quantos irmãos têm e anotamos quantos
+    responderam 0, quantos responderam 1, e assim por diante.</p>
+    <p>A passagem de um para o outro é a divisão pelo total:</p>
+    <p>\[P_i = \frac{f_i}{N}, \qquad N = \sum_i f_i .\]</p>
+    <p>E a normalização vem de graça, <strong>por construção</strong>:</p>
+    <p>\[\sum_i P_i = \sum_i \frac{f_i}{N} = \frac{1}{N}\sum_i f_i = \frac{N}{N} = 1 .\]</p>
+    <p>É a definição frequentista do Módulo 14 reaparecendo: a frequência relativa observada é a
+    estimativa natural da probabilidade.</p>
+  </div>
+
+  <p>O laboratório abaixo aceita as duas entradas. Deixe em <em>contagens</em> e digite os
+  números brutos — ele normaliza, monta a tabela de cálculo coluna por coluna e devolve os
+  momentos:</p>
+
+  <div data-widget="discreta"></div>
+
+  <p>Os botões carregam quatro conjuntos conhecidos. Vale conferir que o dado honesto dá
+  \(\langle x\rangle = 3{,}5\) e \(\sigma^2 = 35/12 \approx 2{,}917\), e que a soma de dois dados
+  dá \(\langle x\rangle = 7\) — resultados que você reencontrará nos exercícios propostos.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. A variância</h2>
+
+  <p>Como medir a <strong>dispersão</strong> dos valores em torno da média? A primeira ideia
+  seria a média do desvio \(x - \langle x\rangle\) — mas ela é sempre zero:</p>
+  <p>\[\langle x - \langle x\rangle\rangle = \langle x\rangle - \langle x\rangle = 0 .\]</p>
+  <p>Os desvios positivos e negativos se cancelam, por construção. A segunda ideia seria
+  \(|x-\langle x\rangle|\): funciona, mas módulos são desagradáveis em álgebra. A solução
+  definitiva é elevar ao quadrado.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Variância e desvio padrão</span>
+    <p>\[\sigma_x^2 = \big\langle (x - \langle x\rangle)^2 \big\rangle, \qquad
+       \sigma_x = \sqrt{\sigma_x^2}\]</p>
+    <p>O desvio padrão representa a dispersão "raiz quadrada média" (rms) e tem as mesmas
+    unidades de \(x\).</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">A identidade fundamental</span>
+    <p>\[\sigma_x^2 = \langle x^2 - 2x\langle x\rangle + \langle x\rangle^2 \rangle
+    = \langle x^2\rangle - 2\langle x\rangle\langle x\rangle + \langle x\rangle^2
+    = \langle x^2\rangle - \langle x\rangle^2 .\]</p>
+  </div>
 
   <div class="destaque">
-    Condicionar não é um novo axioma: é <strong>reinterpretar \(B\) como o novo \(\Omega\)</strong>,
-    renormalizando as probabilidades para que somem 1 de novo.
+    \[\boxed{\;\sigma_x^2 = \langle x^2\rangle - \langle x\rangle^2\;}\]
+    A fórmula mais usada de todo o curso.
+  </div>
+
+  <p>Um corolário imediato: como \(\sigma^2 \geq 0\), vale sempre
+  \(\langle x^2\rangle \geq \langle x\rangle^2\), com igualdade apenas se \(x\) é constante.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Transformação linear</h2>
+
+  <p>Seja \(y = ax+b\), com \(a,b\) constantes. Então</p>
+  <p>\[\langle y \rangle = \sum_i (a x_i + b)P_i = a\sum_i x_i P_i + b\sum_i P_i
+  = a\langle x\rangle + b .\]</p>
+
+  <p>Para a variância, calculemos os dois pedaços:</p>
+  <p>\[\langle y^2\rangle = a^2\langle x^2\rangle + 2ab\langle x\rangle + b^2, \qquad
+  \langle y\rangle^2 = a^2\langle x\rangle^2 + 2ab\langle x\rangle + b^2 .\]</p>
+  <p>Subtraindo, os termos em \(b\) se cancelam inteiramente:</p>
+
+  <div class="destaque">
+    \[\sigma_y^2 = a^2\sigma_x^2, \qquad \sigma_y = |a|\,\sigma_x\]
+  </div>
+
+  <p>A variância depende de \(a\) mas <strong>não</strong> de \(b\) — e isso faz todo o sentido:
+  \(b\) desloca a distribuição inteira, sem alterar sua largura.</p>
+
+  <h3>Exercício resolvido 4.2 — Conversão de temperatura</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>A temperatura média de uma cidade em janeiro é 23 °F, com desvio padrão de 9 °F. Converta
+    média e desvio para graus Celsius, usando \(C = \tfrac59(F-32)\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Aqui \(a = 5/9\) e \(b = -160/9\).</p>
+      <p>\[\langle C\rangle = \frac59(23-32) = \frac59(-9) = \mathbf{-5\ ^\circ\mathrm{C}}\]</p>
+      <p>\[\sigma_C = \frac59\,\sigma_F = \frac59 \times 9 = \mathbf{5\ ^\circ\mathrm{C}}\]</p>
+      <p><strong>Erro comum:</strong> aplicar o \(-32\) também ao desvio padrão, obtendo
+      \(\sigma_C = \tfrac59(9-32)\). Desvio padrão não tem "zero de escala" — ele mede uma
+      <em>diferença</em>, e diferenças não enxergam translações.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Somas de variáveis independentes</h2>
+
+  <p>Se \(u\) e \(v\) são independentes, as somas (ou integrais) se separam e</p>
+  <p>\[\langle uv \rangle = \langle u\rangle\langle v\rangle .\]</p>
+
+  <h3>Exercício resolvido 4.3 — Média e variância de uma soma</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Sejam \(X_1,\dots,X_n\) independentes, cada uma com média \(\langle X\rangle\) e variância
+    \(\sigma_X^2\). Seja \(Y = X_1+\cdots+X_n\). Encontre \(\langle Y\rangle\) e \(\sigma_Y^2\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Média.</strong> A esperança é linear, mesmo sem independência:
+      \(\langle Y\rangle = n\langle X\rangle\).</p>
+      <p><strong>Variância.</strong> Expandindo o quadrado,</p>
+      <p>\[\langle Y^2\rangle = \Big\langle \sum_i X_i^2 + \sum_{i\neq j} X_i X_j \Big\rangle .\]</p>
+      <p>Há \(n\) termos do tipo \(\langle X_i^2\rangle = \langle X^2\rangle\) e \(n(n-1)\) termos
+      cruzados \(\langle X_iX_j\rangle\) com \(i\neq j\), cada um valendo \(\langle X\rangle^2\)
+      <em>pela independência</em>. Logo</p>
+      <p>\[\langle Y^2\rangle = n\langle X^2\rangle + n(n-1)\langle X\rangle^2 .\]</p>
+      <p>Como \(\langle Y\rangle^2 = n^2\langle X\rangle^2\),</p>
+      <p>\[\sigma_Y^2 = n\langle X^2\rangle + n(n-1)\langle X\rangle^2 - n^2\langle X\rangle^2
+      = n\big(\langle X^2\rangle - \langle X\rangle^2\big) = n\,\sigma_X^2 .\]</p>
+      <p>Portanto \(\sigma_Y = \sqrt{n}\,\sigma_X\).</p>
+    </div>
+  </details>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Duas consequências que você usará a vida inteira</span>
+    <p><strong>1. Erro de medidas repetidas.</strong> Se medimos \(X\) um total de \(n\) vezes e
+    tiramos a média \(\bar{X} = \tfrac1n\sum X_i\), então pela transformação linear com
+    \(a = 1/n\):</p>
+    <p>\[\sigma_{\bar X} = \frac{1}{n}\,\sigma_Y = \frac{1}{n}\sqrt{n}\,\sigma_X
+    = \frac{\sigma_X}{\sqrt{n}} .\]</p>
+    <p>Fazer 4 medidas e tirar a média reduz o erro aleatório à <strong>metade</strong>. Mas
+    atenção ao preço: para reduzi-lo a um décimo, são necessárias <strong>100</strong> medidas.
+    O \(\sqrt{n}\) é generoso no começo e implacável depois.</p>
+    <p><strong>2. Soma de contribuições microscópicas.</strong> Em física térmica, as grandezas
+    macroscópicas são somas de \(\sim 10^{23}\) contribuições atômicas. A média cresce como
+    \(n\), mas a flutuação só como \(\sqrt{n}\): a <em>largura relativa</em> cai como
+    \(1/\sqrt{n} \sim 10^{-11,5}\). É por isso que a termodinâmica parece determinística,
+    embora seu fundamento seja probabilístico.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s2">2. Definição e regra do produto</h2>
+  <h2 id="s6">6. Bernoulli e a distribuição binomial</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Ensaio de Bernoulli</span>
+    <p>Um experimento com apenas dois resultados: <strong>sucesso</strong>, com probabilidade
+    \(p\), e <strong>fracasso</strong>, com probabilidade \(q = 1-p\).</p>
+  </div>
+
+  <p>Exemplos: cara ou coroa; um elétron no estado fundamental ou excitado; um paciente que
+  melhora ou não; um spin para cima ou para baixo.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Os Bernoulli, e um livro que esperou oito anos</span>
+    <p>O nome vem de <strong>Jacob Bernoulli</strong> (1655–1705), da espantosa família suíça que
+    produziu oito matemáticos de primeira linha em três gerações — e que brigava furiosamente
+    entre si. Jacob e seu irmão Johann disputaram publicamente a autoria de resultados; Johann
+    chegou a expulsar de casa o próprio filho Daniel por ter vencido um prêmio que ele também
+    disputava.</p>
+    <p>A obra em que o ensaio de Bernoulli aparece, a <em>Ars Conjectandi</em> ("A arte de
+    conjecturar"), ficou inacabada à sua morte e só foi publicada em <strong>1713</strong>, oito
+    anos depois, por seu sobrinho Nicolaus. Nela está a primeira demonstração da <strong>lei dos
+    grandes números</strong>: Jacob provou que a frequência relativa de sucessos converge para
+    \(p\) à medida que o número de ensaios cresce, e ficou tão impressionado com o resultado
+    que o chamou de <em>teorema áureo</em>. Levou vinte anos trabalhando nele.</p>
+    <p>É esse teorema que justifica tudo o que fazemos ao estimar probabilidades a partir de
+    dados — e você já o viu funcionar no simulador de moedas do Módulo 14.</p>
+  </div>
+
+
+  <p>Definindo \(x = 1\) para sucesso e \(x = 0\) para fracasso:</p>
+  <p>\[\langle x\rangle = 0\cdot(1-p) + 1\cdot p = p, \qquad
+     \langle x^2\rangle = 0^2(1-p) + 1^2 p = p,\]</p>
+  <p>\[\sigma_x^2 = p - p^2 = p(1-p), \qquad \sigma_x = \sqrt{p(1-p)} .\]</p>
+
+  <p>Note que a variância é máxima em \(p = 1/2\) (incerteza máxima) e nula em \(p=0\) ou
+  \(p=1\) (resultado certo).</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Distribuição binomial</span>
+    <p>A probabilidade de obter exatamente \(k\) sucessos em \(n\) ensaios de Bernoulli
+    independentes é</p>
+    <p>\[P(n,k) = \binom{n}{k} p^k (1-p)^{n-k} .\]</p>
+  </div>
+
+  <p><em>Dedução.</em> Uma sequência <em>particular</em> com \(k\) sucessos e \(n-k\) fracassos
+  tem probabilidade \(p^k(1-p)^{n-k}\), pela independência. E há \(\binom{n}{k}\) maneiras de
+  escolher <em>quais</em> ensaios foram os sucessos — exatamente a combinação do Módulo 15.</p>
+
+  <p>A normalização sai do binômio de Newton:
+  \(\sum_{k=0}^n \binom{n}{k}p^k(1-p)^{n-k} = (p+1-p)^n = 1\) ✓</p>
+
+  <div class="bloco">
+    <span class="rotulo">Média e variância</span>
+    <p>Como a binomial é a <strong>soma de \(n\) Bernoullis independentes</strong>, não precisamos
+    de nenhum cálculo novo — basta aplicar o Exercício 4.3:</p>
+    <p>\[\langle k\rangle = np, \qquad \sigma_k^2 = np(1-p), \qquad \sigma_k = \sqrt{np(1-p)} .\]</p>
+    <p>E a <strong>largura fracionária</strong>:</p>
+    <p>\[\frac{\sigma_k}{\langle k\rangle} = \frac{\sqrt{np(1-p)}}{np}
+    = \sqrt{\frac{1-p}{np}} \;\propto\; \frac{1}{\sqrt n}\]</p>
+  </div>
+
+  <div data-widget="binomial"></div>
+
+  <h3>Exercício resolvido 4.4 — Moeda honesta em duas escalas</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Para uma moeda honesta (\(p=1/2\)), calcule o número esperado de caras, o desvio padrão e
+    a largura fracionária, para \(n = 16\) e para \(n = 10^{20}\) lançamentos.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Para \(n = 16\):</strong> \(\langle k\rangle = 8\);
+      \(\sigma_k = \sqrt{16\cdot\tfrac12\cdot\tfrac12} = 2\);
+      largura fracionária \(= 2/8 = \mathbf{25\%}\). Obter 10 caras em 16 lançamentos não
+      surpreende ninguém.</p>
+      <p><strong>Para \(n = 10^{20}\):</strong> \(\langle k\rangle = 5\times10^{19}\);
+      \(\sigma_k = \sqrt{10^{20}/4} = 5\times10^{9}\);
+      largura fracionária \(= 5\times10^9 / 5\times10^{19} = \mathbf{10^{-10}}\).</p>
+      <p>O desvio absoluto é gigantesco — cinco bilhões! — mas <em>relativamente</em> à média é
+      dez ordens de grandeza menor que no caso anterior. Uma fração de caras diferente de 0,5 na
+      décima casa decimal seria espantosa. <strong>É assim que leis determinísticas emergem de
+      fundamentos aleatórios.</strong></p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 4.5 — Controle de qualidade</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um lote tem 5% de peças defeituosas. Retiram-se 20 peças ao acaso. Qual a probabilidade de
+    (a) nenhuma defeituosa; (b) exatamente uma; (c) pelo menos duas?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Modelo binomial com \(n=20\), \(p=0{,}05\).</p>
+      <p><strong>(a)</strong> \(P(0) = \binom{20}{0}(0{,}05)^0(0{,}95)^{20} = (0{,}95)^{20}
+      \approx \mathbf{0{,}3585}\).</p>
+      <p><strong>(b)</strong> \(P(1) = \binom{20}{1}(0{,}05)(0{,}95)^{19}
+      = 20 \times 0{,}05 \times 0{,}3774 \approx \mathbf{0{,}3774}\).</p>
+      <p><strong>(c)</strong> Complementar:
+      \(P(k\geq 2) = 1 - P(0) - P(1) \approx 1 - 0{,}3585 - 0{,}3774 = \mathbf{0{,}2641}\).</p>
+      <p>Como \(np = 1\) é pequeno e \(n\) é grande, a aproximação de Poisson com \(m=1\) é
+      excelente: ela daria \(e^{-1} \approx 0{,}3679\) e \(e^{-1}\approx 0{,}3679\) para (a) e (b).
+      Marque a caixa "Poisson" no simulador acima com \(n=20\) e \(p=0{,}05\) e compare as curvas.</p>
+    </div>
+  </details>
+
+
+  <!-- ================================================== -->
+  <h2 id="sg">7. A tábua de Galton</h2>
+
+  <p><strong>Francis Galton</strong> (1822–1911) construiu, por volta de 1874, um aparelho para
+  mostrar a seus contemporâneos como uma distribuição em forma de sino poderia <em>emergir</em>
+  de puro acaso. Chamou-o de <em>quincunx</em>.</p>
+
+  <p>O funcionamento é simples: bolas caem de um funil sobre um triângulo de pregos. Em cada
+  prego, cada bola desvia para a esquerda ou para a direita, com probabilidade \(1/2\) cada.
+  Depois de atravessar \(n\) fileiras, ela cai num compartimento. Uma bola isolada é
+  imprevisível; milhares delas desenham sempre a mesma forma.</p>
+
+  <div class="destaque">
+    <span class="anuncio">A ideia central</span>
+    A posição final de cada bola é o número de desvios à direita — ou seja, exatamente uma
+    variável <strong>binomial</strong> com \(n\) ensaios e \(p = 1/2\).
+  </div>
+
+  <div data-widget="galton"></div>
+
+  <p>Três experimentos que vale fazer no aparelho acima:</p>
+  <ol>
+    <li>Solte <strong>uma</strong> bola de cada vez, algumas vezes. É impossível prever onde ela
+    cai — o acaso é genuíno;</li>
+    <li>Solte <strong>vinte mil</strong>. A forma aparece com precisão de três casas decimais.
+    <em>Nenhuma bola "sabe" da binomial</em>: a regularidade é consequência da repetição, não de
+    um plano;</li>
+    <li>Mude \(p\) para 0,25 e repita. A distribuição inteira se desloca para a esquerda, e o
+    pico vai parar em \(np\). A assimetria aparece — e some de novo quando \(n\) cresce,
+    antecipando o Módulo 4.</li>
+  </ol>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que isso importa para um físico</span>
+    <p>A tábua de Galton é o modelo mental de praticamente todo fenômeno de
+    <strong>acúmulo de pequenos acasos</strong>. Cada prego é uma colisão, um erro de leitura, um
+    choque térmico; a posição final é o resultado macroscópico que medimos.</p>
+    <p>É por isso que a mesma figura descreve a distribuição de erros em uma medida repetida, a
+    posição de uma partícula browniana e o perfil de um feixe de partículas. E a tábua de Galton
+    é, literalmente, um passeio aleatório na vertical — que é o assunto da seção 9.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">8. A distribuição de Poisson</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
-    <p>Dados dois eventos \(A\) e \(B\), com \(P(B)>0\), a <strong>probabilidade condicional</strong>
-    de \(A\) dado \(B\) é</p>
-    <p>\[P(A\mid B) = \frac{P(A \cap B)}{P(B)}.\]</p>
+    <p>Uma variável discreta \(x \in \{0,1,2,\dots\}\) é <strong>Poisson distribuída</strong> com
+    parâmetro \(m\) se</p>
+    <p>\[P(x) = \frac{e^{-m}\,m^{x}}{x!}\]</p>
   </div>
 
-  <p>O numerador restringe a atenção à parte de \(A\) que sobrevive dentro de \(B\); o
-  denominador renormaliza, para que \(P(B\mid B)=1\). Vale verificar que \(P(\cdot\mid B)\)
-  satisfaz os três axiomas de Kolmogorov — ou seja, é uma medida de probabilidade legítima sobre
-  \(\Omega\), apenas concentrada em \(B\).</p>
+  <p><strong>Normalização:</strong> usando a série da exponencial,
+  \(\sum_{x=0}^{\infty} \frac{m^x}{x!} = e^{m}\), de modo que
+  \(\sum_x P(x) = e^{-m}e^{m} = 1\) ✓</p>
 
-  <div class="bloco">
-    <span class="rotulo">Regra do produto</span>
-    <p>Reescrevendo a definição:</p>
-    <p>\[P(A \cap B) = P(B)\,P(A\mid B) = P(A)\,P(B\mid A).\]</p>
-    <p>Para três eventos, encadeando:</p>
-    <p>\[P(A\cap B\cap C) = P(A)\,P(B\mid A)\,P(C \mid A\cap B).\]</p>
-    <p>É essa cadeia que percorremos ao descer os galhos de uma <strong>árvore de probabilidade</strong>:
-    multiplicam-se as probabilidades ao longo do caminho.</p>
+  <p><strong>Média:</strong></p>
+  <p>\[\langle x\rangle = \sum_{x=0}^{\infty} x\,\frac{e^{-m}m^x}{x!}
+  = e^{-m}\sum_{x=1}^{\infty} \frac{m^x}{(x-1)!}
+  = e^{-m}\,m \sum_{x'=0}^{\infty}\frac{m^{x'}}{x'!} = m .\]</p>
+
+  <p>Um cálculo análogo com \(x^2 = x(x-1)+x\) fornece \(\langle x^2\rangle = m^2 + m\), donde</p>
+
+  <div class="destaque">
+    \[\langle x\rangle = m, \qquad \sigma^2 = m, \qquad \sigma = \sqrt{m}\]
+    Na Poisson, <strong>média e variância são iguais</strong>.
   </div>
 
-  <h3>Exercício resolvido 3.1 — Extração sem reposição</h3>
+  <div class="bloco fisica">
+    <span class="rotulo">Por que a Poisson aparece tanto em Física</span>
+    <p>Ela é o limite da binomial quando \(n \to \infty\) e \(p \to 0\) com \(np = m\) fixo: o
+    caso de <strong>eventos raros em muitas oportunidades</strong>. Por isso descreve contagens de
+    decaimentos radioativos, de fótons em um detector, de raios cósmicos, de eventos em um
+    acelerador.</p>
+    <p>A consequência prática é a <strong>estatística de contagem</strong>: se você conta \(N\)
+    eventos, a incerteza é \(\sqrt{N}\), e a incerteza relativa é \(\sqrt{N}/N = 1/\sqrt{N}\).
+    Contar 100 eventos dá 10% de erro; contar 10 000 dá 1%. É a razão pela qual experimentos de
+    contagem exigem tempos de aquisição tão longos.</p>
+  </div>
+
+  <div data-widget="poisson"></div>
+
+
+  <div class="bloco fisica">
+    <span class="rotulo">Poisson, Bortkiewicz e os cavalos prussianos</span>
+    <p><strong>Siméon Denis Poisson</strong> (1781–1840) deduziu a distribuição em 1837, num livro
+    sobre a probabilidade de <em>julgamentos em matéria criminal</em> — ele queria estimar a
+    chance de um júri condenar um inocente. O resultado ocupa meia página da obra e passou
+    despercebido por décadas.</p>
+    <p>Quem o ressuscitou foi o estatístico russo-polonês <strong>Ladislaus von
+    Bortkiewicz</strong>, em 1898, num livrinho com um título memorável: <em>Das Gesetz der
+    kleinen Zahlen</em>, "A lei dos pequenos números". Para ilustrar a ideia, ele precisava de um
+    fenômeno raro, independente e bem documentado — e escolheu os registros do exército prussiano
+    sobre <strong>mortes de soldados por coice de cavalo</strong>, ao longo de vinte anos.</p>
+    <p>A escolha parece pitoresca, e é. Mas Bortkiewicz sabia o que fazia: morrer coiceado é
+    improvável para cada soldado, há muitos soldados e muitos cavalos, e os casos são claramente
+    independentes entre si. É o retrato exato das condições em que a Poisson se aplica — e o
+    acordo entre dados e teoria, que você verá no exercício a seguir, é quase perfeito.</p>
+    <p>A mesma distribuição descreve, hoje, as contagens de um detector de radiação e os impactos
+    de bombas V-1 em Londres — este último um estudo feito durante a guerra para decidir se os
+    ataques eram dirigidos a alvos específicos ou espalhados ao acaso. Eram ao acaso: os dados
+    seguiam Poisson.</p>
+  </div>
+
+  <h3>Exercício resolvido 4.6 — Coices de cavalo no exército prussiano</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
-    <p>Uma urna contém 5 bolas brancas e 3 pretas. Retiram-se duas bolas, sem reposição.
-    Qual a probabilidade de: (a) ambas brancas; (b) a segunda ser branca; (c) a primeira ter sido
-    branca, <em>sabendo</em> que a segunda foi branca?</p>
+    <p>O exemplo clássico de Bortkiewicz (1898): registraram-se as mortes por coice de cavalo em
+    10 corpos do exército prussiano ao longo de 20 anos (200 observações corpo-ano), totalizando
+    122 mortes. Os dados observados foram: 109 corpos-ano com 0 mortes, 65 com 1, 22 com 2, 3 com
+    3 e 1 com 4. Compare com a previsão de Poisson.</p>
   </div>
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <p>Seja \(B_i\) o evento "a \(i\)-ésima bola é branca".</p>
-      <p><strong>(a)</strong> Pela regra do produto:</p>
-      <p>\[P(B_1\cap B_2) = P(B_1)P(B_2\mid B_1) = \frac58 \cdot \frac47 = \frac{20}{56}
-      = \frac{5}{14} \approx 0{,}357.\]</p>
-      <p><strong>(b)</strong> Decomponha conforme a primeira bola (probabilidade total):</p>
-      <p>\[P(B_2) = P(B_1)P(B_2|B_1) + P(B_1^c)P(B_2|B_1^c)
-      = \frac58\cdot\frac47 + \frac38\cdot\frac57 = \frac{20+15}{56} = \frac{35}{56} = \frac58 .\]</p>
-      <p>Resultado notável: \(P(B_2) = P(B_1) = 5/8\). <strong>Sem informação sobre a primeira
-      extração, a segunda bola tem exatamente a mesma chance da primeira</strong> — por simetria,
-      nenhuma posição é privilegiada. É o argumento que justifica que a ordem do sorteio não
-      favorece ninguém.</p>
-      <p><strong>(c)</strong> Agora invertemos o condicionamento:</p>
-      <p>\[P(B_1\mid B_2) = \frac{P(B_1\cap B_2)}{P(B_2)} = \frac{5/14}{5/8}
-      = \frac{5}{14}\cdot\frac{8}{5} = \frac{4}{7} \approx 0{,}571 .\]</p>
-      <p>Saber que a segunda foi branca <em>diminui</em> a chance de a primeira ter sido branca
-      (de \(5/8=0{,}625\) para \(4/7\approx0{,}571\)) — afinal, uma branca já foi consumida.
-      Note que a informação flui "para trás no tempo": condicionar não respeita causalidade.</p>
+      <p>A média observada é \(m = 122/200 = 0{,}61\) morte por corpo-ano. A previsão é
+      \(200 \times P(x)\) com \(P(x) = e^{-0{,}61}(0{,}61)^x/x!\):</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th class="num">Mortes \(x\)</th><th class="num">Observado</th><th class="num">Poisson</th></tr></thead>
+        <tbody>
+          <tr><td class="num">0</td><td class="num">109</td><td class="num">108,7</td></tr>
+          <tr><td class="num">1</td><td class="num">65</td><td class="num">66,3</td></tr>
+          <tr><td class="num">2</td><td class="num">22</td><td class="num">20,2</td></tr>
+          <tr><td class="num">3</td><td class="num">3</td><td class="num">4,1</td></tr>
+          <tr><td class="num">4</td><td class="num">1</td><td class="num">0,6</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>O acordo é notável. A variância observada, \(\approx 0{,}61\), coincide com a média —
+      a assinatura da Poisson. Ajuste \(m = 0{,}61\) no simulador acima e compare o perfil.</p>
+      <p>Este é o exemplo histórico que estabeleceu a Poisson como a distribuição dos eventos
+      raros. Morrer coiceado por um cavalo é improvável para cada soldado, mas há muitos soldados
+      e muitos cavalos — \(n\) grande, \(p\) minúsculo, \(np\) moderado.</p>
     </div>
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s3">3. Independência</h2>
+  <h2 id="s8">9. O passeio aleatório</h2>
 
   <div class="bloco def">
-    <span class="rotulo">Definição</span>
-    <p>Dois eventos \(A\) e \(B\) são <strong>independentes</strong> quando</p>
-    <p>\[P(A \cap B) = P(A)\,P(B),\]</p>
-    <p>o que equivale (se \(P(B)>0\)) a \(P(A\mid B)=P(A)\): saber que \(B\) ocorreu não altera a
-    avaliação de \(A\).</p>
+    <span class="rotulo">O problema</span>
+    <p>Uma partícula dá \(n\) passos de comprimento \(L\), cada um para frente ou para trás com
+    probabilidade \(1/2\). Se \(k\) passos foram para frente, a posição final é</p>
+    <p>\[x = kL - (n-k)L = (2k-n)L .\]</p>
   </div>
 
-  <div class="bloco alerta">
-    <span class="rotulo">Erro clássico: independente ≠ mutuamente exclusivo</span>
-    <p>São conceitos <strong>opostos</strong>, não sinônimos. Se \(A\) e \(B\) são mutuamente
-    exclusivos e ambos têm probabilidade positiva, saber que \(A\) ocorreu informa que \(B\)
-    <em>não</em> ocorreu — a dependência é máxima:</p>
-    <p>\[P(A\cap B) = 0 \neq P(A)P(B) > 0 .\]</p>
-    <p>Exclusividade mútua é uma afirmação sobre a <em>geometria</em> dos conjuntos; independência
-    é uma afirmação sobre as <em>probabilidades</em>.</p>
+  <p>Como \(k\) é binomial com \(p=1/2\), temos \(\langle k\rangle = n/2\) e \(\sigma_k^2 = n/4\).
+  Aplicando a transformação linear \(x = (2k-n)L\), com \(a = 2L\):</p>
+
+  <p>\[\langle x\rangle = (2\cdot\tfrac{n}{2} - n)L = 0, \qquad
+  \sigma_x^2 = (2L)^2\,\sigma_k^2 = 4L^2 \cdot \frac{n}{4} = nL^2,\qquad
+  \sigma_x = \sqrt{n}\,L .\]</p>
+
+  <div class="destaque">
+    A posição média é <strong>zero</strong>, mas a distância típica cresce como
+    \(\sqrt{n}\,L\) — não como \(n\,L\).
   </div>
 
-  <p>Para \(n\) eventos, a independência <strong>mútua</strong> exige que a fatoração valha para
-  toda subfamília, não apenas para os pares. É possível ter três eventos dois a dois
-  independentes sem que sejam mutuamente independentes.</p>
-
-  <!-- ================================================== -->
-  <h2 id="s4">4. Teorema da probabilidade total</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Enunciado</span>
-    <p>Seja \(\{A_1,\dots,A_n\}\) uma <strong>partição</strong> de \(\Omega\) (eventos disjuntos
-    cuja união é \(\Omega\)), com \(P(A_i)>0\). Então, para qualquer evento \(B\):</p>
-    <p>\[P(B) = \sum_{i=1}^{n} P(A_i)\,P(B\mid A_i).\]</p>
-  </div>
-
-  <p><em>Demonstração.</em> Os conjuntos \(B\cap A_i\) são disjuntos e sua união é \(B\), pois a
-  partição cobre todo \(\Omega\). Pela aditividade (Axioma 3),
-  \(P(B)=\sum_i P(B\cap A_i)\); aplicando a regra do produto a cada termo, chega-se ao resultado. ∎</p>
-
-  <p>A leitura é intuitiva: para achar a probabilidade de \(B\), divida o mundo em cenários
-  possíveis, calcule a probabilidade de \(B\) <em>dentro de cada cenário</em>, e faça a média
-  <strong>ponderada pela probabilidade de cada cenário</strong>. Foi exatamente o que fizemos no
-  item (b) do Exercício 3.1.</p>
-
-
-  <!-- ================================================== -->
-  <h2 id="sh">5. Quem foi Thomas Bayes</h2>
-
-  <p>O teorema que vamos ver na próxima seção é, provavelmente, o resultado mais influente desta
-  disciplina — e seu autor nunca o publicou.</p>
-
-  <p><strong>Thomas Bayes</strong> (1701–1761) era pastor presbiteriano em Tunbridge Wells, na
-  Inglaterra, e matemático amador. Interessava-se por um problema que ninguém sabia atacar: toda
-  a teoria construída por Pascal, Fermat e seus sucessores respondia à pergunta <em>"dado o
-  modelo, o que esperar dos dados?"</em>. Bayes queria o caminho inverso — <em>"dados os
-  dados, o que dizer do modelo?"</em>. Ele chamava isso de <strong>probabilidade inversa</strong>.</p>
-
-  <p>Seu ensaio sobre o assunto foi encontrado entre seus papéis após a morte e enviado à Royal
-  Society por seu amigo <strong>Richard Price</strong>, que o editou, escreveu a introdução e o
-  publicou em <strong>1763</strong> — dois anos depois da morte do autor. Price, aliás, tinha
-  uma motivação própria: queria usar o argumento contra o ceticismo de David Hume a respeito
-  dos milagres.</p>
-
-  <p>O ensaio foi praticamente ignorado. Quem deu ao resultado a forma que usamos hoje, e
-  percebeu seu alcance, foi <strong>Pierre-Simon Laplace</strong>, que chegou a ele
-  independentemente por volta de 1774 e passou décadas aplicando-o — a demografia, a mecânica
-  celeste, a jurisprudência.</p>
+  <div data-widget="passeio"></div>
 
   <div class="bloco fisica">
-    <span class="rotulo">Dois séculos de desconfiança, e a volta por cima</span>
-    <p>Durante boa parte dos séculos XIX e XX, o método bayesiano foi tratado com hostilidade.
-    A objeção era a <strong>probabilidade a priori</strong>: de onde se tira \(P(A_i)\) antes
-    de ver qualquer dado? Para os estatísticos frequentistas, admitir uma crença inicial era
-    abrir a porta para a subjetividade — e a estatística que você estudará nos Módulos 8 e 9
-    nasceu, em boa medida, do esforço de Fisher, Neyman e Pearson para evitá-la.</p>
-    <p>O método sobreviveu porque <em>funcionava</em>, muitas vezes em sigilo. Alan Turing o usou
-    em Bletchley Park para quebrar a máquina Enigma; a Marinha americana, para localizar
-    submarinos e uma bomba de hidrogênio perdida no mar. A partir dos anos 1990, com computadores
-    capazes de calcular as integrais envolvidas, ele voltou em força.</p>
-    <p>Hoje, a análise de dados do LIGO que confirmou a existência de ondas gravitacionais é
-    bayesiana; o ajuste dos parâmetros cosmológicos a partir da radiação de fundo é bayesiano;
-    boa parte do aprendizado de máquina é bayesiano. A pergunta do pastor de Tunbridge Wells
-    acabou sendo a pergunta certa.</p>
+    <span class="rotulo">Da caminhada do bêbado à difusão</span>
+    <p>Se cada passo leva um tempo \(\tau\), então após um tempo \(t\) temos \(n = t/\tau\) passos e</p>
+    <p>\[\sigma_x = \sqrt{\frac{t}{\tau}}\,L = \sqrt{\frac{L^2}{\tau}\,t} = \sqrt{2Dt},
+    \qquad D = \frac{L^2}{2\tau}.\]</p>
+    <p>Esta é a <strong>lei da difusão</strong>, e explica por que o cheiro do café atravessa a
+    sala tão devagar apesar de as moléculas se moverem a centenas de metros por segundo: elas não
+    viajam em linha reta, mas aos tropeços, colidindo o tempo todo. Dobrar a distância percorrida
+    exige <strong>quatro vezes</strong> mais tempo.</p>
   </div>
 
-  <div class="bloco alerta">
-    <span class="rotulo">Uma observação honesta</span>
-    <p>Este curso é, no essencial, frequentista — é o que o currículo e a prática de laboratório
-    pedem. Mas vale saber que há duas maneiras legítimas de interpretar a palavra
-    "probabilidade": como <strong>frequência</strong> em repetições, e como <strong>grau de
-    crença</strong> racional. A matemática dos axiomas de Kolmogorov é a mesma nas duas; o que
-    muda é o que se considera lícito perguntar.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s5">6. O teorema de Bayes</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Teorema (Bayes, 1763)</span>
-    <p>\[P(A_i \mid B) = \frac{P(A_i)\,P(B\mid A_i)}{P(B)}
-    = \frac{P(A_i)\,P(B\mid A_i)}{\sum_{j} P(A_j)\,P(B\mid A_j)}.\]</p>
-  </div>
-
-  <p><em>Demonstração.</em> Escreva \(P(A_i\cap B)\) das duas maneiras possíveis pela regra do
-  produto: \(P(B)P(A_i|B) = P(A_i)P(B|A_i)\). Isolando \(P(A_i|B)\) e expandindo \(P(B)\) pelo
-  teorema da probabilidade total, obtém-se o enunciado. ∎</p>
-
-  <div class="bloco">
-    <span class="rotulo">O vocabulário bayesiano</span>
-    <ul>
-      <li>\(P(A_i)\) — <strong>probabilidade a priori</strong>: o que eu acreditava antes do dado;</li>
-      <li>\(P(B\mid A_i)\) — <strong>verossimilhança</strong>: quão bem a hipótese \(A_i\) explica
-      a observação \(B\);</li>
-      <li>\(P(A_i \mid B)\) — <strong>probabilidade a posteriori</strong>: a crença revisada;</li>
-      <li>\(P(B)\) — <strong>evidência</strong>: apenas o fator de normalização.</li>
-    </ul>
-    <p>Bayes é, portanto, a <strong>regra de atualização de crenças diante de evidência</strong>.
-    É a espinha dorsal da análise de dados em Física moderna — da detecção de ondas
-    gravitacionais ao ajuste de parâmetros cosmológicos.</p>
-  </div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">A assimetria fundamental</span>
-    <p>\(P(A\mid B)\) e \(P(B\mid A)\) são coisas <strong>diferentes</strong>. Confundi-las é a
-    "falácia da transposição do condicional". A probabilidade de ter quatro patas dado que é um
-    cachorro é ≈ 1; a probabilidade de ser um cachorro dado que tem quatro patas é bem menor.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s6">7. A armadilha do teste diagnóstico</h2>
-
-  <h3>Exercício resolvido 3.2 — Um teste muito bom, um resultado inútil</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Uma doença atinge 1% da população. Um teste detecta a doença em 99% dos doentes
-    (sensibilidade) e dá resultado negativo em 95% dos saudáveis (especificidade). Você testa
-    positivo. Qual a probabilidade de você estar realmente doente?</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p>Sejam \(D\) = "ter a doença" e \(+\) = "testar positivo". Os dados são
-      \(P(D)=0{,}01\), \(P(+|D)=0{,}99\) e \(P(-|D^c)=0{,}95\), donde \(P(+|D^c)=0{,}05\).</p>
-      <p><strong>Probabilidade total:</strong></p>
-      <p>\[P(+) = P(D)P(+|D) + P(D^c)P(+|D^c) = (0{,}01)(0{,}99) + (0{,}99)(0{,}05)
-      = 0{,}0099 + 0{,}0495 = 0{,}0594 .\]</p>
-      <p><strong>Bayes:</strong></p>
-      <p>\[P(D\mid +) = \frac{0{,}0099}{0{,}0594} \approx \mathbf{0{,}167} = 16{,}7\%.\]</p>
-      <p>Apesar de um teste com 99% de sensibilidade, <strong>cinco em cada seis positivos são
-      falsos alarmes</strong>. A maioria das pessoas — e, em estudos conhecidos, a maioria dos
-      médicos — chuta algo próximo de 95%.</p>
-      <p><strong>Por que a intuição falha:</strong> os saudáveis são 99 vezes mais numerosos.
-      Mesmo uma taxa pequena de erro aplicada a um grupo enorme produz mais falsos positivos
-      do que o grupo pequeno de doentes produz verdadeiros positivos. Isso se chama
-      <strong>falácia da taxa-base</strong>: ignorar \(P(D)\), a prevalência.</p>
-      <p><strong>Em frequências naturais</strong> (muito mais fácil de pensar), em 10 000 pessoas:
-      100 têm a doença e 99 delas testam positivo; das 9 900 saudáveis, 495 testam positivo por
-      engano. Total de positivos: 594, dos quais 99 são reais → \(99/594 \approx 16{,}7\%\).</p>
-    </div>
-  </details>
-
-  <div data-widget="bayes"></div>
-
-  <p>Experimente no simulador: aumente a prevalência para 10% e veja o valor preditivo saltar.
-  Depois reduza-a para 0,1%, como numa triagem populacional de doença rara — o teste praticamente
-  perde utilidade individual. <strong>A qualidade do teste não mudou; o que mudou foi o
-  contexto.</strong> É por isso que não se faz rastreio universal para doenças muito raras.</p>
-
-  <!-- ================================================== -->
-  <h2 id="s7">8. O problema de Monty Hall</h2>
-
-  <h3>Exercício resolvido 3.3</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Em um programa de TV há três portas. Atrás de uma há um carro; atrás das outras duas,
-    cabras. Você escolhe a porta 1. O apresentador, que <strong>sabe onde está o carro</strong>,
-    abre a porta 3, revelando uma cabra, e oferece a você a chance de trocar para a porta 2.
-    Você deve trocar?</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Sim — trocar dobra a probabilidade de ganhar, de 1/3 para 2/3.</strong></p>
-      <p>Seja \(C_i\) = "o carro está na porta \(i\)" (cada um com probabilidade a priori 1/3) e
-      \(M_3\) = "o apresentador abre a porta 3". Calculemos as verossimilhanças:</p>
-      <ul>
-        <li>\(P(M_3 \mid C_1) = 1/2\) — o carro está na sua porta, e ele pode abrir a 2 ou a 3,
-        à vontade;</li>
-        <li>\(P(M_3 \mid C_2) = 1\) — o carro está na 2, ele não pode abrir a sua (1) nem a do
-        carro (2), logo é obrigado a abrir a 3;</li>
-        <li>\(P(M_3 \mid C_3) = 0\) — ele jamais revela o carro.</li>
-      </ul>
-      <p>Pela probabilidade total,
-      \(P(M_3) = \tfrac13\cdot\tfrac12 + \tfrac13\cdot 1 + \tfrac13\cdot 0 = \tfrac12\). Então:</p>
-      <p>\[P(C_1 \mid M_3) = \frac{(1/3)(1/2)}{1/2} = \frac13, \qquad
-         P(C_2 \mid M_3) = \frac{(1/3)(1)}{1/2} = \frac23 .\]</p>
-      <p><strong>A chave é a assimetria das verossimilhanças.</strong> A ação do apresentador é
-      informativa justamente porque ele <em>não</em> escolhe ao acaso: ele é obrigado a desviar
-      do carro. Toda a probabilidade das portas que você não escolheu se concentra na porta que
-      sobrou.</p>
-      <p><strong>Teste decisivo:</strong> se o apresentador abrisse uma porta <em>ao acaso</em> e
-      por sorte saísse cabra, teríamos \(P(M_3|C_2)=1/2\) também — e aí trocar seria indiferente,
-      com 1/2 para cada porta. O mesmo evento observado, gerado por um mecanismo diferente, carrega
-      informação diferente. <em>O que importa não é só o que você viu, mas como aquilo veio a ser
-      mostrado.</em></p>
-    </div>
-  </details>
-
-
-  <div class="bloco ex">
-    <span class="rotulo">A controvérsia de 1990</span>
-    <p>O problema leva o nome de <strong>Monty Hall</strong>, apresentador do programa americano
-    <em>Let's Make a Deal</em>. Ficou famoso em setembro de 1990, quando
-    <strong>Marilyn vos Savant</strong>, colunista da revista <em>Parade</em>, respondeu a um
-    leitor que convinha trocar de porta.</p>
-    <p>A reação foi extraordinária. Ela recebeu cerca de <strong>dez mil cartas</strong>
-    discordando — e aproximadamente <strong>mil delas assinadas por pessoas com doutorado</strong>,
-    muitas em matemática. Alguns professores escreveram em tom professoral, sugerindo que ela
-    admitisse publicamente o erro e refletisse sobre sua responsabilidade diante de tantos
-    leitores.</p>
-    <p>Marilyn estava certa. Publicou mais três colunas sobre o assunto, propôs que professores
-    simulassem o jogo com os alunos em sala — e foi isso que encerrou a discussão, com as
-    frequências observadas convergindo para 2/3.</p>
-    <p>Mesmo <strong>Paul Erdős</strong>, um dos matemáticos mais prolíficos do século XX,
-    recusou-se a aceitar o resultado até ver uma simulação computacional rodando. A história é um
-    lembrete útil: <em>intuição treinada não é demonstração</em>, e a simulação é uma ferramenta
-    legítima de convencimento.</p>
-  </div>
-
-  <p>É o que você pode fazer agora. Jogue algumas partidas manualmente, depois dez mil de uma vez:</p>
-
-  <div data-widget="montyhall"></div>
-
-  <div class="bloco alerta">
-    <span class="rotulo">Mude o mecanismo e veja a resposta mudar</span>
-    <p>Troque a opção do simulador para <strong>"ele abre uma porta ao acaso"</strong>. Agora o
-    apresentador não sabe onde está o carro; às vezes o revela sem querer, e essas rodadas são
-    descartadas. Nas que restam, você vê exatamente a mesma cena — uma porta aberta com uma
-    cabra — mas as duas estratégias passam a empatar em <strong>50%</strong>.</p>
-    <p>Esse é, a meu ver, o ensinamento mais profundo do problema, e vale para toda a análise de
-    dados: <strong>a informação não está apenas no que você observou, mas em como aquilo veio a
-    ser observado.</strong> Um dado filtrado por um processo seletivo carrega informação
-    diferente do mesmo dado obtido ao acaso — e é por isso que, nos Módulos 7 e 14, o
-    <em>desenho</em> do experimento importa tanto quanto a conta feita ao final.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s8">9. Aplicações em Física</h2>
 
   <div class="bloco fisica">
-    <span class="rotulo">Decaimento radioativo e a ausência de memória</span>
-    <p>Vimos no Módulo 1 que a probabilidade de um núcleo sobreviver até \(t\) é
-    \(S(t)=e^{-\lambda t}\). Qual a probabilidade de sobreviver mais um tempo \(s\),
-    <em>dado</em> que já sobreviveu até \(t\)?</p>
-    <p>\[P(T > t+s \mid T>t) = \frac{P(T>t+s)}{P(T>t)}
-    = \frac{e^{-\lambda(t+s)}}{e^{-\lambda t}} = e^{-\lambda s} = P(T>s).\]</p>
-    <p>O resultado <strong>não depende de \(t\)</strong>. Um núcleo que já existe há mil anos tem
-    exatamente a mesma perspectiva de futuro que um recém-formado. Essa é a propriedade de
-    <strong>ausência de memória</strong>, e a exponencial é a única distribuição contínua que a
-    possui. Núcleos não envelhecem.</p>
+    <span class="rotulo">1827, 1905: do pólen à prova de que átomos existem</span>
+    <p>Em 1827, o botânico escocês <strong>Robert Brown</strong> observou ao microscópio grãos de
+    pólen suspensos em água e viu que se agitavam sem parar, em ziguezague. Suspeitou que fosse
+    vida — mas o movimento persistia em partículas de poeira, de fuligem e até num fragmento da
+    Esfinge. Brown descreveu o fenômeno com cuidado e não soube explicá-lo. Por quase oitenta
+    anos ninguém soube.</p>
+    <p>Em <strong>1905</strong>, no mesmo ano em que publicou a relatividade restrita e o efeito
+    fotoelétrico, <strong>Albert Einstein</strong> resolveu o problema — e fez muito mais que
+    isso. Ele mostrou que, se a matéria é feita de moléculas em agitação térmica, o grão de pólen
+    sofre um bombardeio desequilibrado a cada instante, e sua trajetória é um
+    <strong>passeio aleatório</strong>. A previsão quantitativa foi:</p>
+    <p>\[\langle x^{2}\rangle = 2Dt, \qquad
+    D = \frac{k_{B}T}{6\pi\eta a},\]</p>
+    <p>com \(\eta\) a viscosidade do fluido e \(a\) o raio da partícula.</p>
+    <p><strong>Por que isso foi decisivo.</strong> Em 1905 a existência dos átomos ainda era
+    contestada por físicos respeitáveis — Ernst Mach e Wilhelm Ostwald entre eles — que os
+    consideravam uma ficção de cálculo. A fórmula de Einstein permitia <em>medir</em> o número de
+    Avogadro a partir de algo visível ao microscópio. <strong>Jean Perrin</strong> fez as medidas
+    entre 1908 e 1911, confirmou a previsão, obteve \(N_A \approx 6{,}7\times10^{23}\) e
+    recebeu o Nobel de 1926 por isso. O debate acabou ali.</p>
+    <p>Repare no que aconteceu: o \(\sqrt{n}\) que você acabou de deduzir contando passos para
+    frente e para trás é a mesma relação que estabeleceu a realidade física dos átomos. Não é
+    exagero dizer que esta seção contém um dos resultados mais importantes da Física do século
+    XX.</p>
   </div>
 
-  <div class="bloco fisica">
-    <span class="rotulo">Detecção de partículas e a razão sinal-ruído</span>
-    <p>Um detector registra um evento candidato a uma partícula rara. Seja \(S\) a hipótese
-    "sinal" e \(R\) "ruído de fundo". Por Bayes,</p>
-    <p>\[\frac{P(S\mid \text{dado})}{P(R\mid \text{dado})}
-    = \underbrace{\frac{P(S)}{P(R)}}_{\text{razão a priori}} \times
-      \underbrace{\frac{P(\text{dado}\mid S)}{P(\text{dado}\mid R)}}_{\text{fator de Bayes}} .\]</p>
-    <p>É a mesma estrutura do teste diagnóstico: se o processo buscado é raríssimo (razão a
-    priori minúscula), é preciso um fator de Bayes gigantesco para reivindicar descoberta. Daí a
-    exigência de \(5\sigma\) na Física de partículas — é a taxa-base cobrando seu preço.</p>
-  </div>
+  <div data-widget="moeda"></div>
 
   <!-- ================================================== -->
   <h2 id="s9">10. Exercícios propostos</h2>
 
   <ol>
-    <li>Num dado honesto, sejam \(A\) = "sair número par" e \(B\) = "sair número maior que 3".
-    Calcule \(P(A|B)\) e \(P(B|A)\), e verifique se \(A\) e \(B\) são independentes.</li>
-    <li>Duas cartas são retiradas de um baralho sem reposição. Qual a probabilidade de ambas
-    serem ases? E de a segunda ser ás?</li>
-    <li>Prove que, se \(A\) e \(B\) são independentes, então \(A\) e \(B^c\) também são.</li>
-    <li>Três fábricas produzem 50%, 30% e 20% das lâmpadas de um estoque, com taxas de defeito
-    de 1%, 2% e 4%. Uma lâmpada é sorteada e está defeituosa. Qual a probabilidade de ter vindo
-    da terceira fábrica?</li>
-    <li>Em uma turma, 60% dos estudantes passam em Cálculo, 70% em Física e 50% em ambas. Os
-    eventos são independentes? Calcule \(P(\text{Cálculo} \mid \text{Física})\).</li>
-    <li>Um núcleo com meia-vida \(t_{1/2}\) sobreviveu à primeira meia-vida. Qual a probabilidade
-    de decair durante a segunda? <em>(Compare com a resposta "ingênua" e explique.)</em></li>
-    <li>Mostre que, se \(\{A_1,A_2,A_3\}\) é uma partição de \(\Omega\), então
-    \(\sum_i P(A_i\mid B) = 1\) para qualquer \(B\) com \(P(B)>0\).</li>
-    <li>Um teste tem sensibilidade 95% e especificidade 90%. Para que prevalência o valor
-    preditivo positivo atinge 50%? <em>(Use o simulador para estimar e depois resolva
-    algebricamente.)</em></li>
+    <li>Um dado honesto produz os números 1 a 6, cada um com probabilidade \(1/6\). Encontre a
+    média, a variância e o desvio padrão. <em>(Respostas: \(7/2\), \(35/12\), \(\approx 1{,}71\).)</em></li>
+    <li>O peso médio ao nascer no Reino Unido é 3,2 kg com desvio padrão 0,5 kg. Converta ambos
+    para libras, sabendo que 1 kg = 2,2 lb.</li>
+    <li>Mostre, para a distribuição de Poisson, que \(\langle x^2\rangle = m^2 + m\) e conclua
+    que \(\sigma^2 = m\).</li>
+    <li>Prove que, para a binomial, \(\langle k \rangle = np\) diretamente pela soma, usando a
+    identidade \(k\binom{n}{k} = n\binom{n-1}{k-1}\).</li>
+    <li>Na física experimental, mostre que se o erro em uma única medição de \(X\) é \(\Delta\),
+    o erro da média de \(n\) medições é \(\Delta/\sqrt{n}\).</li>
+    <li>Mostre que a binomial pode ser aproximada pela Poisson com média \(np\) quando
+    \(n \gg 1\) e \(np\) permanece pequeno.</li>
+    <li>Defina a função geradora de momentos \(M(t) = \langle e^{tx}\rangle\). Mostre que
+    \(\langle x^n\rangle = M^{(n)}(0)\) e que, para a binomial, \(M(t) = (pe^t + 1 - p)^n\).
+    Derive a média e a variância a partir dela.</li>
+    <li>Um detector registra em média 3 eventos por minuto. Qual a probabilidade de registrar
+    nenhum evento em um minuto? E de registrar mais de 5?</li>
   </ol>
 
   <div class="bloco def">
     <span class="rotulo">Resumo do módulo</span>
     <ul>
-      <li>\(P(A|B) = P(A\cap B)/P(B)\) — restringir e renormalizar;</li>
-      <li>Regra do produto: \(P(A\cap B)=P(B)P(A|B)=P(A)P(B|A)\);</li>
-      <li>Independência: \(P(A\cap B)=P(A)P(B)\) — não confundir com exclusividade mútua;</li>
-      <li>Probabilidade total: \(P(B)=\sum_i P(A_i)P(B|A_i)\) sobre uma partição;</li>
-      <li>Bayes: a posteriori ∝ a priori × verossimilhança;</li>
-      <li>A taxa-base domina quando o evento buscado é raro.</li>
+      <li>\(\langle x\rangle = \sum_i x_i P_i\); \(\;\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\);</li>
+      <li>\(y = ax+b \Rightarrow \langle y\rangle = a\langle x\rangle + b\) e \(\sigma_y = |a|\sigma_x\);</li>
+      <li>Soma de \(n\) independentes: \(\langle Y\rangle = n\langle X\rangle\), \(\sigma_Y = \sqrt{n}\sigma_X\);
+      média de \(n\) medidas: \(\sigma_{\bar X}=\sigma_X/\sqrt{n}\);</li>
+      <li>Bernoulli: \(\langle x\rangle = p\), \(\sigma^2 = p(1-p)\);</li>
+      <li>Binomial: \(P(n,k)=\binom{n}{k}p^k(1-p)^{n-k}\), \(\langle k\rangle = np\), \(\sigma^2=np(1-p)\);</li>
+      <li>Poisson: \(P(x)=e^{-m}m^x/x!\), com \(\langle x\rangle = \sigma^2 = m\);</li>
+      <li>Passeio aleatório: \(\sigma_x=\sqrt{n}L\), base da difusão \(\sigma_x=\sqrt{2Dt}\).</li>
     </ul>
   </div>
 
   <nav class="nav-aulas">
-    <a href="aula02.html"><small>Módulo anterior</small>← 2. Técnicas de contagem</a>
-    <a class="prox" href="aula04.html"><small>Próximo módulo</small>4. Variáveis discretas →</a>
+    <a href="aula02.html"><small>Módulo anterior</small>← 2. Estatística descritiva</a>
+    <a class="prox" href="aula04.html"><small>Próximo módulo</small>4. Variáveis contínuas e a Normal →</a>
   </nav>
 
 </main>
@@ -472,6 +646,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061532"></script>
+<script src="assets/js/widgets.js?v=202611061620"></script>
 </body>
 </html>

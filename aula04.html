@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Módulo 4 — Variáveis aleatórias discretas | Probabilidade &amp; Estatística</title>
+<title>Módulo 4 — Variáveis contínuas e a Normal | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061532">
-<script src="assets/js/comum.js?v=202611061532"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061620">
+<script src="assets/js/comum.js?v=202611061620"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -16,23 +16,26 @@
     <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
     <nav class="menu">
       <a href="index.html">Início</a>
-      <span class="grupo">Probabilidade</span>
-      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
-      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
-      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
-      <a href="aula04.html" class="num ativo" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
-      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
-      <span class="grupo">Estatística</span>
-      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
-      <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
-      <a href="aula08.html" class="num" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
-      <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
-      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
-      <a href="aula11.html" class="num" title="Módulo 11 — Testes de normalidade">11</a>
-      <a href="aula12.html" class="num" title="Módulo 12 — Correlação">12</a>
-      <a href="aula13.html" class="num" title="Módulo 13 — Regressão linear e mínimos quadrados">13</a>
-      <a href="aula14.html" class="num" title="Módulo 14 — Testes não paramétricos">14</a>
-      <a href="aula15.html" class="num" title="Módulo 15 — Tamanho amostral e planejamento">15</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num ativo" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
       <a href="formulario.html">Formulário</a>
     </nav>
   </div>
@@ -43,595 +46,600 @@
 <aside class="lateral">
   <h4>Neste módulo</h4>
   <ol>
-    <li><a href="#s1">1. Variáveis aleatórias</a></li>
-    <li><a href="#s2">2. Esperança</a></li>
-    <li><a href="#s3">3. Variância</a></li>
-    <li><a href="#s4">4. Transformação linear</a></li>
-    <li><a href="#s5">5. Somas e independência</a></li>
-    <li><a href="#s6">6. Bernoulli e binomial</a></li>
-    <li><a href="#sg">7. A tábua de Galton</a></li>
-    <li><a href="#s7">8. Poisson</a></li>
-    <li><a href="#s8">9. Passeio aleatório</a></li>
-    <li><a href="#s9">10. Exercícios propostos</a></li>
+    <li><a href="#s1">1. Densidade de probabilidade</a></li>
+    <li><a href="#s2">2. Média e variância</a></li>
+    <li><a href="#s3">3. Uniforme</a></li>
+    <li><a href="#s4">4. Exponencial</a></li>
+    <li><a href="#sh">5. A história da curva em sino</a></li>
+    <li><a href="#s5">6. Distribuição normal</a></li>
+    <li><a href="#s6">7. Padronização e tabela z</a></li>
+    <li><a href="#s7">8. Teorema Central do Limite</a></li>
+    <li><a href="#sn">9. Os dados são normais?</a></li>
+    <li><a href="#s8">10. Aplicações em Física</a></li>
+    <li><a href="#s9">11. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
   <p class="chapeu">Módulo 4 · 3 horas</p>
-  <h1>Variáveis aleatórias discretas</h1>
-  <p class="subtitulo">Esperança, variância, Bernoulli, binomial e Poisson — e por que a média salva a Física Estatística.</p>
+  <h1>Variáveis aleatórias contínuas e a distribuição normal</h1>
+  <p class="subtitulo">Densidades, a curva de Gauss e o teorema que explica por que ela está em toda parte.</p>
 
   <div class="bloco def">
     <span class="rotulo">Objetivos</span>
     <ul>
-      <li>Definir variável aleatória discreta e sua função de probabilidade;</li>
-      <li>Calcular \(\langle x\rangle\), \(\langle x^2\rangle\) e \(\sigma^2\);</li>
-      <li>Usar a identidade \(\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\);</li>
-      <li>Determinar média e variância sob transformação linear \(y=ax+b\);</li>
-      <li>Mostrar que a soma de \(n\) variáveis independentes tem \(\sigma_Y=\sqrt{n}\,\sigma_X\);</li>
-      <li>Dominar as distribuições de Bernoulli, binomial e Poisson.</li>
+      <li>Entender densidade de probabilidade e por que \(P(X = x_0) = 0\) no contínuo;</li>
+      <li>Calcular normalização, média e variância por integração;</li>
+      <li>Dominar as distribuições uniforme, exponencial e normal;</li>
+      <li>Padronizar variáveis e usar a tabela \(z\);</li>
+      <li>Enunciar e aplicar o Teorema Central do Limite;</li>
+      <li>Aproximar a binomial pela normal com correção de continuidade.</li>
     </ul>
   </div>
 
   <hr class="linha">
 
   <!-- ================================================== -->
-  <h2 id="s1">1. Variáveis aleatórias discretas</h2>
+  <h2 id="s1">1. Densidade de probabilidade</h2>
+
+  <p>Para uma variável contínua há um número <strong>infinito</strong> de valores possíveis, e a
+  probabilidade de qualquer um deles é <strong>zero</strong>. Perguntar a probabilidade de uma
+  molécula ter velocidade exatamente 500,000… m/s não faz sentido. A saída é falar de
+  <strong>intervalos</strong>.</p>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
-    <p>Uma <strong>variável aleatória</strong> é uma função \(X : \Omega \to \mathbb{R}\) que
-    associa um número a cada resultado do experimento. Ela é <strong>discreta</strong> quando
-    assume um conjunto finito ou enumerável de valores \(x_1, x_2, \dots\).</p>
-    <p>A <strong>função de probabilidade</strong> é \(P_i = P(X = x_i)\).</p>
+    <p>Seja \(X\) contínua. A <strong>densidade de probabilidade</strong> \(P(x)\) é definida por</p>
+    <p>\[P(x\le X \le x+dx) = P(x)\,dx .\]</p>
+    <p>Note que \(P(x)\) <strong>não é uma probabilidade</strong>: é uma probabilidade
+    <em>por unidade</em> de \(x\). Suas unidades são o inverso das unidades de \(x\), e ela pode
+    perfeitamente ser maior que 1.</p>
   </div>
 
-  <p>Exemplos: o número obtido num dado (\(1,\dots,6\)); o número de fótons detectados em um
-  segundo (\(0,1,2,\dots\)); o número de spins para cima em um sistema de \(N\) spins.</p>
-
   <div class="bloco">
-    <span class="rotulo">Condição de normalização</span>
-    <p>\[\sum_i P_i = 1\]</p>
-    <p>Não é uma hipótese nova: é o Axioma 2 escrito para os eventos elementares, que formam
-    uma partição de \(\Omega\).</p>
+    <span class="rotulo">As quatro fórmulas do contínuo</span>
+    <p>Basta trocar \(\sum_i \to \int dx\) e \(P_i \to P(x)dx\) em tudo o que vimos no Módulo 3:</p>
+    <p>\[\int P(x)\,dx = 1, \qquad \langle x\rangle = \int x\,P(x)\,dx,\]</p>
+    <p>\[\langle x^2\rangle = \int x^2 P(x)\,dx, \qquad
+       \langle f(x)\rangle = \int f(x)\,P(x)\,dx .\]</p>
+    <p>E a identidade da variância permanece idêntica:
+    \(\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\).</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Função de distribuição acumulada</span>
+    <p>\[F(x) = P(X \le x) = \int_{-\infty}^{x} P(x')\,dx',
+    \qquad\text{donde}\qquad P(x) = \frac{dF}{dx}.\]</p>
+    <p>\(F\) é não-decrescente, vai de 0 a 1, e
+    \(P(a \le X \le b) = F(b) - F(a)\).</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s2">2. Valor médio (esperança)</h2>
+  <h2 id="s2">2. Média e variância por integração</h2>
+
+  <h3>Exercício resolvido 5.1 — Normalizando uma densidade</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Seja \(P(x) = Cx(1-x)\) para \(0 \le x \le 1\) e zero fora. Encontre \(C\),
+    \(\langle x\rangle\) e \(\sigma^2\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Normalização:</strong></p>
+      <p>\[1 = C\int_0^1 (x - x^2)\,dx = C\left[\frac{x^2}{2}-\frac{x^3}{3}\right]_0^1
+      = C\left(\frac12-\frac13\right) = \frac{C}{6} \;\Rightarrow\; \mathbf{C = 6}.\]</p>
+      <p><strong>Média:</strong></p>
+      <p>\[\langle x\rangle = 6\int_0^1 (x^2-x^3)\,dx = 6\left(\frac13-\frac14\right)
+      = 6\cdot\frac{1}{12} = \frac12 .\]</p>
+      <p>Como esperado por simetria: a densidade é simétrica em torno de \(x=1/2\).</p>
+      <p><strong>Segundo momento e variância:</strong></p>
+      <p>\[\langle x^2\rangle = 6\int_0^1 (x^3-x^4)\,dx = 6\left(\frac14-\frac15\right)
+      = 6\cdot\frac{1}{20} = \frac{3}{10},\]</p>
+      <p>\[\sigma^2 = \frac{3}{10}-\frac14 = \frac{6-5}{20} = \frac{1}{20} = 0{,}05,
+      \qquad \sigma = \frac{1}{\sqrt{20}} \approx 0{,}224 .\]</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Distribuição uniforme</h2>
 
   <div class="bloco def">
-    <span class="rotulo">Definições</span>
-    <p>\[\langle x \rangle = \sum_i x_i P_i, \qquad
-       \langle x^2 \rangle = \sum_i x_i^2 P_i, \qquad
-       \langle f(x) \rangle = \sum_i f(x_i)\,P_i\]</p>
-    <p>Cada valor é ponderado por sua probabilidade. Notações alternativas: \(\bar{x}\) ou
-    \(E(X)\). Preferimos \(\langle x \rangle\), como na Física, porque deixa visualmente clara a
-    diferença entre \(\langle x^2\rangle\) e \(\langle x\rangle^2\) — distinção que será o coração
-    da variância.</p>
+    <span class="rotulo">Definição</span>
+    <p>\(X\) é uniforme em \([a,b]\) se \(P(x) = \dfrac{1}{b-a}\) para \(a\le x\le b\) e zero fora.</p>
+    <p>\[\langle x\rangle = \frac{a+b}{2}, \qquad \sigma^2 = \frac{(b-a)^2}{12}.\]</p>
+  </div>
+
+  <h3>Exercício resolvido 5.2 — Ângulo uniforme</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Se \(\theta\) é uniforme entre 0 e \(\pi\), escreva \(P(\theta)\) e calcule
+    \(\langle\theta\rangle\), \(\langle\theta^2\rangle\), \(\langle\cos\theta\rangle\),
+    \(\langle\cos^2\theta\rangle\) e \(\langle|\cos\theta|\rangle\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>\(P(\theta) = 1/\pi\) em \([0,\pi]\).</p>
+      <p>\[\langle\theta\rangle = \frac1\pi\int_0^\pi \theta\,d\theta
+      = \frac{1}{\pi}\cdot\frac{\pi^2}{2} = \frac{\pi}{2};\qquad
+      \langle\theta^2\rangle = \frac1\pi\cdot\frac{\pi^3}{3} = \frac{\pi^2}{3}.\]</p>
+      <p>Logo \(\sigma^2 = \dfrac{\pi^2}{3}-\dfrac{\pi^2}{4} = \dfrac{\pi^2}{12}\) ✓
+      (confere com a fórmula da uniforme, com \(b-a=\pi\)).</p>
+      <p>\[\langle\cos\theta\rangle = \frac1\pi\int_0^\pi \cos\theta\,d\theta
+      = \frac1\pi\big[\sen\theta\big]_0^\pi = 0 ;\]</p>
+      <p>\[\langle\cos^2\theta\rangle = \frac1\pi\int_0^\pi \frac{1+\cos 2\theta}{2}\,d\theta
+      = \frac{1}{2}.\]</p>
+      <p>\[\langle|\cos\theta|\rangle = \frac2\pi\int_0^{\pi/2}\cos\theta\,d\theta
+      = \frac{2}{\pi} \approx 0{,}637 .\]</p>
+      <p>Note que \(\langle\cos\theta\rangle = 0\) mas \(\langle\cos^2\theta\rangle = 1/2\):
+      mais um lembrete de que \(\langle f(x)\rangle \ne f(\langle x\rangle)\). O valor \(1/2\)
+      aparece o tempo todo em Física — é a média do quadrado do cosseno sobre orientações
+      aleatórias, que surge em dipolos, polarização e no teorema da equipartição.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Distribuição exponencial</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>\(X \geq 0\) é exponencial com taxa \(\lambda\) se \(P(x) = \lambda e^{-\lambda x}\).</p>
+    <p>\[\langle x\rangle = \frac1\lambda, \qquad
+       \langle x^2\rangle = \frac{2}{\lambda^2}, \qquad
+       \sigma^2 = \frac{1}{\lambda^2}, \qquad \sigma = \frac1\lambda .\]</p>
+    <p>A acumulada é \(F(x) = 1 - e^{-\lambda x}\), e a função de sobrevivência,
+    \(S(x) = e^{-\lambda x}\).</p>
+  </div>
+
+  <h3>Exercício resolvido 5.3 — Normalização e momentos</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Seja \(P(x)\,dx = A e^{-x/\lambda}dx\) para \(x \ge 0\). (a) Encontre \(A\);
+    (b) mostre que \(\langle x\rangle = \lambda\); (c) encontre a variância.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> \(\displaystyle 1 = A\int_0^\infty e^{-x/\lambda}dx = A\lambda\),
+      logo \(A = 1/\lambda\).</p>
+      <p><strong>(b)</strong> Integrando por partes (ou usando
+      \(\int_0^\infty x^n e^{-x/\lambda}dx = n!\,\lambda^{n+1}\)):</p>
+      <p>\[\langle x\rangle = \frac1\lambda\int_0^\infty x\,e^{-x/\lambda}dx
+      = \frac1\lambda\cdot 1!\,\lambda^2 = \lambda .\]</p>
+      <p><strong>(c)</strong> \(\displaystyle \langle x^2\rangle = \frac1\lambda\cdot 2!\,\lambda^3
+      = 2\lambda^2\), portanto</p>
+      <p>\[\sigma^2 = 2\lambda^2 - \lambda^2 = \lambda^2, \qquad \sigma = \lambda .\]</p>
+      <p>Curioso: na exponencial, o desvio padrão é igual à média. A distribuição é tão larga
+      quanto o seu próprio centro — um sinal de sua cauda longa.</p>
+    </div>
+  </details>
+
+  <div data-widget="exponencial"></div>
+
+
+  <!-- ================================================== -->
+  <h2 id="sh">5. A história da curva em sino</h2>
+
+  <p>A distribuição que veremos a seguir é tão onipresente que ganhou o apelido de
+  <em>normal</em> — como se as outras fossem anormais. O nome é infeliz, mas a fama é merecida.
+  Vale saber de onde ela veio, porque a história explica por que ela aparece em toda parte.</p>
+
+  <h3>De Moivre e o cálculo impossível</h3>
+
+  <p><strong>Abraham de Moivre</strong> (1667–1754) era um huguenote francês que fugiu para
+  Londres após a revogação do Édito de Nantes e nunca conseguiu um cargo universitário — vivia
+  de dar aulas particulares e de calcular probabilidades para jogadores e seguradoras, em uma
+  mesa do Slaughter's Coffee House.</p>
+
+  <p>Seu problema era prático. Para uma binomial com \(n\) grande, calcular
+  \(\binom{n}{k}p^k(1-p)^{n-k}\) termo a termo é inviável à mão: \(100!\) tem 158 algarismos.
+  Procurando uma aproximação, De Moivre chegou em <strong>1733</strong> à expressão</p>
+
+  <p>\[\binom{n}{k}p^{k}(1-p)^{n-k} \;\approx\;
+  \frac{1}{\sqrt{2\pi np(1-p)}}\;e^{-\,(k-np)^{2}/2np(1-p)},\]</p>
+
+  <p>que é exatamente a curva normal. Ele a via como um <em>truque de cálculo</em> para a
+  binomial, não como uma distribuição de pleno direito — e foi assim que o Teorema Central do
+  Limite nasceu: como um atalho computacional.</p>
+
+  <h3>Gauss, Legendre e a órbita de Ceres</h3>
+
+  <p>Em 1801, o astrônomo Giuseppe Piazzi observou um novo corpo celeste durante 41 dias e o
+  perdeu de vista quando ele passou atrás do Sol. Recuperá-lo exigia prever a órbita a partir de
+  poucas observações imprecisas. <strong>Carl Friedrich Gauss</strong>, então com 24 anos,
+  resolveu o problema e indicou onde procurar; <strong>Ceres</strong> foi reencontrado quase
+  exatamente onde ele previu.</p>
+
+  <p>O método que ele usou — e publicou em 1809 — supunha que os erros de observação seguem a
+  curva em sino, e disso deduzia que a melhor estimativa é a que minimiza a soma dos quadrados
+  dos erros: o <strong>método dos mínimos quadrados</strong>, que estudaremos no Módulo 8.
+  Adrien-Marie Legendre havia publicado o método em 1805, sem a justificativa probabilística, e a
+  disputa de prioridade entre os dois foi amarga. Gauss alegava usá-lo desde 1795.</p>
+
+  <p>Daí vem o nome <strong>gaussiana</strong>, e daí vem também a associação entre a curva e os
+  <em>erros de medida</em> — a razão pela qual ela interessa diretamente a um físico
+  experimental.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Quetelet, e um entusiasmo exagerado</span>
+    <p>O belga <strong>Adolphe Quetelet</strong> (1796–1874) foi quem levou a curva para fora da
+    astronomia. Mediu alturas, pesos e circunferências torácicas de milhares de soldados,
+    encontrou a forma em sino em todos eles e criou a noção de "homem médio". Foi ele quem
+    inventou o índice que hoje chamamos de IMC.</p>
+    <p>Mas Quetelet exagerou: passou a tratar a normalidade como uma <em>lei natural</em>, e a
+    geração seguinte generalizou ainda mais. O matemático Henri Poincaré ironizou a situação
+    dizendo que todos acreditavam na curva dos erros — os experimentadores por julgarem que era
+    um teorema matemático, e os matemáticos por julgarem que era um fato experimental.</p>
+    <p>A ironia é útil como advertência: <strong>nem tudo é normal</strong>. Renda não é.
+    Tamanho de cidades não é. O tempo entre decaimentos radioativos não é — é exponencial, como
+    vimos na seção 4. E tratar como normal o que não é produz conclusões erradas, motivo pelo
+    qual dedicaremos a seção 9 a <em>testar</em> a normalidade em vez de supô-la.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">6. A distribuição normal (gaussiana)</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>\[P(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\,\exp\!\left[-\frac{(x-\mu)^2}{2\sigma^2}\right],
+    \qquad -\infty < x < \infty\]</p>
+    <p>com \(\langle x\rangle = \mu\) e variância \(\sigma^2\). Notação: \(X \sim N(\mu,\sigma^2)\).</p>
+  </div>
+
+  <h3>Exercício resolvido 5.4 — Normalizando a gaussiana</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Seja \(P(x) = Ce^{-x^2/2a^2}\). Determine \(C\), e calcule \(\langle x\rangle\) e
+    \(\langle x^2\rangle\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Normalização.</strong> Usando a integral de Gauss
+      \(\int_{-\infty}^{\infty} e^{-\alpha x^2}dx = \sqrt{\pi/\alpha}\) com
+      \(\alpha = 1/2a^2\):</p>
+      <p>\[1 = C\sqrt{2\pi a^2} \;\Longrightarrow\; C = \frac{1}{\sqrt{2\pi a^2}} .\]</p>
+      <p><strong>Média.</strong> O integrando \(x\,e^{-x^2/2a^2}\) é uma função <em>ímpar</em>
+      integrada em um intervalo simétrico, logo \(\langle x\rangle = 0\) — sem precisar calcular
+      nada.</p>
+      <p><strong>Segundo momento.</strong> Por partes, ou derivando a integral de Gauss em
+      relação a \(\alpha\):</p>
+      <p>\[\langle x^2\rangle = \frac{1}{\sqrt{2\pi a^2}}\int_{-\infty}^{\infty}
+      x^2 e^{-x^2/2a^2}dx = a^2 .\]</p>
+      <p>Portanto \(\sigma^2 = a^2 - 0 = a^2\): o parâmetro \(a\) <em>é</em> o desvio padrão.</p>
+    </div>
+  </details>
+
+  <div class="bloco">
+    <span class="rotulo">Propriedades da curva</span>
+    <ul>
+      <li>Simétrica em torno de \(\mu\); média = mediana = moda;</li>
+      <li>Pontos de inflexão exatamente em \(\mu \pm \sigma\);</li>
+      <li>Nunca toca o eixo, mas decai muito rápido (como \(e^{-x^2}\), não como \(e^{-x}\));</li>
+      <li>Fica completamente determinada por dois números, \(\mu\) e \(\sigma\).</li>
+    </ul>
+  </div>
+
+  <div data-widget="normal"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s6">7. Padronização e a regra 68–95–99,7</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Variável padronizada</span>
+    <p>\[z = \frac{x-\mu}{\sigma} \qquad\Longrightarrow\qquad Z \sim N(0,1)\]</p>
+    <p>É uma transformação linear com \(a = 1/\sigma\) e \(b = -\mu/\sigma\): pelo Módulo 3,
+    \(\langle z\rangle = 0\) e \(\sigma_z = 1\). O número \(z\) diz <strong>quantos desvios
+    padrão</strong> o valor está da média.</p>
+  </div>
+
+  <div class="destaque">
+    <strong>Regra empírica:</strong> \(\;\mu\pm\sigma\): 68,27% &nbsp;·&nbsp;
+    \(\mu\pm2\sigma\): 95,45% &nbsp;·&nbsp; \(\mu\pm3\sigma\): 99,73%
+  </div>
+
+  <p>Use os botões ±1σ, ±2σ e ±3σ no simulador acima para verificar: note que esses valores
+  <strong>não dependem</strong> de \(\mu\) nem de \(\sigma\). É por isso que uma única tabela \(z\)
+  serve para todas as normais do mundo. A tabela completa está na
+  <a href="formulario.html">página de formulário</a>.</p>
+
+  <h3>Exercício resolvido 5.5 — Alturas de estudantes</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>As alturas dos estudantes brasileiros seguem aproximadamente uma distribuição normal com
+    média \(\mu = 170\) cm e desvio padrão \(\sigma = 8\) cm. Determine:
+    (a) o intervalo que contém 68% dos estudantes; (b) a probabilidade de um estudante ter altura
+    entre 162 e 178 cm; (c) a probabilidade de ter altura maior que 186 cm; (d) a altura excedida
+    por apenas 5% da população.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> Pela regra empírica, 68% dos dados estão em \(\mu \pm \sigma\):</p>
+      <p>\[170 - 8 = 162 \ \text{cm} \quad\text{a}\quad 170 + 8 = 178\ \text{cm}.\]</p>
+      <p><strong>(b)</strong> É exatamente o mesmo intervalo do item anterior! Padronizando,
+      \(z_1 = (162-170)/8 = -1\) e \(z_2 = (178-170)/8 = +1\), logo</p>
+      <p>\[P(162 \le X \le 178) = \Phi(1)-\Phi(-1) = 0{,}8413 - 0{,}1587 = \mathbf{0{,}6827}.\]</p>
+      <p>Note que o valor exato é <strong>68,27%</strong>, e não 68%. A regra empírica é uma
+      aproximação conveniente; os valores exatos são 68,27%, 95,45% e 99,73%.</p>
+      <p><strong>(c)</strong> \(z = (186-170)/8 = 2\), ou seja, dois desvios padrão acima:</p>
+      <p>\[P(X > 186) = 1 - \Phi(2) = 1 - 0{,}9772 = \mathbf{0{,}0228} = 2{,}28\%.\]</p>
+      <p>Cerca de 1 estudante em 44.</p>
+      <p><strong>(d)</strong> Agora o caminho é inverso: procuramos \(z\) com \(\Phi(z)=0{,}95\),
+      que a tabela dá como \(z = 1{,}645\). Desfazendo a padronização:</p>
+      <p>\[x = \mu + z\sigma = 170 + 1{,}645 \times 8 \approx \mathbf{183{,}2\ \text{cm}}.\]</p>
+      <p>Confira todos os quatro itens no simulador da seção 6: ajuste μ = 170 e σ = 8 e use os
+      botões ±1σ e ±2σ.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">8. O Teorema Central do Limite</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Enunciado</span>
+    <p>Sejam \(X_1, X_2, \dots, X_n\) variáveis aleatórias <strong>independentes e
+    identicamente distribuídas</strong>, com média \(\mu\) e variância \(\sigma^2\) finitas.
+    Então, para \(n\) suficientemente grande, a média amostral
+    \(\bar{X} = \tfrac1n\sum_i X_i\) é aproximadamente normal:</p>
+    <p>\[\bar{X} \;\sim\; N\!\left(\mu,\ \frac{\sigma^2}{n}\right)
+    \qquad\text{ou, equivalentemente,}\qquad
+    \frac{\bar X - \mu}{\sigma/\sqrt n} \;\to\; N(0,1).\]</p>
+    <p><strong>E isso vale qualquer que seja a distribuição original.</strong></p>
+  </div>
+
+  <p>Observe que média e variância de \(\bar X\) já sabíamos calcular desde o Módulo 3 — o
+  conteúdo <em>novo</em> e surpreendente do TCL é a <strong>forma</strong> da distribuição: ela
+  se torna gaussiana, mesmo partindo de algo totalmente diferente.</p>
+
+  <div data-widget="tcl"></div>
+
+  <p>Experimente: comece com a exponencial, que é fortemente assimétrica, e aumente \(n\)
+  gradualmente. Com \(n=1\) o histograma reproduz a assimetria original; por volta de \(n=10\) a
+  simetria já aparece; em \(n=30\) o ajuste à curva normal é quase perfeito. Tente também a
+  bimodal — a distribuição mais "antinatural" do menu — e veja a gaussiana emergir mesmo assim.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que a normal está em toda parte</span>
+    <p>O TCL explica a onipresença da gaussiana na natureza e no laboratório. Sempre que uma
+    grandeza resulta da <strong>soma de muitas contribuições pequenas, independentes e
+    comparáveis</strong>, sua distribuição tende à normal:</p>
+    <ul>
+      <li>Erros de medida — somam-se muitas fontes pequenas de ruído;</li>
+      <li>Velocidades moleculares — cada componente cartesiana é gaussiana (Maxwell–Boltzmann);</li>
+      <li>Ruído térmico (Johnson–Nyquist) em circuitos;</li>
+      <li>Posição de uma partícula browniana após muitos choques.</li>
+    </ul>
+    <p>A ressalva importa: o TCL exige <strong>variância finita</strong>. Distribuições de cauda
+    pesada, como a de Cauchy (o perfil lorentziano de uma linha espectral!), não obedecem ao
+    teorema — a média de \(n\) variáveis de Cauchy continua sendo Cauchy, por mais que \(n\)
+    cresça.</p>
+  </div>
+
+  <h3>Aproximação normal da binomial</h3>
+  <p>Como a binomial é soma de \(n\) Bernoullis independentes, o TCL se aplica diretamente.
+  Quando \(np(1-p) \gtrsim 9\):</p>
+  <p>\[\text{Binomial}(n,p) \;\approx\; N\big(np,\ np(1-p)\big).\]</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Correção de continuidade</span>
+    <p>Ao aproximar algo discreto por algo contínuo, trate o valor inteiro \(k\) como ocupando o
+    intervalo \([k-\tfrac12,\,k+\tfrac12]\). Assim,
+    \(P(X \le k) \approx \Phi\!\left(\frac{k+0{,}5-np}{\sqrt{np(1-p)}}\right)\).
+    Para \(n\) moderado, esse meio ponto faz diferença real.</p>
+  </div>
+
+  <h3>Exercício resolvido 5.6 — Mil lançamentos</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Uma moeda honesta é lançada 1000 vezes. Qual a probabilidade de obter 520 caras ou mais?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>\(np = 500\) e \(\sigma = \sqrt{1000\cdot 0{,}5\cdot 0{,}5} = \sqrt{250}\approx 15{,}81\).
+      Como \(np(1-p) = 250 \gg 9\), a aproximação normal é excelente.</p>
+      <p>Com correção de continuidade, \(P(X \ge 520) = P(X > 519{,}5)\):</p>
+      <p>\[z = \frac{519{,}5 - 500}{15{,}81} \approx 1{,}233
+      \;\Longrightarrow\; P \approx 1 - \Phi(1{,}233) \approx \mathbf{0{,}109}.\]</p>
+      <p>Cerca de 11%. O valor binomial exato é 0,10872 — a aproximação acerta até a quarta casa
+      decimal. <em>Sem</em> a correção de continuidade obteríamos \(z = 1{,}265\) e
+      \(P \approx 0{,}103\), um erro relativo de 5%, centenas de vezes maior. Meio ponto faz
+      muita diferença.</p>
+      <p>Verifique no simulador do Módulo 3: marque "Normal" com \(n=1000\) e \(p=0{,}5\).</p>
+    </div>
+  </details>
+
+
+  <!-- ================================================== -->
+  <h2 id="sn">9. Os dados são normais?</h2>
+
+  <p>Boa parte dos métodos dos próximos módulos — o teste t, o intervalo de confiança da
+  variância, a regressão — supõe que os dados vêm de uma população normal. Essa suposição precisa
+  ser <strong>verificada</strong>, não assumida.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Quando a normalidade importa (e quando não)</span>
+    <p>Pelo TCL, a <em>média amostral</em> tende à normalidade mesmo que a população não seja
+    normal — por isso o teste z e o teste t para médias são bastante <strong>robustos</strong>
+    com \(n\) grande.</p>
+    <p>A suposição é crítica, porém, quando: \(n\) é pequeno (digamos, abaixo de 20); o que
+    se analisa é a <em>variância</em>, e não a média; ou quando se quer fazer previsões sobre
+    <em>observações individuais</em>, e não sobre médias.</p>
+  </div>
+
+  <h3>Métodos gráficos</h3>
+
+  <p>São sempre o primeiro passo, e frequentemente o mais informativo.</p>
+
+  <ul>
+    <li><strong>Histograma:</strong> procura-se a forma de sino, simétrica e unimodal. Lembre do
+    Módulo 2: a aparência depende da largura de classe escolhida;</li>
+    <li><strong>Boxplot:</strong> mediana centrada na caixa, bigodes de comprimentos parecidos,
+    poucos outliers;</li>
+    <li><strong>Gráfico Q–Q</strong> (<em>quantil–quantil</em>): o mais sensível dos três.</li>
+  </ul>
+
+  <div class="bloco def">
+    <span class="rotulo">Como funciona o gráfico Q–Q</span>
+    <p>Ordenam-se os dados e, no eixo horizontal, colocam-se os quantis que seriam
+    <em>esperados</em> de uma normal; no vertical, os quantis <em>observados</em>. Se os dados
+    forem normais, os pontos caem sobre uma reta.</p>
+    <p>O formato do desvio diz <em>qual</em> é o problema:</p>
+    <ul>
+      <li>Curvatura em <strong>S</strong> deitado: caudas mais pesadas que a normal;</li>
+      <li>Curvatura em <strong>C</strong>: assimetria — a cauda de um lado é mais longa;</li>
+      <li>Pontos isolados nas pontas: outliers;</li>
+      <li>Degraus horizontais: dados discretizados ou arredondados demais.</li>
+    </ul>
+  </div>
+
+  <h3>Testes numéricos</h3>
+
+  <p>Complementam o olho, mas não o substituem. Todos têm a mesma estrutura de hipóteses:</p>
+
+  <div class="destaque">
+    <span class="anuncio">Atenção à direção do teste</span>
+    \(H_0\): os dados <strong>vêm</strong> de uma população normal.<br>
+    Um \(p\)-valor <strong>alto</strong> significa que não há evidência contra a normalidade.
+  </div>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Teste</th><th>Como funciona</th><th>Quando usar</th></tr></thead>
+    <tbody>
+      <tr><td><b>Shapiro–Wilk</b></td>
+        <td>compara a ordenação dos dados com a esperada de uma normal</td>
+        <td>o mais potente para \(n\) pequeno e médio (até ~2000); é o padrão</td></tr>
+      <tr><td><b>D'Agostino K²</b></td>
+        <td>combina assimetria e curtose em uma única estatística</td>
+        <td>\(n \geq 20\); diz <em>como</em> os dados se afastam da normal</td></tr>
+      <tr><td><b>Kolmogorov–Smirnov</b></td>
+        <td>maior distância entre a acumulada observada e a teórica</td>
+        <td>geral, mas pouco potente; serve também para comparar duas amostras</td></tr>
+      <tr><td><b>Anderson–Darling</b></td>
+        <td>variante do KS que dá mais peso às caudas</td>
+        <td>quando o comportamento das caudas é o que importa</td></tr>
+    </tbody>
+  </table>
   </div>
 
   <div class="bloco alerta">
-    <span class="rotulo">O valor médio pode ser impossível</span>
-    <p>A média do número de filhos por família é frequentemente citada como 2,4. Nenhum casal
-    tem 2,4 filhos. O valor esperado não precisa ser um valor possível — ele é um
-    <em>centro de massa</em> da distribuição, não uma previsão.</p>
-  </div>
-
-  <h3>Exercício resolvido 4.1 — Uma distribuição simples</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Seja \(x\) assumindo os valores 0, 1 e 2 com probabilidades \(1/2\), \(1/4\) e \(1/4\).
-    Verifique a normalização e calcule \(\langle x\rangle\), \(\langle x^2\rangle\) e \(\sigma^2\).</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Normalização:</strong> \(\tfrac12+\tfrac14+\tfrac14 = 1\) ✓</p>
-      <p>\[\langle x\rangle = 0\cdot\tfrac12 + 1\cdot\tfrac14 + 2\cdot\tfrac14 = \tfrac34 = 0{,}75\]</p>
-      <p>\[\langle x^2\rangle = 0\cdot\tfrac12 + 1\cdot\tfrac14 + 4\cdot\tfrac14 = \tfrac54 = 1{,}25\]</p>
-      <p>\[\sigma^2 = \langle x^2\rangle - \langle x\rangle^2 = \frac54 - \frac{9}{16}
-      = \frac{20-9}{16} = \frac{11}{16} = 0{,}6875,
-      \qquad \sigma = \sqrt{11}/4 \approx 0{,}829 .\]</p>
-      <p>Mais uma vez, a média \(3/4\) não é um valor possível.</p>
-      <p>No laboratório da próxima seção, essa distribuição corresponde às contagens
-      <b>50, 25, 25</b> — ou a quaisquer outras na mesma proporção, como 2, 1, 1. O que importa
-      para a distribuição são as <em>razões</em> entre as contagens, não os valores absolutos.</p>
-    </div>
-  </details>
-
-  <div class="bloco def">
-    <span class="rotulo">Da contagem à probabilidade</span>
-    <p>Na prática raramente recebemos as probabilidades prontas: recebemos
-    <strong>contagens</strong>. Perguntamos a 25 estudantes quantos irmãos têm e anotamos quantos
-    responderam 0, quantos responderam 1, e assim por diante.</p>
-    <p>A passagem de um para o outro é a divisão pelo total:</p>
-    <p>\[P_i = \frac{f_i}{N}, \qquad N = \sum_i f_i .\]</p>
-    <p>E a normalização vem de graça, <strong>por construção</strong>:</p>
-    <p>\[\sum_i P_i = \sum_i \frac{f_i}{N} = \frac{1}{N}\sum_i f_i = \frac{N}{N} = 1 .\]</p>
-    <p>É a definição frequentista do Módulo 1 reaparecendo: a frequência relativa observada é a
-    estimativa natural da probabilidade.</p>
-  </div>
-
-  <p>O laboratório abaixo aceita as duas entradas. Deixe em <em>contagens</em> e digite os
-  números brutos — ele normaliza, monta a tabela de cálculo coluna por coluna e devolve os
-  momentos:</p>
-
-  <div data-widget="discreta"></div>
-
-  <p>Os botões carregam quatro conjuntos conhecidos. Vale conferir que o dado honesto dá
-  \(\langle x\rangle = 3{,}5\) e \(\sigma^2 = 35/12 \approx 2{,}917\), e que a soma de dois dados
-  dá \(\langle x\rangle = 7\) — resultados que você reencontrará nos exercícios propostos.</p>
-
-  <!-- ================================================== -->
-  <h2 id="s3">3. A variância</h2>
-
-  <p>Como medir a <strong>dispersão</strong> dos valores em torno da média? A primeira ideia
-  seria a média do desvio \(x - \langle x\rangle\) — mas ela é sempre zero:</p>
-  <p>\[\langle x - \langle x\rangle\rangle = \langle x\rangle - \langle x\rangle = 0 .\]</p>
-  <p>Os desvios positivos e negativos se cancelam, por construção. A segunda ideia seria
-  \(|x-\langle x\rangle|\): funciona, mas módulos são desagradáveis em álgebra. A solução
-  definitiva é elevar ao quadrado.</p>
-
-  <div class="bloco def">
-    <span class="rotulo">Variância e desvio padrão</span>
-    <p>\[\sigma_x^2 = \big\langle (x - \langle x\rangle)^2 \big\rangle, \qquad
-       \sigma_x = \sqrt{\sigma_x^2}\]</p>
-    <p>O desvio padrão representa a dispersão "raiz quadrada média" (rms) e tem as mesmas
-    unidades de \(x\).</p>
-  </div>
-
-  <div class="bloco">
-    <span class="rotulo">A identidade fundamental</span>
-    <p>\[\sigma_x^2 = \langle x^2 - 2x\langle x\rangle + \langle x\rangle^2 \rangle
-    = \langle x^2\rangle - 2\langle x\rangle\langle x\rangle + \langle x\rangle^2
-    = \langle x^2\rangle - \langle x\rangle^2 .\]</p>
-  </div>
-
-  <div class="destaque">
-    \[\boxed{\;\sigma_x^2 = \langle x^2\rangle - \langle x\rangle^2\;}\]
-    A fórmula mais usada de todo o curso.
-  </div>
-
-  <p>Um corolário imediato: como \(\sigma^2 \geq 0\), vale sempre
-  \(\langle x^2\rangle \geq \langle x\rangle^2\), com igualdade apenas se \(x\) é constante.</p>
-
-  <!-- ================================================== -->
-  <h2 id="s4">4. Transformação linear</h2>
-
-  <p>Seja \(y = ax+b\), com \(a,b\) constantes. Então</p>
-  <p>\[\langle y \rangle = \sum_i (a x_i + b)P_i = a\sum_i x_i P_i + b\sum_i P_i
-  = a\langle x\rangle + b .\]</p>
-
-  <p>Para a variância, calculemos os dois pedaços:</p>
-  <p>\[\langle y^2\rangle = a^2\langle x^2\rangle + 2ab\langle x\rangle + b^2, \qquad
-  \langle y\rangle^2 = a^2\langle x\rangle^2 + 2ab\langle x\rangle + b^2 .\]</p>
-  <p>Subtraindo, os termos em \(b\) se cancelam inteiramente:</p>
-
-  <div class="destaque">
-    \[\sigma_y^2 = a^2\sigma_x^2, \qquad \sigma_y = |a|\,\sigma_x\]
-  </div>
-
-  <p>A variância depende de \(a\) mas <strong>não</strong> de \(b\) — e isso faz todo o sentido:
-  \(b\) desloca a distribuição inteira, sem alterar sua largura.</p>
-
-  <h3>Exercício resolvido 4.2 — Conversão de temperatura</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>A temperatura média de uma cidade em janeiro é 23 °F, com desvio padrão de 9 °F. Converta
-    média e desvio para graus Celsius, usando \(C = \tfrac59(F-32)\).</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p>Aqui \(a = 5/9\) e \(b = -160/9\).</p>
-      <p>\[\langle C\rangle = \frac59(23-32) = \frac59(-9) = \mathbf{-5\ ^\circ\mathrm{C}}\]</p>
-      <p>\[\sigma_C = \frac59\,\sigma_F = \frac59 \times 9 = \mathbf{5\ ^\circ\mathrm{C}}\]</p>
-      <p><strong>Erro comum:</strong> aplicar o \(-32\) também ao desvio padrão, obtendo
-      \(\sigma_C = \tfrac59(9-32)\). Desvio padrão não tem "zero de escala" — ele mede uma
-      <em>diferença</em>, e diferenças não enxergam translações.</p>
-    </div>
-  </details>
-
-  <!-- ================================================== -->
-  <h2 id="s5">5. Somas de variáveis independentes</h2>
-
-  <p>Se \(u\) e \(v\) são independentes, as somas (ou integrais) se separam e</p>
-  <p>\[\langle uv \rangle = \langle u\rangle\langle v\rangle .\]</p>
-
-  <h3>Exercício resolvido 4.3 — Média e variância de uma soma</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Sejam \(X_1,\dots,X_n\) independentes, cada uma com média \(\langle X\rangle\) e variância
-    \(\sigma_X^2\). Seja \(Y = X_1+\cdots+X_n\). Encontre \(\langle Y\rangle\) e \(\sigma_Y^2\).</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Média.</strong> A esperança é linear, mesmo sem independência:
-      \(\langle Y\rangle = n\langle X\rangle\).</p>
-      <p><strong>Variância.</strong> Expandindo o quadrado,</p>
-      <p>\[\langle Y^2\rangle = \Big\langle \sum_i X_i^2 + \sum_{i\neq j} X_i X_j \Big\rangle .\]</p>
-      <p>Há \(n\) termos do tipo \(\langle X_i^2\rangle = \langle X^2\rangle\) e \(n(n-1)\) termos
-      cruzados \(\langle X_iX_j\rangle\) com \(i\neq j\), cada um valendo \(\langle X\rangle^2\)
-      <em>pela independência</em>. Logo</p>
-      <p>\[\langle Y^2\rangle = n\langle X^2\rangle + n(n-1)\langle X\rangle^2 .\]</p>
-      <p>Como \(\langle Y\rangle^2 = n^2\langle X\rangle^2\),</p>
-      <p>\[\sigma_Y^2 = n\langle X^2\rangle + n(n-1)\langle X\rangle^2 - n^2\langle X\rangle^2
-      = n\big(\langle X^2\rangle - \langle X\rangle^2\big) = n\,\sigma_X^2 .\]</p>
-      <p>Portanto \(\sigma_Y = \sqrt{n}\,\sigma_X\).</p>
-    </div>
-  </details>
-
-  <div class="bloco fisica">
-    <span class="rotulo">Duas consequências que você usará a vida inteira</span>
-    <p><strong>1. Erro de medidas repetidas.</strong> Se medimos \(X\) um total de \(n\) vezes e
-    tiramos a média \(\bar{X} = \tfrac1n\sum X_i\), então pela transformação linear com
-    \(a = 1/n\):</p>
-    <p>\[\sigma_{\bar X} = \frac{1}{n}\,\sigma_Y = \frac{1}{n}\sqrt{n}\,\sigma_X
-    = \frac{\sigma_X}{\sqrt{n}} .\]</p>
-    <p>Fazer 4 medidas e tirar a média reduz o erro aleatório à <strong>metade</strong>. Mas
-    atenção ao preço: para reduzi-lo a um décimo, são necessárias <strong>100</strong> medidas.
-    O \(\sqrt{n}\) é generoso no começo e implacável depois.</p>
-    <p><strong>2. Soma de contribuições microscópicas.</strong> Em física térmica, as grandezas
-    macroscópicas são somas de \(\sim 10^{23}\) contribuições atômicas. A média cresce como
-    \(n\), mas a flutuação só como \(\sqrt{n}\): a <em>largura relativa</em> cai como
-    \(1/\sqrt{n} \sim 10^{-11,5}\). É por isso que a termodinâmica parece determinística,
-    embora seu fundamento seja probabilístico.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s6">6. Bernoulli e a distribuição binomial</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Ensaio de Bernoulli</span>
-    <p>Um experimento com apenas dois resultados: <strong>sucesso</strong>, com probabilidade
-    \(p\), e <strong>fracasso</strong>, com probabilidade \(q = 1-p\).</p>
-  </div>
-
-  <p>Exemplos: cara ou coroa; um elétron no estado fundamental ou excitado; um paciente que
-  melhora ou não; um spin para cima ou para baixo.</p>
-
-  <div class="bloco fisica">
-    <span class="rotulo">Os Bernoulli, e um livro que esperou oito anos</span>
-    <p>O nome vem de <strong>Jacob Bernoulli</strong> (1655–1705), da espantosa família suíça que
-    produziu oito matemáticos de primeira linha em três gerações — e que brigava furiosamente
-    entre si. Jacob e seu irmão Johann disputaram publicamente a autoria de resultados; Johann
-    chegou a expulsar de casa o próprio filho Daniel por ter vencido um prêmio que ele também
-    disputava.</p>
-    <p>A obra em que o ensaio de Bernoulli aparece, a <em>Ars Conjectandi</em> ("A arte de
-    conjecturar"), ficou inacabada à sua morte e só foi publicada em <strong>1713</strong>, oito
-    anos depois, por seu sobrinho Nicolaus. Nela está a primeira demonstração da <strong>lei dos
-    grandes números</strong>: Jacob provou que a frequência relativa de sucessos converge para
-    \(p\) à medida que o número de ensaios cresce, e ficou tão impressionado com o resultado
-    que o chamou de <em>teorema áureo</em>. Levou vinte anos trabalhando nele.</p>
-    <p>É esse teorema que justifica tudo o que fazemos ao estimar probabilidades a partir de
-    dados — e você já o viu funcionar no simulador de moedas do Módulo 1.</p>
-  </div>
-
-
-  <p>Definindo \(x = 1\) para sucesso e \(x = 0\) para fracasso:</p>
-  <p>\[\langle x\rangle = 0\cdot(1-p) + 1\cdot p = p, \qquad
-     \langle x^2\rangle = 0^2(1-p) + 1^2 p = p,\]</p>
-  <p>\[\sigma_x^2 = p - p^2 = p(1-p), \qquad \sigma_x = \sqrt{p(1-p)} .\]</p>
-
-  <p>Note que a variância é máxima em \(p = 1/2\) (incerteza máxima) e nula em \(p=0\) ou
-  \(p=1\) (resultado certo).</p>
-
-  <div class="bloco def">
-    <span class="rotulo">Distribuição binomial</span>
-    <p>A probabilidade de obter exatamente \(k\) sucessos em \(n\) ensaios de Bernoulli
-    independentes é</p>
-    <p>\[P(n,k) = \binom{n}{k} p^k (1-p)^{n-k} .\]</p>
-  </div>
-
-  <p><em>Dedução.</em> Uma sequência <em>particular</em> com \(k\) sucessos e \(n-k\) fracassos
-  tem probabilidade \(p^k(1-p)^{n-k}\), pela independência. E há \(\binom{n}{k}\) maneiras de
-  escolher <em>quais</em> ensaios foram os sucessos — exatamente a combinação do Módulo 2.</p>
-
-  <p>A normalização sai do binômio de Newton:
-  \(\sum_{k=0}^n \binom{n}{k}p^k(1-p)^{n-k} = (p+1-p)^n = 1\) ✓</p>
-
-  <div class="bloco">
-    <span class="rotulo">Média e variância</span>
-    <p>Como a binomial é a <strong>soma de \(n\) Bernoullis independentes</strong>, não precisamos
-    de nenhum cálculo novo — basta aplicar o Exercício 4.3:</p>
-    <p>\[\langle k\rangle = np, \qquad \sigma_k^2 = np(1-p), \qquad \sigma_k = \sqrt{np(1-p)} .\]</p>
-    <p>E a <strong>largura fracionária</strong>:</p>
-    <p>\[\frac{\sigma_k}{\langle k\rangle} = \frac{\sqrt{np(1-p)}}{np}
-    = \sqrt{\frac{1-p}{np}} \;\propto\; \frac{1}{\sqrt n}\]</p>
-  </div>
-
-  <div data-widget="binomial"></div>
-
-  <h3>Exercício resolvido 4.4 — Moeda honesta em duas escalas</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Para uma moeda honesta (\(p=1/2\)), calcule o número esperado de caras, o desvio padrão e
-    a largura fracionária, para \(n = 16\) e para \(n = 10^{20}\) lançamentos.</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Para \(n = 16\):</strong> \(\langle k\rangle = 8\);
-      \(\sigma_k = \sqrt{16\cdot\tfrac12\cdot\tfrac12} = 2\);
-      largura fracionária \(= 2/8 = \mathbf{25\%}\). Obter 10 caras em 16 lançamentos não
-      surpreende ninguém.</p>
-      <p><strong>Para \(n = 10^{20}\):</strong> \(\langle k\rangle = 5\times10^{19}\);
-      \(\sigma_k = \sqrt{10^{20}/4} = 5\times10^{9}\);
-      largura fracionária \(= 5\times10^9 / 5\times10^{19} = \mathbf{10^{-10}}\).</p>
-      <p>O desvio absoluto é gigantesco — cinco bilhões! — mas <em>relativamente</em> à média é
-      dez ordens de grandeza menor que no caso anterior. Uma fração de caras diferente de 0,5 na
-      décima casa decimal seria espantosa. <strong>É assim que leis determinísticas emergem de
-      fundamentos aleatórios.</strong></p>
-    </div>
-  </details>
-
-  <h3>Exercício resolvido 4.5 — Controle de qualidade</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Um lote tem 5% de peças defeituosas. Retiram-se 20 peças ao acaso. Qual a probabilidade de
-    (a) nenhuma defeituosa; (b) exatamente uma; (c) pelo menos duas?</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p>Modelo binomial com \(n=20\), \(p=0{,}05\).</p>
-      <p><strong>(a)</strong> \(P(0) = \binom{20}{0}(0{,}05)^0(0{,}95)^{20} = (0{,}95)^{20}
-      \approx \mathbf{0{,}3585}\).</p>
-      <p><strong>(b)</strong> \(P(1) = \binom{20}{1}(0{,}05)(0{,}95)^{19}
-      = 20 \times 0{,}05 \times 0{,}3774 \approx \mathbf{0{,}3774}\).</p>
-      <p><strong>(c)</strong> Complementar:
-      \(P(k\geq 2) = 1 - P(0) - P(1) \approx 1 - 0{,}3585 - 0{,}3774 = \mathbf{0{,}2641}\).</p>
-      <p>Como \(np = 1\) é pequeno e \(n\) é grande, a aproximação de Poisson com \(m=1\) é
-      excelente: ela daria \(e^{-1} \approx 0{,}3679\) e \(e^{-1}\approx 0{,}3679\) para (a) e (b).
-      Marque a caixa "Poisson" no simulador acima com \(n=20\) e \(p=0{,}05\) e compare as curvas.</p>
-    </div>
-  </details>
-
-
-  <!-- ================================================== -->
-  <h2 id="sg">7. A tábua de Galton</h2>
-
-  <p><strong>Francis Galton</strong> (1822–1911) construiu, por volta de 1874, um aparelho para
-  mostrar a seus contemporâneos como uma distribuição em forma de sino poderia <em>emergir</em>
-  de puro acaso. Chamou-o de <em>quincunx</em>.</p>
-
-  <p>O funcionamento é simples: bolas caem de um funil sobre um triângulo de pregos. Em cada
-  prego, cada bola desvia para a esquerda ou para a direita, com probabilidade \(1/2\) cada.
-  Depois de atravessar \(n\) fileiras, ela cai num compartimento. Uma bola isolada é
-  imprevisível; milhares delas desenham sempre a mesma forma.</p>
-
-  <div class="destaque">
-    <span class="anuncio">A ideia central</span>
-    A posição final de cada bola é o número de desvios à direita — ou seja, exatamente uma
-    variável <strong>binomial</strong> com \(n\) ensaios e \(p = 1/2\).
-  </div>
-
-  <div data-widget="galton"></div>
-
-  <p>Três experimentos que vale fazer no aparelho acima:</p>
-  <ol>
-    <li>Solte <strong>uma</strong> bola de cada vez, algumas vezes. É impossível prever onde ela
-    cai — o acaso é genuíno;</li>
-    <li>Solte <strong>vinte mil</strong>. A forma aparece com precisão de três casas decimais.
-    <em>Nenhuma bola "sabe" da binomial</em>: a regularidade é consequência da repetição, não de
-    um plano;</li>
-    <li>Mude \(p\) para 0,25 e repita. A distribuição inteira se desloca para a esquerda, e o
-    pico vai parar em \(np\). A assimetria aparece — e some de novo quando \(n\) cresce,
-    antecipando o Módulo 5.</li>
-  </ol>
-
-  <div class="bloco fisica">
-    <span class="rotulo">Por que isso importa para um físico</span>
-    <p>A tábua de Galton é o modelo mental de praticamente todo fenômeno de
-    <strong>acúmulo de pequenos acasos</strong>. Cada prego é uma colisão, um erro de leitura, um
-    choque térmico; a posição final é o resultado macroscópico que medimos.</p>
-    <p>É por isso que a mesma figura descreve a distribuição de erros em uma medida repetida, a
-    posição de uma partícula browniana e o perfil de um feixe de partículas. E a tábua de Galton
-    é, literalmente, um passeio aleatório na vertical — que é o assunto da seção 9.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s7">8. A distribuição de Poisson</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">Definição</span>
-    <p>Uma variável discreta \(x \in \{0,1,2,\dots\}\) é <strong>Poisson distribuída</strong> com
-    parâmetro \(m\) se</p>
-    <p>\[P(x) = \frac{e^{-m}\,m^{x}}{x!}\]</p>
-  </div>
-
-  <p><strong>Normalização:</strong> usando a série da exponencial,
-  \(\sum_{x=0}^{\infty} \frac{m^x}{x!} = e^{m}\), de modo que
-  \(\sum_x P(x) = e^{-m}e^{m} = 1\) ✓</p>
-
-  <p><strong>Média:</strong></p>
-  <p>\[\langle x\rangle = \sum_{x=0}^{\infty} x\,\frac{e^{-m}m^x}{x!}
-  = e^{-m}\sum_{x=1}^{\infty} \frac{m^x}{(x-1)!}
-  = e^{-m}\,m \sum_{x'=0}^{\infty}\frac{m^{x'}}{x'!} = m .\]</p>
-
-  <p>Um cálculo análogo com \(x^2 = x(x-1)+x\) fornece \(\langle x^2\rangle = m^2 + m\), donde</p>
-
-  <div class="destaque">
-    \[\langle x\rangle = m, \qquad \sigma^2 = m, \qquad \sigma = \sqrt{m}\]
-    Na Poisson, <strong>média e variância são iguais</strong>.
+    <span class="rotulo">A armadilha do tamanho da amostra</span>
+    <p>Testes de normalidade têm um defeito incômodo, e que quase ninguém menciona em sala:</p>
+    <ul>
+      <li>Com \(n\) <strong>pequeno</strong>, o teste quase nunca rejeita — falta-lhe poder.
+      Não rejeitar não é evidência de normalidade;</li>
+      <li>Com \(n\) <strong>muito grande</strong>, o teste rejeita quase sempre — porque
+      nenhum conjunto real de dados é <em>exatamente</em> normal, e o teste detecta desvios
+      minúsculos e irrelevantes na prática.</li>
+    </ul>
+    <p>A conclusão prática: <strong>olhe o gráfico Q–Q</strong> e pergunte se o desvio tem
+    tamanho suficiente para importar. O teste numérico é um auxiliar, não um juiz.</p>
   </div>
 
   <div class="bloco fisica">
-    <span class="rotulo">Por que a Poisson aparece tanto em Física</span>
-    <p>Ela é o limite da binomial quando \(n \to \infty\) e \(p \to 0\) com \(np = m\) fixo: o
-    caso de <strong>eventos raros em muitas oportunidades</strong>. Por isso descreve contagens de
-    decaimentos radioativos, de fótons em um detector, de raios cósmicos, de eventos em um
-    acelerador.</p>
-    <p>A consequência prática é a <strong>estatística de contagem</strong>: se você conta \(N\)
-    eventos, a incerteza é \(\sqrt{N}\), e a incerteza relativa é \(\sqrt{N}/N = 1/\sqrt{N}\).
-    Contar 100 eventos dá 10% de erro; contar 10 000 dá 1%. É a razão pela qual experimentos de
-    contagem exigem tempos de aquisição tão longos.</p>
+    <span class="rotulo">O que fazer quando os dados não são normais</span>
+    <ol>
+      <li><strong>Investigar a causa.</strong> Assimetria à direita costuma indicar um limite
+      inferior natural (tempos, concentrações, contagens). Bimodalidade sugere dois regimes
+      misturados — dois experimentadores, duas condições, dois mecanismos físicos;</li>
+      <li><strong>Transformar.</strong> \(\log x\), \(\sqrt{x}\) ou \(1/x\) frequentemente
+      normalizam dados assimétricos à direita. A transformação logarítmica é natural quando os
+      efeitos são multiplicativos em vez de aditivos;</li>
+      <li><strong>Usar métodos não paramétricos</strong>, que não exigem normalidade — assunto
+      do Módulo 19;</li>
+      <li><strong>Confiar no TCL</strong>, se \(n\) for grande e o interesse for a média.</li>
+    </ol>
   </div>
-
-  <div data-widget="poisson"></div>
-
-
-  <div class="bloco fisica">
-    <span class="rotulo">Poisson, Bortkiewicz e os cavalos prussianos</span>
-    <p><strong>Siméon Denis Poisson</strong> (1781–1840) deduziu a distribuição em 1837, num livro
-    sobre a probabilidade de <em>julgamentos em matéria criminal</em> — ele queria estimar a
-    chance de um júri condenar um inocente. O resultado ocupa meia página da obra e passou
-    despercebido por décadas.</p>
-    <p>Quem o ressuscitou foi o estatístico russo-polonês <strong>Ladislaus von
-    Bortkiewicz</strong>, em 1898, num livrinho com um título memorável: <em>Das Gesetz der
-    kleinen Zahlen</em>, "A lei dos pequenos números". Para ilustrar a ideia, ele precisava de um
-    fenômeno raro, independente e bem documentado — e escolheu os registros do exército prussiano
-    sobre <strong>mortes de soldados por coice de cavalo</strong>, ao longo de vinte anos.</p>
-    <p>A escolha parece pitoresca, e é. Mas Bortkiewicz sabia o que fazia: morrer coiceado é
-    improvável para cada soldado, há muitos soldados e muitos cavalos, e os casos são claramente
-    independentes entre si. É o retrato exato das condições em que a Poisson se aplica — e o
-    acordo entre dados e teoria, que você verá no exercício a seguir, é quase perfeito.</p>
-    <p>A mesma distribuição descreve, hoje, as contagens de um detector de radiação e os impactos
-    de bombas V-1 em Londres — este último um estudo feito durante a guerra para decidir se os
-    ataques eram dirigidos a alvos específicos ou espalhados ao acaso. Eram ao acaso: os dados
-    seguiam Poisson.</p>
-  </div>
-
-  <h3>Exercício resolvido 4.6 — Coices de cavalo no exército prussiano</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>O exemplo clássico de Bortkiewicz (1898): registraram-se as mortes por coice de cavalo em
-    10 corpos do exército prussiano ao longo de 20 anos (200 observações corpo-ano), totalizando
-    122 mortes. Os dados observados foram: 109 corpos-ano com 0 mortes, 65 com 1, 22 com 2, 3 com
-    3 e 1 com 4. Compare com a previsão de Poisson.</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p>A média observada é \(m = 122/200 = 0{,}61\) morte por corpo-ano. A previsão é
-      \(200 \times P(x)\) com \(P(x) = e^{-0{,}61}(0{,}61)^x/x!\):</p>
-      <div class="tabela-rolavel">
-      <table>
-        <thead><tr><th class="num">Mortes \(x\)</th><th class="num">Observado</th><th class="num">Poisson</th></tr></thead>
-        <tbody>
-          <tr><td class="num">0</td><td class="num">109</td><td class="num">108,7</td></tr>
-          <tr><td class="num">1</td><td class="num">65</td><td class="num">66,3</td></tr>
-          <tr><td class="num">2</td><td class="num">22</td><td class="num">20,2</td></tr>
-          <tr><td class="num">3</td><td class="num">3</td><td class="num">4,1</td></tr>
-          <tr><td class="num">4</td><td class="num">1</td><td class="num">0,6</td></tr>
-        </tbody>
-      </table>
-      </div>
-      <p>O acordo é notável. A variância observada, \(\approx 0{,}61\), coincide com a média —
-      a assinatura da Poisson. Ajuste \(m = 0{,}61\) no simulador acima e compare o perfil.</p>
-      <p>Este é o exemplo histórico que estabeleceu a Poisson como a distribuição dos eventos
-      raros. Morrer coiceado por um cavalo é improvável para cada soldado, mas há muitos soldados
-      e muitos cavalos — \(n\) grande, \(p\) minúsculo, \(np\) moderado.</p>
-    </div>
-  </details>
 
   <!-- ================================================== -->
-  <h2 id="s8">9. O passeio aleatório</h2>
-
-  <div class="bloco def">
-    <span class="rotulo">O problema</span>
-    <p>Uma partícula dá \(n\) passos de comprimento \(L\), cada um para frente ou para trás com
-    probabilidade \(1/2\). Se \(k\) passos foram para frente, a posição final é</p>
-    <p>\[x = kL - (n-k)L = (2k-n)L .\]</p>
-  </div>
-
-  <p>Como \(k\) é binomial com \(p=1/2\), temos \(\langle k\rangle = n/2\) e \(\sigma_k^2 = n/4\).
-  Aplicando a transformação linear \(x = (2k-n)L\), com \(a = 2L\):</p>
-
-  <p>\[\langle x\rangle = (2\cdot\tfrac{n}{2} - n)L = 0, \qquad
-  \sigma_x^2 = (2L)^2\,\sigma_k^2 = 4L^2 \cdot \frac{n}{4} = nL^2,\qquad
-  \sigma_x = \sqrt{n}\,L .\]</p>
-
-  <div class="destaque">
-    A posição média é <strong>zero</strong>, mas a distância típica cresce como
-    \(\sqrt{n}\,L\) — não como \(n\,L\).
-  </div>
-
-  <div data-widget="passeio"></div>
+  <h2 id="s8">10. Aplicações em Física</h2>
 
   <div class="bloco fisica">
-    <span class="rotulo">Da caminhada do bêbado à difusão</span>
-    <p>Se cada passo leva um tempo \(\tau\), então após um tempo \(t\) temos \(n = t/\tau\) passos e</p>
-    <p>\[\sigma_x = \sqrt{\frac{t}{\tau}}\,L = \sqrt{\frac{L^2}{\tau}\,t} = \sqrt{2Dt},
-    \qquad D = \frac{L^2}{2\tau}.\]</p>
-    <p>Esta é a <strong>lei da difusão</strong>, e explica por que o cheiro do café atravessa a
-    sala tão devagar apesar de as moléculas se moverem a centenas de metros por segundo: elas não
-    viajam em linha reta, mas aos tropeços, colidindo o tempo todo. Dobrar a distância percorrida
-    exige <strong>quatro vezes</strong> mais tempo.</p>
+    <span class="rotulo">Distribuição de Maxwell–Boltzmann</span>
+    <p>Em um gás em equilíbrio a temperatura \(T\), <em>cada componente cartesiana</em> da
+    velocidade é gaussiana:</p>
+    <p>\[P(v_x) = \sqrt{\frac{m}{2\pi k_B T}}\;\exp\!\left(-\frac{mv_x^2}{2k_BT}\right),\]</p>
+    <p>ou seja, uma normal com \(\mu = 0\) e \(\sigma^2 = k_BT/m\). Daí sai imediatamente
+    \(\langle v_x^2\rangle = k_BT/m\) e, portanto,
+    \(\tfrac12 m\langle v_x^2\rangle = \tfrac12 k_B T\) — o <strong>teorema da
+    equipartição</strong>, meio \(k_BT\) por grau de liberdade.</p>
+    <p>A distribuição do <em>módulo</em> da velocidade não é gaussiana: ganha um fator \(v^2\) do
+    elemento de volume no espaço de velocidades, \(4\pi v^2 dv\), e é por isso que
+    \(P(v)\) se anula em \(v=0\) e tem um pico em \(v_p=\sqrt{2k_BT/m}\).</p>
   </div>
-
 
   <div class="bloco fisica">
-    <span class="rotulo">1827, 1905: do pólen à prova de que átomos existem</span>
-    <p>Em 1827, o botânico escocês <strong>Robert Brown</strong> observou ao microscópio grãos de
-    pólen suspensos em água e viu que se agitavam sem parar, em ziguezague. Suspeitou que fosse
-    vida — mas o movimento persistia em partículas de poeira, de fuligem e até num fragmento da
-    Esfinge. Brown descreveu o fenômeno com cuidado e não soube explicá-lo. Por quase oitenta
-    anos ninguém soube.</p>
-    <p>Em <strong>1905</strong>, no mesmo ano em que publicou a relatividade restrita e o efeito
-    fotoelétrico, <strong>Albert Einstein</strong> resolveu o problema — e fez muito mais que
-    isso. Ele mostrou que, se a matéria é feita de moléculas em agitação térmica, o grão de pólen
-    sofre um bombardeio desequilibrado a cada instante, e sua trajetória é um
-    <strong>passeio aleatório</strong>. A previsão quantitativa foi:</p>
-    <p>\[\langle x^{2}\rangle = 2Dt, \qquad
-    D = \frac{k_{B}T}{6\pi\eta a},\]</p>
-    <p>com \(\eta\) a viscosidade do fluido e \(a\) o raio da partícula.</p>
-    <p><strong>Por que isso foi decisivo.</strong> Em 1905 a existência dos átomos ainda era
-    contestada por físicos respeitáveis — Ernst Mach e Wilhelm Ostwald entre eles — que os
-    consideravam uma ficção de cálculo. A fórmula de Einstein permitia <em>medir</em> o número de
-    Avogadro a partir de algo visível ao microscópio. <strong>Jean Perrin</strong> fez as medidas
-    entre 1908 e 1911, confirmou a previsão, obteve \(N_A \approx 6{,}7\times10^{23}\) e
-    recebeu o Nobel de 1926 por isso. O debate acabou ali.</p>
-    <p>Repare no que aconteceu: o \(\sqrt{n}\) que você acabou de deduzir contando passos para
-    frente e para trás é a mesma relação que estabeleceu a realidade física dos átomos. Não é
-    exagero dizer que esta seção contém um dos resultados mais importantes da Física do século
-    XX.</p>
+    <span class="rotulo">Difusão e o perfil gaussiano</span>
+    <p>No Módulo 3 vimos que o passeio aleatório tem \(\sigma_x = \sqrt{2Dt}\). Pelo TCL, a
+    posição após muitos passos é <strong>normalmente distribuída</strong>:</p>
+    <p>\[P(x,t) = \frac{1}{\sqrt{4\pi D t}}\,e^{-x^2/4Dt},\]</p>
+    <p>que é precisamente a solução da equação de difusão
+    \(\partial_t P = D\,\partial_x^2 P\) com condição inicial pontual. Uma gota de tinta na água
+    espalha-se como uma gaussiana que alarga com \(\sqrt{t}\).</p>
   </div>
 
-  <div data-widget="moeda"></div>
+  <div class="bloco fisica">
+    <span class="rotulo">Incerteza experimental e os 5σ</span>
+    <p>Quando se escreve um resultado como \(g = 9{,}79 \pm 0{,}03\ \mathrm{m/s^2}\), o que se
+    afirma é que a distribuição de valores plausíveis é aproximadamente normal, com
+    \(\sigma = 0{,}03\). O intervalo \(\pm\sigma\) corresponde a 68% de confiança;
+    \(\pm 2\sigma\) a 95%.</p>
+    <p>Na Física de partículas exige-se \(5\sigma\) para anunciar uma descoberta: a probabilidade
+    de uma flutuação aleatória produzir tal desvio é de cerca de \(3\times 10^{-7}\), ou 1 em
+    3,5 milhões. Dada a quantidade imensa de testes feitos nos dados, esse rigor é necessário —
+    é a taxa-base do Módulo 16 cobrando seu preço outra vez.</p>
+  </div>
 
   <!-- ================================================== -->
-  <h2 id="s9">10. Exercícios propostos</h2>
+  <h2 id="s9">11. Exercícios propostos</h2>
 
   <ol>
-    <li>Um dado honesto produz os números 1 a 6, cada um com probabilidade \(1/6\). Encontre a
-    média, a variância e o desvio padrão. <em>(Respostas: \(7/2\), \(35/12\), \(\approx 1{,}71\).)</em></li>
-    <li>O peso médio ao nascer no Reino Unido é 3,2 kg com desvio padrão 0,5 kg. Converta ambos
-    para libras, sabendo que 1 kg = 2,2 lb.</li>
-    <li>Mostre, para a distribuição de Poisson, que \(\langle x^2\rangle = m^2 + m\) e conclua
-    que \(\sigma^2 = m\).</li>
-    <li>Prove que, para a binomial, \(\langle k \rangle = np\) diretamente pela soma, usando a
-    identidade \(k\binom{n}{k} = n\binom{n-1}{k-1}\).</li>
-    <li>Na física experimental, mostre que se o erro em uma única medição de \(X\) é \(\Delta\),
-    o erro da média de \(n\) medições é \(\Delta/\sqrt{n}\).</li>
-    <li>Mostre que a binomial pode ser aproximada pela Poisson com média \(np\) quando
-    \(n \gg 1\) e \(np\) permanece pequeno.</li>
-    <li>Defina a função geradora de momentos \(M(t) = \langle e^{tx}\rangle\). Mostre que
-    \(\langle x^n\rangle = M^{(n)}(0)\) e que, para a binomial, \(M(t) = (pe^t + 1 - p)^n\).
-    Derive a média e a variância a partir dela.</li>
-    <li>Um detector registra em média 3 eventos por minuto. Qual a probabilidade de registrar
-    nenhum evento em um minuto? E de registrar mais de 5?</li>
+    <li>Seja \(P(x) = Cx^2\) para \(0\le x\le 3\). Encontre \(C\), \(\langle x\rangle\),
+    \(\sigma^2\) e \(F(x)\).</li>
+    <li>Para \(\theta\) uniforme em \([0,\pi]\), calcule \(\langle\theta^n\rangle\),
+    \(\langle\sen\theta\rangle\) e \(\langle\sen^2\theta\rangle\).</li>
+    <li>Mostre que a exponencial é a única distribuição contínua sem memória, isto é, que
+    satisfaz \(P(T>t+s\mid T>t) = P(T>s)\) para todos \(s,t\ge 0\).</li>
+    <li>Uma máquina enche pacotes com peso \(N(500, 8^2)\) g. O rótulo informa 500 g e a norma
+    exige que no máximo 2% fiquem abaixo de 485 g. A máquina atende à norma?</li>
+    <li>Mostre que, para a normal, os pontos de inflexão ocorrem em \(x = \mu \pm \sigma\).</li>
+    <li>Um detector registra em média 400 contagens por minuto. Usando a aproximação normal da
+    Poisson, estime a probabilidade de registrar mais de 440 contagens em um minuto.</li>
+    <li>Simule mentalmente o TCL: some \(n = 12\) variáveis uniformes em \([0,1]\) e subtraia 6.
+    Mostre que o resultado tem média 0 e variância 1 — este é um gerador clássico de números
+    normais aleatórios.</li>
+    <li>Partindo de \(P(v_x)\) gaussiana, deduza a distribuição do módulo da velocidade
+    \(P(v) \propto v^2 e^{-mv^2/2k_BT}\) e encontre \(v_p\), \(\langle v\rangle\) e
+    \(v_{\text{rms}}\). Mostre que \(v_p < \langle v\rangle < v_{\text{rms}}\).</li>
   </ol>
 
   <div class="bloco def">
     <span class="rotulo">Resumo do módulo</span>
     <ul>
-      <li>\(\langle x\rangle = \sum_i x_i P_i\); \(\;\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\);</li>
-      <li>\(y = ax+b \Rightarrow \langle y\rangle = a\langle x\rangle + b\) e \(\sigma_y = |a|\sigma_x\);</li>
-      <li>Soma de \(n\) independentes: \(\langle Y\rangle = n\langle X\rangle\), \(\sigma_Y = \sqrt{n}\sigma_X\);
-      média de \(n\) medidas: \(\sigma_{\bar X}=\sigma_X/\sqrt{n}\);</li>
-      <li>Bernoulli: \(\langle x\rangle = p\), \(\sigma^2 = p(1-p)\);</li>
-      <li>Binomial: \(P(n,k)=\binom{n}{k}p^k(1-p)^{n-k}\), \(\langle k\rangle = np\), \(\sigma^2=np(1-p)\);</li>
-      <li>Poisson: \(P(x)=e^{-m}m^x/x!\), com \(\langle x\rangle = \sigma^2 = m\);</li>
-      <li>Passeio aleatório: \(\sigma_x=\sqrt{n}L\), base da difusão \(\sigma_x=\sqrt{2Dt}\).</li>
+      <li>Densidade \(P(x)\): probabilidade por unidade de \(x\); \(P(X=x_0)=0\);</li>
+      <li>\(\int P\,dx = 1\); \(\langle x\rangle = \int xP\,dx\);
+      \(\sigma^2 = \langle x^2\rangle - \langle x\rangle^2\);</li>
+      <li>Uniforme: \(\sigma^2 = (b-a)^2/12\); exponencial: \(\langle x\rangle = \sigma = 1/\lambda\);</li>
+      <li>Normal: \(N(\mu,\sigma^2)\), regra 68–95–99,7, padronização \(z=(x-\mu)/\sigma\);</li>
+      <li>TCL: médias de \(n\) i.i.d. tendem a \(N(\mu, \sigma^2/n)\), qualquer que seja a origem;</li>
+      <li>Binomial \(\approx\) Normal quando \(np(1-p)\gtrsim 9\), com correção de continuidade;</li>
+      <li>Normalidade se <b>verifica</b>, não se supõe: gráfico Q–Q primeiro, teste numérico depois.</li>
     </ul>
   </div>
 
+  <div class="destaque">
+    <strong>Fim da parte de Probabilidade.</strong> Tudo o que vem a seguir — estimação,
+    intervalos de confiança, testes de hipóteses, regressão — é construído sobre o Teorema
+    Central do Limite.
+  </div>
+
   <nav class="nav-aulas">
-    <a href="aula03.html"><small>Módulo anterior</small>← 3. Probabilidade condicional</a>
-    <a class="prox" href="aula05.html"><small>Próximo módulo</small>5. Variáveis contínuas →</a>
+    <a href="aula03.html"><small>Módulo anterior</small>← 3. Variáveis aleatórias discretas</a>
+    <a class="prox" href="aula06.html"><small>Próximo módulo</small>6. Amostragem e o TCL →</a>
   </nav>
 
 </main>
@@ -643,6 +651,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061532"></script>
+<script src="assets/js/widgets.js?v=202611061620"></script>
 </body>
 </html>

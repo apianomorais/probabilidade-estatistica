@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Módulo 8 — Estimação e intervalos de confiança | Probabilidade &amp; Estatística</title>
+<title>Módulo 8 — Regressão linear | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061532">
-<script src="assets/js/comum.js?v=202611061532"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061620">
+<script src="assets/js/comum.js?v=202611061620"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -16,23 +16,26 @@
     <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
     <nav class="menu">
       <a href="index.html">Início</a>
-      <span class="grupo">Probabilidade</span>
-      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
-      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
-      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
-      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
-      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
-      <span class="grupo">Estatística</span>
-      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
-      <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
-      <a href="aula08.html" class="num ativo" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
-      <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
-      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
-      <a href="aula11.html" class="num" title="Módulo 11 — Testes de normalidade">11</a>
-      <a href="aula12.html" class="num" title="Módulo 12 — Correlação">12</a>
-      <a href="aula13.html" class="num" title="Módulo 13 — Regressão linear e mínimos quadrados">13</a>
-      <a href="aula14.html" class="num" title="Módulo 14 — Testes não paramétricos">14</a>
-      <a href="aula15.html" class="num" title="Módulo 15 — Tamanho amostral e planejamento">15</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num ativo" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
       <a href="formulario.html">Formulário</a>
     </nav>
   </div>
@@ -43,510 +46,691 @@
 <aside class="lateral">
   <h4>Neste módulo</h4>
   <ol>
-    <li><a href="#s1">1. Estimar é apostar</a></li>
-    <li><a href="#s2">2. Estimadores pontuais</a></li>
-    <li><a href="#s3">3. A ideia do intervalo</a></li>
-    <li><a href="#s4">4. O que 95% significa</a></li>
-    <li><a href="#s5">5. IC para a média</a></li>
-    <li><a href="#s6">6. IC para proporção</a></li>
-    <li><a href="#s7">7. IC para variância</a></li>
-    <li><a href="#s8">8. Tamanho da amostra</a></li>
-    <li><a href="#s9">9. Aplicações em Física</a></li>
-    <li><a href="#s10">10. Exercícios propostos</a></li>
+    <li><a href="#s1">1. Do que trata a regressão</a></li>
+    <li><a href="#s2">2. O critério dos mínimos quadrados</a></li>
+    <li><a href="#s3">3. Dedução das equações normais</a></li>
+    <li><a href="#s4">4. Propriedades da reta</a></li>
+    <li><a href="#s5">5. Decomposição da variação</a></li>
+    <li><a href="#s6">6. Incerteza dos coeficientes</a></li>
+    <li><a href="#s7">7. Previsão e extrapolação</a></li>
+    <li><a href="#s8">8. Análise de resíduos</a></li>
+    <li><a href="#s9">9. Linearização em Física</a></li>
+    <li><a href="#s10">10. Regressão pela origem</a></li>
+    <li><a href="#s11">11. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
   <p class="chapeu">Módulo 8 · 3 horas</p>
-  <h1>Estimação e intervalos de confiança</h1>
-  <p class="subtitulo">Como dizer o que não sabemos, e com que grau de certeza.</p>
+  <h1>Regressão linear e mínimos quadrados</h1>
+  <p class="subtitulo">Da nuvem de pontos à reta — e da reta à constante física, com incerteza
+  e tudo.</p>
 
   <div class="bloco def">
     <span class="rotulo">Objetivos</span>
     <ul>
-      <li>Distinguir estimativa pontual de estimativa por intervalo;</li>
-      <li>Avaliar um estimador por viés, eficiência e consistência;</li>
-      <li>Construir intervalos de confiança para média, proporção e variância;</li>
-      <li>Interpretar corretamente o nível de confiança — e saber o que ele <em>não</em> diz;</li>
-      <li>Determinar o tamanho de amostra necessário para uma precisão desejada;</li>
-      <li>Reconhecer o intervalo de confiança como a forma rigorosa da barra de erro.</li>
+      <li>Deduzir as equações normais minimizando a soma dos quadrados dos resíduos;</li>
+      <li>Interpretar inclinação, intercepto e erro padrão da estimativa;</li>
+      <li>Decompor a variação total em explicada e residual, e ver de onde vem o \(r^2\);</li>
+      <li>Obter intervalos de confiança para os coeficientes e testar a inclinação;</li>
+      <li>Distinguir intervalo de confiança da média e intervalo de previsão;</li>
+      <li>Usar a análise de resíduos para decidir se a reta é o modelo certo;</li>
+      <li>Linearizar leis físicas e extrair constantes com sua incerteza.</li>
     </ul>
   </div>
 
   <hr class="linha">
 
   <!-- ================================================== -->
-  <h2 id="s1">1. Estimar é apostar com método</h2>
+  <h2 id="s1">1. Do que trata a regressão</h2>
 
-  <p>No Módulo 7 estabelecemos que \(\bar X\) é uma variável aleatória, centrada em \(\mu\), com
-  dispersão \(\sigma/\sqrt n\). Agora invertemos a pergunta. Já não temos a população: temos
-  <strong>uma</strong> amostra, e queremos dizer algo sobre \(\mu\).</p>
-
-  <p>Há duas maneiras de responder, e a diferença entre elas é o assunto deste módulo:</p>
-
-  <div class="tabela-rolavel">
-  <table>
-    <thead><tr><th>Tipo</th><th>Forma da resposta</th><th>Problema</th></tr></thead>
-    <tbody>
-      <tr><td><b>Estimativa pontual</b></td><td>\(\mu \approx 9{,}81\ \mathrm{m/s^2}\)</td>
-        <td>é quase certamente <em>errada</em> — e não diz o quanto</td></tr>
-      <tr><td><b>Estimativa por intervalo</b></td><td>\(\mu \in [9{,}79;\ 9{,}83]\) com 95% de confiança</td>
-        <td>exige entender o que "95%" significa</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <div class="destaque">
-    <span class="anuncio">O ponto de partida</span>
-    Uma estimativa pontual sozinha é cientificamente incompleta. Dizer que \(g = 9{,}81\) sem
-    dizer <strong>com que precisão</strong> é omitir metade do resultado.
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s2">2. Estimadores pontuais e suas qualidades</h2>
+  <p>O Módulo 18 respondeu "as duas variáveis andam juntas?". A regressão responde à pergunta
+  seguinte, e mais ambiciosa: <strong>qual é a relação, exatamente?</strong></p>
 
   <div class="bloco def">
-    <span class="rotulo">Definição</span>
-    <p>Um <strong>estimador</strong> \(\hat\theta\) é uma função da amostra usada para estimar um
-    parâmetro \(\theta\) da população. Ele é uma <em>variável aleatória</em>; o valor que assume
-    numa amostra concreta é a <strong>estimativa</strong>.</p>
+    <span class="rotulo">Correlação e regressão lado a lado</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th></th><th>Correlação</th><th>Regressão</th></tr></thead>
+      <tbody>
+        <tr><th>Pergunta</th><td>há relação?</td><td>qual é a relação?</td></tr>
+        <tr><th>Resultado</th><td>um número adimensional \(r\)</td><td>uma equação \(\hat y = ax+b\)</td></tr>
+        <tr><th>Papéis</th><td>simétrica: \(r_{xy}=r_{yx}\)</td><td>assimétrica: \(x\) explica \(y\)</td></tr>
+        <tr><th>Unidades</th><td>nenhuma</td><td>\(a\) em unidades de \(y\) por unidade de \(x\)</td></tr>
+        <tr><th>Serve para</th><td>medir associação</td><td>prever e estimar constantes</td></tr>
+      </tbody>
+    </table>
+    </div>
   </div>
 
-  <p>Os estimadores usuais são os que já conhecemos: \(\bar x\) para \(\mu\), \(s^2\) para
-  \(\sigma^2\), \(\hat p = k/n\) para \(p\). Mas nem todo estimador presta, e há três critérios
-  para julgá-los.</p>
-
-  <div class="bloco">
-    <span class="rotulo">1. Não-viesado (não tendencioso)</span>
-    <p>\[\langle \hat\theta\rangle = \theta .\]</p>
-    <p>Em média, ao longo de muitas amostras, o estimador acerta o alvo. Foi exatamente para
-    garantir isso que dividimos por \(n-1\) na variância amostral, no Módulo 6 — dividir por
-    \(n\) produziria um estimador <em>viesado para baixo</em>.</p>
-    <p><em>Curiosidade que vale mencionar:</em> \(s^2\) é não-viesado para \(\sigma^2\), mas
-    \(s\) é <strong>levemente viesado</strong> para \(\sigma\). A raiz quadrada de um estimador
-    não-viesado não é, em geral, não-viesada — o viés é pequeno e quase sempre ignorado.</p>
-  </div>
-
-  <div class="bloco">
-    <span class="rotulo">2. Eficiente</span>
-    <p>Entre dois estimadores não-viesados, o melhor é o de <strong>menor variância</strong>.</p>
-    <p>Para uma população normal, tanto a média quanto a mediana amostrais são estimadores
-    não-viesados de \(\mu\). Mas</p>
-    <p>\[\sigma^2_{\bar x} = \frac{\sigma^2}{n}
-    \qquad\text{e}\qquad
-    \sigma^2_{\text{mediana}} \approx \frac{\pi}{2}\,\frac{\sigma^2}{n} \approx 1{,}57\,\frac{\sigma^2}{n}.\]</p>
-    <p>A média é cerca de <strong>57% mais eficiente</strong>. Usar a mediana numa população
-    normal custa, grosso modo, 36% das suas medidas jogadas fora. <em>Mas</em> se houver
-    outliers ou caudas pesadas, a mediana ganha de longe — eficiência é relativa à distribuição.</p>
-  </div>
-
-  <div class="bloco">
-    <span class="rotulo">3. Consistente</span>
-    <p>\(\hat\theta \to \theta\) quando \(n \to \infty\). É a lei dos grandes números de Jacob
-    Bernoulli (Módulo 4) aplicada ao estimador: com dados suficientes, ele converge para a
-    verdade.</p>
-  </div>
-
-  <!-- ================================================== -->
-  <h2 id="s3">3. A ideia do intervalo de confiança</h2>
-
-  <p>A construção parte de um fato que já demonstramos. Se a população é normal com \(\sigma\)
-  conhecido, então</p>
-
-  <p>\[Z = \frac{\bar X - \mu}{\sigma/\sqrt n} \sim N(0,1),\]</p>
-
-  <p>e portanto, pela regra da seção 7 do Módulo 5,</p>
-
-  <p>\[P\!\left(-1{,}96 \le \frac{\bar X - \mu}{\sigma/\sqrt n} \le 1{,}96\right) = 0{,}95 .\]</p>
-
-  <p>Agora vem o passo decisivo: <strong>isolar \(\mu\)</strong> no meio da desigualdade.
-  Multiplicando por \(\sigma/\sqrt n\), subtraindo \(\bar X\) e invertendo os sinais:</p>
-
-  <p>\[P\!\left(\bar X - 1{,}96\frac{\sigma}{\sqrt n} \;\le\; \mu \;\le\;
-  \bar X + 1{,}96\frac{\sigma}{\sqrt n}\right) = 0{,}95 .\]</p>
-
-  <div class="destaque">
-    \[\boxed{\;\bar x \;\pm\; z_{\alpha/2}\,\frac{\sigma}{\sqrt n}\;}\]
-    estimativa pontual &nbsp;±&nbsp; valor crítico × erro padrão
-  </div>
-
-  <p>Essa estrutura — <em>estimativa ± crítico × erro padrão</em> — reaparecerá em todos os
-  intervalos deste módulo e em todos os testes do próximo. Vale memorizá-la como forma, não
-  como fórmula isolada.</p>
-
-  <!-- ================================================== -->
-  <h2 id="s4">4. O que "95% de confiança" realmente significa</h2>
-
-  <div class="bloco alerta">
-    <span class="rotulo">A interpretação errada, que quase todo mundo faz</span>
-    <p>É tentador ler \([9{,}79;\,9{,}83]\) como <em>"há 95% de probabilidade de \(g\) estar
-    neste intervalo"</em>. <strong>Está errado</strong>, e o motivo é sutil mas importante.</p>
-    <p>Na visão frequentista, \(\mu\) é um número fixo — desconhecido, mas fixo. Ele não tem
-    distribuição de probabilidade. Ou está dentro do intervalo, ou não está: a "probabilidade" é
-    0 ou 1, só não sabemos qual.</p>
-    <p><strong>O que é aleatório é o intervalo</strong>, porque ele foi construído a partir de
-    uma amostra aleatória. Outra amostra daria outro intervalo.</p>
-  </div>
-
-  <div class="bloco def">
-    <span class="rotulo">A interpretação correta</span>
-    <p>O <strong>procedimento</strong> de construir o intervalo acerta em 95% das amostras
-    possíveis. Se repetíssemos o experimento muitas vezes, construindo um intervalo a cada vez,
-    cerca de 95% deles conteriam \(\mu\).</p>
-    <p>A confiança é uma propriedade do <em>método</em>, não de um intervalo em particular.</p>
-  </div>
-
-  <p>Dito assim parece abstrato. O simulador abaixo torna a frase literal: ele sorteia cem
-  amostras de uma população com \(\mu = 100\) conhecido, constrói um intervalo para cada uma e
-  pinta de vermelho os que erraram.</p>
-
-  <div data-widget="intervalos"></div>
-
-  <p>Experimente, nesta ordem:</p>
-  <ol>
-    <li>Clique em <strong>"Sortear 100 novas"</strong> várias vezes. O número de intervalos
-    vermelhos varia — às vezes 2, às vezes 8 — mas gira em torno de <strong>5</strong>;</li>
-    <li>Clique em <strong>"Acumular +10 000"</strong>. A taxa de acerto converge para 95,0%;</li>
-    <li>Mude a confiança para <strong>99%</strong>. Quase não há vermelhos — mas repare como os
-    intervalos ficaram <em>mais largos</em>. Essa é a troca fundamental;</li>
-    <li>Volte a 95% e aumente <strong>n</strong>. Os intervalos estreitam, e a taxa de acerto
-    continua 95%. Mais dados dão mais precisão, não mais confiança.</li>
-  </ol>
+  <p>A assimetria é essencial e costuma passar despercebida. A reta de \(y\) contra \(x\)
+  <strong>não</strong> é a mesma de \(x\) contra \(y\): elas só coincidem quando \(r = \pm 1\).
+  O que se decide, ao escolher qual variável vai no eixo horizontal, é <em>quais resíduos
+  serão minimizados</em>.</p>
 
   <div class="bloco fisica">
-    <span class="rotulo">Confiança e precisão são coisas diferentes</span>
-    <p>Confunde-se muito uma com a outra. Um intervalo de 99% não é "melhor" que um de 95% —
-    é apenas mais largo, e portanto menos informativo. No limite, o intervalo
-    \((-\infty, +\infty)\) tem 100% de confiança e utilidade zero.</p>
-    <p>Quem escolhe o nível é o pesquisador, pesando o custo de errar. Em Física de partículas,
-    onde um falso anúncio de descoberta é catastrófico para a credibilidade, exige-se
-    \(5\sigma\) — o que corresponde a um nível de confiança de 99,99994%.</p>
+    <span class="rotulo">De onde vem a palavra "regressão"</span>
+    <p>O termo é de <strong>Francis Galton</strong>, por volta de 1885. Estudando a altura de
+    pais e filhos, ele notou que filhos de pais muito altos tendiam a ser altos, mas
+    <em>menos</em> altos que os pais; e filhos de pais muito baixos, baixos, mas menos. As
+    alturas pareciam "regredir" para a média da população.</p>
+    <p>Galton chamou o fenômeno de <em>regression towards mediocrity</em> — regressão à
+    mediocridade — e o nome pegou para a técnica inteira, embora hoje a técnica sirva para
+    muito mais do que isso. O fenômeno em si, a <strong>regressão à média</strong>, é real e
+    sorrateiro: sempre que uma medida tem componente aleatória, valores extremos tendem a ser
+    seguidos por valores menos extremos. É por isso que "o aluno melhorou depois da bronca"
+    e "o paciente melhorou depois do tratamento" exigem grupo de controle para significarem
+    alguma coisa.</p>
+    <p>Mas a técnica é mais antiga que o nome. <strong>Legendre</strong> publicou os mínimos
+    quadrados em 1805 e <strong>Gauss</strong> em 1809, afirmando tê-los usado desde 1795 — o
+    que gerou uma das mais azedas disputas de prioridade da história da matemática. Gauss os
+    havia empregado para recalcular a órbita de Ceres a partir de pouquíssimas observações,
+    acertando onde o asteroide reapareceria. Os mínimos quadrados nasceram, portanto, de um
+    problema de Física.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s5">5. Intervalo de confiança para a média</h2>
+  <h2 id="s2">2. O critério dos mínimos quadrados</h2>
 
-  <div class="tabela-rolavel">
-  <table>
-    <thead><tr><th>Situação</th><th>Fórmula</th><th>Graus de liberdade</th></tr></thead>
-    <tbody>
-      <tr><td>\(\sigma\) <b>conhecido</b> (raro)</td>
-        <td>\(\bar x \pm z_{\alpha/2}\,\dfrac{\sigma}{\sqrt n}\)</td><td>—</td></tr>
-      <tr><td>\(\sigma\) <b>desconhecido</b> (o caso usual)</td>
-        <td>\(\bar x \pm t_{\alpha/2;\,\nu}\,\dfrac{s}{\sqrt n}\)</td><td>\(\nu = n-1\)</td></tr>
-    </tbody>
-  </table>
+  <p>Dados \(n\) pares \((x_i, y_i)\), queremos a reta \(\hat y = ax + b\) que melhor os
+  descreve. Para cada ponto define-se o <strong>resíduo</strong></p>
+
+  <p>\[e_i = y_i - \hat y_i = y_i - (a x_i + b),\]</p>
+
+  <p>a distância vertical entre o ponto observado e a reta. Resta decidir o que significa
+  "melhor".</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Por que os quadrados?</span>
+    <p>Minimizar \(\sum_i e_i\) não serve: resíduos positivos e negativos se cancelam, e
+    infinitas retas absurdas dariam soma zero.</p>
+    <p>Minimizar \(\sum_i |e_i|\) seria defensável — é a regressão de desvios absolutos, mais
+    robusta a outliers — mas o módulo não é diferenciável no zero, não há solução fechada, e
+    a solução pode não ser única.</p>
+    <p>Minimizar \(\sum_i e_i^2\) resolve os dois problemas: o quadrado é positivo, suave e
+    diferenciável, o que conduz a um sistema linear com <strong>solução única e explícita</strong>.
+    E há um argumento mais profundo: se os erros forem normais e independentes, os mínimos
+    quadrados coincidem com a <strong>estimativa de máxima verossimilhança</strong>. Foi
+    exatamente assim que Gauss justificou o método — e, de quebra, foi por isso que ele
+    introduziu a distribuição que hoje leva seu nome.</p>
+    <p>O preço é conhecido: elevar ao quadrado dá peso desproporcional aos pontos distantes.
+    Um único outlier pode girar a reta inteira, como o Anscombe III deixa claro.</p>
   </div>
-
-  <p>Na prática quase sempre usamos a segunda linha: se não conhecemos \(\mu\), dificilmente
-  conheceríamos \(\sigma\). Com \(n \gtrsim 30\) as duas dão praticamente o mesmo resultado,
-  porque a t converge para a normal — veja a última linha da tabela t do Módulo 7.</p>
-
-  <div data-widget="calcic"></div>
-
-  <h3>Exercício resolvido 8.1 — Peças usinadas, com σ conhecido</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Uma máquina produz peças cujo comprimento tem desvio padrão conhecido e estável,
-    \(\sigma = 1{,}2\) mm. Mediram-se 36 peças, obtendo-se média \(\bar x = 50{,}2\) mm.
-    Construa o intervalo de 95% de confiança para o comprimento médio.</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p>Como \(\sigma\) é conhecido, usamos a normal. Para 95%, \(\alpha = 0{,}05\) e
-      \(z_{0{,}025} = 1{,}96\).</p>
-      <p><strong>Erro padrão:</strong></p>
-      <p>\[\frac{\sigma}{\sqrt n} = \frac{1{,}2}{\sqrt{36}} = \frac{1{,}2}{6} = 0{,}20\ \text{mm}.\]</p>
-      <p><strong>Margem de erro:</strong></p>
-      <p>\[E = 1{,}96 \times 0{,}20 = 0{,}392\ \text{mm}.\]</p>
-      <p><strong>Intervalo:</strong></p>
-      <p>\[50{,}2 \pm 0{,}392 \quad\Longrightarrow\quad
-      \mathbf{[49{,}808;\ 50{,}592]\ \text{mm}}.\]</p>
-      <p><strong>Leitura.</strong> O procedimento usado acerta em 95% das amostras. Se o projeto
-      exigisse comprimento de 50,0 mm, esse valor está <em>dentro</em> do intervalo — não há
-      evidência de que a máquina esteja desregulada. Se exigisse 49,5 mm, estaria fora, e haveria
-      evidência de problema. Note que acabamos de fazer um teste de hipóteses sem o vocabulário,
-      que é o assunto do Módulo 9.</p>
-    </div>
-  </details>
-
-  <h3>Exercício resolvido 8.2 — Medindo g no laboratório</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Retomando as dez medidas do Módulo 6, com \(\bar x = 9{,}808\) m/s² e \(s = 0{,}027\) m/s²,
-    construa o intervalo de 95% para \(g\). O valor de referência local é 9,78 m/s². Há
-    discrepância?</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p>Aqui \(\sigma\) é desconhecido e \(n = 10\) é pequeno, então usamos a t com
-      \(\nu = 9\) graus de liberdade. Da tabela do Módulo 7, \(t_{0{,}025;\,9} = 2{,}262\).</p>
-      <p><strong>Erro padrão:</strong></p>
-      <p>\[\frac{s}{\sqrt n} = \frac{0{,}027}{\sqrt{10}} = 0{,}00854\ \mathrm{m/s^2}.\]</p>
-      <p><strong>Margem:</strong> \(E = 2{,}262 \times 0{,}00854 = 0{,}0193\).</p>
-      <p>\[\mathbf{[9{,}7887;\ 9{,}8273]\ \mathrm{m/s^2}}.\]</p>
-      <p><strong>Há discrepância?</strong> O valor de referência, 9,78, está <strong>fora</strong>
-      do intervalo — ainda que por pouco. Isso sugere um <strong>erro sistemático</strong> no
-      experimento: talvez o comprimento do pêndulo tenha sido medido até o ponto errado da
-      esfera, ou o cronômetro tenha atraso de acionamento.</p>
-      <p><strong>A lição fundamental:</strong> o intervalo de confiança só cobre o erro
-      <em>aleatório</em>. Ele diz "se o meu procedimento não tiver viés, \(\mu\) está aqui".
-      Nenhum intervalo detecta um erro sistemático — e repetir mais medidas apenas estreitaria o
-      intervalo em torno do valor errado. Voltaremos a isso no Módulo 15.</p>
-      <p><em>Se tivéssemos usado z = 1,96 em vez de t = 2,262</em>, o intervalo seria
-      [9,7913; 9,8247] — mais estreito e <em>otimista demais</em> para apenas dez medidas.</p>
-    </div>
-  </details>
 
   <!-- ================================================== -->
-  <h2 id="s6">6. Intervalo de confiança para proporção</h2>
+  <h2 id="s3">3. Dedução das equações normais</h2>
 
   <div class="bloco def">
-    <span class="rotulo">Fórmula</span>
-    <p>\[\hat p \;\pm\; z_{\alpha/2}\sqrt{\frac{\hat p\,(1-\hat p)}{n}},
-    \qquad \hat p = \frac{k}{n}.\]</p>
-    <p>Válida quando \(n\hat p \geq 5\) e \(n(1-\hat p) \geq 5\) — as condições da aproximação
-    normal da binomial, do Módulo 5.</p>
+    <span class="rotulo">O problema de minimização</span>
+    <p>\[S(a,b) = \sum_{i=1}^{n}\left[y_i - (a x_i + b)\right]^{2}\]</p>
+    <p>Trata-se de uma função de duas variáveis, \(a\) e \(b\). No mínimo, as duas derivadas
+    parciais se anulam.</p>
   </div>
 
-  <p>Note que o erro padrão usa \(\hat p\) no lugar de \(p\), que é desconhecido. É uma
-  aproximação, e é a razão de essa fórmula falhar quando \(\hat p\) está muito perto de 0 ou de 1.</p>
+  <p><strong>Derivando em relação a \(b\):</strong></p>
+  <p>\[\frac{\partial S}{\partial b} = -2\sum_{i}\left[y_i - a x_i - b\right] = 0
+  \;\Longrightarrow\; \sum_i y_i = a\sum_i x_i + n\,b.\]</p>
 
-  <h3>Exercício resolvido 8.3 — Pesquisa com estudantes</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p>Em uma amostra de 400 estudantes da universidade, 240 declararam usar transporte público.
-    Construa o intervalo de 95% para a proporção de usuários na universidade inteira.</p>
-  </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>Estimativa pontual:</strong> \(\hat p = 240/400 = 0{,}60\).</p>
-      <p><strong>Condições:</strong> \(n\hat p = 240 \geq 5\) e \(n(1-\hat p) = 160 \geq 5\) ✓</p>
-      <p><strong>Erro padrão:</strong></p>
-      <p>\[\sqrt{\frac{0{,}60 \times 0{,}40}{400}} = \sqrt{\frac{0{,}24}{400}}
-      = \sqrt{0{,}0006} = 0{,}0245 .\]</p>
-      <p><strong>Margem:</strong> \(E = 1{,}96 \times 0{,}0245 = 0{,}0480\), ou 4,8 pontos
-      percentuais.</p>
-      <p>\[\mathbf{[55{,}2\%;\ 64{,}8\%]}.\]</p>
-      <p><strong>É daqui que vem a "margem de erro" das pesquisas eleitorais.</strong> Quando o
-      noticiário diz "margem de erro de 3 pontos para mais ou para menos", está informando
-      exatamente esse \(E\) — quase sempre com 95% de confiança, embora raramente o digam.</p>
-      <p>E é por isso que dois candidatos com 48% e 52% numa pesquisa com margem de 3 pontos
-      estão <em>tecnicamente empatados</em>: os intervalos [45%, 51%] e [49%, 55%] se sobrepõem.</p>
-    </div>
-  </details>
+  <p>Dividindo por \(n\), já sai um resultado importante:</p>
+  <p>\[\bar y = a\,\bar x + b \qquad\Longrightarrow\qquad \boxed{\,b = \bar y - a\,\bar x\,}\]</p>
 
-  <!-- ================================================== -->
-  <h2 id="s7">7. Intervalo de confiança para a variância</h2>
+  <p><strong>Derivando em relação a \(a\):</strong></p>
+  <p>\[\frac{\partial S}{\partial a} = -2\sum_{i} x_i\left[y_i - a x_i - b\right] = 0
+  \;\Longrightarrow\; \sum_i x_i y_i = a\sum_i x_i^{2} + b\sum_i x_i.\]</p>
 
-  <p>Do Módulo 7 sabemos que \((n-1)s^2/\sigma^2 \sim \chi^2_{n-1}\). Isolando \(\sigma^2\) entre
-  os dois valores críticos:</p>
+  <p>Substituindo \(b = \bar y - a\bar x\) e reorganizando:</p>
+  <p>\[\boxed{\,a = \frac{\sum_i (x_i-\bar x)(y_i-\bar y)}{\sum_i (x_i-\bar x)^{2}}
+  = \frac{S_{xy}}{S_{xx}}\,}\]</p>
 
   <div class="bloco def">
-    <span class="rotulo">Fórmula</span>
-    <p>\[\frac{(n-1)s^{2}}{\chi^{2}_{\alpha/2;\,\nu}}
-    \;\le\; \sigma^{2} \;\le\;
-    \frac{(n-1)s^{2}}{\chi^{2}_{1-\alpha/2;\,\nu}},
-    \qquad \nu = n-1,\]</p>
-    <p>onde \(\chi^2_{\alpha;\,\nu}\) deixa área \(\alpha\) na cauda <strong>direita</strong>.
-    Para o desvio padrão, tire a raiz dos dois limites.</p>
+    <span class="rotulo">Notação compacta</span>
+    <p>\[S_{xx}=\sum_i (x_i-\bar x)^2 \qquad
+    S_{yy}=\sum_i (y_i-\bar y)^2 \qquad
+    S_{xy}=\sum_i (x_i-\bar x)(y_i-\bar y)\]</p>
+    <p>Fórmulas de trabalho, mais cômodas na calculadora:</p>
+    <p>\[S_{xx}=\sum_i x_i^2 - \frac{\left(\sum_i x_i\right)^2}{n} \qquad
+    S_{xy}=\sum_i x_i y_i - \frac{\left(\sum_i x_i\right)\left(\sum_i y_i\right)}{n}\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">O sistema linear, escrito de uma vez</span>
+    <p>As duas equações normais deduzidas acima formam um sistema linear nas incógnitas
+    \(a\) e \(b\). Vale a pena escrevê-las alinhadas, com as incógnitas na mesma ordem:</p>
+    <p>\[\begin{cases}
+      \left(\sum_i x_i^{2}\right)a \;+\; \left(\sum_i x_i\right)b \;=\; \sum_i x_i y_i\\[6pt]
+      \left(\sum_i x_i\right)a \;+\; \;n\;b \;=\; \sum_i y_i
+    \end{cases}\]</p>
+    <p>Em forma matricial, \(\mathbf{A}\,\mathbf{p} = \mathbf{c}\), com</p>
+    <p>\[\mathbf{A}=\begin{pmatrix}\sum_i x_i^{2} & \sum_i x_i\\[4pt]
+    \sum_i x_i & n\end{pmatrix}, \qquad
+    \mathbf{p}=\begin{pmatrix}a\\[4pt] b\end{pmatrix}, \qquad
+    \mathbf{c}=\begin{pmatrix}\sum_i x_i y_i\\[4pt] \sum_i y_i\end{pmatrix}.\]</p>
+    <p>Repare que \(\mathbf{A}\) é <strong>simétrica</strong> — o coeficiente de \(b\) na
+    primeira equação é igual ao de \(a\) na segunda, ambos \(\sum x_i\). Isso não é
+    coincidência, como se verá a seguir.</p>
   </div>
 
   <div class="bloco alerta">
-    <span class="rotulo">Duas armadilhas</span>
-    <p><strong>1. O intervalo não é simétrico</strong> em torno de \(s^2\), porque a
-    qui-quadrado é assimétrica. Não existe "\(s^2 \pm\) margem" aqui.</p>
-    <p><strong>2. O quadrado maior vai no denominador menor.</strong> Repare que o valor crítico
-    <em>superior</em> da qui-quadrado produz o limite <em>inferior</em> de \(\sigma^2\) — a
-    inversão confunde muita gente. Se o seu intervalo sair com o limite inferior maior que o
-    superior, foi aqui que você trocou.</p>
-    <p><strong>E uma advertência:</strong> esta fórmula é muito sensível à hipótese de
-    normalidade, bem mais que o intervalo da média. Verifique a normalidade (Módulo 5, seção 9)
-    antes de usá-la.</p>
+    <span class="rotulo">É mesmo um mínimo? — construindo a hessiana passo a passo</span>
+    <p>A hessiana é a matriz das <strong>segundas</strong> derivadas parciais. Para uma
+    função de duas variáveis \(S(a,b)\), ela tem quatro entradas, dispostas assim:</p>
+    <p>\[H=\begin{pmatrix}
+      \dfrac{\partial^{2}S}{\partial a^{2}} & \dfrac{\partial^{2}S}{\partial a\,\partial b}\\[14pt]
+      \dfrac{\partial^{2}S}{\partial b\,\partial a} & \dfrac{\partial^{2}S}{\partial b^{2}}
+    \end{pmatrix}.\]</p>
+    <p>Então basta derivar uma segunda vez as duas expressões que já temos. Partindo de</p>
+    <p>\[\frac{\partial S}{\partial a} = -2\sum_i x_i\left(y_i - a x_i - b\right)
+    = -2\sum_i x_i y_i + 2a\sum_i x_i^{2} + 2b\sum_i x_i,\]</p>
+    <p>derivamos de novo, lembrando que \(\sum_i x_i y_i\), \(\sum_i x_i^2\) e
+    \(\sum_i x_i\) são <em>números</em>, não variáveis:</p>
+    <p>\[\frac{\partial^{2}S}{\partial a^{2}} = 2\sum_i x_i^{2},
+    \qquad\qquad
+    \frac{\partial^{2}S}{\partial a\,\partial b} = 2\sum_i x_i.\]</p>
+    <p>E, partindo da outra,</p>
+    <p>\[\frac{\partial S}{\partial b} = -2\sum_i\left(y_i - a x_i - b\right)
+    = -2\sum_i y_i + 2a\sum_i x_i + 2nb,\]</p>
+    <p>\[\frac{\partial^{2}S}{\partial b\,\partial a} = 2\sum_i x_i,
+    \qquad\qquad
+    \frac{\partial^{2}S}{\partial b^{2}} = 2n.\]</p>
+    <p>Montando as quatro entradas na posição correspondente:</p>
+    <p>\[H = \begin{pmatrix}2\sum_i x_i^{2} & 2\sum_i x_i\\[4pt]
+    2\sum_i x_i & 2n\end{pmatrix}
+    = 2\begin{pmatrix}\sum_i x_i^{2} & \sum_i x_i\\[4pt]
+    \sum_i x_i & n\end{pmatrix} = 2\,\mathbf{A}.\]</p>
+
+    <div class="bloco def" style="margin-top:1rem">
+      <span class="rotulo">O atalho que vale para todo problema de mínimos quadrados</span>
+      <p>Compare \(H\) com a matriz \(\mathbf{A}\) do sistema linear: <strong>são a mesma
+      matriz, a menos do fator 2</strong>.</p>
+      <p>Isso acontece sempre que \(S\) é <em>quadrática</em> nos parâmetros, que é o caso de
+      qualquer ajuste linear — reta, parábola, polinômio de grau qualquer. A hessiana nunca
+      precisa ser calculada do zero: <strong>ela é, a menos do fator 2, a matriz de
+      coeficientes das próprias equações normais</strong>, aquela que já se montou para
+      resolver o sistema.</p>
+      <p>É também a razão de \(\mathbf{A}\) ser simétrica: pelo teorema de Schwarz,
+      \(\partial^2 S/\partial a\,\partial b = \partial^2 S/\partial b\,\partial a\), de modo
+      que a hessiana de qualquer função bem comportada é simétrica — e \(\mathbf{A}\),
+      sendo metade dela, também.</p>
+    </div>
+
+    <p style="margin-top:1rem"><strong>Agora o critério.</strong> Para uma matriz
+    \(2\times 2\), o ponto crítico é mínimo quando a hessiana é <em>definida positiva</em>,
+    o que se verifica por duas condições:</p>
+    <p>\[\det H &gt; 0 \qquad\text{e}\qquad \frac{\partial^{2}S}{\partial a^{2}} &gt; 0.\]</p>
+    <p>Calculando o determinante:</p>
+    <p>\[\det H = \left(2\sum_i x_i^{2}\right)(2n) - \left(2\sum_i x_i\right)^{2}
+    = 4\left[n\sum_i x_i^{2}-\left(\sum_i x_i\right)^{2}\right] = 4n\,S_{xx},\]</p>
+    <p>onde usamos a fórmula de trabalho \(S_{xx}=\sum x_i^2-(\sum x_i)^2/n\) da caixa
+    anterior. Como \(n &gt; 0\) e \(S_{xx} &gt; 0\) sempre que os \(x_i\) não forem todos
+    iguais, temos \(\det H &gt; 0\). E \(\partial^2 S/\partial a^2 = 2\sum x_i^2 &gt; 0\)
+    automaticamente, por ser soma de quadrados.</p>
+    <p>Logo o ponto crítico é mínimo — e, sendo \(S\) uma função quadrática, ele é
+    <strong>global e único</strong>. Não há outro candidato a conferir.</p>
+    <p>A exceção é instrutiva: se todos os \(x_i\) forem iguais, \(S_{xx}=0\), o determinante
+    zera, a matriz \(\mathbf{A}\) fica singular e o sistema não tem solução única — não há
+    reta alguma a ajustar. É exatamente o que acontece com o Anscombe IV se removermos o
+    único ponto fora da linha vertical.</p>
   </div>
 
-  <h3>Exercício resolvido 8.4 — Precisão de um instrumento</h3>
+  <h3>Exercício resolvido 13.1 — Ajuste à mão</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
-    <p>Vinte medições de uma mesma grandeza, feitas com um instrumento, deram \(s = 0{,}45\)
-    unidade. Construa o intervalo de 95% para \(\sigma\), supondo normalidade.</p>
+    <p>Mediu-se o alongamento de uma mola sob diferentes massas:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>massa m (kg)</th><th class="num">0,10</th><th class="num">0,20</th><th class="num">0,30</th><th class="num">0,40</th><th class="num">0,50</th></tr></thead>
+      <tbody><tr><th>alongamento x (cm)</th><td class="num">2,1</td><td class="num">3,9</td><td class="num">6,2</td><td class="num">7,8</td><td class="num">10,1</td></tr></tbody>
+    </table>
+    </div>
+    <p>Ajuste uma reta e estime a constante elástica \(k\), sabendo que \(k x = m g\) com
+    \(g = 9{,}78\ \mathrm{m/s^2}\).</p>
   </div>
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <p>Com \(n = 20\), temos \(\nu = 19\). Da tabela qui-quadrado do Módulo 7:</p>
-      <p>\[\chi^{2}_{0{,}025;\,19} = 32{,}852 \qquad\text{e}\qquad
-      \chi^{2}_{0{,}975;\,19} = 8{,}907 .\]</p>
-      <p>E \((n-1)s^2 = 19 \times 0{,}45^2 = 19 \times 0{,}2025 = 3{,}8475\).</p>
-      <p><strong>Para a variância:</strong></p>
-      <p>\[\frac{3{,}8475}{32{,}852} \le \sigma^{2} \le \frac{3{,}8475}{8{,}907}
-      \quad\Longrightarrow\quad 0{,}1171 \le \sigma^{2} \le 0{,}4320 .\]</p>
-      <p><strong>Para o desvio padrão</strong>, tirando raízes:</p>
-      <p>\[\mathbf{0{,}342 \le \sigma \le 0{,}657}.\]</p>
-      <p><strong>Observe a largura.</strong> A estimativa pontual era 0,45, mas o intervalo vai
-      de 0,34 a 0,66 — quase o dobro do limite inferior. Estimar <em>dispersão</em> é muito mais
-      difícil que estimar <em>posição</em>: com as mesmas 20 medidas, o intervalo da média seria
-      proporcionalmente bem mais estreito.</p>
-      <p>Essa é a razão prática de precisarmos de muitas medidas para caracterizar a precisão de
-      um instrumento, e de poucas para estimar o valor de uma grandeza.</p>
+      <p><strong>Passo 1 — Tabela de somas.</strong> Monte sempre esta tabela; é ela que
+      organiza o cálculo manual.</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th class="num">m</th><th class="num">x</th><th class="num">m²</th><th class="num">mx</th></tr></thead>
+        <tbody>
+          <tr><td class="num">0,10</td><td class="num">2,1</td><td class="num">0,01</td><td class="num">0,21</td></tr>
+          <tr><td class="num">0,20</td><td class="num">3,9</td><td class="num">0,04</td><td class="num">0,78</td></tr>
+          <tr><td class="num">0,30</td><td class="num">6,2</td><td class="num">0,09</td><td class="num">1,86</td></tr>
+          <tr><td class="num">0,40</td><td class="num">7,8</td><td class="num">0,16</td><td class="num">3,12</td></tr>
+          <tr><td class="num">0,50</td><td class="num">10,1</td><td class="num">0,25</td><td class="num">5,05</td></tr>
+          <tr><th class="num">Σ 1,50</th><th class="num">30,1</th><th class="num">0,55</th><th class="num">11,02</th></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Passo 2 — Médias e somas de quadrados.</strong></p>
+      <p>\[\bar m = \frac{1{,}50}{5}=0{,}30 \qquad \bar x = \frac{30{,}1}{5}=6{,}02\]</p>
+      <p>\[S_{mm}=0{,}55-\frac{1{,}50^{2}}{5}=0{,}55-0{,}45=0{,}100\]</p>
+      <p>\[S_{mx}=11{,}02-\frac{(1{,}50)(30{,}1)}{5}=11{,}02-9{,}03=1{,}990\]</p>
+      <p><strong>Passo 3 — Coeficientes.</strong></p>
+      <p>\[a=\frac{1{,}990}{0{,}100}=19{,}90\ \mathrm{cm/kg}\]</p>
+      <p>\[b=6{,}02-19{,}90\times 0{,}30=6{,}02-5{,}97=0{,}05\ \mathrm{cm}\]</p>
+      <p>Ou seja, \(\hat x = 19{,}90\,m + 0{,}05\). O intercepto quase nulo é exatamente o que
+      a Física manda: massa zero, alongamento zero.</p>
+      <p><strong>Passo 4 — A constante elástica.</strong> De \(kx = mg\) vem
+      \(x = (g/k)\,m\), de modo que a inclinação é \(g/k\):</p>
+      <p>\[k=\frac{g}{a}=\frac{9{,}78\ \mathrm{m/s^2}}{0{,}1990\ \mathrm{m/kg}}
+      = 49{,}1\ \mathrm{N/m}.\]</p>
+      <p><em>Cuidado com as unidades:</em> a inclinação saiu em cm/kg e precisa virar m/kg
+      antes de dividir. Essa conversão esquecida é a origem de metade dos resultados
+      absurdos em relatórios de laboratório.</p>
+      <p><strong>Passo 5 — Conferência.</strong> Com \(m=0{,}30\), a reta prevê
+      \(19{,}90\times 0{,}30+0{,}05=6{,}02\) cm, que é exatamente \(\bar x\). Isso
+      <em>sempre</em> acontece, e é a melhor verificação rápida que existe: a reta passa pelo
+      centroide \((\bar m, \bar x)\).</p>
     </div>
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s8">8. De quantos dados eu preciso?</h2>
-
-  <p>Até aqui, a amostra estava dada e calculávamos a precisão obtida. Agora invertemos:
-  <strong>fixamos a precisão desejada e perguntamos o \(n\) necessário</strong>. É a pergunta que
-  se faz <em>antes</em> de coletar — a mais importante do planejamento experimental.</p>
+  <h2 id="s4">4. Propriedades da reta ajustada</h2>
 
   <div class="bloco def">
-    <span class="rotulo">Para a média</span>
-    <p>Impondo que a margem de erro não exceda \(E\):</p>
-    <p>\[E = z_{\alpha/2}\frac{\sigma}{\sqrt n}
-    \qquad\Longrightarrow\qquad
-    \boxed{\;n = \left(\frac{z_{\alpha/2}\,\sigma}{E}\right)^{2}\;}\]</p>
-    <p>Arredonde sempre <strong>para cima</strong>.</p>
+    <span class="rotulo">Quatro consequências diretas das equações normais</span>
+    <ol>
+      <li><strong>Passa pelo centroide.</strong> De \(b=\bar y - a\bar x\) segue
+      \(\hat y(\bar x)=\bar y\). A reta sempre passa por \((\bar x,\bar y)\);</li>
+      <li><strong>Os resíduos somam zero.</strong> \(\sum_i e_i = 0\) é literalmente a
+      primeira equação normal. Por isso a soma dos resíduos nunca mede a qualidade do
+      ajuste: ela é zero para o bom e para o péssimo;</li>
+      <li><strong>Os resíduos são ortogonais a \(x\).</strong> \(\sum_i x_i e_i = 0\) é a
+      segunda equação normal. Em linguagem geométrica, \(\hat{\mathbf y}\) é a projeção
+      ortogonal de \(\mathbf y\) sobre o plano gerado por \(\mathbf x\) e pelo vetor de uns;</li>
+      <li><strong>Relação com o coeficiente de correlação.</strong>
+      \(a = r\,\dfrac{s_y}{s_x}\), de modo que inclinação e \(r\) têm sempre o mesmo sinal.</li>
+    </ol>
   </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Por que as duas retas não coincidem</span>
+    <p>A reta de \(y\) sobre \(x\) tem inclinação \(a_{y|x}=r\,s_y/s_x\). A de \(x\) sobre
+    \(y\), reescrita no mesmo par de eixos, tem inclinação \(s_y/(r\,s_x)\).</p>
+    <p>A razão entre as duas é \(r^2\). Com \(r=1\) elas coincidem; com \(r\) pequeno, abrem-se
+    como uma tesoura. Minimizar resíduos verticais ou horizontais são problemas diferentes, e
+    a escolha de qual variável é a "explicativa" não é cosmética.</p>
+  </div>
+
+  <div data-widget="regressao"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Decomposição da variação</h2>
 
   <div class="bloco def">
-    <span class="rotulo">Para a proporção</span>
-    <p>\[n = \frac{z^{2}_{\alpha/2}\;\hat p\,(1-\hat p)}{E^{2}}\]</p>
-    <p>Se não houver estimativa prévia de \(p\), use \(\hat p = 0{,}5\): o produto
-    \(p(1-p)\) é <strong>máximo</strong> nesse ponto, e o \(n\) resultante é o pior caso —
-    seguro para qualquer \(p\). A fórmula vira \(n = 0{,}25\,(z/E)^2\).</p>
+    <span class="rotulo">A identidade fundamental</span>
+    <p>\[\underbrace{\sum_i (y_i-\bar y)^2}_{\mathrm{SQT}}
+    = \underbrace{\sum_i (\hat y_i-\bar y)^2}_{\mathrm{SQE}}
+    + \underbrace{\sum_i (y_i-\hat y_i)^2}_{\mathrm{SQR}}\]</p>
+    <p>A variação <strong>total</strong> de \(y\) separa-se exatamente em duas partes: a que a
+    reta <strong>explica</strong> e a que <strong>resta</strong>. O termo cruzado desaparece
+    precisamente por causa da ortogonalidade dos resíduos — é o teorema de Pitágoras no
+    espaço das observações.</p>
   </div>
 
-  <h3>Exercício resolvido 8.5 — Planejando dois experimentos</h3>
-  <div class="bloco ex">
-    <span class="rotulo">Enunciado</span>
-    <p><strong>(a)</strong> Um estudo-piloto indicou \(\sigma \approx 3\) unidades. Quantas
-    medidas são necessárias para estimar a média com margem de 0,5 unidade e 95% de confiança?
-    E para margem de 0,25?</p>
-    <p><strong>(b)</strong> Quantos entrevistados são necessários para estimar uma proporção com
-    margem de 3 pontos percentuais e 95% de confiança, sem nenhuma estimativa prévia? E com
-    margem de 2 pontos?</p>
+  <p>Daí sai, sem mistério, o coeficiente de determinação:</p>
+  <p>\[r^{2}=\frac{\mathrm{SQE}}{\mathrm{SQT}}=1-\frac{\mathrm{SQR}}{\mathrm{SQT}}.\]</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Erro padrão da estimativa</span>
+    <p>\[s_e=\sqrt{\frac{\mathrm{SQR}}{n-2}}=\sqrt{\frac{\sum_i (y_i-\hat y_i)^2}{n-2}}\]</p>
+    <p>É o desvio típico de um ponto em torno da reta, <strong>nas unidades de \(y\)</strong> —
+    e por isso bem mais informativo que o \(r^2\) para quem precisa saber o quanto confiar numa
+    previsão. Cerca de 95% dos pontos devem cair dentro de \(\pm 2 s_e\) da reta.</p>
+    <p>O divisor é \(n-2\), e não \(n-1\): estimamos <em>dois</em> parâmetros a partir dos
+    dados, consumindo dois graus de liberdade. Com \(n=2\) a reta passa exatamente pelos dois
+    pontos, \(\mathrm{SQR}=0\) e \(s_e\) é indefinido — duas observações não dizem nada sobre
+    dispersão.</p>
   </div>
-  <details class="solucao">
-    <summary>Ver solução</summary>
-    <div class="corpo-solucao">
-      <p><strong>(a) Média.</strong> Com \(z = 1{,}96\) e \(\sigma = 3\):</p>
-      <p>\[n = \left(\frac{1{,}96 \times 3}{0{,}5}\right)^{2}
-      = (11{,}76)^{2} = 138{,}3 \;\Longrightarrow\; \mathbf{n = 139}.\]</p>
-      <p>Para \(E = 0{,}25\), metade da margem:</p>
-      <p>\[n = \left(\frac{5{,}88}{0{,}25}\right)^{2} = (23{,}52)^{2} = 553{,}2
-      \;\Longrightarrow\; \mathbf{n = 554}.\]</p>
-      <p><strong>Reduzir a margem pela metade exigiu quatro vezes mais medidas.</strong> Esse é o
-      \(\sqrt{n}\) cobrando seu preço: como \(E \propto 1/\sqrt n\), temos \(n \propto 1/E^2\).</p>
-      <p><strong>(b) Proporção.</strong> Pior caso, \(\hat p = 0{,}5\):</p>
-      <p>\[n = \frac{(1{,}96)^{2}(0{,}25)}{(0{,}03)^{2}} = \frac{0{,}9604}{0{,}0009}
-      = 1067{,}1 \;\Longrightarrow\; \mathbf{n = 1068}.\]</p>
-      <p>Para \(E = 0{,}02\): \(n = 0{,}9604/0{,}0004 = 2401 \Longrightarrow \mathbf{n = 2401}\).</p>
-      <p><strong>Por que as pesquisas eleitorais usam cerca de 2000 pessoas.</strong> Esse é o
-      número que dá margem de 2 pontos — e note que ele <em>não depende do tamanho da
-      população</em>. Uma amostra de 2000 estima tão bem a opinião de uma cidade de 50 mil
-      habitantes quanto a de um país de 200 milhões. É contraintuitivo e verdadeiro: o que
-      importa é o tamanho da <em>amostra</em>, não a fração da população que ela representa.</p>
-    </div>
-  </details>
 
   <div class="bloco fisica">
-    <span class="rotulo">A decisão prática do experimentador</span>
-    <p>A fórmula \(n \propto 1/E^2\) tem uma consequência econômica direta. Para ganhar um
-    algarismo significativo — reduzir a margem por um fator 10 — são necessárias
-    <strong>100 vezes</strong> mais medidas.</p>
-    <p>Chega um ponto em que é mais barato reduzir \(\sigma\) do que aumentar \(n\): comprar um
-    instrumento melhor, isolar vibrações, controlar a temperatura. Saber identificar esse ponto é
-    boa parte do que distingue um experimentador experiente.</p>
+    <span class="rotulo">Tabela ANOVA da regressão</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Fonte</th><th>Soma de quadrados</th><th class="num">gl</th><th>Quadrado médio</th><th>F</th></tr></thead>
+      <tbody>
+        <tr><td>Regressão</td><td>SQE</td><td class="num">1</td><td>SQE/1</td><td>QME/QMR</td></tr>
+        <tr><td>Resíduo</td><td>SQR</td><td class="num">n−2</td><td>SQR/(n−2) = \(s_e^2\)</td><td></td></tr>
+        <tr><td>Total</td><td>SQT</td><td class="num">n−1</td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Na regressão simples, \(F = t_a^2\): o teste F da tabela e o teste t da inclinação são
+    o mesmo teste. A tabela ganha importância na regressão múltipla, fora do escopo deste
+    curso.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s9">9. Aplicações em Física</h2>
+  <h2 id="s6">6. Incerteza dos coeficientes</h2>
 
-  <div class="bloco fisica">
-    <span class="rotulo">A barra de erro é um intervalo de confiança</span>
-    <p>Quando você escreve \(g = 9{,}808 \pm 0{,}019\ \mathrm{m/s^2}\) ou desenha uma barra de
-    erro num gráfico, está comunicando um intervalo de confiança. E há uma ambiguidade real nessa
-    notação que convém conhecer:</p>
+  <p>Os coeficientes \(a\) e \(b\) são <strong>estimativas</strong> obtidas de uma amostra.
+  Outra amostra daria outros valores. Quanto variam?</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Erros padrão</span>
+    <p>\[s_a=\frac{s_e}{\sqrt{S_{xx}}} \qquad\qquad
+    s_b=s_e\sqrt{\frac{1}{n}+\frac{\bar x^{2}}{S_{xx}}}\]</p>
+    <p>Intervalos de confiança, com \(\nu=n-2\):</p>
+    <p>\[a \pm t_{\alpha/2,\,\nu}\,s_a \qquad\qquad b \pm t_{\alpha/2,\,\nu}\,s_b\]</p>
+    <p>Teste da inclinação: \(H_0: \alpha_1 = 0\) contra \(H_1: \alpha_1 \neq 0\), com</p>
+    <p>\[t=\frac{a}{s_a},\qquad \nu=n-2.\]</p>
+    <p>Esse \(t\) é <em>idêntico</em> ao do teste de correlação do Módulo 18,
+    \(t = r\sqrt{(n-2)/(1-r^2)}\). Não é coincidência: dizer que a inclinação é nula e dizer
+    que a correlação é nula são a mesma afirmação.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Como estreitar o intervalo da inclinação</span>
+    <p>A fórmula \(s_a = s_e/\sqrt{S_{xx}}\) diz tudo. Há três caminhos:</p>
     <ul>
-      <li>Em muitas áreas, \(\pm\) significa <strong>um erro padrão</strong>
-      (\(s/\sqrt n\)), o que corresponde a cerca de 68% de confiança;</li>
-      <li>Em outras, significa o <strong>intervalo de 95%</strong>, cerca de dois erros padrão.</li>
+      <li><strong>Reduzir \(s_e\)</strong> — medir melhor, controlar melhor o experimento;</li>
+      <li><strong>Aumentar \(n\)</strong> — mais pontos, com ganho proporcional a
+      \(1/\sqrt{n}\);</li>
+      <li><strong>Espalhar os \(x_i\)</strong> — e este é o mais eficiente e o mais
+      esquecido. \(S_{xx}\) cresce com o <em>quadrado</em> da amplitude dos \(x\).</li>
     </ul>
-    <p>A diferença é um fator 2. <strong>Sempre declare qual convenção está usando</strong> — e,
-    ao ler o trabalho de outra pessoa, procure a definição antes de comparar resultados.</p>
+    <p>Num experimento de pêndulo, dez comprimentos entre 0,2 m e 1,2 m dão uma inclinação
+    muito mais precisa que vinte comprimentos entre 0,5 m e 0,6 m. <strong>Planejar onde
+    medir vale mais que medir mais vezes.</strong></p>
   </div>
 
-  <div class="bloco fisica">
-    <span class="rotulo">Quando dois resultados concordam?</span>
-    <p>Duas medidas independentes da mesma grandeza, \(a \pm \sigma_a\) e \(b \pm \sigma_b\),
-    são compatíveis se a diferença delas for pequena comparada à incerteza da diferença:</p>
-    <p>\[t = \frac{|a-b|}{\sqrt{\sigma_a^2 + \sigma_b^2}} .\]</p>
-    <p>Valores de \(t\) abaixo de 2 indicam concordância; acima de 3, discrepância que merece
-    investigação. Note que as incertezas se combinam <em>em quadratura</em> — o mesmo
-    \(\sqrt{\;}\) de somas independentes do Módulo 4.</p>
-    <p>Um erro frequente é concluir que há discrepância porque "os intervalos não se tocam".
-    Esse critério é conservador demais: dois intervalos de 95% podem não se sobrepor e ainda
-    assim a diferença não ser significativa — e vice-versa. A conta acima é a correta.</p>
+  <h3>Exercício resolvido 13.2 — Lei de Ohm com incerteza</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Num circuito mediram-se corrente e tensão:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>I (A)</th><th class="num">0,020</th><th class="num">0,040</th><th class="num">0,060</th><th class="num">0,080</th><th class="num">0,100</th><th class="num">0,120</th><th class="num">0,140</th><th class="num">0,160</th></tr></thead>
+      <tbody><tr><th>V (V)</th><td class="num">0,95</td><td class="num">1,96</td><td class="num">2,76</td><td class="num">3,82</td><td class="num">4,68</td><td class="num">5,62</td><td class="num">6,69</td><td class="num">7,53</td></tr></tbody>
+    </table>
+    </div>
+    <p>Estime a resistência com sua incerteza e verifique se o intercepto é compatível com
+    zero, como a lei de Ohm exige.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Carregando os dados no simulador acima (conjunto <i>Lei de Ohm</i>):</p>
+      <p>\[a = 47{,}11\ \Omega \quad s_a = 0{,}48\ \Omega \qquad
+      b = 0{,}011\ \mathrm{V} \quad s_b = 0{,}048\ \mathrm{V}\]</p>
+      <p>\[r^2 = 0{,}99939 \qquad s_e = 0{,}056\ \mathrm{V} \qquad \nu = 6\]</p>
+      <p><strong>Resistência.</strong> Com \(t_{0{,}025;6}=2{,}447\):</p>
+      <p>\[R = 47{,}11 \pm 2{,}447 \times 0{,}48 = 47{,}11 \pm 1{,}18\ \Omega,\]</p>
+      <p>ou seja, IC 95% = \([45{,}9\,;\,48{,}3]\ \Omega\). Um resistor comercial de
+      <strong>47 Ω com 5% de tolerância</strong> está perfeitamente dentro disso.</p>
+      <p><strong>Intercepto.</strong></p>
+      <p>\[t=\frac{0{,}011}{0{,}048}=0{,}23,\]</p>
+      <p>muito abaixo do crítico 2,447. Logo \(p = 0{,}83\) e <strong>não rejeitamos</strong>
+      \(b=0\): os dados são compatíveis com uma reta pela origem, como a lei de Ohm prevê.</p>
+      <p><strong>Por que isso importa.</strong> Se o intercepto <em>fosse</em> significativo,
+      haveria algo a explicar — uma tensão de contato, um erro de zero do voltímetro, uma
+      resistência em série não contabilizada. O teste do intercepto é, na prática, um teste
+      de erro sistemático do arranjo experimental.</p>
+      <p><strong>Como reportar.</strong> \(R = (47{,}1 \pm 1{,}2)\ \Omega\). Nunca escreva
+      "47,1138 Ω": a incerteza tem um algarismo significativo e o valor é arredondado na mesma
+      casa decimal dela.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Previsão: dois intervalos diferentes</h2>
+
+  <p>Calcular \(\hat y_0 = a x_0 + b\) é trivial. A pergunta séria é com que confiança.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Confiança para a média</span>
+    <p>\[\hat y_0 \pm t_{\alpha/2,\,\nu}\;s_e\sqrt{\frac{1}{n}+\frac{(x_0-\bar x)^2}{S_{xx}}}\]</p>
+    <p>Responde: <em>onde está a verdadeira média de \(y\) quando \(x = x_0\)?</em></p>
   </div>
 
-  <div class="bloco fisica">
-    <span class="rotulo">Medidas de constantes fundamentais</span>
-    <p>Os valores recomendados pelo CODATA para \(c\), \(h\), \(e\) e \(N_A\) são combinações
-    ponderadas de dezenas de experimentos independentes, cada um com seu intervalo. Quando um
-    novo experimento produz um intervalo que não se sobrepõe ao consenso, há duas
-    possibilidades — um erro sistemático não identificado, ou física nova. Distingui-las é
-    trabalho de anos.</p>
-    <p>O caso mais famoso recente é o do <strong>raio do próton</strong>: medidas com hidrogênio
-    muônico, a partir de 2010, deram um valor cerca de 4% menor que o consenso, com intervalos
-    que não se sobrepunham. A discrepância durou quase uma década e acabou resolvida com a
-    revisão das medidas antigas — não era física nova, mas quase foi.</p>
+  <div class="bloco def">
+    <span class="rotulo">Previsão para uma nova observação</span>
+    <p>\[\hat y_0 \pm t_{\alpha/2,\,\nu}\;s_e\sqrt{1+\frac{1}{n}+\frac{(x_0-\bar x)^2}{S_{xx}}}\]</p>
+    <p>Responde: <em>onde cairá a próxima medida individual feita em \(x_0\)?</em></p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O "1 +" faz toda a diferença</span>
+    <p>O segundo intervalo carrega duas incertezas somadas: a da reta (a mesma do primeiro) e
+    a dispersão natural de um ponto em torno dela. Por isso é sempre mais largo, e por isso
+    não encolhe com \(n\): mesmo com um milhão de pontos, uma nova observação ainda varia
+    \(\pm 2s_e\) em torno da reta.</p>
+    <p>Confundir os dois é erro comum e caro. "Com 95% de confiança, o período de um pêndulo
+    de 75 cm está entre 1,73 e 1,74 s" é uma afirmação sobre a <em>média</em>; a próxima
+    medida isolada pode perfeitamente cair fora disso.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">A forma de ampulheta</span>
+    <p>O termo \((x_0-\bar x)^2/S_{xx}\) é nulo em \(x_0 = \bar x\) e cresce quadraticamente
+    para os lados. As bandas são, portanto, <strong>mais estreitas no centro dos dados e
+    cada vez mais largas nas bordas</strong>.</p>
+    <p>Experimente no simulador: carregue <i>Altura × peso</i>, onde há dispersão de verdade,
+    e digite valores de \(x_0\) cada vez mais afastados de \(\bar x\). O intervalo se abre
+    visivelmente.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Extrapolação</span>
+    <p>As fórmulas devolvem um número para qualquer \(x_0\), inclusive muito fora da faixa
+    medida. Mas elas só sabem que a relação é linear <em>onde houve dados</em>. Fora dali, a
+    aritmética continua funcionando e a Física, não.</p>
+    <p>O exemplo clássico: a relação entre resistência e temperatura de um metal é bem linear
+    numa faixa ampla — e deixa de valer completamente perto do ponto de fusão, ou perto do
+    zero absoluto, onde aparecem a supercondutividade e a saturação residual. A reta ajustada
+    entre 20 °C e 80 °C não sabe nada disso.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s10">10. Exercícios propostos</h2>
+  <h2 id="s8">8. Análise de resíduos</h2>
+
+  <p>Um \(r^2\) alto <strong>não</strong> garante que a reta seja o modelo certo. O Anscombe II
+  tem \(r^2 = 0{,}666\) sobre uma parábola perfeita. Quem decide é o gráfico de resíduos.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">O que procurar — e o que cada padrão significa</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Padrão nos resíduos</th><th>Diagnóstico</th><th>O que fazer</th></tr></thead>
+      <tbody>
+        <tr><td>nuvem sem estrutura</td><td>modelo adequado</td><td>nada — é o que se quer</td></tr>
+        <tr><td>curva em U ou ∩</td><td>relação não é linear</td><td>linearizar ou usar outro modelo</td></tr>
+        <tr><td>abertura em funil</td><td>variância não constante</td><td>transformar \(y\) ou usar mínimos quadrados ponderados</td></tr>
+        <tr><td>ponto muito afastado</td><td>outlier influente</td><td>investigar a medida antes de qualquer coisa</td></tr>
+        <tr><td>sequência de mesmo sinal</td><td>autocorrelação</td><td>há variável omitida, ou ordem temporal importa</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="destaque">
+    <span class="anuncio">Olhe sempre os resíduos antes de acreditar no r²</span>
+    No simulador acima, carregue <b>Anscombe II</b> e troque a vista para <i>Gráfico de
+    resíduos</i>. A parábola aparece de imediato — o que a dispersão original disfarçava.
+  </div>
+
+  <h3>Exercício resolvido 13.3 — O que o r² não conta</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Dois ajustes têm \(r^2 = 0{,}98\). No primeiro, os resíduos trocam de sinal seis vezes
+    em dez pontos; no segundo, os cinco primeiros são positivos e os cinco últimos negativos.
+    O que se conclui?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Se os resíduos fossem aleatórios, cada um teria probabilidade \(1/2\) de mudar de
+      sinal em relação ao anterior, e esperaríamos cerca de \((n-1)/2 = 4{,}5\) trocas em dez
+      pontos.</p>
+      <p><strong>Primeiro ajuste:</strong> seis trocas, compatível com o acaso. Nada a objetar.</p>
+      <p><strong>Segundo ajuste:</strong> <em>uma única</em> troca. A probabilidade de isso
+      acontecer por acaso é desprezível — há \(2^{10}=1024\) sequências de sinais igualmente
+      prováveis, e apenas \(2\times 9 = 18\) delas têm exatamente uma troca, ou seja, menos
+      de 2%.</p>
+      <p>Os resíduos vêm em blocos: a reta passa <em>sistematicamente</em> abaixo dos dados no
+      início e acima no fim. Isso é <strong>curvatura</strong>, e nenhum \(r^2\) a denuncia.
+      O modelo linear está errado, por mais que o ajuste "pareça" ótimo.</p>
+      <p>Esse raciocínio é a versão informal do <strong>teste das sequências</strong> (runs
+      test), que veremos no Módulo 19 entre os testes não paramétricos. O simulador de
+      linearização, logo abaixo, conta essas trocas para você.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Linearização de leis físicas</h2>
+
+  <p>A maioria das leis da Física não é linear. Quase todas, porém, tornam-se lineares com a
+  transformação adequada — e é assim que se extrai a constante.</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">As transformações mais usadas</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Lei</th><th>Gráfico linear</th><th>Inclinação</th><th>Intercepto</th></tr></thead>
+      <tbody>
+        <tr><td>\(T=2\pi\sqrt{L/g}\)</td><td>\(T^2\) × \(L\)</td><td>\(4\pi^2/g\)</td><td>0</td></tr>
+        <tr><td>\(N=N_0e^{-\lambda t}\)</td><td>\(\ln N\) × \(t\)</td><td>\(-\lambda\)</td><td>\(\ln N_0\)</td></tr>
+        <tr><td>\(y=ax^{b}\)</td><td>\(\log y\) × \(\log x\)</td><td>\(b\)</td><td>\(\log a\)</td></tr>
+        <tr><td>\(PV=\text{const}\)</td><td>\(P\) × \(1/V\)</td><td>\(nRT\)</td><td>0</td></tr>
+        <tr><td>\(1/f=1/p+1/p'\)</td><td>\(1/p'\) × \(1/p\)</td><td>\(-1\)</td><td>\(1/f\)</td></tr>
+        <tr><td>\(v^2=v_0^2+2a\Delta s\)</td><td>\(v^2\) × \(\Delta s\)</td><td>\(2a\)</td><td>\(v_0^2\)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div data-widget="linearizacao"></div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O preço de transformar</span>
+    <p>A transformação distorce os erros. Se todas as medidas de \(N\) têm o mesmo desvio
+    \(\sigma\), as de \(\ln N\) <em>não</em> têm: pela propagação,
+    \(\sigma_{\ln N}\approx \sigma/N\), de modo que os pontos de \(N\) pequeno passam a ter
+    incerteza relativa muito maior.</p>
+    <p>Os mínimos quadrados comuns supõem variância constante, o que a transformação acaba de
+    violar. A solução correta é a <strong>regressão ponderada</strong>, com peso
+    \(w_i = 1/\sigma_i^2\); o ajuste simples sobre os dados transformados é uma aproximação
+    aceitável e universalmente praticada em laboratório didático, mas convém saber que é
+    uma aproximação.</p>
+  </div>
+
+  <h3>Exercício resolvido 13.4 — Pêndulo e a medida de g</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Mediu-se o período de um pêndulo para dez comprimentos entre 0,20 m e 1,10 m (dados no
+    simulador). Compare o ajuste de \(T\) contra \(L\) com o de \(T^2\) contra \(L\), e
+    estime \(g\).</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Ajuste de T contra L.</strong> Dá \(r^2 = 0{,}9885\) — alto o bastante para
+      enganar — e intercepto \(b = 0{,}723\ \mathrm{s}\).</p>
+      <p>Esse intercepto é fisicamente absurdo: afirma que um pêndulo de comprimento
+      <em>zero</em> oscilaria com período de 0,72 s. E os resíduos exibem curvatura clara.
+      O modelo está errado.</p>
+      <p><strong>Ajuste de T² contra L.</strong></p>
+      <p>\[a = 4{,}0380\ \mathrm{s^2/m} \quad s_a = 0{,}0233 \qquad
+      b = 0{,}0007\ \mathrm{s^2} \quad s_b = 0{,}0166\]</p>
+      <p>\[r^2 = 0{,}999733\]</p>
+      <p>O intercepto agora é compatível com zero (\(t = 0{,}04\)), como deve ser, e os
+      resíduos não mostram padrão.</p>
+      <p><strong>Extraindo g.</strong> Como \(T^2 = (4\pi^2/g)L\), a inclinação é
+      \(4\pi^2/g\):</p>
+      <p>\[g=\frac{4\pi^{2}}{a}=\frac{39{,}478}{4{,}0380}=9{,}777\ \mathrm{m/s^2}.\]</p>
+      <p><strong>Propagando a incerteza.</strong> Como \(g\) é inversamente proporcional a
+      \(a\), a incerteza <em>relativa</em> se transfere diretamente:</p>
+      <p>\[\frac{\sigma_g}{g}=\frac{s_a}{a}=\frac{0{,}0233}{4{,}0380}=0{,}577\%
+      \;\Longrightarrow\; \sigma_g = 0{,}056\ \mathrm{m/s^2}.\]</p>
+      <p>\[\boxed{\,g=(9{,}78\pm 0{,}06)\ \mathrm{m/s^2}\,}\]</p>
+      <p>O valor de referência para a latitude do Cariri (cerca de 7° S) é
+      \(9{,}78\ \mathrm{m/s^2}\) — acordo excelente, a menos de \(0{,}1\sigma\).</p>
+      <p><strong>A lição.</strong> O ajuste linear ingênuo dava \(r^2 = 0{,}99\) e
+      <em>nenhuma</em> constante física. O ajuste correto dá \(r^2 = 0{,}9997\), intercepto
+      nulo como a teoria exige, e \(g\) com meio por cento de incerteza. A diferença entre os
+      dois não é estatística: é saber o que se está medindo.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Regressão forçada pela origem</h2>
+
+  <p>Quando a teoria <strong>exige</strong> que a reta passe pela origem — lei de Ohm, lei de
+  Hooke, segunda lei de Newton — pode-se ajustar \(\hat y = ax\) diretamente.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Minimizando com um só parâmetro</span>
+    <p>\[S(a)=\sum_i (y_i-ax_i)^2 \quad\Longrightarrow\quad
+    \frac{dS}{da}=-2\sum_i x_i(y_i-ax_i)=0\]</p>
+    <p>\[\boxed{\,a=\frac{\sum_i x_i y_i}{\sum_i x_i^{2}}\,}
+    \qquad s_a=\frac{s_e}{\sqrt{\sum_i x_i^{2}}}
+    \qquad s_e=\sqrt{\frac{\sum_i (y_i-ax_i)^2}{n-1}}\]</p>
+    <p>Note o divisor \(n-1\): agora só um parâmetro foi estimado.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Quando usar — e quando não</span>
+    <p><strong>Use</strong> quando houver razão teórica firme <em>e</em> o intercepto do ajuste
+    livre se mostrar compatível com zero. Ganha-se um grau de liberdade e um pouco de
+    precisão.</p>
+    <p><strong>Não use</strong> para "melhorar" o ajuste, nem quando o intercepto livre é
+    significativo. Um intercepto não nulo é <em>informação</em>: aponta erro de zero do
+    instrumento, resistência de contato, atrito residual. Forçar a origem é apagar essa
+    informação, e o que se apaga não some — vira erro sistemático escondido na inclinação.</p>
+    <p>O procedimento honesto é sempre o mesmo: <strong>ajuste livre primeiro</strong>, teste
+    o intercepto, e só então decida.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s11">11. Exercícios propostos</h2>
 
   <ol>
-    <li>Uma amostra de 50 medidas deu \(\bar x = 25{,}3\) e \(s = 4{,}1\). Construa os intervalos
-    de 90%, 95% e 99% para a média. O que acontece com a largura à medida que a confiança sobe?</li>
-    <li>Mostre que a largura do intervalo para a média é inversamente proporcional a
-    \(\sqrt n\). Quantas medidas são necessárias para reduzi-la a um terço?</li>
-    <li>Prove que \(\hat p = k/n\) é um estimador não-viesado de \(p\).
-    <em>(Use \(\langle k\rangle = np\), do Módulo 4.)</em></li>
-    <li>Em 150 lançamentos de uma moeda obtiveram-se 87 caras. Construa o intervalo de 95% para
-    \(p\). A moeda pode ser considerada honesta?</li>
-    <li>Quinze medições de um período deram \(s = 0{,}08\) s. Construa o intervalo de 95% para
-    \(\sigma\) e comente a largura obtida.</li>
-    <li>Um pesquisador quer estimar a proporção de estudantes de licenciatura que trabalham, com
-    margem de 4 pontos e 99% de confiança. Quantos deve entrevistar, sem estimativa prévia? E se
-    um estudo anterior sugerisse \(p \approx 0{,}30\)?</li>
-    <li>Duas equipes medem a mesma constante e obtêm \(4{,}52 \pm 0{,}08\) e
-    \(4{,}71 \pm 0{,}11\). Os resultados são compatíveis? Calcule \(t\) e justifique.</li>
-    <li>Explique por que uma amostra de 2000 pessoas estima igualmente bem a opinião de uma
-    cidade de 50 mil e de um país de 200 milhões. Em que situação o tamanho da população
-    passaria a importar? <em>(Pense em amostragem sem reposição.)</em></li>
+    <li>Para os pares (1,2), (2,4), (3,5), (4,8), (5,9), calcule \(a\) e \(b\) à mão pela
+    tabela de somas. Verifique que a reta passa por \((\bar x,\bar y)\) e que
+    \(\sum_i e_i = 0\).</li>
+    <li>Mostre, a partir das equações normais, que \(a = r\,s_y/s_x\).</li>
+    <li>Prove a identidade \(\mathrm{SQT}=\mathrm{SQE}+\mathrm{SQR}\). <em>(Sugestão: escreva
+    \(y_i-\bar y = (y_i-\hat y_i)+(\hat y_i-\bar y)\), eleve ao quadrado e some; use
+    \(\sum_i e_i = 0\) e \(\sum_i x_i e_i = 0\) para anular o termo cruzado.)</em></li>
+    <li>Com os dados do exercício 13.2, calcule o intervalo de previsão para \(V\) quando
+    \(I = 0{,}090\ \mathrm{A}\) e compare com o intervalo de confiança da média. Por que um é
+    tão mais largo?</li>
+    <li>Um experimento de queda livre registrou \(v\) (m/s) contra \(t\) (s):
+    0,5 → 4,8; 1,0 → 9,9; 1,5 → 14,6; 2,0 → 19,7; 2,5 → 24,4. Ajuste a reta, estime \(g\) com
+    incerteza e teste se o intercepto (a velocidade inicial) é compatível com zero.</li>
+    <li>Em que situação a regressão de \(y\) sobre \(x\) coincide com a de \(x\) sobre \(y\)?
+    Justifique pela razão entre as inclinações.</li>
+    <li>Carregue <i>Anscombe III</i> no simulador e anote \(a\), \(b\) e \(r^2\). Remova o
+    ponto atípico (x = 13) e refaça. Comente o efeito de um único ponto sobre cada quantidade.</li>
+    <li>Num ajuste com \(n = 12\), obteve-se \(\mathrm{SQT} = 480\) e \(\mathrm{SQR} = 60\).
+    Calcule \(r^2\), \(s_e\) e o valor de \(F\). A regressão é significativa a 1%?</li>
+    <li>Explique por que espalhar os valores de \(x\) reduz \(s_a\) mais eficientemente que
+    aumentar \(n\), e proponha um plano de medidas para o experimento do pêndulo com dez
+    comprimentos.</li>
   </ol>
 
   <div class="bloco def">
     <span class="rotulo">Resumo do módulo</span>
     <ul>
-      <li>Estimador bom é não-viesado, eficiente e consistente;</li>
-      <li>Toda a construção tem a forma <b>estimativa ± crítico × erro padrão</b>;</li>
-      <li>Média: \(\bar x \pm t_{\alpha/2;\,n-1}\,s/\sqrt n\) (ou \(z\) se \(\sigma\) for conhecido);</li>
-      <li>Proporção: \(\hat p \pm z_{\alpha/2}\sqrt{\hat p(1-\hat p)/n}\);</li>
-      <li>Variância: \((n-1)s^2\) dividido pelos dois valores críticos da qui-quadrado — intervalo
-      assimétrico;</li>
-      <li>Tamanho de amostra: \(n = (z\sigma/E)^2\), e \(n \propto 1/E^2\);</li>
-      <li>95% é propriedade do <b>procedimento</b>, não de um intervalo particular.</li>
+      <li>\(a = S_{xy}/S_{xx}\) e \(b = \bar y - a\bar x\) minimizam \(\sum e_i^2\);</li>
+      <li>A reta passa pelo centroide; os resíduos somam zero e são ortogonais a \(x\);</li>
+      <li>SQT = SQE + SQR, e \(r^2 = \mathrm{SQE}/\mathrm{SQT}\);</li>
+      <li>\(s_e=\sqrt{\mathrm{SQR}/(n-2)}\) é a dispersão em torno da reta, nas unidades de
+      \(y\);</li>
+      <li>\(s_a = s_e/\sqrt{S_{xx}}\): espalhar os \(x\) é a forma mais eficiente de ganhar
+      precisão na inclinação;</li>
+      <li>Intervalo de previsão tem o "1 +" a mais e nunca encolhe abaixo de \(\pm 2s_e\);</li>
+      <li>O gráfico de resíduos decide se o modelo é o certo — o \(r^2\) não decide;</li>
+      <li>Linearizar é o que transforma uma reta numa constante física com incerteza.</li>
     </ul>
   </div>
 
   <nav class="nav-aulas">
-    <a href="aula07.html"><small>Módulo anterior</small>← 7. Amostragem</a>
-    <a class="prox" href="aula09.html"><small>Próximo módulo</small>9. Testes de hipóteses →</a>
+    <a href="aula06.html"><small>Módulo anterior</small>← 6. Amostragem e o TCL</a>
+    <a class="prox" href="aula11.html"><small>Próximo módulo</small>11. Intervalos de confiança →</a>
   </nav>
 
 </main>
@@ -558,6 +742,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061532"></script>
+<script src="assets/js/widgets.js?v=202611061620"></script>
 </body>
 </html>
