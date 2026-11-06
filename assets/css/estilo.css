@@ -436,3 +436,11 @@ mjx-container[display="true"]{
 .widget-corpo thead th{text-transform:none;letter-spacing:0;font-size:.86rem}
 .widget-corpo table{font-size:.86rem}
 .widget-corpo tbody th{color:var(--azul);font-weight:700}
+
+/* ---------- Tabela de contingência editável ---------- */
+.widget-corpo table input[type=number]{
+  width:64px;text-align:right;padding:.22rem .34rem;font-size:.82rem;
+}
+.widget-corpo table td{text-align:right}
+.widget-corpo table td:has(input){width:1%;white-space:nowrap}
+.widget-corpo table th:first-child{text-align:left;white-space:nowrap}

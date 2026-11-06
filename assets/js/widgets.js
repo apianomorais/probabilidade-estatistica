@@ -2764,6 +2764,369 @@
   }
 
   /* =================================================================
+     22. Tabela de contingência e teste qui-quadrado
+     ================================================================= */
+  var TABELAS = {
+    soniferos: {
+      rot: 'Soníferos × placebo',
+      linhas: ['Sonífero', 'Placebo'],
+      colunas: ['Dormiu melhor', 'Não dormiu'],
+      dados: [[35, 14], [23, 28]]
+    },
+    varejo: {
+      rot: 'Satisfação × região',
+      linhas: ['Muito insatisfeito', 'Insatisfeito', 'Neutro', 'Satisfeito', 'Muito satisfeito'],
+      colunas: ['Sudeste', 'Nordeste', 'Sul', 'Centro-Oeste'],
+      dados: [[30, 25, 20, 15], [45, 40, 35, 30], [60, 55, 50, 45],
+              [50, 60, 55, 50], [15, 20, 25, 25]]
+    },
+    ead: {
+      rot: 'Aprovação × modalidade',
+      linhas: ['Presencial', 'EAD'],
+      colunas: ['Aprovado', 'Reprovado'],
+      dados: [[78, 22], [66, 34]]
+    },
+    independente: {
+      rot: 'Exemplo sem associação',
+      linhas: ['Grupo I', 'Grupo II'],
+      colunas: ['Sim', 'Não'],
+      dados: [[40, 60], [41, 59]]
+    }
+  };
+
+  function contingencia(raiz) {
+    var c = moldura(raiz, 'Teste qui-quadrado de independência');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var chave = 'soniferos', alfa = 0.05, yates = true;
+
+    var campoT = el('div', { class: 'campo', style: 'flex:2 1 230px' });
+    campoT.appendChild(el('label', { html: 'Conjunto de dados' }));
+    var selT = el('select');
+    Object.keys(TABELAS).forEach(function (k) {
+      selT.appendChild(el('option', { value: k, texto: TABELAS[k].rot }));
+    });
+    campoT.appendChild(selT); ctr.appendChild(campoT);
+    selT.addEventListener('change', function () { chave = selT.value; montar(); });
+
+    var campoA = el('div', { class: 'campo' });
+    campoA.appendChild(el('label', { html: 'Nível α' }));
+    var selA = el('select');
+    [['0.10', '10%'], ['0.05', '5%'], ['0.01', '1%']].forEach(function (o) {
+      selA.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selA.value = '0.05';
+    campoA.appendChild(selA); ctr.appendChild(campoA);
+    selA.addEventListener('change', function () { alfa = Number(selA.value); calcular(); });
+
+    var campoY = el('div', { class: 'campo' });
+    campoY.innerHTML = '<label>Tabelas 2×2</label>';
+    var labY = el('label', { html: '<input type="checkbox" checked> aplicar correção de Yates',
+      style: 'font-weight:400;font-size:.8rem;letter-spacing:0' });
+    campoY.appendChild(labY); ctr.appendChild(campoY);
+    labY.querySelector('input').addEventListener('change', function (e) {
+      yates = e.target.checked; calcular();
+    });
+
+    var grade = el('div', { style: 'overflow-x:auto;margin:.4rem 0 .8rem' });
+    c.appendChild(grade);
+    var cv = el('canvas'); c.appendChild(cv);
+    var painel = cartoes(c, [
+      { rot: 'χ² calculado', k: 'chi' }, { rot: 'graus de liberdade', k: 'gl' },
+      { rot: 'χ² crítico', k: 'crit' }, { rot: 'valor p', k: 'p' },
+      { rot: 'menor esperado', k: 'min' }, { rot: 'decisão', k: 'dec' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    var campos = [];
+
+    function montar() {
+      var T = TABELAS[chave];
+      grade.innerHTML = '';
+      campos = [];
+      var tab = el('table', { style: 'font-size:.82rem;min-width:420px' });
+      var thead = el('thead');
+      var tr = el('tr');
+      tr.appendChild(el('th', { texto: '' }));
+      T.colunas.forEach(function (nome) { tr.appendChild(el('th', { class: 'num', texto: nome })); });
+      tr.appendChild(el('th', { class: 'num', texto: 'total' }));
+      thead.appendChild(tr); tab.appendChild(thead);
+      var tb = el('tbody');
+      T.dados.forEach(function (linha, i) {
+        var tr2 = el('tr');
+        tr2.appendChild(el('th', { texto: T.linhas[i] }));
+        var linhaCampos = [];
+        linha.forEach(function (v) {
+          var td = el('td');
+          var inp = el('input', { type: 'number', value: v, min: 0, step: 1,
+            style: 'width:62px;text-align:right;padding:.2rem .3rem;font-size:.82rem' });
+          inp.addEventListener('input', calcular);
+          td.appendChild(inp); tr2.appendChild(td);
+          linhaCampos.push(inp);
+        });
+        tr2.appendChild(el('td', { class: 'num total-linha', texto: '' }));
+        tb.appendChild(tr2);
+        campos.push(linhaCampos);
+      });
+      var trT = el('tr');
+      trT.appendChild(el('th', { texto: 'total' }));
+      T.colunas.forEach(function () { trT.appendChild(el('th', { class: 'num total-col', texto: '' })); });
+      trT.appendChild(el('th', { class: 'num total-geral', texto: '' }));
+      tb.appendChild(trT);
+      tab.appendChild(tb);
+      grade.appendChild(tab);
+      calcular();
+    }
+
+    function calcular() {
+      var obs = campos.map(function (linha) {
+        return linha.map(function (inp) { return Math.max(0, Number(inp.value) || 0); });
+      });
+      var nl = obs.length, nc = obs[0].length;
+      var somaL = obs.map(function (r) { return r.reduce(function (a, b) { return a + b; }, 0); });
+      var somaC = [];
+      for (var j = 0; j < nc; j++) {
+        var s = 0; for (var i = 0; i < nl; i++) s += obs[i][j];
+        somaC.push(s);
+      }
+      var N = somaL.reduce(function (a, b) { return a + b; }, 0);
+
+      /* preenche os totais na tabela */
+      grade.querySelectorAll('.total-linha').forEach(function (td, i) {
+        td.textContent = somaL[i];
+      });
+      grade.querySelectorAll('.total-col').forEach(function (td, j) {
+        td.textContent = somaC[j];
+      });
+      var tg = grade.querySelector('.total-geral');
+      if (tg) tg.textContent = N;
+
+      if (N === 0) { saida.innerHTML = 'Preencha a tabela.'; return; }
+
+      var gl = (nl - 1) * (nc - 1);
+      var usaYates = yates && nl === 2 && nc === 2;
+      var chi = 0, menor = Infinity;
+      for (var a = 0; a < nl; a++) {
+        for (var b = 0; b < nc; b++) {
+          var e = somaL[a] * somaC[b] / N;
+          if (e < menor) menor = e;
+          if (e > 0) {
+            var dif = Math.abs(obs[a][b] - e);
+            if (usaYates) dif = Math.max(0, dif - 0.5);
+            chi += dif * dif / e;
+          }
+        }
+      }
+      var crit = M.quiCritico(alfa, gl);
+      var p = 1 - M.FQui(chi, gl);
+      var rejeita = chi > crit;
+
+      painel({
+        chi: M.fmt(chi, 4), gl: String(gl), crit: M.fmt(crit, 3),
+        p: M.fmt(p, 4), min: M.fmt(menor, 2),
+        dec: rejeita ? '<span style="color:#8c2f39">há associação</span>'
+                     : '<span style="color:#1f6f54">sem evidência</span>'
+      });
+
+      desenhar(chi, crit, gl);
+
+      var aviso = menor < 5
+        ? '<br><br><b style="color:#8c2f39">Atenção: a menor frequência esperada é '
+          + M.fmt(menor, 2) + ', abaixo de 5.</b> A aproximação qui-quadrado fica duvidosa; '
+          + 'agrupe categorias ou use o teste exato de Fisher.'
+        : '';
+
+      saida.innerHTML =
+        'χ² = <b>' + M.fmt(chi, 3) + '</b> com <b>' + gl + '</b> graus de liberdade'
+        + (usaYates ? ' <i>(com correção de Yates)</i>' : '') + '. '
+        + 'O valor crítico a ' + M.pct(alfa, 0) + ' é <b>' + M.fmt(crit, 3) + '</b> e '
+        + 'p = <b>' + M.fmt(p, 4) + '</b>. '
+        + (rejeita
+            ? '<b>Rejeitamos H₀</b>: há evidência de associação entre as duas variáveis.'
+            : '<b>Não rejeitamos H₀</b>: não há evidência de associação — o que não prova '
+              + 'independência, apenas não a contradiz.')
+        + aviso;
+    }
+
+    function desenhar(chi, crit, gl) {
+      var xmax = Math.max(crit * 1.6, chi * 1.25, 10);
+      var pico = 0;
+      for (var x = 0.05; x < xmax; x += xmax / 300) pico = Math.max(pico, M.dQui(x, gl));
+      var g = G.eixos(cv, {
+        xmin: 0, xmax: xmax, ymax: pico * 1.25, altura: 230,
+        rotX: 'χ²', rotY: 'densidade sob H₀',
+        marcasX: G.marcasLineares(0, xmax, 6, 0),
+        formataY: function (v) { return v.toFixed(2).replace('.', ','); }
+      });
+      var f = function (x) { return M.dQui(x, gl); };
+      G.area(g, f, 0, crit, 'rgba(44,95,141,.20)');
+      G.area(g, f, crit, xmax, 'rgba(140,47,57,.34)');
+      G.curva(g, f, G.COR.tinta, 2);
+      G.vertical(g, crit, G.COR.vinho, 'crítico ' + M.fmt(crit, 2), false);
+
+      var ct = g.ct;
+      var dentro = chi <= xmax;
+      if (dentro) {
+        ct.save();
+        ct.strokeStyle = chi > crit ? G.COR.vinho : G.COR.verde;
+        ct.lineWidth = 3;
+        ct.beginPath();
+        ct.moveTo(g.X(chi), g.y1); ct.lineTo(g.X(chi), g.y0 + 26); ct.stroke();
+        ct.fillStyle = ct.strokeStyle;
+        ct.font = '600 11px system-ui, sans-serif';
+        ct.textAlign = 'center'; ct.textBaseline = 'bottom';
+        ct.fillText('χ² = ' + M.fmt(chi, 2), g.X(chi), g.y0 + 23);
+        ct.restore();
+      }
+      ct.font = '600 10px system-ui, sans-serif';
+      ct.fillStyle = '#2c5f8d'; ct.textAlign = 'center'; ct.textBaseline = 'middle';
+      ct.fillText('NÃO REJEITAR', g.X(crit / 2), g.y1 - 14);
+    }
+
+    montar();
+    registrarRedesenho(calcular);
+  }
+
+  /* =================================================================
+     23. Teste de aderência
+     ================================================================= */
+  function aderencia(raiz) {
+    var c = moldura(raiz, 'Teste de aderência: os dados seguem a distribuição esperada?');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var alfa = 0.05;
+    var campoO = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    campoO.appendChild(el('label', { html: 'Frequências <b>observadas</b> (separadas por vírgula)' }));
+    var iO = el('input', { type: 'text', value: '25, 17, 15, 23, 24, 16' });
+    campoO.appendChild(iO); ctr.appendChild(campoO);
+
+    var campoE = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    campoE.appendChild(el('label', { html: 'Frequências <b>esperadas</b> (deixe vazio para distribuição uniforme)' }));
+    var iE = el('input', { type: 'text', value: '' });
+    campoE.appendChild(iE); ctr.appendChild(campoE);
+
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    var campoA = el('div', { class: 'campo' });
+    campoA.appendChild(el('label', { html: 'Nível α' }));
+    var selA = el('select');
+    [['0.10', '10%'], ['0.05', '5%'], ['0.01', '1%']].forEach(function (o) {
+      selA.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selA.value = '0.05';
+    campoA.appendChild(selA); ctr2.appendChild(campoA);
+    var iPar = numero(ctr2, 'parâmetros estimados dos dados', 0, atualizar, { min: 0, max: 5, step: 1 });
+
+    var bts = el('div', { class: 'botoes', style: 'margin:.2rem 0 .8rem' }); c.appendChild(bts);
+    [['Dado honesto?', '25, 17, 15, 23, 24, 16', ''],
+     ['Dado viciado', '12, 14, 13, 15, 16, 50', ''],
+     ['Mendel (ervilhas)', '315, 108, 101, 32', '312.75, 104.25, 104.25, 34.75']
+    ].forEach(function (ex) {
+      botao(bts, ex[0], function () { iO.value = ex[1]; iE.value = ex[2]; atualizar(); }, true);
+    });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Barras azuis: observado &nbsp;·&nbsp; contorno vermelho: esperado sob H₀' }));
+    var tab = el('div', { class: 'tabela-rolavel' }); c.appendChild(tab);
+    var painel = cartoes(c, [
+      { rot: 'χ² calculado', k: 'chi' }, { rot: 'graus de liberdade', k: 'gl' },
+      { rot: 'χ² crítico', k: 'crit' }, { rot: 'valor p', k: 'p' },
+      { rot: 'decisão', k: 'dec' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    iO.addEventListener('input', atualizar);
+    iE.addEventListener('input', atualizar);
+    selA.addEventListener('change', function () { alfa = Number(selA.value); atualizar(); });
+
+    function ler(s) {
+      return String(s).split(/[,;\s]+/).map(function (t) {
+        return Number(t.trim().replace(',', '.'));
+      }).filter(function (v) { return !isNaN(v); });
+    }
+
+    function atualizar() {
+      var obs = ler(iO.value);
+      if (obs.length < 2) {
+        saida.innerHTML = 'Informe pelo menos duas categorias.';
+        tab.innerHTML = ''; G.preparar(cv, 240);
+        return;
+      }
+      var N = obs.reduce(function (a, b) { return a + b; }, 0);
+      var esp = ler(iE.value);
+      if (esp.length !== obs.length) {
+        esp = obs.map(function () { return N / obs.length; });
+      }
+      var par = Math.max(0, Math.floor(Number(iPar.value) || 0));
+      var gl = Math.max(1, obs.length - 1 - par);
+
+      var chi = 0, menor = Infinity, linhas = '';
+      for (var i = 0; i < obs.length; i++) {
+        var e = esp[i];
+        if (e < menor) menor = e;
+        var parc = e > 0 ? Math.pow(obs[i] - e, 2) / e : 0;
+        chi += parc;
+        linhas += '<tr><td class="num">' + (i + 1) + '</td>'
+                + '<td class="num">' + M.fmt(obs[i], 0) + '</td>'
+                + '<td class="num">' + M.fmt(e, 2) + '</td>'
+                + '<td class="num">' + M.fmt(obs[i] - e, 2) + '</td>'
+                + '<td class="num">' + M.fmt(parc, 4) + '</td></tr>';
+      }
+      tab.innerHTML = '<table><thead><tr><th class="num">categoria</th>'
+        + '<th class="num">O<sub>i</sub></th><th class="num">E<sub>i</sub></th>'
+        + '<th class="num">O−E</th><th class="num">(O−E)²/E</th></tr></thead><tbody>'
+        + linhas + '<tr><th class="num">Σ</th><th class="num">' + M.fmt(N, 0) + '</th>'
+        + '<th class="num">' + M.fmt(esp.reduce(function (a, b) { return a + b; }, 0), 1) + '</th>'
+        + '<th class="num">0</th><th class="num">' + M.fmt(chi, 4) + '</th></tr></tbody></table>';
+
+      var crit = M.quiCritico(alfa, gl);
+      var p = 1 - M.FQui(chi, gl);
+      var rejeita = chi > crit;
+      painel({
+        chi: M.fmt(chi, 4), gl: String(gl), crit: M.fmt(crit, 3), p: M.fmt(p, 4),
+        dec: rejeita ? '<span style="color:#8c2f39">não adere</span>'
+                     : '<span style="color:#1f6f54">adere</span>'
+      });
+
+      desenhar(obs, esp);
+
+      saida.innerHTML = 'χ² = <b>' + M.fmt(chi, 3) + '</b> com <b>' + gl + '</b> gl '
+        + '(= ' + obs.length + ' categorias − 1' + (par ? ' − ' + par + ' parâmetro(s)' : '') + '). '
+        + 'Crítico: <b>' + M.fmt(crit, 3) + '</b>, p = <b>' + M.fmt(p, 4) + '</b>. '
+        + (rejeita
+            ? '<b>Rejeitamos H₀</b>: os dados <b>não</b> seguem a distribuição proposta.'
+            : '<b>Não rejeitamos H₀</b>: os dados são compatíveis com a distribuição proposta.')
+        + (menor < 5
+            ? '<br><br><b style="color:#8c2f39">Alguma frequência esperada é menor que 5</b> — '
+              + 'agrupe categorias antes de confiar no resultado.'
+            : '');
+    }
+
+    function desenhar(obs, esp) {
+      var k = obs.length;
+      var ymax = Math.max(Math.max.apply(null, obs), Math.max.apply(null, esp)) * 1.2;
+      var g = G.eixos(cv, {
+        xmin: 0.3, xmax: k + 0.7, ymax: ymax, altura: 240,
+        rotX: 'categoria', rotY: 'frequência',
+        marcasX: G.marcasInteiras(1, k, 12),
+        formataY: function (v) { return String(Math.round(v)); }
+      });
+      G.barras(g, obs.map(function (v, i) { return { x: i + 1, y: v }; }), G.COR.azulClaro, 0.6);
+      var ct = g.ct;
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2.2;
+      var passo = (g.x1 - g.x0) / (g.xmax - g.xmin);
+      var w = passo * 0.6;
+      esp.forEach(function (v, i) {
+        var x = g.X(i + 1), y = g.Y(v);
+        ct.beginPath(); ct.moveTo(x - w / 2, y); ct.lineTo(x + w / 2, y); ct.stroke();
+      });
+    }
+
+    atualizar();
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Registro e inicialização
      ================================================================= */
   var REGISTRO = {
@@ -2774,7 +3137,8 @@
     quiquadrado: quiquadrado, gradedados: gradeDados,
     pascal: pascal, aniversarios: aniversarios, montyhall: montyhall,
     galton: galton, intervalos: intervalos, calcic: calcIC,
-    regiaocritica: regiaoCritica, poder: poderTeste
+    regiaocritica: regiaoCritica, poder: poderTeste,
+    contingencia: contingencia, aderencia: aderencia
   };
 
   document.addEventListener('DOMContentLoaded', function () {
