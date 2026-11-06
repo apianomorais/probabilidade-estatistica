@@ -4201,6 +4201,380 @@
   }
 
   /* =================================================================
+     Algarismos significativos e arredondamento
+     ================================================================= */
+  function algarismos(raiz) {
+    var c = moldura(raiz, 'Algarismos significativos na prática');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var campoV = el('div', { class: 'campo', style: 'flex:2 1 220px' });
+    campoV.appendChild(el('label', { html: 'Valor medido' }));
+    var iV = el('input', { type: 'text', value: '9,8067' });
+    campoV.appendChild(iV); ctr.appendChild(campoV);
+
+    var campoU = el('div', { class: 'campo', style: 'flex:2 1 220px' });
+    campoU.appendChild(el('label', { html: 'Incerteza' }));
+    var iU = el('input', { type: 'text', value: '0,0423' });
+    campoU.appendChild(iU); ctr.appendChild(campoU);
+
+    var nSig = 1;
+    var campoN = el('div', { class: 'campo' });
+    campoN.appendChild(el('label', { html: 'Algarismos na incerteza' }));
+    var selN = el('select');
+    [['1', '1 (padrão)'], ['2', '2 (quando o 1º é 1 ou 2)']].forEach(function (o) {
+      selN.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoN.appendChild(selN); ctr.appendChild(campoN);
+    selN.addEventListener('change', function () { nSig = Number(selN.value); atualizar(); });
+    iV.addEventListener('input', atualizar);
+    iU.addEventListener('input', atualizar);
+
+    var painel = cartoes(c, [
+      { rot: 'resultado', k: 'res' }, { rot: 'ordem da incerteza', k: 'ordem' },
+      { rot: 'algarismos significativos', k: 'sig' }, { rot: 'incerteza relativa', k: 'rel' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function num(s) { return Number(String(s).trim().replace(',', '.')); }
+
+    /* conta algarismos significativos de uma representacao decimal */
+    function contaSig(s) {
+      s = String(s).trim().replace(',', '.').replace(/^[+-]/, '');
+      if (!/^\d*\.?\d+$/.test(s)) return null;
+      var semPonto = s.replace('.', '');
+      var semZeros = semPonto.replace(/^0+/, '');
+      if (semZeros === '') return 1;
+      /* zeros a direita so contam se ha ponto decimal */
+      if (s.indexOf('.') < 0) semZeros = semZeros.replace(/0+$/, '') || '0';
+      return semZeros.length;
+    }
+
+    function atualizar() {
+      var v = num(iV.value), u = Math.abs(num(iU.value));
+      if (!isFinite(v) || !isFinite(u) || u <= 0) {
+        saida.innerHTML = 'Informe um valor e uma incerteza positiva.';
+        painel({ res: '—', ordem: '—', sig: '—', rel: '—' });
+        return;
+      }
+
+      /* expoente do primeiro algarismo significativo da incerteza */
+      var exp = Math.floor(Math.log10(u));
+      var primeiro = Math.floor(u / Math.pow(10, exp));
+      var usados = (nSig === 2 || primeiro <= 2) ? 2 : 1;
+      var casa = exp - (usados - 1);              /* casa decimal de corte */
+      var fator = Math.pow(10, casa);
+      var uArr = Math.ceil(u / fator - 1e-9) * fator;   /* incerteza arredonda p/ cima */
+      var vArr = Math.round(v / fator) * fator;
+      var dec = Math.max(0, -casa);
+
+      function fmtBR(x) { return x.toFixed(dec).replace('.', ','); }
+      var res = '(' + fmtBR(vArr) + ' ± ' + fmtBR(uArr) + ')';
+
+      painel({
+        res: res,
+        ordem: '10<sup>' + casa + '</sup>',
+        sig: String(contaSig(vArr.toFixed(dec)) || '—'),
+        rel: M.pct(uArr / Math.abs(vArr), 2)
+      });
+
+      var txt = '<b>Regra em dois passos.</b><br>'
+        + '<b>1.</b> A incerteza define a precisão. Arredonde-a para <b>' + usados
+        + ' algarismo' + (usados > 1 ? 's' : '') + ' significativo'
+        + (usados > 1 ? 's' : '') + '</b>: ' + M.fmt(u, 6) + ' → <b>' + fmtBR(uArr)
+        + '</b>'
+        + (usados === 2
+            ? '. Usamos dois porque o primeiro algarismo é ' + primeiro
+              + ', e com 1 ou 2 arredondar para um só algarismo perderia precisão '
+              + 'demais (de 1,4 para 1 é um erro de quase 30%).'
+            : '.')
+        + '<br><b>2.</b> O valor acompanha: arredonde-o na <b>mesma casa decimal</b> da '
+        + 'incerteza. ' + M.fmt(v, 6) + ' → <b>' + fmtBR(vArr) + '</b>.';
+
+      txt += '<br><br><b>Resultado: ' + res + '</b>'
+        + (dec > 0 ? ' — ambos com ' + dec + ' casa' + (dec > 1 ? 's' : '') + ' decimal'
+                     + (dec > 1 ? 'is' : '') + '.' : ' — ambos inteiros.');
+
+      txt += '<br><br><b>O erro mais comum.</b> Escrever "' + v + ' ± ' + u + '" copiando '
+        + 'as casas que a calculadora mostrou. Se a incerteza é ' + fmtBR(uArr)
+        + ', os algarismos do valor além da casa 10<sup>' + casa + '</sup> '
+        + '<i>não são conhecidos</i> — anotá-los é afirmar uma precisão que a medida não '
+        + 'tem.';
+
+      txt += '<br><br><b>Por que a incerteza arredonda para cima.</b> Arredondar '
+        + 'para baixo declara uma precisão maior que a real. Na dúvida, o arredondamento '
+        + 'deve sempre ser conservador: 0,0423 vira 0,05, e não 0,04.';
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     Leitura de instrumentos e incerteza de leitura
+     ================================================================= */
+  function instrumentos(raiz) {
+    var c = moldura(raiz, 'Leitura de instrumentos: de onde vem a incerteza');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var tipo = 'regua', valor = 4.37;
+
+    var campoT = el('div', { class: 'campo', style: 'flex:2 1 260px' });
+    campoT.appendChild(el('label', { html: 'Instrumento' }));
+    var selT = el('select');
+    [['regua', 'Régua milimetrada (divisão 1 mm)'],
+     ['paquimetro', 'Paquímetro com nônio de 20 divisões'],
+     ['digital', 'Instrumento digital (3 casas)']].forEach(function (o) {
+      selT.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoT.appendChild(selT); ctr.appendChild(campoT);
+    selT.addEventListener('change', function () { tipo = selT.value; atualizar(); });
+
+    deslizante(ctr, 'Valor real da peça (cm)', 1, 9, 0.001, 4.37,
+      function (v) { valor = v; atualizar(); },
+      function (v) { return v.toFixed(3).replace('.', ','); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda' }); c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'menor divisão', k: 'div' }, { rot: 'leitura', k: 'leit' },
+      { rot: 'incerteza de leitura', k: 'inc' }, { rot: 'resultado', k: 'res' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var divisao, leitura, inc, casas;
+      if (tipo === 'regua') {
+        divisao = 0.1;                       /* 1 mm em cm */
+        /* o operador estima a fracao: leitura ate meio milimetro */
+        leitura = Math.round(valor / 0.05) * 0.05;
+        inc = 0.05; casas = 2;
+      } else if (tipo === 'paquimetro') {
+        divisao = 0.005;                     /* 0,05 mm em cm */
+        leitura = Math.round(valor / 0.005) * 0.005;
+        inc = 0.005; casas = 3;
+      } else {
+        divisao = 0.001;
+        leitura = Math.round(valor / 0.001) * 0.001;
+        inc = 0.001; casas = 3;
+      }
+      function f(x) { return x.toFixed(casas).replace('.', ','); }
+
+      painel({
+        div: f(divisao) + ' cm', leit: f(leitura) + ' cm',
+        inc: '± ' + f(inc) + ' cm',
+        res: '(' + f(leitura) + ' ± ' + f(inc) + ') cm'
+      });
+
+      /* ---------- desenho da escala ---------- */
+      var x0 = Math.max(0, Math.floor(valor) - 1), x1 = x0 + 3;
+      var g = G.eixos(cv, {
+        xmin: x0, xmax: x1, ymin: 0, ymax: 1, altura: 190,
+        rotX: 'centímetros', rotY: '',
+        marcasX: G.marcasLineares(x0, x1, 7, 1),
+        formataY: function () { return ''; }
+      });
+      var ct = g.ct, i;
+
+      /* corpo da peca medida */
+      ct.fillStyle = 'rgba(31,78,121,.16)';
+      ct.fillRect(g.X(x0 + 0.25), g.Y(0.92), g.X(valor) - g.X(x0 + 0.25),
+                  g.Y(0.52) - g.Y(0.92));
+      ct.strokeStyle = G.COR.azul; ct.lineWidth = 1.6;
+      ct.strokeRect(g.X(x0 + 0.25), g.Y(0.92), g.X(valor) - g.X(x0 + 0.25),
+                    g.Y(0.52) - g.Y(0.92));
+
+      /* escala do instrumento */
+      var passo = tipo === 'regua' ? 0.1 : (tipo === 'paquimetro' ? 0.005 : 0.001);
+      var nTracos = Math.round((x1 - x0) / passo);
+      if (nTracos <= 900) {
+        for (i = 0; i <= nTracos; i++) {
+          var xv = x0 + i * passo;
+          var grande = Math.abs(xv / 1 - Math.round(xv / 1)) < 1e-9;
+          var meio = Math.abs(xv / 0.5 - Math.round(xv / 0.5)) < 1e-9;
+          var h = grande ? 0.34 : (meio ? 0.24 : 0.15);
+          ct.strokeStyle = grande ? G.COR.tinta : G.COR.suave;
+          ct.lineWidth = grande ? 1.6 : 0.8;
+          ct.beginPath();
+          ct.moveTo(g.X(xv), g.Y(0.40));
+          ct.lineTo(g.X(xv), g.Y(0.40 - h));
+          ct.stroke();
+        }
+      }
+      ct.strokeStyle = G.COR.tinta; ct.lineWidth = 1.6;
+      ct.beginPath(); ct.moveTo(g.X(x0), g.Y(0.40)); ct.lineTo(g.X(x1), g.Y(0.40)); ct.stroke();
+
+      /* ponta da peca e faixa de incerteza */
+      ct.fillStyle = 'rgba(140,47,57,.22)';
+      ct.fillRect(g.X(leitura - inc), g.Y(1.0), g.X(leitura + inc) - g.X(leitura - inc),
+                  g.Y(0) - g.Y(1.0));
+      G.vertical(g, valor, '#2e7d4f', 'real');
+      G.vertical(g, leitura, G.COR.vinho, 'leitura');
+
+      legenda.innerHTML = 'Retângulo azul: a peça. Linha verde: o valor verdadeiro. '
+        + 'Linha vinho: o que se consegue ler. Faixa vermelha: o intervalo de valores '
+        + 'compatíveis com essa leitura.';
+
+      /* ---------- texto ---------- */
+      var txt = '';
+      if (tipo === 'regua') {
+        txt = '<b>Régua milimetrada.</b> A menor divisão é 1 mm = 0,1 cm. A convenção é '
+          + 'que o observador <b>estima a fração</b> da última divisão, anotando um '
+          + 'algarismo <i>duvidoso</i> além dos certos.'
+          + '<br><br>A incerteza adotada é <b>metade da menor divisão</b>: ± 0,05 cm. '
+          + 'Com isso a leitura tem três algarismos significativos: dois certos e um '
+          + 'duvidoso. <b>Esse algarismo duvidoso é significativo e deve ser anotado</b> — '
+          + 'descartá-lo joga fora informação real.';
+      } else if (tipo === 'paquimetro') {
+        txt = '<b>Paquímetro com nônio.</b> O nônio (ou vernier) divide a menor divisão da '
+          + 'escala principal em 20 partes, permitindo ler diretamente 0,05 mm = 0,005 cm '
+          + 'sem estimativa.'
+          + '<br><br>Como a leitura é <b>direta</b>, e não estimada, a incerteza é a '
+          + '<b>própria menor divisão</b>, e não metade dela: ± 0,005 cm. '
+          + 'Esta é a distinção que mais confunde: <i>escala analógica com estimativa</i> '
+          + 'usa metade da divisão; <i>leitura discreta sem estimativa</i> usa a divisão '
+          + 'inteira.';
+      } else {
+        txt = '<b>Instrumento digital.</b> Não há estimativa possível: o mostrador dá um '
+          + 'número e pronto. A incerteza de leitura é <b>uma unidade do último dígito</b>, '
+          + '± 0,001 cm aqui.'
+          + '<br><br><b>Mas atenção:</b> essa é só a incerteza de <i>leitura</i>. O manual '
+          + 'do fabricante costuma especificar algo como "± (0,5% da leitura + 2 dígitos)", '
+          + 'que inclui a incerteza de <b>calibração</b> e costuma ser bem maior. '
+          + 'Resolução alta não é sinônimo de exatidão: um instrumento descalibrado erra '
+          + 'com muitas casas decimais.';
+      }
+      txt += '<br><br>Nesta configuração o valor real é ' + valor.toFixed(3).replace('.', ',')
+        + ' cm e a leitura possível é ' + f(leitura) + ' cm, uma diferença de '
+        + Math.abs(valor - leitura).toFixed(4).replace('.', ',') + ' cm — '
+        + (Math.abs(valor - leitura) <= inc
+            ? 'dentro da incerteza declarada, como deve ser.'
+            : 'fora da faixa, o que indicaria um problema de leitura.')
+        + ' <i>Arraste o valor real</i> e veja que a leitura só muda em degraus: é a '
+        + '<b>discretização</b> imposta pelo instrumento.';
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     Erro sistemático contra erro aleatório
+     ================================================================= */
+  function tiposErro(raiz) {
+    var c = moldura(raiz, 'Exatidão e precisão: os dois erros não são o mesmo');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var vies = 0.6, disp = 0.35, n = 40, semente = 7;
+
+    deslizante(ctr, 'Erro sistemático (viés)', 0, 2, 0.05, 0.6,
+      function (v) { vies = v; atualizar(); },
+      function (v) { return v.toFixed(2).replace('.', ','); });
+    deslizante(ctr, 'Erro aleatório (σ)', 0.05, 1.2, 0.05, 0.35,
+      function (v) { disp = v; atualizar(); },
+      function (v) { return v.toFixed(2).replace('.', ','); });
+    deslizante(ctr, 'Número de medidas n', 5, 200, 1, 40,
+      function (v) { n = v; atualizar(); });
+
+    var bot = el('button', { texto: 'Nova série de medidas' });
+    ctr.appendChild(bot);
+    bot.addEventListener('click', function () { semente = Math.random() * 1e6; atualizar(); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda', html:
+      'Linha verde: valor verdadeiro. Linha vinho tracejada: média das medidas. '
+      + 'A distância entre as duas é o <b>erro sistemático</b>; o espalhamento dos pontos '
+      + 'é o <b>erro aleatório</b>.' });
+    c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'média das medidas', k: 'm' }, { rot: 'desvio padrão s', k: 's' },
+      { rot: 'erro padrão da média', k: 'ep' }, { rot: 'distância da verdade', k: 'd' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    var VERDADE = 10.0;
+
+    function atualizar() {
+      /* gerador reprodutivel */
+      var s = semente, i;
+      function rnd() {
+        s = (s * 1103515245 + 12345) % 2147483648;
+        return s / 2147483648;
+      }
+      var dados = [];
+      for (i = 0; i < n; i++) {
+        var u1 = Math.max(1e-9, rnd()), u2 = rnd();
+        var z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+        dados.push(VERDADE + vies + disp * z);
+      }
+      var media = dados.reduce(function (a, b) { return a + b; }, 0) / n;
+      var va = dados.reduce(function (a, b) { return a + (b - media) * (b - media); }, 0) / (n - 1);
+      var sd = Math.sqrt(va), ep = sd / Math.sqrt(n);
+
+      painel({
+        m: M.fmt(media, 4), s: M.fmt(sd, 4), ep: M.fmt(ep, 4),
+        d: M.fmt(media - VERDADE, 4)
+      });
+
+      var lim = Math.max(1.2, Math.abs(vies) + 3.2 * disp);
+      var g = G.eixos(cv, {
+        xmin: 0, xmax: n + 1, ymin: VERDADE - lim, ymax: VERDADE + lim, altura: 290,
+        rotX: 'ordem da medida', rotY: 'valor medido',
+        marcasX: G.marcasInteiras(1, n, 10),
+        formataY: function (v) { return M.fmt(v, 2); }
+      });
+      var ct = g.ct;
+
+      /* faixa de +-2s em torno da media */
+      ct.fillStyle = 'rgba(31,78,121,.10)';
+      ct.fillRect(g.X(g.xmin), g.Y(media + 2 * sd), g.X(g.xmax) - g.X(g.xmin),
+                  g.Y(media - 2 * sd) - g.Y(media + 2 * sd));
+
+      ct.strokeStyle = '#2e7d4f'; ct.lineWidth = 2;
+      ct.beginPath(); ct.moveTo(g.X(g.xmin), g.Y(VERDADE));
+      ct.lineTo(g.X(g.xmax), g.Y(VERDADE)); ct.stroke();
+
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2; ct.setLineDash([6, 4]);
+      ct.beginPath(); ct.moveTo(g.X(g.xmin), g.Y(media));
+      ct.lineTo(g.X(g.xmax), g.Y(media)); ct.stroke(); ct.setLineDash([]);
+
+      for (i = 0; i < n; i++) {
+        ct.fillStyle = 'rgba(31,78,121,.75)';
+        ct.beginPath(); ct.arc(g.X(i + 1), g.Y(dados[i]), 3.4, 0, 2 * Math.PI); ct.fill();
+      }
+
+      var txt = 'O valor verdadeiro é <b>' + VERDADE.toFixed(2).replace('.', ',')
+        + '</b>, e a média das ' + n + ' medidas deu <b>' + M.fmt(media, 4) + '</b>.';
+      txt += '<br><br><b>Erro aleatório</b> — o espalhamento, medido por s = '
+        + M.fmt(sd, 4) + '. Ele é <b>simétrico</b> em torno da média: tanto erra para mais '
+        + 'quanto para menos. Por isso <b>repetir medidas o reduz</b>: o erro padrão da '
+        + 'média é s/√n = ' + M.fmt(ep, 4) + ', e cai com √n.';
+      txt += '<br><br><b>Erro sistemático</b> — a distância entre a linha vinho e a verde, '
+        + 'aqui <b>' + M.fmt(media - VERDADE, 4) + '</b>. Ele desloca <i>todas</i> as '
+        + 'medidas no mesmo sentido, e <b>repetir não adianta nada</b>. '
+        + (Math.abs(vies) < 0.05
+            ? 'Com o viés em zero, a média converge para o valor verdadeiro — é o caso ideal.'
+            : 'Aumente n até 200 e observe: o erro padrão despenca, a faixa azul estreita, '
+              + 'e a distância para a verdade <b>não muda</b>. O resultado fica cada vez '
+              + 'mais <i>preciso</i> e continua igualmente <i>inexato</i>.');
+      txt += '<br><br><b>A armadilha.</b> Um relatório que declare '
+        + M.fmt(media, 3) + ' ± ' + M.fmt(ep, 3)
+        + ' está dizendo que conhece o valor com essa precisão'
+        + (Math.abs(media - VERDADE) > 2 * ep
+            ? ' — e está <b>errado por mais de 2 erros padrão</b>, porque a incerteza '
+              + 'declarada só contabiliza a parte aleatória.'
+            : '.')
+        + ' O erro sistemático <b>não aparece na estatística dos dados</b>. Só calibração, '
+        + 'medição por outro método ou comparação com um padrão o revelam.';
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Calculadora de tamanho amostral
      ================================================================= */
   function tamanhoAmostral(raiz) {
@@ -5495,7 +5869,8 @@
     regressao: regressao, linearizacao: linearizacao,
     naoparametrico: naoParametrico,
     coefsw: coefSW, escadaks: escadaKS,
-    tamanhoamostral: tamanhoAmostral, curvaspoder: curvasPoder
+    tamanhoamostral: tamanhoAmostral, curvaspoder: curvasPoder,
+    algarismos: algarismos, instrumentos: instrumentos, tiposerro: tiposErro
   };
 
   document.addEventListener('DOMContentLoaded', function () {

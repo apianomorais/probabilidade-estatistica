@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 1 — Erros de medida e algarismos significativos | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061626">
+<script src="assets/js/comum.js?v=202611061626"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula01.html" class="num ativo" title="Módulo 1 — Erros de medida e algarismos significativos">1</a>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Toda medida tem erro</a></li>
+    <li><a href="#s2">2. Origem e tipos de erros</a></li>
+    <li><a href="#s3">3. Exatidão e precisão</a></li>
+    <li><a href="#s4">4. Leitura de instrumentos</a></li>
+    <li><a href="#s5">5. Algarismos significativos</a></li>
+    <li><a href="#s6">6. Operações e arredondamento</a></li>
+    <li><a href="#s7">7. Como escrever um resultado</a></li>
+    <li><a href="#s8">8. Independência dos dados</a></li>
+    <li><a href="#s9">9. Erros grosseiros e outliers</a></li>
+    <li><a href="#s10">10. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 1 · 3 horas · Unidade 1</p>
+  <h1>Erros de medida e algarismos significativos</h1>
+  <p class="subtitulo">Medir é comparar — e comparar sempre tem limite. Este módulo é sobre
+  dizer honestamente qual é esse limite.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Distinguir erro grosseiro, sistemático e aleatório pela origem e pelo efeito;</li>
+      <li>Separar exatidão de precisão, e saber qual delas a repetição melhora;</li>
+      <li>Atribuir a incerteza de leitura correta a cada tipo de instrumento;</li>
+      <li>Contar algarismos significativos e arredondar sem inventar precisão;</li>
+      <li>Escrever um resultado experimental na forma \((\bar x \pm \sigma)\,\mathrm{un}\);</li>
+      <li>Reconhecer quando as medidas não são independentes — e por que isso invalida a
+      estatística.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Toda medida tem erro</h2>
+
+  <p>Antes de qualquer fórmula, uma afirmação que organiza o curso inteiro:</p>
+
+  <div class="destaque">
+    <span class="anuncio">Nenhuma medida física tem valor exato</span>
+    Um resultado sem incerteza declarada não é um resultado — é uma opinião com casas
+    decimais.
+  </div>
+
+  <p>Não se trata de descuido do experimentador. É uma limitação de princípio, e ela tem
+  pelo menos quatro fontes independentes.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Por que o erro é inevitável</span>
+    <ol>
+      <li><strong>O instrumento tem resolução finita.</strong> Uma régua milimetrada não
+      distingue 4,37 cm de 4,372 cm. A informação simplesmente não existe na leitura;</li>
+      <li><strong>O instrumento tem calibração imperfeita.</strong> O zero pode estar
+      deslocado, a escala pode estar dilatada pelo calor;</li>
+      <li><strong>O observador interfere.</strong> O tempo de reação ao apertar o
+      cronômetro, o ângulo de visão ao ler a escala, o aperto do paquímetro sobre a peça;</li>
+      <li><strong>A grandeza pode não ter valor único.</strong> O diâmetro de um fio não é
+      um número — é uma distribuição, porque o fio não é perfeitamente cilíndrico.</li>
+    </ol>
+    <p>A quarta é a mais profunda e a mais esquecida. Muitas vezes a "incerteza" não mede
+    nossa ignorância, mas uma variabilidade real do objeto.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Erro não é engano</span>
+    <p>Na linguagem comum, "erro" é algo que se poderia ter evitado. Em metrologia, não. O
+    <strong>erro</strong> é a diferença entre o valor medido e o valor verdadeiro — uma
+    quantidade que existe mas que nunca conhecemos, porque não conhecemos o valor
+    verdadeiro.</p>
+    <p>O que conseguimos estimar é a <strong>incerteza</strong>: o intervalo dentro do qual
+    acreditamos, com certo grau de confiança, que o valor verdadeiro se encontra. Erro é
+    um número desconhecido; incerteza é uma afirmação nossa, defensável, sobre o tamanho
+    provável dele.</p>
+    <p>A distinção parece sutil e não é. "Minha medida tem erro de 0,05 cm" é uma frase que
+    não se pode justificar. "Minha medida tem incerteza de 0,05 cm" é uma frase que se
+    justifica apontando a resolução do instrumento.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Origem e tipos de erros</h2>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Tipo</th><th>Origem</th><th>Efeito nas medidas</th><th>Repetir resolve?</th></tr></thead>
+    <tbody>
+      <tr><td><b>Grosseiro</b></td><td>engano do operador: anotar errado, trocar unidade, ler a escala errada</td><td>um ou poucos valores absurdos</td><td>não — tem de ser <b>identificado e corrigido</b></td></tr>
+      <tr><td><b>Sistemático</b></td><td>instrumento descalibrado, método enviesado, condição ambiental constante</td><td>desloca <b>todas</b> no mesmo sentido</td><td><b>não</b></td></tr>
+      <tr><td><b>Aleatório</b></td><td>flutuações imprevisíveis: reação, vibração, ruído, arredondamento de leitura</td><td>espalha simetricamente em torno da média</td><td><b>sim</b>, cai com \(1/\sqrt n\)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Erro grosseiro</span>
+    <p>É o único que é de fato um engano. Anotar 23,4 onde se leu 32,4; esquecer de converter
+    mm para cm; cronometrar a oscilação errada.</p>
+    <p><strong>Não se trata estatisticamente.</strong> Um erro grosseiro deve ser encontrado
+    e corrigido, ou a medida deve ser refeita. Descartá-lo silenciosamente só é legítimo se
+    houver <em>razão independente</em> para saber que aquela medida é inválida — e essa razão
+    deve constar do relatório.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Erro sistemático</span>
+    <p>É o mais perigoso, porque <strong>não aparece na dispersão dos dados</strong>. Você
+    pode repetir mil vezes, obter um desvio padrão minúsculo, e estar mil vezes errado da
+    mesma forma.</p>
+    <p>Fontes típicas em laboratório didático:</p>
+    <ul>
+      <li>Erro de zero: balança que marca 0,3 g com o prato vazio;</li>
+      <li>Erro de escala: trena de aço usada a 40 °C, dilatada;</li>
+      <li>Erro de método: desprezar o empuxo do ar ao pesar; medir o período do pêndulo com
+      amplitude grande demais para a aproximação \(\operatorname{sen}\theta \approx
+      \theta\);</li>
+      <li>Erro de paralaxe constante: ler sempre a escala de lado, do mesmo ângulo;</li>
+      <li>Erro de carga: um voltímetro de baixa impedância que altera o circuito que mede.</li>
+    </ul>
+    <p><strong>Como detectar:</strong> calibrar contra um padrão conhecido, medir a mesma
+    grandeza por um método diferente, ou comparar com o valor aceito na literatura. Nenhuma
+    dessas é estatística — é trabalho experimental.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Erro aleatório</span>
+    <p>São as flutuações pequenas e imprevisíveis que fazem medidas repetidas da mesma
+    grandeza darem valores diferentes. Vêm de muitas causas pequenas e independentes
+    somadas — e é exatamente por isso que tendem à distribuição normal, como se verá no
+    Módulo 6.</p>
+    <p>É o único tipo que a estatística trata bem, e o único que repetir medidas reduz.</p>
+  </div>
+
+  <div data-widget="tiposerro"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Exatidão e precisão não são sinônimos</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Duas qualidades independentes</span>
+    <ul>
+      <li><strong>Exatidão</strong> (ou acurácia): quão perto a média está do valor
+      verdadeiro. Degradada pelo <em>erro sistemático</em>;</li>
+      <li><strong>Precisão</strong>: quão próximas as medidas estão <em>entre si</em>.
+      Degradada pelo <em>erro aleatório</em>.</li>
+    </ul>
+    <p>As quatro combinações existem, e a pior delas é a terceira:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th></th><th>Precisa</th><th>Imprecisa</th></tr></thead>
+      <tbody>
+        <tr><th>Exata</th><td>o ideal</td><td>na média acerta, mas cada medida é ruim</td></tr>
+        <tr><th>Inexata</th><td><b>o caso traiçoeiro</b>: resultados lindos e errados</td><td>obviamente ruim — ao menos é óbvio</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Precisão alta dá falsa confiança</span>
+    <p>No simulador acima, ponha o erro sistemático em 0,6 e aumente o n até 200. Observe:</p>
+    <ul>
+      <li>O erro padrão da média despenca — de cerca de 0,06 para 0,02;</li>
+      <li>A faixa azul de dispersão estreita visivelmente;</li>
+      <li>E a distância até o valor verdadeiro <strong>não muda nada</strong>.</li>
+    </ul>
+    <p>O relatório ficaria "9,81 ± 0,02" sobre um valor verdadeiro de 10,0 — errado por
+    dez erros padrão, com aparência de excelente. Aumentar a amostra sem investigar o viés
+    não melhora o resultado; <strong>piora a honestidade dele</strong>, porque reduz a barra
+    de incerteza sem reduzir o erro.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Leitura de instrumentos</h2>
+
+  <p>Mesmo sem repetir uma única vez, toda medida já nasce com uma incerteza: a que vem da
+  resolução do instrumento. A regra depende do tipo de escala.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">As três regras</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Instrumento</th><th>Incerteza de leitura</th><th>Por quê</th></tr></thead>
+      <tbody>
+        <tr><td>Escala analógica com estimativa<br>(régua, termômetro de coluna)</td><td><b>metade</b> da menor divisão</td><td>o observador estima a fração; acerta dentro de meia divisão</td></tr>
+        <tr><td>Leitura discreta sem estimativa<br>(paquímetro com nônio, micrômetro)</td><td>a <b>própria</b> menor divisão</td><td>não há estimativa: o traço coincide ou não</td></tr>
+        <tr><td>Mostrador digital</td><td><b>uma unidade</b> do último dígito</td><td>idem — e consulte o manual, que costuma dar mais</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div data-widget="instrumentos"></div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Resolução não é exatidão</span>
+    <p>Um multímetro barato pode mostrar 4,8567 V com quatro casas e errar em 0,2 V por
+    calibração ruim. A <strong>resolução</strong> (quantos dígitos mostra) nada diz sobre a
+    <strong>exatidão</strong> (quão perto da verdade está).</p>
+    <p>O manual do fabricante especifica algo como <em>± (0,5% da leitura + 2 dígitos)</em>.
+    Para 4,8567 V isso dá \(0{,}005 \times 4{,}8567 + 0{,}0002 = 0{,}024\) V — cem vezes
+    maior que a resolução de 0,0001 V. O resultado honesto é
+    \((4{,}857 \pm 0{,}024)\ \mathrm{V}\).</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Algarismos significativos</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>São os algarismos <strong>conhecidos com confiança</strong>, mais <strong>um
+    duvidoso</strong> — o último, obtido por estimativa ou limitado pela resolução.</p>
+    <p>O algarismo duvidoso é significativo e <strong>deve ser escrito</strong>. Omiti-lo
+    joga fora informação que a medida de fato contém.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">As regras de contagem</span>
+    <ol>
+      <li>Todo algarismo <strong>diferente de zero</strong> é significativo:
+      \(4{,}37\) tem 3;</li>
+      <li>Zeros <strong>entre</strong> algarismos significativos contam:
+      \(2{,}05\) tem 3, \(10{,}04\) tem 4;</li>
+      <li>Zeros <strong>à esquerda</strong> nunca contam — são posicionais:
+      \(0{,}0032\) tem <b>2</b>;</li>
+      <li>Zeros <strong>à direita, depois da vírgula</strong>, contam:
+      \(4{,}30\) tem 3, e é diferente de \(4{,}3\), que tem 2;</li>
+      <li>Zeros à direita <strong>sem vírgula</strong> são ambíguos: \(1500\) pode ter 2, 3
+      ou 4. Resolva com notação científica.</li>
+    </ol>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A notação científica resolve a ambiguidade</span>
+    <p>Quantos algarismos significativos tem \(1500\ \mathrm{m}\)? Não dá para saber. Mas:</p>
+    <p>\[1{,}5\times 10^{3}\;(2) \qquad 1{,}50\times 10^{3}\;(3) \qquad
+    1{,}500\times 10^{3}\;(4)\]</p>
+    <p>Em notação científica, <strong>todos</strong> os algarismos da mantissa são
+    significativos. É por isso que ela é obrigatória em trabalho sério — não por elegância,
+    mas porque elimina a ambiguidade.</p>
+  </div>
+
+  <h3>Exercício resolvido 1.1 — Contagem</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Quantos algarismos significativos há em cada valor?</p>
+    <p>(a) 0,00250 &nbsp;·&nbsp; (b) 1,0080 &nbsp;·&nbsp; (c) 300 &nbsp;·&nbsp;
+    (d) \(3{,}00\times10^{2}\) &nbsp;·&nbsp; (e) 0,0001</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a) 0,00250 → 3.</strong> Os três zeros à esquerda são posicionais e não
+      contam. Significativos: 2, 5 e o zero final, que conta por estar depois da vírgula.
+      Em notação científica, \(2{,}50\times10^{-3}\).</p>
+      <p><strong>(b) 1,0080 → 5.</strong> O 1, os dois zeros internos (regra 2), o 8, e o
+      zero final depois da vírgula (regra 4).</p>
+      <p><strong>(c) 300 → ambíguo</strong>, 1 a 3. Sem contexto não há como saber. Se o
+      instrumento tinha resolução de uma unidade, são 3; se de centenas, é 1.</p>
+      <p><strong>(d) \(3{,}00\times10^{2}\) → 3.</strong> Exatamente o mesmo número que (c),
+      agora sem ambiguidade. Compare os dois: é o melhor argumento a favor da notação
+      científica que existe.</p>
+      <p><strong>(e) 0,0001 → 1.</strong> Apenas o 1. O valor tem uma casa decimal
+      significativa, não quatro — confundir <em>casas decimais</em> com <em>algarismos
+      significativos</em> é erro frequente.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Operações e arredondamento</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">As duas regras operacionais</span>
+    <p><strong>Soma e subtração</strong> — o resultado tem tantas <em>casas decimais</em>
+    quantas o parcela menos precisa:</p>
+    <p>\[12{,}11 + 0{,}3 + 1{,}234 = 13{,}644 \;\to\; \mathbf{13{,}6}\]</p>
+    <p>porque \(0{,}3\) só tem uma casa decimal.</p>
+    <p><strong>Multiplicação e divisão</strong> — o resultado tem tantos <em>algarismos
+    significativos</em> quantos o fator com menos deles:</p>
+    <p>\[2{,}5 \times 3{,}42 = 8{,}55 \;\to\; \mathbf{8{,}6}\]</p>
+    <p>porque \(2{,}5\) tem apenas 2.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Por que as duas regras são diferentes</span>
+    <p>Não é arbitrário. Na <strong>soma</strong>, o que se somam são incertezas
+    <em>absolutas</em>: se uma parcela é incerta na primeira casa decimal, a soma também
+    é — não adianta a outra ser conhecida na terceira.</p>
+    <p>Na <strong>multiplicação</strong>, o que se compõem são incertezas
+    <em>relativas</em>: \(2{,}5\) tem incerteza relativa de cerca de 2%, e o produto herda
+    essa mesma ordem de 2%, o que corresponde a dois algarismos significativos.</p>
+    <p>Essa é a intuição que o Módulo 7 vai transformar em fórmula, com derivadas parciais.
+    As regras dos algarismos significativos são a <strong>propagação de erros feita de
+    cabeça</strong>.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Três cuidados no arredondamento</span>
+    <ul>
+      <li><strong>Arredonde só no fim.</strong> Em cálculos encadeados, guarde dois ou três
+      algarismos a mais nos passos intermediários. Arredondar a cada etapa acumula erro;</li>
+      <li><strong>Constantes exatas não limitam.</strong> O 2 em \(P = 2(a+b)\), o 100 de uma
+      porcentagem, o número de lados de um polígono: são exatos, com infinitos algarismos
+      significativos;</li>
+      <li><strong>π e e também não limitam</strong>, desde que você use casas suficientes.
+      Use ao menos dois algarismos a mais que o dado menos preciso.</li>
+    </ul>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Como escrever um resultado</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A forma canônica</span>
+    <p>\[\boxed{\;x = (\bar x \pm \sigma_{\bar x})\ \text{unidade}\;}\]</p>
+    <p>E duas regras rígidas de formatação:</p>
+    <ol>
+      <li>A incerteza tem <strong>1 algarismo significativo</strong>, ou 2 quando o primeiro
+      for 1 ou 2 (porque arredondar 1,4 para 1 é um erro de quase 30%);</li>
+      <li>O valor é arredondado na <strong>mesma casa decimal</strong> da incerteza.</li>
+    </ol>
+    <p>A incerteza arredonda-se <strong>para cima</strong>; o valor, normalmente.</p>
+  </div>
+
+  <div data-widget="algarismos"></div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Três formas erradas de escrever o mesmo resultado</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Escrito</th><th>Problema</th></tr></thead>
+      <tbody>
+        <tr><td>\(9{,}80665 \pm 0{,}04231\)</td><td>copiou a calculadora; declara precisão inexistente</td></tr>
+        <tr><td>\(9{,}8 \pm 0{,}05\)</td><td>casas decimais incompatíveis entre valor e incerteza</td></tr>
+        <tr><td>\(9{,}81 \pm 0{,}0423\)</td><td>incerteza com 3 algarismos; a própria incerteza é incerta</td></tr>
+        <tr><td><b>\(9{,}81 \pm 0{,}05\)</b></td><td><b>correto</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Vale notar o segundo ponto: a incerteza é <em>ela mesma</em> uma estimativa, com
+    incerteza própria da ordem de \(1/\sqrt{2(n-1)}\) — cerca de 24% com dez medidas.
+    Escrevê-la com três algarismos é afirmar que se conhece bem algo que se conhece mal.</p>
+  </div>
+
+  <h3>Exercício resolvido 1.2 — Da bancada ao relatório</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Seis medidas do diâmetro de uma esfera com paquímetro (incerteza de leitura
+    0,005 cm): 2,145 · 2,150 · 2,140 · 2,155 · 2,145 · 2,150 cm. Escreva o resultado final.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — Média.</strong></p>
+      <p>\[\bar d = \frac{12{,}885}{6} = 2{,}1475\ \mathrm{cm}\]</p>
+      <p><strong>Passo 2 — Desvio padrão amostral.</strong> Os desvios em relação à média
+      são −0,0025; +0,0025; −0,0075; +0,0075; −0,0025; +0,0025 cm, cuja soma é zero (como
+      deve ser).</p>
+      <p>\[\sum (d_i-\bar d)^2 = 1{,}375\times10^{-4}
+      \;\Rightarrow\; s=\sqrt{\frac{1{,}375\times10^{-4}}{5}} = 0{,}00524\ \mathrm{cm}\]</p>
+      <p><strong>Passo 3 — Erro padrão da média.</strong> É ele, e não \(s\), que exprime a
+      incerteza do <em>valor médio</em>:</p>
+      <p>\[\sigma_{\bar d} = \frac{s}{\sqrt 6} = \frac{0{,}00524}{2{,}449}
+      = 0{,}00214\ \mathrm{cm}\]</p>
+      <p><strong>Passo 4 — Combinar com a incerteza de leitura.</strong> Há duas fontes
+      independentes: a dispersão estatística (tipo A) e a resolução do instrumento
+      (tipo B). Combinam-se em quadratura:</p>
+      <p>\[\sigma_{\text{total}} = \sqrt{\sigma_{\bar d}^{2} + \sigma_{\text{leitura}}^{2}}
+      = \sqrt{(0{,}00214)^{2} + (0{,}005)^{2}} = 0{,}00544\ \mathrm{cm}\]</p>
+      <p><strong>Passo 5 — Arredondar e escrever.</strong> A incerteza 0,00544 arredonda
+      para <b>0,006</b> (um algarismo, para cima), e o valor acompanha na terceira casa:</p>
+      <p>\[\boxed{\,d = (2{,}148 \pm 0{,}006)\ \mathrm{cm}\,}\]</p>
+      <div class="bloco fisica">
+        <span class="rotulo">O que a conta ensinou</span>
+        <p>Repare que \(\sigma_{\text{leitura}} = 0{,}005\) é <strong>maior</strong> que
+        \(\sigma_{\bar d} = 0{,}0021\), e domina o total. Repetir mais vezes reduziria apenas
+        a segunda parcela, e o ganho seria desprezível: com 100 medidas,
+        \(\sigma_{\bar d}\) cairia para 0,0005 e o total só iria a 0,0050.</p>
+        <p><strong>Não adianta repetir quando a resolução é o fator limitante.</strong> Para
+        melhorar de verdade, é preciso um micrômetro. Identificar <em>qual fonte domina</em>
+        antes de investir esforço é o hábito que separa o experimentador eficiente do
+        teimoso — e o Módulo 7 dá a ferramenta para fazer isso sempre.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Leitura e independência dos dados</h2>
+
+  <p>Quase toda a estatística dos módulos seguintes supõe que as observações são
+  <strong>independentes</strong>. Vale explicitar o que isso exige na bancada.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">O que significa, concretamente</span>
+    <p>Medidas são independentes quando o resultado de uma <strong>não carrega
+    informação</strong> sobre o resultado da seguinte. Na prática, isso se traduz em
+    exigências bem concretas:</p>
+    <ul>
+      <li><strong>Reposicionar o instrumento a cada medida.</strong> Medir o diâmetro dez
+      vezes sem soltar o paquímetro dá dez cópias da mesma leitura, não dez medidas;</li>
+      <li><strong>Não olhar a medida anterior antes de anotar.</strong> É o viés do
+      observador: sabendo que a anterior deu 2,145, a tendência é "ver" 2,145 de novo. Em
+      trabalho cuidadoso, anota-se às cegas e só depois se compara;</li>
+      <li><strong>Variar o ponto de medida</strong> quando a grandeza pode variar ao longo
+      do objeto — medir o diâmetro do fio em posições diferentes, não sempre na mesma;</li>
+      <li><strong>Garantir que as condições não derivem.</strong> Se o equipamento esquenta
+      ao longo do experimento, as medidas tardias são sistematicamente diferentes das
+      iniciais, e a ordem temporal passa a importar.</li>
+    </ul>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Como a dependência sabota a estatística</span>
+    <p>Se as medidas são correlacionadas, o erro padrão \(s/\sqrt n\) fica
+    <strong>subestimado</strong> — às vezes por um fator grande. A fórmula conta \(n\)
+    informações independentes, mas você tem menos que isso.</p>
+    <p>O sintoma é característico: barras de erro pequenas demais, e resultados de grupos
+    diferentes que discordam muito mais do que suas incertezas permitiriam. Quando dois
+    grupos medem \(g\) e obtêm \(9{,}70 \pm 0{,}01\) e \(9{,}85 \pm 0{,}01\), ao menos um
+    deles subestimou a incerteza — e dependência entre medidas é a causa mais provável,
+    junto do erro sistemático.</p>
+    <p>Há como testar: o <strong>teste das sequências</strong>, do Módulo 19, aplicado à
+    série de medidas na ordem em que foram tomadas, detecta deriva e agrupamento.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Pseudo-replicação</span>
+    <p>Caso extremo e comum: medir mil vezes <em>a mesma</em> amostra de um material e
+    reportar o erro padrão com \(n = 1000\).</p>
+    <p>Isso estima com altíssima precisão a propriedade <em>daquela amostra específica</em>,
+    e não diz quase nada sobre o material — porque não captura a variação <em>entre</em>
+    amostras, que em geral é a dominante. Se o interesse é o material, o \(n\) estatístico é
+    o número de amostras distintas. Dez amostras medidas três vezes cada é um desenho muito
+    melhor que uma amostra medida trinta vezes.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Erros grosseiros e valores atípicos</h2>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A regra que não se deve quebrar</span>
+    <p>Um valor muito afastado dos demais <strong>não pode ser descartado só por ser
+    afastado</strong>. Fazê-lo é fabricar o resultado desejado.</p>
+    <p>O procedimento honesto, em ordem:</p>
+    <ol>
+      <li><strong>Investigue.</strong> Há registro de algo anormal — queda de energia,
+      vibração, anotação ilegível? Se houver razão <em>independente</em>, documente e
+      descarte;</li>
+      <li><strong>Repita a medida</strong>, se ainda for possível;</li>
+      <li>Se não houver razão nem como repetir, <strong>mantenha o valor</strong> e reporte
+      a análise com e sem ele. Deixe o leitor julgar;</li>
+      <li>Ou use métodos <strong>robustos</strong> — mediana no lugar da média, os testes
+      não paramétricos do Módulo 19 — que não se deixam dominar por um ponto.</li>
+    </ol>
+    <p>Critérios automáticos como "descartar além de \(2s\)" existem e são perigosos: com
+    \(n=100\), espera-se que cerca de 5 medidas <em>legítimas</em> caiam fora de \(2s\).
+    Descartá-las encolhe artificialmente a incerteza declarada.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Quando o outlier é a descoberta</span>
+    <p>Vale lembrar que o ponto fora da curva nem sempre é lixo. O buraco na camada de ozônio
+    sobre a Antártida passou anos sem ser notado porque o software de processamento
+    descartava automaticamente leituras "baixas demais para serem reais".</p>
+    <p>O dado estava lá desde o começo. O filtro automático é que o jogava fora.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Exercícios propostos</h2>
+
+  <ol>
+    <li>Classifique cada situação em erro grosseiro, sistemático ou aleatório, e diga se
+    repetir a medida ajuda: (a) balança que marca 0,3 g vazia; (b) tempo de reação no
+    cronômetro; (c) anotar 15,2 onde se leu 51,2; (d) trena de aço usada a 40 °C;
+    (e) vibração do prédio durante a pesagem.</li>
+    <li>Quantos algarismos significativos em: 0,0405 · 4,050 · 40,50 · \(4{,}5\times10^{-3}\)
+    · 4500?</li>
+    <li>Efetue respeitando os algarismos significativos: (a) \(3{,}14 \times 2{,}1\);
+    (b) \(45{,}67 + 2{,}3 + 0{,}456\); (c) \(9{,}81 / 3{,}0\); (d) \(2\pi\sqrt{0{,}45/9{,}81}\).</li>
+    <li>Escreva corretamente: \(x = 1{,}23456\) com \(\sigma = 0{,}0234\); e
+    \(y = 1234{,}5\) com \(\sigma = 120\).</li>
+    <li>Uma régua tem divisões de 1 mm. Qual a incerteza de leitura? E se, em vez de uma, a
+    medida exigir <em>duas</em> leituras (início e fim da peça)? <em>(Sugestão: pense nas
+    duas incertezas se compondo — o Módulo 7 formaliza, mas a resposta já sai pela
+    intuição.)</em></li>
+    <li>Oito medidas de um intervalo de tempo (s): 2,31 · 2,28 · 2,35 · 2,30 · 2,33 · 2,29 ·
+    2,32 · 2,30. O cronômetro tem resolução de 0,01 s. Calcule média, desvio padrão, erro
+    padrão e escreva o resultado final combinando as duas fontes.</li>
+    <li>No exercício anterior, qual fonte de incerteza domina? Quantas medidas seriam
+    necessárias para que a outra passasse a dominar?</li>
+    <li>Um grupo mede \(g = (9{,}70 \pm 0{,}01)\) m/s² e outro \((9{,}85 \pm 0{,}01)\) m/s².
+    Sabendo que o valor local é 9,78, o que se pode afirmar sobre cada um?</li>
+    <li>Explique por que a regra da soma trata casas decimais e a da multiplicação trata
+    algarismos significativos, usando a ideia de incerteza absoluta e relativa.</li>
+    <li>Um estudante mede o período de um pêndulo dez vezes sem parar o cronômetro entre as
+    medidas, lendo o mostrador a cada oscilação. As dez medidas são independentes?
+    Justifique e proponha um protocolo melhor.</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>Erro é a diferença (desconhecida) para o valor verdadeiro; incerteza é nossa
+      estimativa (defensável) do tamanho dela;</li>
+      <li>Grosseiro corrige-se; sistemático afeta exatidão e não cai com \(n\); aleatório
+      afeta precisão e cai com \(1/\sqrt n\);</li>
+      <li>Escala analógica: metade da divisão. Nônio e digital: a divisão inteira;</li>
+      <li>Resolução não é exatidão — consulte o manual do instrumento;</li>
+      <li>Soma segue casas decimais; multiplicação segue algarismos significativos;</li>
+      <li>Resultado: \((\bar x \pm \sigma)\), incerteza com 1 algarismo (2 se começar por 1
+      ou 2), valor na mesma casa;</li>
+      <li>Fontes independentes combinam-se em quadratura;</li>
+      <li>Independência exige reposicionar, não olhar a anterior e vigiar a deriva;</li>
+      <li>Outlier só se descarta com razão independente, documentada.</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="index.html"><small>Voltar</small>← Início</a>
+    <a class="prox" href="aula02.html"><small>Próximo módulo</small>2. Estatística descritiva →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js?v=202611061626"></script>
+</body>
+</html>
