@@ -444,3 +444,11 @@ mjx-container[display="true"]{
 .widget-corpo table td{text-align:right}
 .widget-corpo table td:has(input){width:1%;white-space:nowrap}
 .widget-corpo table th:first-child{text-align:left;white-space:nowrap}
+
+/* Cabeçalho de unidade no índice */
+h3.unidade{
+  font-family:'Audiowide',var(--fonte);
+  font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--azul);margin:2.4rem 0 .9rem;padding-bottom:.45rem;
+  border-bottom:2px solid var(--azul-pastel)}
+h3.unidade:first-of-type{margin-top:1.2rem}

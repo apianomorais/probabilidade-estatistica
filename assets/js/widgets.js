@@ -4521,6 +4521,384 @@
   }
 
   /* =================================================================
+     Ajuste não linear por Gauss–Newton amortecido, com qui-quadrado
+     ================================================================= */
+  var MODELOS = {
+    exp: {
+      rot: 'Decaimento exponencial:  y = A e^(−λx)',
+      pars: ['A', 'λ'], ini: [2000, 0.05],
+      f: function (p, x) { return p[0] * Math.exp(-p[1] * x); },
+      d: function (p, x) {
+        var e = Math.exp(-p[1] * x);
+        return [e, -p[0] * x * e];
+      },
+      lin: { rot: 'ln y contra x', ty: Math.log, tx: function (v) { return v; },
+             volta: function (a, b) { return [Math.exp(b), -a]; } },
+      x: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45],
+      y: [1974, 1611, 1228, 1010, 797, 633, 490, 416, 331, 233],
+      s: null,   /* Poisson: sigma = sqrt(N) */
+      poisson: true,
+      rx: 't (min)', ry: 'contagens N'
+    },
+    pot: {
+      rot: 'Lei de potência:  y = A x^b',
+      pars: ['A', 'b'], ini: [1, 0.5],
+      f: function (p, x) { return p[0] * Math.pow(x, p[1]); },
+      d: function (p, x) {
+        var q = Math.pow(x, p[1]);
+        return [q, p[0] * q * Math.log(x)];
+      },
+      lin: { rot: 'ln y contra ln x', ty: Math.log, tx: Math.log,
+             volta: function (a, b) { return [Math.exp(b), a]; } },
+      x: [0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.10],
+      y: [0.912, 1.098, 1.265, 1.410, 1.560, 1.691, 1.794, 1.904, 2.014, 2.106],
+      s: [0.011, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011, 0.011],
+      rx: 'L (m)', ry: 'T (s)'
+    },
+    gauss: {
+      rot: 'Pico gaussiano:  y = A exp[−(x−μ)²/2σ²] + C',
+      pars: ['A', 'μ', 'σ', 'C'], ini: [100, 50, 5, 10],
+      f: function (p, x) {
+        return p[0] * Math.exp(-Math.pow(x - p[1], 2) / (2 * p[2] * p[2])) + p[3];
+      },
+      d: function (p, x) {
+        var z = (x - p[1]) / p[2], e = Math.exp(-z * z / 2);
+        return [e, p[0] * e * z / p[2], p[0] * e * z * z / p[2], 1];
+      },
+      lin: null,
+      x: [30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70],
+      y: [13, 15, 30, 51, 101, 138, 94, 55, 26, 17, 7],
+      s: null, poisson: true,
+      rx: 'canal', ry: 'contagens'
+    }
+  };
+
+  /* Gauss-Newton com amortecimento de Levenberg */
+  function gaussNewton(mod, x, y, sig, p0, maxIt) {
+    var p = p0.slice(), np = p.length, n = x.length, i, j, k, it;
+    var lam = 1e-3, hist = [];
+
+    function qui(pp) {
+      var s = 0;
+      for (var q = 0; q < n; q++) {
+        var r = (y[q] - mod.f(pp, x[q])) / sig[q];
+        s += r * r;
+      }
+      return s;
+    }
+    var q0 = qui(p);
+    hist.push(q0);
+
+    for (it = 0; it < (maxIt || 200); it++) {
+      var A = [], b = [];
+      for (j = 0; j < np; j++) { A.push(new Array(np).fill(0)); b.push(0); }
+      for (i = 0; i < n; i++) {
+        var der = mod.d(p, x[i]), w = 1 / (sig[i] * sig[i]);
+        var r = y[i] - mod.f(p, x[i]);
+        for (j = 0; j < np; j++) {
+          b[j] += w * r * der[j];
+          for (k = 0; k < np; k++) A[j][k] += w * der[j] * der[k];
+        }
+      }
+      /* amortecimento */
+      var Ad = A.map(function (lin, idx) {
+        var c = lin.slice(); c[idx] *= (1 + lam); return c;
+      });
+      var sol = resolveSim(Ad, b);
+      if (!sol) break;
+      var pNovo = p.map(function (v, idx) { return v + sol.p[idx]; });
+      var qNovo = qui(pNovo);
+      if (isFinite(qNovo) && qNovo < q0) {
+        var melhora = q0 - qNovo;
+        p = pNovo; q0 = qNovo; lam = Math.max(lam / 10, 1e-12);
+        hist.push(q0);
+        if (melhora < 1e-12 * Math.max(1, q0)) break;
+      } else {
+        lam *= 10;
+        if (lam > 1e12) break;
+      }
+    }
+
+    /* matriz de covariancia na solucao, sem amortecimento */
+    var A2 = [], b2 = [];
+    for (j = 0; j < np; j++) { A2.push(new Array(np).fill(0)); b2.push(0); }
+    for (i = 0; i < n; i++) {
+      var d2 = mod.d(p, x[i]), w2 = 1 / (sig[i] * sig[i]);
+      for (j = 0; j < np; j++)
+        for (k = 0; k < np; k++) A2[j][k] += w2 * d2[j] * d2[k];
+    }
+    var inv = resolveSim(A2, b2);
+    var erros = [];
+    for (j = 0; j < np; j++)
+      erros.push(inv ? Math.sqrt(Math.max(0, inv.inv[j][j])) : NaN);
+
+    return { p: p, erros: erros, qui: q0, gl: n - np,
+             quiRed: (n - np) > 0 ? q0 / (n - np) : NaN,
+             iter: it, hist: hist };
+  }
+
+  function naoLinear(raiz) {
+    var c = moldura(raiz, 'Ajuste não linear e o qui-quadrado de ajuste');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var chave = 'exp', metodo = 'gn', vista = 'ajuste';
+
+    var campoM = el('div', { class: 'campo', style: 'flex:3 1 320px' });
+    campoM.appendChild(el('label', { html: 'Modelo e dados' }));
+    var selM = el('select');
+    Object.keys(MODELOS).forEach(function (k) {
+      selM.appendChild(el('option', { value: k, texto: MODELOS[k].rot }));
+    });
+    campoM.appendChild(selM); ctr.appendChild(campoM);
+    selM.addEventListener('change', function () { chave = selM.value; ajustar(); atualizar(); });
+
+    var campoE = el('div', { class: 'campo', style: 'flex:2 1 240px' });
+    campoE.appendChild(el('label', { html: 'Método' }));
+    var selE = el('select');
+    campoE.appendChild(selE); ctr.appendChild(campoE);
+    selE.addEventListener('change', function () { metodo = selE.value; atualizar(); });
+
+    var campoV = el('div', { class: 'campo' });
+    campoV.appendChild(el('label', { html: 'Vista' }));
+    var selV = el('select');
+    [['ajuste', 'Ajuste'], ['res', 'Resíduos normalizados'],
+     ['dist', 'Distribuição de χ²']].forEach(function (o) {
+      selV.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoV.appendChild(selV); ctr.appendChild(campoV);
+    selV.addEventListener('change', function () { vista = selV.value; atualizar(); });
+
+    function ajustar() {
+      selE.innerHTML = '';
+      selE.appendChild(el('option', { value: 'gn', texto: 'Ajuste direto (Gauss–Newton)' }));
+      if (MODELOS[chave].lin)
+        selE.appendChild(el('option', { value: 'lin',
+          texto: 'Linearizando: ' + MODELOS[chave].lin.rot }));
+      selE.value = 'gn'; metodo = 'gn';
+    }
+    ajustar();
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda' }); c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'χ²', k: 'qui' }, { rot: 'ν', k: 'gl' },
+      { rot: 'χ²/ν', k: 'quir' }, { rot: 'p do ajuste', k: 'p' },
+      { rot: 'iterações', k: 'it' }
+    ]);
+    var tabela = el('div', { class: 'tabela-rolavel' }); c.appendChild(tabela);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var D = MODELOS[chave];
+      var x = D.x, y = D.y, i;
+      var sig = D.poisson ? y.map(function (v) { return Math.sqrt(Math.max(1, v)); })
+                          : D.s.slice();
+
+      var R, p, erros, quiFinal, glFinal, nIter;
+
+      if (metodo === 'lin' && D.lin) {
+        /* ajuste linear sobre os dados transformados, depois volta */
+        var tx = [], ty = [];
+        for (i = 0; i < x.length; i++) {
+          var a = D.lin.tx(x[i]), b = D.lin.ty(y[i]);
+          if (isFinite(a) && isFinite(b)) { tx.push(a); ty.push(b); }
+        }
+        var L = ajustePoli(tx, ty, 1, null);
+        p = D.lin.volta(L.p[1], L.p[0]);
+        /* erros propagados grosseiramente a partir dos do ajuste linear */
+        erros = [Math.abs(p[0]) * L.erros[0], L.erros[1]];
+        if (chave === 'pot') erros = [Math.abs(p[0]) * L.erros[0], L.erros[1]];
+        nIter = 0;
+      } else {
+        R = gaussNewton(D, x, y, sig, D.ini.slice());
+        p = R.p; erros = R.erros; nIter = R.iter;
+      }
+
+      /* chi2 sempre calculado da mesma forma, para comparar os dois métodos */
+      quiFinal = 0;
+      for (i = 0; i < x.length; i++) {
+        var r = (y[i] - D.f(p, x[i])) / sig[i];
+        quiFinal += r * r;
+      }
+      glFinal = x.length - p.length;
+      var quiRed = glFinal > 0 ? quiFinal / glFinal : NaN;
+      var pAjuste = glFinal > 0 ? 1 - M.FQui(quiFinal, glFinal) : NaN;
+
+      painel({
+        qui: M.fmt(quiFinal, 3), gl: String(glFinal),
+        quir: M.fmt(quiRed, 4), p: M.fmt(pAjuste, 4),
+        it: metodo === 'lin' ? 'direto' : String(nIter)
+      });
+
+      var h = '<table><thead><tr><th>parâmetro</th><th class="num">valor</th>'
+        + '<th class="num">erro padrão</th><th class="num">erro relativo</th>'
+        + '</tr></thead><tbody>';
+      for (i = 0; i < p.length; i++) {
+        h += '<tr><th>' + D.pars[i] + '</th><td class="num">' + M.fmt(p[i], 5)
+          + '</td><td class="num">±' + M.fmt(erros[i], 5) + '</td><td class="num">'
+          + M.pct(Math.abs(erros[i] / p[i]), 2) + '</td></tr>';
+      }
+      tabela.innerHTML = h + '</tbody></table>';
+
+      /* ---------- gráficos ---------- */
+      var xmin = Math.min.apply(null, x), xmax = Math.max.apply(null, x);
+      var fx = (xmax - xmin) * 0.06;
+
+      if (vista === 'dist') {
+        var topo = Math.max(quiFinal * 1.3, glFinal + 4 * Math.sqrt(2 * glFinal));
+        var dens = function (v) { return M.dQui(v, glFinal); };
+        var ym = 0;
+        for (i = 1; i <= 200; i++) ym = Math.max(ym, dens(topo * i / 200));
+        var gq = G.eixos(cv, {
+          xmin: 0, xmax: topo, ymax: ym * 1.25, altura: 290,
+          rotX: 'χ²', rotY: 'densidade sob a hipótese de bom ajuste',
+          marcasX: G.marcasLineares(0, topo, 7, 0),
+          formataY: function (v) { return M.fmt(v, 3); }
+        });
+        G.area(gq, dens, 0, Math.min(quiFinal, topo), 'rgba(31,78,121,.16)');
+        G.area(gq, dens, Math.min(quiFinal, topo), topo, 'rgba(140,47,57,.28)');
+        G.curva(gq, dens, G.COR.vinho, 2.2);
+        G.vertical(gq, glFinal, '#b5831f', 'ν = ' + glFinal);
+        if (quiFinal <= topo) G.vertical(gq, quiFinal, '#2e7d4f', 'χ² obs');
+        legenda.innerHTML = 'Se o modelo estiver certo e as incertezas bem estimadas, χ² '
+          + 'segue uma distribuição qui-quadrado com ν graus de liberdade, cuja <b>média é '
+          + 'o próprio ν</b>. A área vermelha é o valor p do ajuste.';
+      } else if (vista === 'res') {
+        var m = 0, resN = [];
+        for (i = 0; i < x.length; i++) {
+          var rn = (y[i] - D.f(p, x[i])) / sig[i];
+          resN.push(rn); m = Math.max(m, Math.abs(rn));
+        }
+        m = Math.max(m * 1.3, 3.2);
+        var gr = G.eixos(cv, {
+          xmin: xmin - fx, xmax: xmax + fx, ymin: -m, ymax: m, altura: 290, divY: 4,
+          rotX: D.rx, rotY: '(y − ŷ) / σ',
+          marcasX: G.marcasLineares(xmin - fx, xmax + fx, 6, 1),
+          formataY: function (v) { return M.fmt(v, 1); }
+        });
+        var cr = gr.ct;
+        cr.fillStyle = 'rgba(31,78,121,.10)';
+        cr.fillRect(gr.X(gr.xmin), gr.Y(2), gr.X(gr.xmax) - gr.X(gr.xmin),
+                    gr.Y(-2) - gr.Y(2));
+        cr.strokeStyle = G.COR.vinho; cr.lineWidth = 1.6;
+        cr.beginPath(); cr.moveTo(gr.X(gr.xmin), gr.Y(0));
+        cr.lineTo(gr.X(gr.xmax), gr.Y(0)); cr.stroke();
+        for (i = 0; i < x.length; i++) {
+          cr.strokeStyle = 'rgba(31,78,121,.5)'; cr.lineWidth = 1;
+          cr.beginPath(); cr.moveTo(gr.X(x[i]), gr.Y(0));
+          cr.lineTo(gr.X(x[i]), gr.Y(resN[i])); cr.stroke();
+          cr.fillStyle = G.COR.azul;
+          cr.beginPath(); cr.arc(gr.X(x[i]), gr.Y(resN[i]), 4, 0, 2 * Math.PI); cr.fill();
+          cr.strokeStyle = '#fff'; cr.lineWidth = 1.2; cr.stroke();
+        }
+        legenda.innerHTML = 'Resíduos divididos pela incerteza de cada ponto. Faixa azul: '
+          + '±2σ, onde devem cair cerca de 95% deles. <b>Cada ponto contribui com o '
+          + 'quadrado de sua altura para o χ².</b>';
+      } else {
+        var ymin = Math.min.apply(null, y), ymax2 = Math.max.apply(null, y);
+        var fy = (ymax2 - ymin) * 0.12 || 1;
+        var g = G.eixos(cv, {
+          xmin: xmin - fx, xmax: xmax + fx, ymin: Math.min(0, ymin - fy),
+          ymax: ymax2 + fy, altura: 300,
+          rotX: D.rx, rotY: D.ry, marcasX: G.marcasLineares(xmin - fx, xmax + fx, 6, 1),
+          formataY: function (v) { return M.fmt(v, Math.abs(ymax2) > 50 ? 0 : 2); }
+        });
+        G.curva(g, function (v) { return D.f(p, v); }, G.COR.vinho, 2.4);
+        var ct = g.ct;
+        for (i = 0; i < x.length; i++) {
+          ct.strokeStyle = 'rgba(31,78,121,.55)'; ct.lineWidth = 1.4;
+          ct.beginPath();
+          ct.moveTo(g.X(x[i]), g.Y(y[i] - sig[i]));
+          ct.lineTo(g.X(x[i]), g.Y(y[i] + sig[i])); ct.stroke();
+          ct.fillStyle = G.COR.azul;
+          ct.beginPath(); ct.arc(g.X(x[i]), g.Y(y[i]), 4, 0, 2 * Math.PI); ct.fill();
+          ct.strokeStyle = '#fff'; ct.lineWidth = 1.2; ct.stroke();
+        }
+        legenda.innerHTML = 'Pontos com suas barras de incerteza'
+          + (D.poisson ? ' (σ = √N, por serem contagens)' : '')
+          + '. Curva vinho: o modelo ajustado.';
+      }
+
+      /* ---------- texto ---------- */
+      var txt = '';
+      if (metodo === 'lin') {
+        txt = '<b>Ajuste por linearização.</b> Transformou-se para ' + D.lin.rot
+          + ', ajustou-se uma reta e voltou-se aos parâmetros originais. É direto e não '
+          + 'precisa de chute inicial.'
+          + '<br><br><b>Mas há um preço.</b> A transformação distorce as incertezas: pontos '
+          + 'de y pequeno ganham peso relativo maior em ln y, porque '
+          + '\\(\\sigma_{\\ln y}\\approx\\sigma_y/y\\). Os mínimos quadrados sobre os dados '
+          + 'transformados minimizam a soma errada, e o resultado <b>não é</b> o de máxima '
+          + 'verossimilhança. Troque para o ajuste direto e compare os parâmetros.';
+      } else {
+        txt = '<b>Ajuste direto por Gauss–Newton.</b> Partindo de um chute inicial, o método '
+          + 'lineariza o modelo em torno dos parâmetros atuais, resolve o sistema normal, '
+          + 'dá um passo, e repete. Convergiu em <b>' + nIter + '</b> iterações.'
+          + '<br><br>A cada passo resolve-se \\((\\mathbf J^{\\mathsf T}\\mathbf W\\mathbf J)'
+          + '\\,\\delta = \\mathbf J^{\\mathsf T}\\mathbf W\\mathbf r\\), onde '
+          + '\\(J_{ij}=\\partial f/\\partial p_j\\) avaliada em \\(x_i\\). É a mesma equação '
+          + 'normal do Módulo 9, agora recalculada a cada iteração. O amortecimento de '
+          + 'Levenberg soma um termo à diagonal, o que garante que o passo não dispare '
+          + 'quando a matriz fica mal condicionada.';
+      }
+
+      txt += '<br><br><b>Qualidade do ajuste.</b> χ² = ' + M.fmt(quiFinal, 3) + ' com ν = '
+        + glFinal + ', logo χ²/ν = <b>' + M.fmt(quiRed, 4) + '</b> e p = <b>'
+        + M.fmt(pAjuste, 4) + '</b>.<br>';
+      if (quiRed > 2) {
+        txt += 'Um χ²/ν <b>bem acima de 1</b>: ou o modelo não descreve os dados, ou as '
+          + 'incertezas foram subestimadas. Olhe os resíduos normalizados — padrão '
+          + 'sistemático aponta modelo errado, dispersão sem padrão aponta σ pequeno demais.';
+      } else if (quiRed < 0.5) {
+        txt += 'Um χ²/ν <b>bem abaixo de 1</b>: os resíduos são menores do que as incertezas '
+          + 'declaradas permitiriam. O mais comum é que os σ tenham sido superestimados; '
+          + 'a outra possibilidade é sobreajuste, com parâmetros demais.';
+      } else {
+        txt += 'Está <b>próximo de 1</b>, que é o esperado: cada ponto desvia-se tipicamente '
+          + 'de um σ, e o modelo descreve bem os dados.';
+      }
+
+      txt += '<br><br><b>Como ler o χ²/ν.</b> Cada termo da soma é '
+        + '\\(\\left[(y_i-\\hat y_i)/\\sigma_i\\right]^2\\), ou seja, o desvio medido em '
+        + 'unidades da incerteza do próprio ponto. Se o modelo estiver certo, cada termo '
+        + 'vale <b>cerca de 1</b> em média, e a soma de ν deles vale cerca de ν. '
+        + 'Daí a regra: <b>χ²/ν ≈ 1</b>.';
+
+      if (chave === 'exp') {
+        var meia = Math.log(2) / p[1];
+        var sMeia = Math.log(2) / (p[1] * p[1]) * erros[1];
+        txt += '<br><br><b>Resultado físico.</b> A meia-vida é ln2/λ = <b>'
+          + M.fmt(meia, 3) + ' ± ' + M.fmt(sMeia, 3) + ' min</b>, e a atividade inicial '
+          + 'A = ' + M.fmt(p[0], 0) + ' ± ' + M.fmt(erros[0], 0) + ' contagens.'
+          + '<br><i>Nota sobre as barras de erro:</i> por serem contagens, σ = √N '
+          + '(distribuição de Poisson, Módulo 5). Pontos com mais contagens têm barra '
+          + 'absoluta maior, mas incerteza <b>relativa</b> menor — e por isso pesam mais.';
+      } else if (chave === 'pot') {
+        txt += '<br><br><b>Resultado físico.</b> O expoente ajustado é b = <b>'
+          + M.fmt(p[1], 4) + ' ± ' + M.fmt(erros[1], 4) + '</b>. A teoria do pêndulo prevê '
+          + 'exatamente <b>0,5</b>, e o valor obtido dista '
+          + M.fmt(Math.abs(p[1] - 0.5) / erros[1], 1) + 'σ disso. '
+          + 'Com A = 2π/√g, vem g = (2π/A)² = <b>'
+          + M.fmt(Math.pow(2 * Math.PI / p[0], 2), 3) + ' m/s²</b>.';
+      } else {
+        txt += '<br><br><b>Resultado físico.</b> O pico está em μ = <b>' + M.fmt(p[1], 3)
+          + ' ± ' + M.fmt(erros[1], 3) + '</b> e tem largura σ = <b>' + M.fmt(p[2], 3)
+          + ' ± ' + M.fmt(erros[2], 3) + '</b>, sobre um fundo constante C = '
+          + M.fmt(p[3], 2) + '. A largura a meia altura é 2,355σ = '
+          + M.fmt(2.355 * p[2], 2) + ' canais — a resolução do detector.'
+          + '<br><i>Este modelo não tem linearização possível:</i> não há transformação que '
+          + 'o torne linear nos quatro parâmetros. O ajuste iterativo é a única saída.';
+      }
+
+      saida.innerHTML = txt;
+      if (window.MathJax && window.MathJax.typesetPromise)
+        window.MathJax.typesetPromise([saida]).catch(function () {});
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Propagação de erros: fórmula contra Monte Carlo
      ================================================================= */
   var FORMULAS = {
@@ -6713,7 +7091,7 @@
     tamanhoamostral: tamanhoAmostral, curvaspoder: curvasPoder,
     algarismos: algarismos, instrumentos: instrumentos, tiposerro: tiposErro,
     verossimilhanca: verossimilhanca, limitenormal: limiteNormal,
-    propagacao: propagacao, polinomio: polinomio
+    propagacao: propagacao, polinomio: polinomio, naolinear: naoLinear
   };
 
   document.addEventListener('DOMContentLoaded', function () {

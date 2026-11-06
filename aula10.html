@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 10 — Ajuste não linear e o qui-quadrado de ajuste | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061648">
+<script src="assets/js/comum.js?v=202611061648"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula01.html" class="num" title="Módulo 1 — Erros de medida e algarismos significativos">1</a>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula05.html" class="num" title="Módulo 5 — Máxima verossimilhança e a dedução da Normal">5</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula07.html" class="num" title="Módulo 7 — Propagação de erros">7</a>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <a href="aula09.html" class="num" title="Módulo 9 — Ajuste de polinômios e mínimos quadrados ponderados">9</a>
+      <a href="aula10.html" class="num ativo" title="Módulo 10 — Ajuste não linear e o qui-quadrado de ajuste">10</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Não linear nos parâmetros</a></li>
+    <li><a href="#s2">2. Linearizar: o que se ganha e perde</a></li>
+    <li><a href="#s3">3. Gauss–Newton</a></li>
+    <li><a href="#s4">4. Levenberg–Marquardt</a></li>
+    <li><a href="#s5">5. Incerteza dos parâmetros</a></li>
+    <li><a href="#s6">6. O qui-quadrado de ajuste</a></li>
+    <li><a href="#s7">7. Lendo o χ²/ν</a></li>
+    <li><a href="#s8">8. Resíduos normalizados</a></li>
+    <li><a href="#s9">9. Aplicações em Física</a></li>
+    <li><a href="#s10">10. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 10 · 3 horas · Unidade 3</p>
+  <h1>Ajuste não linear e o qui-quadrado de ajuste</h1>
+  <p class="subtitulo">Quando não há solução fechada, itera-se. E quando o ajuste termina,
+  resta a pergunta que importa: <em>ele é bom?</em></p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Reconhecer modelos não lineares nos parâmetros e por que exigem iteração;</li>
+      <li>Avaliar criticamente a linearização — quando serve e quando distorce;</li>
+      <li>Entender o método de Gauss–Newton e o amortecimento de Levenberg;</li>
+      <li>Obter incertezas dos parâmetros pela matriz de covariância;</li>
+      <li>Calcular e <strong>interpretar</strong> o \(\chi^2\) e o \(\chi^2/\nu\);</li>
+      <li>Usar resíduos normalizados para distinguir modelo errado de \(\sigma\) errado.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Não linear nos parâmetros</h2>
+
+  <p>O Módulo 9 deixou claro que o que importa é a linearidade <em>nos parâmetros</em>. Agora
+  chegamos aos casos em que ela não existe.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">A diferença, lado a lado</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Modelo</th><th>Linear nos parâmetros?</th><th>Solução</th></tr></thead>
+      <tbody>
+        <tr><td>\(y=a_0+a_1x+a_2x^2\)</td><td>sim</td><td>fechada, um passo</td></tr>
+        <tr><td>\(y=a_0+a_1\operatorname{sen}x\)</td><td>sim</td><td>fechada, um passo</td></tr>
+        <tr><td>\(y=Ae^{-\lambda x}\)</td><td><b>não</b> (λ no expoente)</td><td>iterativa</td></tr>
+        <tr><td>\(y=Ax^{b}\)</td><td><b>não</b> (b no expoente)</td><td>iterativa</td></tr>
+        <tr><td>\(y=A\,e^{-(x-\mu)^2/2\sigma^2}+C\)</td><td><b>não</b> (μ e σ)</td><td>iterativa</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>A razão técnica: se \(S(\mathbf p)\) não for quadrática nos parâmetros, suas derivadas
+    não são lineares, o sistema \(\partial S/\partial p_j = 0\) deixa de ser linear, e não há
+    fórmula explícita. Resta aproximar — iterativamente.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Três consequências práticas da não linearidade</span>
+    <ol>
+      <li><strong>É preciso um chute inicial</strong>, e ele precisa ser razoável;</li>
+      <li><strong>Pode haver mínimos locais.</strong> Diferentes chutes podem levar a
+      soluções diferentes, e nada garante que a encontrada seja a melhor;</li>
+      <li><strong>Pode não convergir.</strong> O método pode oscilar ou divergir, e é
+      preciso saber reconhecer isso.</li>
+    </ol>
+    <p>Nada disso acontece no caso linear, em que a solução é única, global e direta. É um
+    território genuinamente mais difícil.</p>
+  </div>
+
+  <div data-widget="naolinear"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Linearizar: o que se ganha e o que se perde</h2>
+
+  <p>O Módulo 8 mostrou a linearização como ferramenta: \(T^2\) contra \(L\), \(\ln N\)
+  contra \(t\). Ela continua valiosa — mas agora podemos dizer exatamente o que ela custa.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">O que a transformação faz com as incertezas</span>
+    <p>Pela propagação do Módulo 7, se \(z = \ln y\), então</p>
+    <p>\[\sigma_z = \frac{\sigma_y}{y}.\]</p>
+    <p>Suponha que todas as medidas de \(y\) tenham o mesmo \(\sigma_y\). Depois da
+    transformação, os pontos de \(y\) <strong>pequeno</strong> passam a ter
+    \(\sigma_z\) muito <strong>maior</strong>.</p>
+    <p>Os mínimos quadrados sobre os dados transformados tratam todos os pontos como
+    igualmente confiáveis — o que deixou de ser verdade. O resultado <strong>não é</strong> o
+    de máxima verossimilhança do problema original.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">No caso de contagens, porém, a transformação quase acerta</span>
+    <p>Há uma coincidência feliz. Para contagens, \(\sigma_N = \sqrt N\) (Poisson), de modo
+    que</p>
+    <p>\[\sigma_{\ln N} = \frac{\sqrt N}{N} = \frac{1}{\sqrt N}.\]</p>
+    <p>Os pesos corretos no espaço transformado seriam \(w = N\). Ainda não são uniformes —
+    mas a distorção é bem menor que no caso de \(\sigma\) constante.</p>
+    <p>É por isso que o gráfico mono-log de decaimento radioativo funciona tão bem na
+    prática, apesar de teoricamente imperfeito. No simulador, o conjunto de decaimento dá
+    \(\lambda = 0{,}0459\) pelo ajuste direto e \(0{,}0462\) pela linearização — uma
+    diferença de 0,6%, menor que a própria incerteza de 1,8%.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Quando usar cada um</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Linearizar</th><th>Ajuste direto</th></tr></thead>
+      <tbody>
+        <tr><td>para obter o <b>chute inicial</b></td><td>para o <b>resultado final</b></td></tr>
+        <tr><td>para <b>ver</b> se o modelo serve (reta no gráfico certo?)</td><td>quando há pesos a respeitar</td></tr>
+        <tr><td>em sala, sem computador</td><td>quando o modelo não admite transformação</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>A prática recomendada combina os dois: <strong>linearize para começar, ajuste direto
+    para terminar.</strong> É exatamente o que o simulador permite comparar.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. O método de Gauss–Newton</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A ideia: linearizar o modelo, não os dados</span>
+    <p>Estamos num ponto \(\mathbf p\) do espaço de parâmetros e queremos melhorar. Expanda o
+    modelo em série de Taylor <em>nos parâmetros</em>:</p>
+    <p>\[f(\mathbf p + \boldsymbol\delta, x_i)
+    \approx f(\mathbf p, x_i) + \sum_j \frac{\partial f}{\partial p_j}\,\delta_j.\]</p>
+    <p>Chamando \(J_{ij} = \partial f/\partial p_j\) avaliada em \(x_i\) — a
+    <strong>matriz jacobiana</strong> — e \(r_i = y_i - f(\mathbf p, x_i)\) os resíduos
+    atuais, o problema de achar \(\boldsymbol\delta\) vira <em>linear</em>:</p>
+    <p>\[\chi^{2}(\boldsymbol\delta) \approx
+    \sum_i w_i \left(r_i - \sum_j J_{ij}\delta_j\right)^{2}.\]</p>
+    <p>Mas esse é exatamente o problema do Módulo 9, com \(\mathbf J\) no papel da matriz de
+    projeto! A solução é a equação normal de sempre:</p>
+    <p>\[\boxed{\;(\mathbf{J}^{\mathsf T}\mathbf{W}\mathbf{J})\,\boldsymbol\delta
+    = \mathbf{J}^{\mathsf T}\mathbf{W}\mathbf{r}\;}\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">O algoritmo</span>
+    <ol>
+      <li>Chute inicial \(\mathbf p^{(0)}\);</li>
+      <li>Calcule os resíduos \(\mathbf r\) e a jacobiana \(\mathbf J\);</li>
+      <li>Resolva o sistema normal para \(\boldsymbol\delta\);</li>
+      <li>Atualize \(\mathbf p \leftarrow \mathbf p + \boldsymbol\delta\);</li>
+      <li>Repita até \(\chi^2\) parar de diminuir.</li>
+    </ol>
+    <p>Note a estrutura: <strong>o problema não linear é resolvido como uma sequência de
+    problemas lineares</strong>. A diferença para o Módulo 9 é que a matriz é recalculada a
+    cada passo, porque as derivadas dependem de onde estamos.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">A jacobiana do decaimento, como exemplo</span>
+    <p>Para \(f(A,\lambda;t) = Ae^{-\lambda t}\):</p>
+    <p>\[\frac{\partial f}{\partial A}=e^{-\lambda t},
+    \qquad \frac{\partial f}{\partial \lambda}=-A\,t\,e^{-\lambda t}.\]</p>
+    <p>A primeira coluna de \(\mathbf J\) são os \(e^{-\lambda t_i}\); a segunda, os
+    \(-At_ie^{-\lambda t_i}\). Repare que a segunda é a primeira multiplicada por
+    \(-At_i\) — as colunas são quase proporcionais para \(t\) pequeno, o que torna
+    \(\mathbf J^{\mathsf T}\mathbf J\) mal condicionada. Essa é a origem da correlação forte
+    entre \(A\) e \(\lambda\) que aparece em todo ajuste exponencial.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Levenberg–Marquardt: o amortecimento</h2>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O problema do Gauss–Newton puro</span>
+    <p>Se o chute inicial estiver longe, a aproximação linear é ruim e o passo
+    \(\boldsymbol\delta\) pode ser grande demais, levando a um \(\chi^2\) <em>pior</em>. O
+    método então oscila ou diverge.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">A correção de Levenberg</span>
+    <p>Some um termo à diagonal, controlado por um parâmetro \(\lambda\):</p>
+    <p>\[(\mathbf{J}^{\mathsf T}\mathbf{W}\mathbf{J}
+    + \lambda\,\mathrm{diag}(\mathbf{J}^{\mathsf T}\mathbf{W}\mathbf{J}))\,
+    \boldsymbol\delta = \mathbf{J}^{\mathsf T}\mathbf{W}\mathbf{r}\]</p>
+    <p>O efeito é interpolar entre dois métodos:</p>
+    <ul>
+      <li>\(\lambda \to 0\): recupera Gauss–Newton — rápido perto da solução;</li>
+      <li>\(\lambda\) grande: o passo vira pequeno e aponta na direção do gradiente
+      descendente — lento, mas seguro.</li>
+    </ul>
+    <p><strong>A estratégia adaptativa:</strong> se o passo melhorou \(\chi^2\), aceite-o e
+    <em>reduza</em> \(\lambda\) (confie mais); se piorou, rejeite-o e <em>aumente</em>
+    \(\lambda\) (seja mais cauteloso). É o que o simulador implementa, e é por isso que ele
+    converge em poucas iterações mesmo com chutes modestos.</p>
+    <p>Esse é o algoritmo por trás de praticamente todo ajuste não linear em software
+    científico — <code>curve_fit</code> do SciPy, <code>nls</code> do R, o Solver da
+    planilha.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Como obter um bom chute inicial</span>
+    <ul>
+      <li><strong>Linearize.</strong> Para \(Ae^{-\lambda t}\), ajuste \(\ln y\) contra \(t\)
+      e use o resultado como ponto de partida;</li>
+      <li><strong>Leia do gráfico.</strong> Para um pico gaussiano, \(\mu\) é onde está o
+      máximo, \(A\) é a altura acima do fundo, \(C\) é o fundo, e \(\sigma\) é cerca de
+      0,42 vezes a largura a meia altura;</li>
+      <li><strong>Use a Física.</strong> Se a meia-vida esperada é de uns 15 min, então
+      \(\lambda \approx \ln 2/15 \approx 0{,}046\).</li>
+    </ul>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Incerteza dos parâmetros</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A mesma fórmula, com J no lugar de X</span>
+    <p>\[\mathbf{V}=(\mathbf{J}^{\mathsf T}\mathbf{W}\mathbf{J})^{-1},
+    \qquad \sigma_{p_j}=\sqrt{V_{jj}}\]</p>
+    <p>com \(\mathbf J\) avaliada <strong>na solução final</strong>. É a mesma expressão do
+    Módulo 9, e a mesma ideia do Módulo 5: a <strong>curvatura</strong> de \(\chi^2\) em
+    torno do mínimo é o que define a incerteza.</p>
+    <p>De fato, como \(\ln L = \text{const} - \chi^2/2\), a matriz
+    \(\mathbf J^{\mathsf T}\mathbf W\mathbf J\) é exatamente metade da hessiana de
+    \(\chi^2\) — a informação de Fisher do Módulo 5, em várias dimensões.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Uma advertência que vale repetir</span>
+    <p>Essa fórmula é uma <strong>aproximação</strong>: ela supõe que \(\chi^2\) é
+    aproximadamente quadrática perto do mínimo, o que vale apenas se o modelo for
+    aproximadamente linear naquela vizinhança.</p>
+    <p>Em ajustes fortemente não lineares, ou com poucos pontos, os intervalos assim obtidos
+    podem ser otimistas e assimétricos na realidade. Os métodos corretos nesses casos são o
+    perfil de \(\chi^2\) — percorrer um parâmetro e ver quanto \(\chi^2\) sobe — ou um Monte
+    Carlo, no espírito do Módulo 7.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. O qui-quadrado de ajuste</h2>
+
+  <div class="destaque">
+    <span class="anuncio">A estatística que responde "o ajuste é bom?"</span>
+    Não basta encontrar os melhores parâmetros. É preciso saber se o modelo, com os melhores
+    parâmetros possíveis, ainda assim descreve os dados.
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>\[\chi^{2}=\sum_{i=1}^{n}
+    \frac{\left[y_i - f(\mathbf p; x_i)\right]^{2}}{\sigma_i^{2}}\]</p>
+    <p>Cada termo é o resíduo <strong>medido em unidades da incerteza daquele ponto</strong>,
+    elevado ao quadrado. Um ponto que desvia de um \(\sigma\) contribui com 1; um que desvia
+    de três \(\sigma\) contribui com 9.</p>
+    <p>Com \(\nu = n - k\) graus de liberdade, onde \(k\) é o número de parâmetros
+    ajustados, define-se o <strong>qui-quadrado reduzido</strong>:</p>
+    <p>\[\boxed{\;\chi^{2}_\nu = \frac{\chi^{2}}{\nu}
+    = \frac{\chi^{2}}{n-k}\;}\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Por que ele deve dar aproximadamente 1</span>
+    <p>Se o modelo estiver correto e as incertezas bem estimadas, cada resíduo normalizado
+    \((y_i-\hat y_i)/\sigma_i\) é aproximadamente uma normal padrão. O quadrado de uma normal
+    padrão tem <strong>média 1</strong>, de modo que a soma de \(\nu\) deles tem média
+    \(\nu\) — e a razão tem média 1.</p>
+    <p>Mais precisamente, \(\chi^2\) segue a distribuição qui-quadrado com \(\nu\) graus de
+    liberdade, cuja média é \(\nu\) e cujo desvio é \(\sqrt{2\nu}\). Daí a margem de
+    tolerância:</p>
+    <p>\[\chi^{2}_\nu = 1 \pm \sqrt{\frac{2}{\nu}}.\]</p>
+    <p>Com \(\nu = 8\), um valor entre 0,5 e 1,5 é perfeitamente normal. Com \(\nu = 200\),
+    a tolerância aperta para 1 ± 0,1.</p>
+    <p><em>Troque a vista para "Distribuição de χ²"</em> e veja onde o valor observado cai
+    na distribuição teórica.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">O valor p do ajuste</span>
+    <p>\[p = P(\chi^{2}_\nu \ge \chi^{2}_{\text{observado}})\]</p>
+    <p>É a probabilidade de, com o modelo correto, obter um \(\chi^2\) tão grande quanto o
+    observado só por flutuação. Interpretação usual:</p>
+    <ul>
+      <li>\(p > 0{,}05\): nada contra o modelo;</li>
+      <li>\(p < 0{,}05\): o ajuste é ruim o bastante para merecer investigação;</li>
+      <li>\(p\) muito <em>próximo de 1</em> (digamos, acima de 0,999): suspeito — o ajuste
+      é bom <em>demais</em>, o que sugere \(\sigma\) superestimado.</li>
+    </ul>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Lendo o χ²/ν</h2>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th class="num">χ²/ν</th><th>Diagnóstico</th><th>O que fazer</th></tr></thead>
+    <tbody>
+      <tr><td class="num">≫ 1</td><td>modelo inadequado <b>ou</b> σ subestimado</td><td>olhar os resíduos: padrão ⟹ modelo; dispersão ⟹ σ</td></tr>
+      <tr><td class="num">≈ 1</td><td>tudo consistente</td><td>nada — reportar o resultado</td></tr>
+      <tr><td class="num">≪ 1</td><td>σ superestimado <b>ou</b> parâmetros demais</td><td>revisar as incertezas; reduzir o número de parâmetros</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A ambiguidade é fundamental, e os resíduos a resolvem</span>
+    <p>Um \(\chi^2/\nu = 5\) não diz <em>por que</em> o ajuste é ruim. Há duas explicações
+    incompatíveis, e a estatística sozinha não escolhe entre elas:</p>
+    <ul>
+      <li><strong>O modelo está errado.</strong> Nesse caso, os resíduos normalizados exibem
+      <em>padrão</em>: curvatura, blocos de mesmo sinal, estrutura sistemática. É o teste das
+      sequências do Módulo 19, aplicado aqui;</li>
+      <li><strong>Os \(\sigma_i\) estão subestimados.</strong> Nesse caso, os resíduos são
+      grandes mas <em>desorganizados</em> — espalhados sem padrão.</li>
+    </ul>
+    <p><strong>Só o gráfico de resíduos distingue os dois.</strong> É por isso que ele é
+    obrigatório, e não opcional.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">A prática (discutível) de reescalar as incertezas</span>
+    <p>Quando \(\chi^2/\nu > 1\) e os resíduos não mostram padrão, uma convenção comum —
+    adotada inclusive pelo Particle Data Group — é multiplicar todas as incertezas dos
+    parâmetros por \(\sqrt{\chi^2/\nu}\).</p>
+    <p>A lógica: se o \(\chi^2\) está inflado uniformemente, é porque os \(\sigma_i\)
+    declarados eram pequenos demais por um fator comum, e a correção o compensa.</p>
+    <p><strong>Mas é um curativo, não uma cura.</strong> Ela esconde o problema real em vez
+    de resolvê-lo, e só se justifica quando se tem razão independente para crer que as
+    incertezas foram subestimadas. O caminho honesto é descobrir <em>por que</em> foram —
+    uma fonte de erro esquecida, correlação entre medidas, ou o modelo mesmo.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Resíduos normalizados</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A quantidade certa para olhar</span>
+    <p>\[R_i = \frac{y_i - f(\mathbf p; x_i)}{\sigma_i}\]</p>
+    <p>Dividir pela incerteza é o que torna os pontos comparáveis entre si. Num ajuste de
+    contagens, por exemplo, um resíduo de 10 é trivial onde \(N = 1000\) e gravíssimo onde
+    \(N = 9\).</p>
+    <p>O que se espera de \(R_i\) num bom ajuste:</p>
+    <ul>
+      <li>Cerca de 68% dentro de \(\pm 1\) e 95% dentro de \(\pm 2\);</li>
+      <li><strong>Sem padrão</strong> em relação a \(x\);</li>
+      <li>Trocas de sinal frequentes — cerca de \((n-1)/2\), pelo teste do Módulo 19;</li>
+      <li>\(\sum R_i^2 = \chi^2\), por definição — cada ponto contribui com o quadrado de
+      sua altura no gráfico.</li>
+    </ul>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Aplicações em Física</h2>
+
+  <h3>Exercício resolvido 10.1 — Meia-vida por ajuste direto</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Contagens de uma amostra radioativa, a cada 5 min (conjunto <i>Decaimento</i> do
+    simulador). Ajuste \(N = Ae^{-\lambda t}\) pelos dois métodos, obtenha a meia-vida e
+    avalie o ajuste.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — As incertezas.</strong> São contagens, logo Poisson:
+      \(\sigma_i = \sqrt{N_i}\). Para \(N = 1974\), \(\sigma = 44{,}4\); para \(N = 233\),
+      \(\sigma = 15{,}3\). Note que a incerteza <em>absoluta</em> é maior onde há mais
+      contagens, mas a <em>relativa</em> é menor — 2,2% contra 6,6%.</p>
+      <p><strong>Passo 2 — Os dois ajustes.</strong></p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>método</th><th class="num">A</th><th class="num">λ (min⁻¹)</th><th class="num">χ²/ν</th></tr></thead>
+        <tbody>
+          <tr><td>linearizado (ln N × t)</td><td class="num">2000 ± 44</td><td class="num">0,04621 ± 0,00083</td><td class="num">0,593</td></tr>
+          <tr><td><b>direto (Gauss–Newton)</b></td><td class="num">1989 ± 31</td><td class="num">0,04593 ± 0,00084</td><td class="num"><b>0,576</b></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>O ajuste direto convergiu em 3 iterações e dá o menor \(\chi^2\) — como tem de ser,
+      já que é ele que minimiza exatamente essa quantidade. A diferença em \(\lambda\) é de
+      0,6%, bem dentro da incerteza de 1,8%.</p>
+      <p><strong>Passo 3 — A meia-vida.</strong> De \(t_{1/2}=\ln 2/\lambda\), propagando
+      pelo Módulo 7:</p>
+      <p>\[t_{1/2}=\frac{0{,}6931}{0{,}04593}=15{,}09\ \mathrm{min},
+      \qquad
+      \sigma_{t_{1/2}}=\frac{\ln 2}{\lambda^{2}}\sigma_\lambda
+      = \frac{0{,}6931}{(0{,}04593)^{2}}(0{,}00084)=0{,}28\ \mathrm{min}\]</p>
+      <p>\[\boxed{\,t_{1/2}=(15{,}1 \pm 0{,}3)\ \mathrm{min}\,}\]</p>
+      <p><strong>Passo 4 — Avaliar o ajuste.</strong> Com \(\chi^2 = 4{,}61\) e
+      \(\nu = 10-2 = 8\):</p>
+      <p>\[\chi^{2}_\nu = 0{,}576, \qquad p = 0{,}798.\]</p>
+      <p>A tolerância esperada é \(1 \pm \sqrt{2/8} = 1 \pm 0{,}50\), ou seja, de 0,50 a
+      1,50. O valor 0,576 está dentro, ainda que na borda inferior. E \(p = 0{,}80\) não
+      traz objeção alguma ao modelo exponencial.</p>
+      <p>Um \(\chi^2_\nu\) ligeiramente baixo aqui é esperado, aliás: a aproximação
+      \(\sigma = \sqrt N\) é levemente conservadora para contagens moderadas.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 10.2 — O expoente do pêndulo, sem supor nada</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>No Módulo 8, <em>supusemos</em> \(T \propto \sqrt L\) e ajustamos \(T^2\) contra
+    \(L\). Agora ajuste \(T = AL^{b}\) deixando \(b\) <strong>livre</strong>, e teste se o
+    expoente é mesmo 0,5.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — O ajuste direto.</strong> Carregando <i>Lei de potência</i> no
+      simulador, com \(\sigma_T = 0{,}011\) s:</p>
+      <p>\[A = 2{,}0091 \pm 0{,}0055, \qquad b = \mathbf{0{,}4991 \pm 0{,}0051}\]</p>
+      <p>\[\chi^{2}=3{,}98,\quad \nu = 8,\quad \chi^{2}_\nu = 0{,}497,\quad p = 0{,}859\]</p>
+      <p><strong>Passo 2 — Testar o expoente.</strong> A hipótese teórica é \(b = 1/2\):</p>
+      <p>\[t = \frac{0{,}4991 - 0{,}5000}{0{,}0051} = -0{,}18.\]</p>
+      <p>Com \(\nu = 8\), o crítico a 5% é 2,306. Como \(|{-0{,}18}| \ll 2{,}306\),
+      <strong>não rejeitamos</strong> \(b = 0{,}5\). Os dados confirmam a lei teórica com
+      excelente concordância — menos de 0,2 desvio.</p>
+      <p><strong>Passo 3 — Extrair g.</strong> Comparando \(T = AL^{1/2}\) com
+      \(T = 2\pi\sqrt{L/g}\), vem \(A = 2\pi/\sqrt g\), logo</p>
+      <p>\[g=\left(\frac{2\pi}{A}\right)^{2}
+      = \left(\frac{6{,}2832}{2{,}0091}\right)^{2} = 9{,}780\ \mathrm{m/s^2}.\]</p>
+      <p>Pela regra dos expoentes do Módulo 7, com \(g \propto A^{-2}\):</p>
+      <p>\[\frac{\sigma_g}{g}=2\frac{\sigma_A}{A}=2\left(\frac{0{,}0055}{2{,}0091}\right)
+      = 0{,}0055 \;\Longrightarrow\; \sigma_g = 0{,}053\ \mathrm{m/s^2}\]</p>
+      <p>\[\boxed{\,g=(9{,}78 \pm 0{,}05)\ \mathrm{m/s^2}\,}\]</p>
+      <div class="bloco fisica">
+        <span class="rotulo">Por que este ajuste é mais forte que o do Módulo 8</span>
+        <p>Lá, impusemos o expoente \(1/2\) ao escolher plotar \(T^2\) contra \(L\). O ajuste
+        não <em>testou</em> a lei — ele a <em>pressupôs</em>, e apenas mediu a constante.</p>
+        <p>Aqui, o expoente foi deixado livre e <strong>os dados o determinaram</strong>:
+        \(0{,}4991 \pm 0{,}0051\). Essa é uma verificação independente da lei do pêndulo, e
+        é o que distingue <em>medir uma constante</em> de <em>testar uma teoria</em>.</p>
+        <p>A desvantagem é previsível: ao gastar um grau de liberdade estimando \(b\),
+        perde-se precisão em \(g\) — 0,05 aqui contra 0,06 lá, valores comparáveis neste
+        caso. A regra geral é: <strong>se a teoria é confiável, imponha-a e ganhe precisão;
+        se é o que você quer testar, deixe o parâmetro livre</strong>.</p>
+      </div>
+    </div>
+  </details>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Espectroscopia: o pico gaussiano</span>
+    <p>O terceiro conjunto do simulador é um espectro de contagens com um pico sobre fundo
+    constante, \(y = Ae^{-(x-\mu)^2/2\sigma^2} + C\). É o modelo mais comum em espectroscopia
+    nuclear, e <strong>não admite linearização alguma</strong> — tomar logaritmo não resolve,
+    por causa do fundo \(C\).</p>
+    <p>O ajuste dá \(\mu = 49{,}93 \pm 0{,}35\) (a posição do pico, que identifica a energia
+    da radiação) e \(\sigma = 5{,}98 \pm 0{,}38\) canais, de onde a largura a meia altura é
+    \(2{,}355\sigma = 14{,}1\) canais — a <strong>resolução do detector</strong>. O fundo
+    ajustado é \(C = 10{,}3 \pm 2{,}0\) contagens.</p>
+    <p>Com \(\chi^2_\nu = 0{,}94\) e \(p = 0{,}47\), o ajuste é exemplar. E note a precisão
+    assimétrica: \(\mu\) é determinado a 0,7%, enquanto \(C\) só a 20% — porque há poucos
+    canais de fundo puro para determiná-lo.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Exercícios propostos</h2>
+
+  <ol>
+    <li>Classifique como linear ou não linear <em>nos parâmetros</em>:
+    (a) \(y=a+b\ln x\); (b) \(y=ae^{bx}\); (c) \(y=a/(b+x)\);
+    (d) \(y=a\operatorname{sen}(2x)+b\cos(2x)\); (e) \(y=a\operatorname{sen}(bx)\).</li>
+    <li>Calcule a jacobiana de \(y = Ax^{b}\) em relação a \(A\) e \(b\). Por que
+    \(\partial y/\partial b\) envolve \(\ln x\)?</li>
+    <li>Mostre que, para um modelo linear nos parâmetros, Gauss–Newton converge em
+    <em>uma</em> iteração a partir de qualquer chute. <em>(Dica: a jacobiana não depende dos
+    parâmetros.)</em></li>
+    <li>Um ajuste com \(n=12\) e \(k=3\) deu \(\chi^2 = 27{,}4\). Calcule \(\chi^2_\nu\) e o
+    valor p. O ajuste é aceitável? Qual a tolerância esperada para esse \(\nu\)?</li>
+    <li>Outro ajuste, com \(\nu = 15\), deu \(\chi^2_\nu = 0{,}12\). O que isso sugere?
+    Liste duas explicações e diga como distingui-las.</li>
+    <li>No simulador, compare os dois métodos para o decaimento. Por que o ajuste direto dá
+    sempre \(\chi^2\) menor ou igual ao linearizado?</li>
+    <li>Mostre que \(\sigma_{\ln N} = 1/\sqrt N\) quando \(\sigma_N = \sqrt N\), e explique
+    por que isso torna a linearização do decaimento menos problemática que a de dados com
+    \(\sigma\) constante.</li>
+    <li>Para o conjunto de lei de potência, teste a hipótese \(b = 0{,}5\) e também
+    \(b = 0{,}45\). Quais são rejeitadas a 5%?</li>
+    <li>Uma série de contagens tem \(N = 400\) num canal e \(N = 16\) em outro. Calcule
+    \(\sigma\) e \(\sigma/N\) de cada um. Qual pesa mais no \(\chi^2\), e por quê?</li>
+    <li>Um colega ajustou um pico gaussiano e obteve \(\chi^2_\nu = 8{,}3\). O gráfico de
+    resíduos normalizados mostra um padrão em forma de S. Diagnostique e sugira o que
+    fazer.</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>Não linear nos parâmetros ⟹ sem solução fechada, exige iteração e chute
+      inicial;</li>
+      <li>Linearizar distorce as incertezas, porque \(\sigma_{\ln y} = \sigma_y/y\);
+      sirva-se dela para o chute, não para o resultado;</li>
+      <li>Gauss–Newton resolve \((\mathbf J^{\mathsf T}\mathbf W\mathbf J)\boldsymbol\delta
+      = \mathbf J^{\mathsf T}\mathbf W\mathbf r\) a cada passo — a equação normal do Módulo
+      9, recalculada;</li>
+      <li>O amortecimento de Levenberg interpola entre Gauss–Newton e gradiente
+      descendente;</li>
+      <li>\(\mathbf V = (\mathbf J^{\mathsf T}\mathbf W\mathbf J)^{-1}\): a curvatura de
+      \(\chi^2\) no mínimo é a incerteza;</li>
+      <li>\(\chi^2 = \sum (y_i-\hat y_i)^2/\sigma_i^2\) e \(\chi^2_\nu = \chi^2/(n-k)\)
+      deve dar \(1 \pm \sqrt{2/\nu}\);</li>
+      <li>\(\chi^2_\nu\) alto: modelo errado <b>ou</b> σ subestimado — só os resíduos
+      distinguem;</li>
+      <li>Resíduos normalizados \(R_i = (y_i-\hat y_i)/\sigma_i\) satisfazem
+      \(\sum R_i^2 = \chi^2\).</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula09.html"><small>Módulo anterior</small>← 9. Ajuste de polinômios</a>
+    <a class="prox" href="aula11.html"><small>Próximo módulo</small>11. Intervalos de confiança →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js?v=202611061648"></script>
+</body>
+</html>
