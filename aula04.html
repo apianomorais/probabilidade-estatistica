@@ -41,9 +41,10 @@
     <li><a href="#s4">4. Transformação linear</a></li>
     <li><a href="#s5">5. Somas e independência</a></li>
     <li><a href="#s6">6. Bernoulli e binomial</a></li>
-    <li><a href="#s7">7. Poisson</a></li>
-    <li><a href="#s8">8. Passeio aleatório</a></li>
-    <li><a href="#s9">9. Exercícios propostos</a></li>
+    <li><a href="#sg">7. A tábua de Galton</a></li>
+    <li><a href="#s7">8. Poisson</a></li>
+    <li><a href="#s8">9. Passeio aleatório</a></li>
+    <li><a href="#s9">10. Exercícios propostos</a></li>
   </ol>
 </aside>
 
@@ -260,6 +261,24 @@
   <p>Exemplos: cara ou coroa; um elétron no estado fundamental ou excitado; um paciente que
   melhora ou não; um spin para cima ou para baixo.</p>
 
+  <div class="bloco fisica">
+    <span class="rotulo">Os Bernoulli, e um livro que esperou oito anos</span>
+    <p>O nome vem de <strong>Jacob Bernoulli</strong> (1655–1705), da espantosa família suíça que
+    produziu oito matemáticos de primeira linha em três gerações — e que brigava furiosamente
+    entre si. Jacob e seu irmão Johann disputaram publicamente a autoria de resultados; Johann
+    chegou a expulsar de casa o próprio filho Daniel por ter vencido um prêmio que ele também
+    disputava.</p>
+    <p>A obra em que o ensaio de Bernoulli aparece, a <em>Ars Conjectandi</em> ("A arte de
+    conjecturar"), ficou inacabada à sua morte e só foi publicada em <strong>1713</strong>, oito
+    anos depois, por seu sobrinho Nicolaus. Nela está a primeira demonstração da <strong>lei dos
+    grandes números</strong>: Jacob provou que a frequência relativa de sucessos converge para
+    \(p\) à medida que o número de ensaios cresce, e ficou tão impressionado com o resultado
+    que o chamou de <em>teorema áureo</em>. Levou vinte anos trabalhando nele.</p>
+    <p>É esse teorema que justifica tudo o que fazemos ao estimar probabilidades a partir de
+    dados — e você já o viu funcionar no simulador de moedas do Módulo 1.</p>
+  </div>
+
+
   <p>Definindo \(x = 1\) para sucesso e \(x = 0\) para fracasso:</p>
   <p>\[\langle x\rangle = 0\cdot(1-p) + 1\cdot p = p, \qquad
      \langle x^2\rangle = 0^2(1-p) + 1^2 p = p,\]</p>
@@ -339,8 +358,51 @@
     </div>
   </details>
 
+
   <!-- ================================================== -->
-  <h2 id="s7">7. A distribuição de Poisson</h2>
+  <h2 id="sg">7. A tábua de Galton</h2>
+
+  <p><strong>Francis Galton</strong> (1822–1911) construiu, por volta de 1874, um aparelho para
+  mostrar a seus contemporâneos como uma distribuição em forma de sino poderia <em>emergir</em>
+  de puro acaso. Chamou-o de <em>quincunx</em>.</p>
+
+  <p>O funcionamento é simples: bolas caem de um funil sobre um triângulo de pregos. Em cada
+  prego, cada bola desvia para a esquerda ou para a direita, com probabilidade \(1/2\) cada.
+  Depois de atravessar \(n\) fileiras, ela cai num compartimento. Uma bola isolada é
+  imprevisível; milhares delas desenham sempre a mesma forma.</p>
+
+  <div class="destaque">
+    <span class="anuncio">A ideia central</span>
+    A posição final de cada bola é o número de desvios à direita — ou seja, exatamente uma
+    variável <strong>binomial</strong> com \(n\) ensaios e \(p = 1/2\).
+  </div>
+
+  <div data-widget="galton"></div>
+
+  <p>Três experimentos que vale fazer no aparelho acima:</p>
+  <ol>
+    <li>Solte <strong>uma</strong> bola de cada vez, algumas vezes. É impossível prever onde ela
+    cai — o acaso é genuíno;</li>
+    <li>Solte <strong>vinte mil</strong>. A forma aparece com precisão de três casas decimais.
+    <em>Nenhuma bola "sabe" da binomial</em>: a regularidade é consequência da repetição, não de
+    um plano;</li>
+    <li>Mude \(p\) para 0,25 e repita. A distribuição inteira se desloca para a esquerda, e o
+    pico vai parar em \(np\). A assimetria aparece — e some de novo quando \(n\) cresce,
+    antecipando o Módulo 5.</li>
+  </ol>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que isso importa para um físico</span>
+    <p>A tábua de Galton é o modelo mental de praticamente todo fenômeno de
+    <strong>acúmulo de pequenos acasos</strong>. Cada prego é uma colisão, um erro de leitura, um
+    choque térmico; a posição final é o resultado macroscópico que medimos.</p>
+    <p>É por isso que a mesma figura descreve a distribuição de erros em uma medida repetida, a
+    posição de uma partícula browniana e o perfil de um feixe de partículas. E a tábua de Galton
+    é, literalmente, um passeio aleatório na vertical — que é o assunto da seção 9.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">8. A distribuição de Poisson</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
@@ -379,6 +441,28 @@
 
   <div data-widget="poisson"></div>
 
+
+  <div class="bloco fisica">
+    <span class="rotulo">Poisson, Bortkiewicz e os cavalos prussianos</span>
+    <p><strong>Siméon Denis Poisson</strong> (1781–1840) deduziu a distribuição em 1837, num livro
+    sobre a probabilidade de <em>julgamentos em matéria criminal</em> — ele queria estimar a
+    chance de um júri condenar um inocente. O resultado ocupa meia página da obra e passou
+    despercebido por décadas.</p>
+    <p>Quem o ressuscitou foi o estatístico russo-polonês <strong>Ladislaus von
+    Bortkiewicz</strong>, em 1898, num livrinho com um título memorável: <em>Das Gesetz der
+    kleinen Zahlen</em>, "A lei dos pequenos números". Para ilustrar a ideia, ele precisava de um
+    fenômeno raro, independente e bem documentado — e escolheu os registros do exército prussiano
+    sobre <strong>mortes de soldados por coice de cavalo</strong>, ao longo de vinte anos.</p>
+    <p>A escolha parece pitoresca, e é. Mas Bortkiewicz sabia o que fazia: morrer coiceado é
+    improvável para cada soldado, há muitos soldados e muitos cavalos, e os casos são claramente
+    independentes entre si. É o retrato exato das condições em que a Poisson se aplica — e o
+    acordo entre dados e teoria, que você verá no exercício a seguir, é quase perfeito.</p>
+    <p>A mesma distribuição descreve, hoje, as contagens de um detector de radiação e os impactos
+    de bombas V-1 em Londres — este último um estudo feito durante a guerra para decidir se os
+    ataques eram dirigidos a alvos específicos ou espalhados ao acaso. Eram ao acaso: os dados
+    seguiam Poisson.</p>
+  </div>
+
   <h3>Exercício resolvido 4.6 — Coices de cavalo no exército prussiano</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
@@ -413,7 +497,7 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s8">8. O passeio aleatório</h2>
+  <h2 id="s8">9. O passeio aleatório</h2>
 
   <div class="bloco def">
     <span class="rotulo">O problema</span>
@@ -447,10 +531,38 @@
     exige <strong>quatro vezes</strong> mais tempo.</p>
   </div>
 
+
+  <div class="bloco fisica">
+    <span class="rotulo">1827, 1905: do pólen à prova de que átomos existem</span>
+    <p>Em 1827, o botânico escocês <strong>Robert Brown</strong> observou ao microscópio grãos de
+    pólen suspensos em água e viu que se agitavam sem parar, em ziguezague. Suspeitou que fosse
+    vida — mas o movimento persistia em partículas de poeira, de fuligem e até num fragmento da
+    Esfinge. Brown descreveu o fenômeno com cuidado e não soube explicá-lo. Por quase oitenta
+    anos ninguém soube.</p>
+    <p>Em <strong>1905</strong>, no mesmo ano em que publicou a relatividade restrita e o efeito
+    fotoelétrico, <strong>Albert Einstein</strong> resolveu o problema — e fez muito mais que
+    isso. Ele mostrou que, se a matéria é feita de moléculas em agitação térmica, o grão de pólen
+    sofre um bombardeio desequilibrado a cada instante, e sua trajetória é um
+    <strong>passeio aleatório</strong>. A previsão quantitativa foi:</p>
+    <p>\[\langle x^{2}\rangle = 2Dt, \qquad
+    D = \frac{k_{B}T}{6\pi\eta a},\]</p>
+    <p>com \(\eta\) a viscosidade do fluido e \(a\) o raio da partícula.</p>
+    <p><strong>Por que isso foi decisivo.</strong> Em 1905 a existência dos átomos ainda era
+    contestada por físicos respeitáveis — Ernst Mach e Wilhelm Ostwald entre eles — que os
+    consideravam uma ficção de cálculo. A fórmula de Einstein permitia <em>medir</em> o número de
+    Avogadro a partir de algo visível ao microscópio. <strong>Jean Perrin</strong> fez as medidas
+    entre 1908 e 1911, confirmou a previsão, obteve \(N_A \approx 6{,}7\times10^{23}\) e
+    recebeu o Nobel de 1926 por isso. O debate acabou ali.</p>
+    <p>Repare no que aconteceu: o \(\sqrt{n}\) que você acabou de deduzir contando passos para
+    frente e para trás é a mesma relação que estabeleceu a realidade física dos átomos. Não é
+    exagero dizer que esta seção contém um dos resultados mais importantes da Física do século
+    XX.</p>
+  </div>
+
   <div data-widget="moeda"></div>
 
   <!-- ================================================== -->
-  <h2 id="s9">9. Exercícios propostos</h2>
+  <h2 id="s9">10. Exercícios propostos</h2>
 
   <ol>
     <li>Um dado honesto produz os números 1 a 6, cada um com probabilidade \(1/6\). Encontre a

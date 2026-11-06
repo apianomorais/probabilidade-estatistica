@@ -1270,6 +1270,135 @@
   }
 
   /* =================================================================
+     12a. Galton: a tábua de pregos
+     ================================================================= */
+  function galton(raiz) {
+    var c = moldura(raiz, 'A tábua de Galton: a binomial construída bola a bola');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var fileiras = 12, p = 0.5;
+    deslizante(ctr, 'Fileiras de pregos', 4, 20, 1, 12, function (v) {
+      fileiras = v; zerar();
+    });
+    deslizante(ctr, 'p (desvio à direita)', 0.1, 0.9, 0.05, 0.5, function (v) {
+      p = v; zerar();
+    }, function (v) { return v.toFixed(2).replace('.', ','); });
+    var bts = el('div', { class: 'botoes' }); ctr.appendChild(bts);
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Cada bola desvia à direita com probabilidade p, em cada prego &nbsp;·&nbsp; '
+      + 'curva vermelha: a binomial teórica' }));
+    var painel = cartoes(c, [
+      { rot: 'bolas lançadas', k: 'n' },
+      { rot: 'média teórica np', k: 'mt' },
+      { rot: 'média observada', k: 'mo' },
+      { rot: 'σ teórico', k: 'st' },
+      { rot: 'σ observado', k: 'so' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    var baldes = [], total = 0, soma = 0, soma2 = 0;
+
+    function zerar() {
+      baldes = new Array(fileiras + 1).fill(0);
+      total = 0; soma = 0; soma2 = 0; desenhar();
+    }
+
+    function soltar(q) {
+      for (var i = 0; i < q; i++) {
+        var k = 0;
+        for (var f = 0; f < fileiras; f++) if (Math.random() < p) k++;
+        baldes[k]++; total++; soma += k; soma2 += k * k;
+      }
+      desenhar();
+    }
+
+    function desenhar() {
+      if (baldes.length !== fileiras + 1) baldes = new Array(fileiras + 1).fill(0);
+      var pic = G.preparar(cv, 330), ct = pic.ct, L = pic.L, A = pic.A;
+
+      var alturaPregos = Math.min(A * 0.46, fileiras * 13 + 20);
+      var passo = Math.min(18, (L - 60) / (fileiras + 1));
+      var cx = L / 2, topo = 16;
+
+      /* pregos */
+      ct.fillStyle = '#b9c5d1';
+      for (var f = 0; f < fileiras; f++) {
+        for (var j = 0; j <= f; j++) {
+          var x = cx + (j - f / 2) * passo;
+          var y = topo + (f + 0.5) * (alturaPregos / fileiras);
+          ct.beginPath(); ct.arc(x, y, 1.9, 0, 2 * Math.PI); ct.fill();
+        }
+      }
+
+      /* colunas acumuladas */
+      var baseY = A - 26;
+      var topoCol = topo + alturaPregos + 10;
+      var maxB = Math.max(1, Math.max.apply(null, baldes));
+      var alturaMax = baseY - topoCol;
+      var larg = Math.max(3, passo * 0.82);
+
+      for (var k = 0; k <= fileiras; k++) {
+        var xk = cx + (k - fileiras / 2) * passo;
+        var h = (baldes[k] / maxB) * alturaMax;
+        ct.fillStyle = G.COR.azulClaro;
+        ct.fillRect(xk - larg / 2, baseY - h, larg, h);
+      }
+
+      /* binomial teórica, na mesma escala */
+      var picoTeo = 0;
+      for (var m = 0; m <= fileiras; m++) picoTeo = Math.max(picoTeo, M.pBinomial(fileiras, m, p));
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2.2; ct.beginPath();
+      for (var m2 = 0; m2 <= fileiras; m2++) {
+        var xm = cx + (m2 - fileiras / 2) * passo;
+        var ym = baseY - (M.pBinomial(fileiras, m2, p) / picoTeo) * alturaMax;
+        if (m2 === 0) ct.moveTo(xm, ym); else ct.lineTo(xm, ym);
+      }
+      ct.stroke();
+
+      /* base e rótulos */
+      ct.strokeStyle = '#9aa6b2'; ct.lineWidth = 1;
+      ct.beginPath(); ct.moveTo(20, baseY + 0.5); ct.lineTo(L - 20, baseY + 0.5); ct.stroke();
+      ct.fillStyle = G.COR.suave; ct.font = '9px system-ui, sans-serif';
+      ct.textAlign = 'center'; ct.textBaseline = 'top';
+      var salto = fileiras > 14 ? 2 : 1;
+      for (var r = 0; r <= fileiras; r += salto) {
+        ct.fillText(String(r), cx + (r - fileiras / 2) * passo, baseY + 4);
+      }
+      ct.font = '600 10px system-ui, sans-serif';
+      ct.fillText('k = número de desvios à direita', cx, baseY + 15);
+
+      var mt = fileiras * p, st = Math.sqrt(fileiras * p * (1 - p));
+      var mo = total ? soma / total : 0;
+      var so = total > 1 ? Math.sqrt(Math.max(0, soma2 / total - mo * mo)) : 0;
+      painel({
+        n: total.toLocaleString('pt-BR'), mt: M.fmt(mt, 2),
+        mo: total ? M.fmt(mo, 3) : '—', st: M.fmt(st, 3),
+        so: total > 1 ? M.fmt(so, 3) : '—'
+      });
+
+      saida.innerHTML = total === 0
+        ? 'Cada bola encontra <b>' + fileiras + '</b> pregos e, em cada um, desvia à direita com '
+          + 'probabilidade <b>' + M.fmt(p, 2) + '</b>. O balde em que ela cai é o número de '
+          + 'desvios à direita — ou seja, uma variável <b>binomial</b>. Solte algumas bolas.'
+        : '<b>' + total.toLocaleString('pt-BR') + '</b> bolas. Média observada <b>'
+          + M.fmt(mo, 3) + '</b> (teoria: np = ' + M.fmt(mt, 2) + '); dispersão <b>'
+          + M.fmt(so, 3) + '</b> (teoria: √(np(1−p)) = ' + M.fmt(st, 3) + '). '
+          + 'Nenhuma bola "sabe" da binomial — ela emerge de ' + fileiras
+          + ' decisões independentes repetidas muitas vezes.';
+    }
+
+    botao(bts, '+1 bola', function () { soltar(1); });
+    botao(bts, '+500', function () { soltar(500); });
+    botao(bts, '+20 000', function () { soltar(20000); });
+    botao(bts, 'Zerar', zerar, true);
+
+    zerar();
+    registrarRedesenho(desenhar);
+  }
+
+  /* =================================================================
      13a. Monty Hall
      ================================================================= */
   function montyhall(raiz) {
@@ -1958,7 +2087,8 @@
     normal: normal, tcl: tcl, passeio: passeio, moeda: moeda, exponencial: exponencial,
     descritiva: descritiva, amostragem: amostragem, tstudent: tstudent,
     quiquadrado: quiquadrado, gradedados: gradeDados,
-    pascal: pascal, aniversarios: aniversarios, montyhall: montyhall
+    pascal: pascal, aniversarios: aniversarios, montyhall: montyhall,
+    galton: galton
   };
 
   document.addEventListener('DOMContentLoaded', function () {
