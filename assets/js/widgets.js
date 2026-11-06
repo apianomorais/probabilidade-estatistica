@@ -1270,6 +1270,136 @@
   }
 
   /* =================================================================
+     13a. Monty Hall
+     ================================================================= */
+  function montyhall(raiz) {
+    var c = moldura(raiz, 'Monty Hall: trocar ou manter?');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var modo = 'informado';
+    var campoM = el('div', { class: 'campo', style: 'flex:2 1 300px' });
+    campoM.appendChild(el('label', { html: 'Como o apresentador escolhe a porta que abre' }));
+    var sel = el('select');
+    sel.appendChild(el('option', { value: 'informado',
+      texto: 'Ele sabe onde está o carro (jogo clássico)' }));
+    sel.appendChild(el('option', { value: 'acaso',
+      texto: 'Ele abre uma porta ao acaso (e deu cabra)' }));
+    campoM.appendChild(sel); ctr.appendChild(campoM);
+    sel.addEventListener('change', function () { modo = sel.value; zerar(); });
+
+    var bts = el('div', { class: 'botoes' }); ctr.appendChild(bts);
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Frequência de vitórias ao longo das partidas &nbsp;·&nbsp; '
+      + 'linhas tracejadas: as probabilidades teóricas' }));
+    var painel = cartoes(c, [
+      { rot: 'partidas válidas', k: 'n' },
+      { rot: 'vitórias trocando', k: 'vt' },
+      { rot: 'vitórias mantendo', k: 'vm' },
+      { rot: 'descartadas', k: 'd' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    var n = 0, trocou = 0, manteve = 0, descartadas = 0, serie = [];
+
+    function jogar(q) {
+      for (var i = 0; i < q; i++) {
+        var carro = Math.floor(Math.random() * 3);
+        var escolha = Math.floor(Math.random() * 3);
+        var aberta;
+        if (modo === 'informado') {
+          /* abre uma porta que não é a escolhida nem a do carro */
+          var opcoes = [0, 1, 2].filter(function (p) {
+            return p !== escolha && p !== carro;
+          });
+          aberta = opcoes[Math.floor(Math.random() * opcoes.length)];
+        } else {
+          /* abre ao acaso entre as duas não escolhidas */
+          var livres = [0, 1, 2].filter(function (p) { return p !== escolha; });
+          aberta = livres[Math.floor(Math.random() * livres.length)];
+          if (aberta === carro) { descartadas++; continue; }  /* revelou o carro: rodada anulada */
+        }
+        var outra = [0, 1, 2].filter(function (p) {
+          return p !== escolha && p !== aberta;
+        })[0];
+        n++;
+        if (outra === carro) trocou++;
+        if (escolha === carro) manteve++;
+        if (n <= 150 || n % Math.max(1, Math.floor(n / 400)) === 0) {
+          serie.push({ n: n, t: trocou / n, m: manteve / n });
+        }
+      }
+      desenhar();
+    }
+
+    function zerar() { n = 0; trocou = 0; manteve = 0; descartadas = 0; serie = []; desenhar(); }
+
+    function desenhar() {
+      var alvoT = modo === 'informado' ? 2 / 3 : 0.5;
+      var alvoM = modo === 'informado' ? 1 / 3 : 0.5;
+      var xmax = Math.max(60, n);
+      var g = G.eixos(cv, {
+        xmin: 1, xmax: xmax, ymin: 0, ymax: 1, altura: 250,
+        rotX: 'partidas jogadas', rotY: 'proporção de vitórias',
+        marcasX: G.marcasLineares(1, xmax, 5, 0),
+        formataY: function (v) { return (100 * v).toFixed(0) + '%'; }
+      });
+      var ct = g.ct;
+      ct.setLineDash([6, 4]); ct.lineWidth = 1.4;
+      [[alvoT, G.COR.verde], [alvoM, G.COR.vinho]].forEach(function (par) {
+        ct.strokeStyle = par[1];
+        ct.beginPath(); ct.moveTo(g.x0, g.Y(par[0])); ct.lineTo(g.x1, g.Y(par[0])); ct.stroke();
+      });
+      ct.setLineDash([]);
+      [['t', G.COR.verde], ['m', G.COR.vinho]].forEach(function (par) {
+        if (!serie.length) return;
+        ct.strokeStyle = par[1]; ct.lineWidth = 1.8; ct.beginPath();
+        serie.forEach(function (s, i) {
+          var px = g.X(s.n), py = g.Y(s[par[0]]);
+          if (i === 0) ct.moveTo(px, py); else ct.lineTo(px, py);
+        });
+        ct.stroke();
+      });
+      G.legenda(g, [
+        { texto: 'estratégia: TROCAR', cor: G.COR.verde },
+        { texto: 'estratégia: MANTER', cor: G.COR.vinho }
+      ]);
+
+      painel({
+        n: n.toLocaleString('pt-BR'),
+        vt: n ? M.pct(trocou / n, 1) : '—',
+        vm: n ? M.pct(manteve / n, 1) : '—',
+        d: descartadas.toLocaleString('pt-BR')
+      });
+
+      if (n === 0) {
+        saida.innerHTML = modo === 'informado'
+          ? 'Jogue algumas partidas. A teoria diz que trocar vence em <b>2/3</b> das vezes.'
+          : 'Agora o apresentador não sabe onde está o carro. As rodadas em que ele o revela '
+            + 'por acidente são descartadas — e só restam as que <em>se parecem</em> com o jogo clássico.';
+        return;
+      }
+      saida.innerHTML = 'Em <b>' + n.toLocaleString('pt-BR') + '</b> partidas: trocar venceu '
+        + '<b>' + M.pct(trocou / n, 1) + '</b> das vezes e manter, <b>'
+        + M.pct(manteve / n, 1) + '</b>. '
+        + (modo === 'informado'
+            ? 'Os valores convergem para <b>2/3</b> e <b>1/3</b>: trocar <b>dobra</b> a chance.'
+            : 'Agora as duas estratégias empatam em <b>1/2</b>. O evento observado é o mesmo — '
+              + 'uma porta aberta com cabra — mas foi <b>gerado por outro mecanismo</b>, e por '
+              + 'isso carrega informação diferente. Foram descartadas <b>'
+              + descartadas.toLocaleString('pt-BR') + '</b> rodadas em que o carro apareceu.');
+    }
+
+    botao(bts, '+1 partida', function () { jogar(1); });
+    botao(bts, '+100', function () { jogar(100); });
+    botao(bts, '+10 000', function () { jogar(10000); });
+    botao(bts, 'Zerar', zerar, true);
+
+    registrarRedesenho(desenhar);
+  }
+
+  /* =================================================================
      14a. Triângulo de Pascal interativo
      ================================================================= */
   function pascal(raiz) {
@@ -1828,7 +1958,7 @@
     normal: normal, tcl: tcl, passeio: passeio, moeda: moeda, exponencial: exponencial,
     descritiva: descritiva, amostragem: amostragem, tstudent: tstudent,
     quiquadrado: quiquadrado, gradedados: gradeDados,
-    pascal: pascal, aniversarios: aniversarios
+    pascal: pascal, aniversarios: aniversarios, montyhall: montyhall
   };
 
   document.addEventListener('DOMContentLoaded', function () {

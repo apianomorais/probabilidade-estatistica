@@ -345,17 +345,57 @@
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <p>"Ao menos duas" pede o <strong>complementar</strong>: calculemos a probabilidade de
-      <em>todas</em> fazerem aniversário em dias diferentes.</p>
-      <p>O espaço amostral tem \(365^n\) elementos — cada pessoa pode nascer em qualquer um dos
-      365 dias, com repetição permitida. Os casos favoráveis a "todos diferentes" são os
-      <strong>arranjos</strong> de 365 dias tomados \(n\) a \(n\), pois a ordem importa
-      (quem nasceu em qual dia) e não há repetição:</p>
-      <p>\[P(\text{todos diferentes}) = \frac{A_{365,n}}{365^n}
-      = \frac{365 \times 364 \times \cdots \times (365-n+1)}{365^n}.\]</p>
-      <p>Portanto</p>
-      <p>\[P(\text{ao menos duas coincidem}) = 1 - \prod_{i=0}^{n-1}\frac{365-i}{365}.\]</p>
-      <p>Calculando para alguns valores:</p>
+      <p><strong>Passo 1 — Reformular pelo complementar.</strong></p>
+      <p>Contar diretamente "ao menos duas coincidem" seria horrível: teríamos de somar o caso de
+      exatamente duas pessoas coincidindo, mais exatamente três, mais dois pares separados, e
+      assim por diante. Mas o evento complementar é simples e único:</p>
+      <p>\[A = \text{"ao menos duas coincidem"}, \qquad
+      A^{c} = \text{"todas em dias diferentes"},\]</p>
+      <p>e, pelo Teorema 3 do Módulo 1, \(P(A) = 1 - P(A^{c})\). Vamos calcular \(P(A^c)\).</p>
+
+      <p><strong>Passo 2 — Quantos são os casos possíveis?</strong></p>
+      <p>Pense em preencher uma ficha com o aniversário de cada pessoa, <em>nesta ordem</em>:</p>
+      <p>\[\underbrace{\fbox{365}}_{\text{pessoa 1}} \times
+         \underbrace{\fbox{365}}_{\text{pessoa 2}} \times \cdots \times
+         \underbrace{\fbox{365}}_{\text{pessoa } n} = 365^{\,n}.\]</p>
+      <p>Cada pessoa pode ter nascido em qualquer um dos 365 dias, <strong>independentemente das
+      demais</strong>: duas pessoas podem perfeitamente dividir o mesmo dia. É o caso "a ordem
+      importa, com repetição" do quadro-resumo, cuja fórmula é \(n^k\) — aqui, \(365^n\).</p>
+      <p><em>Por que a ordem importa?</em> Porque "Ana em 3 de maio e Bruno em 10 de julho" é um
+      resultado diferente de "Ana em 10 de julho e Bruno em 3 de maio". As pessoas são
+      distinguíveis, como os dois dados de cores diferentes do Módulo 1.</p>
+
+      <p><strong>Passo 3 — Quantos são os casos favoráveis?</strong></p>
+      <p>Agora preenchemos a mesma ficha, mas <strong>proibindo repetições</strong>. A primeira
+      pessoa pode nascer em qualquer dia; a segunda, em qualquer dia menos o da primeira; a
+      terceira, em qualquer dia menos os dois já usados:</p>
+      <p>\[\underbrace{\fbox{365}}_{\text{qualquer}} \times
+         \underbrace{\fbox{364}}_{\text{menos 1}} \times
+         \underbrace{\fbox{363}}_{\text{menos 2}} \times \cdots \times
+         \underbrace{\fbox{365-n+1}}_{\text{menos } n-1}.\]</p>
+      <p>São \(n\) fatores decrescentes a partir de 365 — exatamente a definição de
+      <strong>arranjo</strong>:</p>
+      <p>\[A_{365,\,n} = \frac{365!}{(365-n)!} = 365 \times 364 \times \cdots \times (365-n+1).\]</p>
+
+      <p><strong>Passo 4 — Dividir e simplificar.</strong></p>
+      <p>\[P(A^{c}) = \frac{\text{casos favoráveis}}{\text{casos possíveis}}
+      = \frac{A_{365,\,n}}{365^{\,n}}
+      = \frac{365}{365}\cdot\frac{364}{365}\cdot\frac{363}{365}\cdots\frac{365-n+1}{365}.\]</p>
+      <p>Escrito desse modo, o resultado ganha uma leitura bonita: o primeiro fator vale 1 (a
+      primeira pessoa não pode colidir com ninguém), o segundo é a chance de a segunda pessoa
+      escapar de 1 dia ocupado, o terceiro de escapar de 2 dias, e assim por diante. Em notação
+      compacta:</p>
+      <p>\[P(A^{c}) = \prod_{i=0}^{n-1}\frac{365-i}{365}
+      \qquad\Longrightarrow\qquad
+      \boxed{\,P(A) = 1 - \prod_{i=0}^{n-1}\frac{365-i}{365}\,}\]</p>
+
+      <p><strong>Passo 5 — Conferir em um caso pequeno.</strong></p>
+      <p>Com \(n = 2\), a fórmula dá \(P(A) = 1 - \tfrac{365}{365}\cdot\tfrac{364}{365}
+      = \tfrac{1}{365} \approx 0{,}27\%\) — que é exatamente o esperado: a segunda pessoa precisa
+      acertar o único dia da primeira. Com \(n = 366\), um fator do produto se anula e
+      \(P(A) = 1\), como manda o princípio da casa dos pombos. A fórmula passa nos dois testes.</p>
+
+      <p><strong>Passo 6 — Calcular.</strong></p>
       <div class="tabela-rolavel">
       <table>
         <thead><tr><th class="num">n</th><th class="num">P(coincidência)</th></tr></thead>
