@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 9 — Ajuste de polinômios e mínimos quadrados ponderados | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061641">
+<script src="assets/js/comum.js?v=202611061641"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula01.html" class="num" title="Módulo 1 — Erros de medida e algarismos significativos">1</a>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula05.html" class="num" title="Módulo 5 — Máxima verossimilhança e a dedução da Normal">5</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula07.html" class="num" title="Módulo 7 — Propagação de erros">7</a>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <a href="aula09.html" class="num ativo" title="Módulo 9 — Ajuste de polinômios e mínimos quadrados ponderados">9</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Além da reta</a></li>
+    <li><a href="#s2">2. As equações normais de grau m</a></li>
+    <li><a href="#s3">3. A matriz de projeto</a></li>
+    <li><a href="#s4">4. Incerteza dos coeficientes</a></li>
+    <li><a href="#s5">5. Mínimos quadrados ponderados</a></li>
+    <li><a href="#s6">6. Escolher o grau</a></li>
+    <li><a href="#s7">7. Sobreajuste</a></li>
+    <li><a href="#s8">8. Condicionamento</a></li>
+    <li><a href="#s9">9. Aplicações em Física</a></li>
+    <li><a href="#s10">10. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 9 · 3 horas · Unidade 3</p>
+  <h1>Ajuste de polinômios e mínimos quadrados ponderados</h1>
+  <p class="subtitulo">A mesma dedução do Módulo 8, com mais parâmetros — e com a correção
+  que faltava: medidas melhores devem pesar mais.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Generalizar as equações normais para um polinômio de grau \(m\);</li>
+      <li>Reconhecer a matriz do sistema como a hessiana, de novo;</li>
+      <li>Escrever o problema em forma matricial e obter as incertezas da inversa;</li>
+      <li>Deduzir os pesos \(w_i = 1/\sigma_i^2\) a partir da máxima verossimilhança;</li>
+      <li>Escolher o grau pelo \(r^2\) ajustado e pelo \(\chi^2/\nu\), nunca pelo \(r^2\);</li>
+      <li>Identificar sobreajuste e problemas de condicionamento.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Além da reta</h2>
+
+  <p>O Módulo 8 ajustou \(\hat y = a_1 x + a_0\). Mas muitas relações físicas não são
+  lineares em \(x\) — e, felizmente, <strong>não precisam ser</strong> para que os mínimos
+  quadrados funcionem.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">A distinção decisiva</span>
+    <p>O que importa é ser <strong>linear nos parâmetros</strong>, não em \(x\). O modelo</p>
+    <p>\[\hat y = a_0 + a_1 x + a_2 x^{2} + \dots + a_m x^{m}\]</p>
+    <p>é uma curva em \(x\), mas é uma <em>combinação linear</em> dos \(a_j\). Isso basta
+    para que \(S(a_0,\dots,a_m)\) seja quadrática e o sistema seja linear, com solução única
+    e explícita — exatamente como no Módulo 8.</p>
+    <p>Modelos como \(y = Ae^{-\lambda x}\) são o caso contrário: não lineares nos parâmetros,
+    e exigem iteração. É o assunto do Módulo 10.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Exemplos de bancada com polinômios</span>
+    <ul>
+      <li><strong>Queda livre:</strong> \(s = s_0 + v_0t + \tfrac12 g t^2\), grau 2 — e
+      \(g = 2a_2\) sai direto do coeficiente;</li>
+      <li><strong>Dilatação térmica:</strong> \(L = L_0(1+\alpha\Delta T + \beta\Delta T^2)\),
+      grau 2, com o termo quadrático relevante em faixas largas de temperatura;</li>
+      <li><strong>Calibração de sensores:</strong> a resposta costuma ser quase linear com
+      uma pequena curvatura, que um grau 2 ou 3 absorve;</li>
+      <li><strong>Capacidade térmica:</strong> \(C_p(T) = a + bT + cT^{-2}\) — note que este
+      é polinomial nos <em>parâmetros</em>, embora tenha \(T^{-2}\).</li>
+    </ul>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. As equações normais de grau m</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Minimizar com m+1 parâmetros</span>
+    <p>\[S(a_0,\dots,a_m)=\sum_{i=1}^{n}
+    \left[y_i - \sum_{j=0}^{m} a_j x_i^{\,j}\right]^{2}\]</p>
+    <p>Derivando em relação a cada \(a_k\) e igualando a zero:</p>
+    <p>\[\frac{\partial S}{\partial a_k}
+    = -2\sum_{i} x_i^{\,k}\left[y_i - \sum_j a_j x_i^{\,j}\right] = 0,
+    \qquad k = 0,1,\dots,m.\]</p>
+    <p>Reorganizando, obtém-se um sistema de \(m+1\) equações lineares:</p>
+    <p>\[\boxed{\;\sum_{j=0}^{m} a_j \left(\sum_i x_i^{\,j+k}\right)
+    = \sum_i x_i^{\,k} y_i,\qquad k=0,\dots,m\;}\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Em forma matricial</span>
+    <p>Chamando \(S_k = \sum_i x_i^{\,k}\) e \(T_k = \sum_i x_i^{\,k}y_i\), o sistema para
+    o grau 2 é</p>
+    <p>\[\begin{pmatrix}
+      S_0 & S_1 & S_2\\
+      S_1 & S_2 & S_3\\
+      S_2 & S_3 & S_4
+    \end{pmatrix}
+    \begin{pmatrix}a_0\\ a_1\\ a_2\end{pmatrix}
+    =\begin{pmatrix}T_0\\ T_1\\ T_2\end{pmatrix},\]</p>
+    <p>com \(S_0 = n\). Observe duas coisas:</p>
+    <ul>
+      <li>A matriz é <strong>simétrica</strong>, e cada anti-diagonal tem o mesmo valor —
+      ela é uma matriz de <em>momentos</em> dos \(x_i\);</li>
+      <li>O caso \(m=1\) reproduz exatamente as equações normais do Módulo 8. Não é um
+      método novo: é o mesmo método, com mais colunas.</li>
+    </ul>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">A hessiana, outra vez</span>
+    <p>Pelo mesmo raciocínio do Módulo 8, as segundas derivadas de \(S\) são</p>
+    <p>\[\frac{\partial^{2}S}{\partial a_k\,\partial a_j} = 2\sum_i x_i^{\,j+k}
+    = 2\,S_{j+k},\]</p>
+    <p>de modo que a hessiana é, <strong>de novo</strong>, duas vezes a matriz de
+    coeficientes do sistema: \(H = 2\mathbf{A}\).</p>
+    <p>Isso vale para qualquer modelo linear nos parâmetros e dispensa calcular a hessiana
+    separadamente. Como \(\mathbf{A}\) é definida positiva sempre que houver ao menos
+    \(m+1\) valores distintos de \(x\), a solução é <strong>mínimo global e único</strong>.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. A matriz de projeto</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Notação que generaliza tudo</span>
+    <p>Defina a <strong>matriz de projeto</strong> \(\mathbf{X}\), de dimensão
+    \(n \times (m+1)\), cuja linha \(i\) contém as potências de \(x_i\):</p>
+    <p>\[\mathbf{X}=\begin{pmatrix}
+      1 & x_1 & x_1^{2} & \cdots & x_1^{m}\\
+      1 & x_2 & x_2^{2} & \cdots & x_2^{m}\\
+      \vdots & & & & \vdots\\
+      1 & x_n & x_n^{2} & \cdots & x_n^{m}
+    \end{pmatrix}\]</p>
+    <p>Então \(\hat{\mathbf y} = \mathbf{X}\mathbf{a}\), e as equações normais ficam</p>
+    <p>\[\boxed{\;(\mathbf{X}^{\mathsf T}\mathbf{X})\,\mathbf{a}
+    = \mathbf{X}^{\mathsf T}\mathbf{y}
+    \quad\Longrightarrow\quad
+    \mathbf{a}=(\mathbf{X}^{\mathsf T}\mathbf{X})^{-1}\mathbf{X}^{\mathsf T}\mathbf{y}\;}\]</p>
+    <p>Verifique: o elemento \((j,k)\) de \(\mathbf{X}^{\mathsf T}\mathbf{X}\) é
+    \(\sum_i x_i^{\,j}x_i^{\,k} = S_{j+k}\) — é a mesma matriz da seção anterior.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que essa notação vale o esforço</span>
+    <p>Ela não depende de as colunas serem potências. Troque-as por quaisquer funções
+    \(\varphi_j(x)\) — senos, cossenos, exponenciais fixas, logaritmos — e <em>toda</em> a
+    teoria continua valendo, desde que os parâmetros entrem linearmente. Ajustar</p>
+    <p>\[\hat y = a_0 + a_1\operatorname{sen}x + a_2\cos x\]</p>
+    <p>usa exatamente as mesmas fórmulas, com \(\mathbf{X}\) tendo colunas \(1\),
+    \(\operatorname{sen}x_i\) e \(\cos x_i\). É assim que se faz análise de Fourier por
+    mínimos quadrados.</p>
+    <p>Geometricamente, \(\hat{\mathbf y}\) é a <strong>projeção ortogonal</strong> de
+    \(\mathbf y\) sobre o subespaço gerado pelas colunas de \(\mathbf X\), e os resíduos são
+    o que sobra, perpendicular a esse subespaço. É a mesma figura do Módulo 8, agora em
+    \(m+1\) dimensões.</p>
+  </div>
+
+  <div data-widget="polinomio"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Incerteza dos coeficientes</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A matriz de covariância</span>
+    <p>\[\mathbf{V} = s_e^{2}\,(\mathbf{X}^{\mathsf T}\mathbf{X})^{-1},
+    \qquad s_e^{2}=\frac{\mathrm{SQR}}{n-(m+1)}\]</p>
+    <p>Os elementos da <strong>diagonal</strong> são as variâncias dos coeficientes:</p>
+    <p>\[\sigma_{a_j}=\sqrt{V_{jj}}.\]</p>
+    <p>Os elementos <strong>fora</strong> da diagonal são as covariâncias — e importam
+    sempre que o resultado físico depende de mais de um coeficiente.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Os coeficientes são correlacionados</span>
+    <p>Num ajuste de grau 2, \(a_1\) e \(a_2\) costumam ter correlação forte e negativa: se
+    o ajuste aumenta um, compensa diminuindo o outro, e a curva quase não muda.</p>
+    <p>A consequência prática: para propagar a incerteza de uma grandeza que combine
+    coeficientes, a fórmula do Módulo 7 <strong>precisa do termo de covariância</strong>.
+    Para \(z = f(a_1, a_2)\):</p>
+    <p>\[\sigma_z^{2}
+    = \left(\frac{\partial f}{\partial a_1}\right)^{2}V_{11}
+    + \left(\frac{\partial f}{\partial a_2}\right)^{2}V_{22}
+    + 2\frac{\partial f}{\partial a_1}\frac{\partial f}{\partial a_2}V_{12}.\]</p>
+    <p>Ignorar \(V_{12}\) costuma <em>superestimar</em> a incerteza — às vezes bastante.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Teste de significância de cada coeficiente</span>
+    <p>\[t_j = \frac{a_j}{\sigma_{a_j}}, \qquad \nu = n-(m+1).\]</p>
+    <p>Se \(|t_j|\) não passar do crítico, aquele termo <strong>não é necessário</strong>.
+    Na tabela do simulador, a coluna \(t\) mostra isso para cada coeficiente — e um termo de
+    grau alto com \(t\) próximo de zero é o sinal mais direto de que o grau deve ser
+    reduzido.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Mínimos quadrados ponderados</h2>
+
+  <p>Até aqui, todos os pontos pesaram igual. Isso só é correto se todos tiverem a mesma
+  incerteza — o que raramente acontece.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">De onde vêm os pesos</span>
+    <p>Do Módulo 5: com erros normais independentes de desvios \(\sigma_i\), a
+    log-verossimilhança é</p>
+    <p>\[\ln L = \text{const} - \frac12\sum_i
+    \frac{\left[y_i - \hat y(x_i)\right]^{2}}{\sigma_i^{2}}
+    = \text{const} - \frac{\chi^{2}}{2}.\]</p>
+    <p>Maximizar \(\ln L\) é minimizar</p>
+    <p>\[\boxed{\;\chi^{2}=\sum_i w_i\left[y_i-\hat y(x_i)\right]^{2},
+    \qquad w_i = \frac{1}{\sigma_i^{2}}\;}\]</p>
+    <p>Os pesos <strong>não são escolha arbitrária</strong>: são o que a máxima
+    verossimilhança impõe. O peso é o <em>inverso do quadrado</em> da incerteza.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O inverso do quadrado é mais agressivo do que parece</span>
+    <p>Um ponto com incerteza 3 vezes menor pesa <strong>9 vezes</strong> mais. Com
+    \(\sigma\) 10 vezes menor, pesa 100 vezes mais.</p>
+    <p>Isso é exatamente o que se quer: um ponto medido com micrômetro deve dominar um ponto
+    medido com régua. Mas tem um corolário incômodo — se você <em>subestimar</em> o
+    \(\sigma\) de um ponto ruim, ele vai dominar o ajuste indevidamente. <strong>Os pesos
+    são tão confiáveis quanto as incertezas que você declarou.</strong></p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">As equações normais ponderadas</span>
+    <p>Basta inserir \(w_i\) em cada soma:</p>
+    <p>\[\sum_j a_j\left(\sum_i w_i x_i^{\,j+k}\right)=\sum_i w_i x_i^{\,k}y_i,\]</p>
+    <p>ou, matricialmente, com \(\mathbf{W}=\mathrm{diag}(w_1,\dots,w_n)\):</p>
+    <p>\[\mathbf{a}=(\mathbf{X}^{\mathsf T}\mathbf{W}\mathbf{X})^{-1}
+    \mathbf{X}^{\mathsf T}\mathbf{W}\mathbf{y},
+    \qquad \mathbf{V}=(\mathbf{X}^{\mathsf T}\mathbf{W}\mathbf{X})^{-1}.\]</p>
+    <p>Note que agora \(\mathbf{V}\) <strong>não</strong> traz o fator \(s_e^2\): com os
+    \(\sigma_i\) declarados, a escala absoluta das incertezas já está na conta. É uma
+    diferença importante e fonte comum de erro em implementações.</p>
+  </div>
+
+  <h3>Exercício resolvido 9.1 — Calibração com instrumentos diferentes</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Calibrou-se um sensor em oito pontos. Os quatro primeiros foram medidos com um padrão
+    de laboratório (\(\sigma = 0{,}03\)) e os quatro últimos, com um instrumento de campo
+    (\(\sigma = 0{,}40\)). Ajuste uma reta com e sem pesos e compare.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Carregando o conjunto <i>Calibração com incertezas desiguais</i> no simulador, com
+      grau 1:</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th></th><th class="num">a₀ (offset)</th><th class="num">a₁ (ganho)</th></tr></thead>
+        <tbody>
+          <tr><th>sem pesos</th><td class="num">0,0304 ± 0,0872</td><td class="num">1,9943 ± 0,0346</td></tr>
+          <tr><th>com pesos</th><td class="num">0,0540 ± 0,0359</td><td class="num">1,9809 ± 0,0259</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Os pesos.</strong> Como \(w = 1/\sigma^2\), os quatro primeiros pontos têm
+      \(w = 1/0{,}03^2 = 1111\) e os últimos \(w = 1/0{,}40^2 = 6{,}25\). A razão é</p>
+      <p>\[\frac{1111}{6{,}25} = \left(\frac{0{,}40}{0{,}03}\right)^{2} = 178.\]</p>
+      <p>Cada ponto bom vale <strong>178 pontos ruins</strong>.</p>
+      <p><strong>O efeito.</strong> O ganho mudou de 1,9943 para 1,9809 — pouco, porque os
+      dados são consistentes. Mas as <strong>incertezas</strong> caíram bastante: a de
+      \(a_0\) passou de ±0,087 para ±0,036, uma redução de 59%.</p>
+      <p>É o ponto central: o ajuste ponderado não apenas dá um valor um pouco diferente,
+      ele dá uma <strong>incerteza honesta</strong>. Sem pesos, o cálculo supõe que todos os
+      pontos têm a mesma qualidade e estima \(\sigma\) a partir da dispersão total — o que
+      aqui mistura medidas de precisão muito diferentes e produz uma barra de erro inflada.</p>
+      <div class="bloco fisica">
+        <span class="rotulo">A pergunta que o aluno sempre faz</span>
+        <p><em>"Se os pontos ruins quase não pesam, por que não jogá-los fora?"</em></p>
+        <p>Porque eles ainda contribuem — só que pouco. E, mais importante, porque eles
+        <strong>estendem a faixa de \(x\)</strong>. Do Módulo 8: \(\sigma_{a_1}\) depende de
+        \(S_{xx}\), que cresce com o quadrado da amplitude. Quatro pontos ruins em
+        \(x = 2{,}5\) a \(4{,}0\) ampliam a alavanca do ajuste, e mesmo com peso baixo
+        ajudam a determinar a inclinação.</p>
+        <p>Descartá-los seria perder informação real. O ajuste ponderado faz a coisa certa
+        automaticamente: usa cada ponto na medida exata de sua confiabilidade.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Como escolher o grau</h2>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O r² não serve para isso</span>
+    <p>Um fato matemático: <strong>\(r^2\) nunca diminui</strong> quando se aumenta o grau.
+    Cada parâmetro a mais dá ao polinômio uma liberdade a mais, e ele a usa para chegar mais
+    perto dos pontos — mesmo que esteja seguindo ruído.</p>
+    <p>No limite, com \(m = n-1\) o polinômio passa <em>exatamente</em> por todos os
+    \(n\) pontos e \(r^2 = 1\). Isso não é ajuste perfeito: é interpolação, e não sobra
+    grau de liberdade algum para avaliar nada.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Os três critérios que servem</span>
+    <p><strong>1. \(r^2\) ajustado</strong> — desconta os graus de liberdade gastos:</p>
+    <p>\[r^{2}_{\text{aj}} = 1 - \frac{\mathrm{SQR}/(n-m-1)}{\mathrm{SQT}/(n-1)}\]</p>
+    <p>Ele <em>piora</em> quando o parâmetro extra não compensa. Escolha o grau onde ele
+    para de crescer.</p>
+    <p><strong>2. \(\chi^2/\nu\)</strong> — o qui-quadrado reduzido, quando se conhecem os
+    \(\sigma_i\):</p>
+    <p>\[\frac{\chi^{2}}{\nu}=\frac{1}{n-m-1}
+    \sum_i \frac{\left[y_i-\hat y(x_i)\right]^{2}}{\sigma_i^{2}}\]</p>
+    <p>Deve ficar <strong>próximo de 1</strong>. Muito acima: modelo inadequado ou
+    \(\sigma\) subestimado. Muito abaixo: \(\sigma\) superestimado ou sobreajuste.
+    O Módulo 10 desenvolve a interpretação.</p>
+    <p><strong>3. Significância do último coeficiente</strong> — se \(|t_m| < 2\),
+    aproximadamente, aquele termo não se justifica.</p>
+  </div>
+
+  <div class="destaque">
+    <span class="anuncio">O critério que vence todos: a Física</span>
+    Se a teoria diz que a relação é quadrática, ajuste grau 2. Um grau 3 que "melhora o
+    ajuste" está descrevendo ruído, não física.
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Sobreajuste</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Os sintomas</span>
+    <ul>
+      <li>A curva <strong>oscila</strong> entre os pontos, em vez de passar suavemente;</li>
+      <li>Os coeficientes de grau alto têm <strong>erros padrão enormes</strong> — maiores
+      que os próprios valores, ou seja \(|t|<1\);</li>
+      <li>Coeficientes gigantes de sinais alternados, que quase se cancelam;</li>
+      <li>\(\chi^2/\nu\) <strong>bem abaixo de 1</strong>: o modelo está mais perto dos
+      dados do que as incertezas justificariam;</li>
+      <li>Extrapolação desastrosa: logo fora da faixa dos dados, a curva dispara.</li>
+    </ul>
+    <p><em>Troque a vista do simulador para "Comparar graus"</em> com o conjunto ruidoso.
+    O grau 6 passa mais perto dos pontos e serpenteia entre eles. Nenhuma lei física tem
+    aquela forma.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Um grau extra sempre "melhora" — e quase nunca ajuda</span>
+    <p>No conjunto de queda livre, que é genuinamente quadrático:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th class="num">grau</th><th class="num">r²</th><th class="num">r² ajustado</th><th class="num">χ²/ν</th><th>veredito</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td class="num">0,9268</td><td class="num">0,9177</td><td class="num">6282</td><td>modelo errado, e o χ²/ν grita</td></tr>
+        <tr><td class="num">2</td><td class="num">0,999996</td><td class="num">0,999995</td><td class="num">0,42</td><td><b>correto</b> — e é o que a Física prevê</td></tr>
+        <tr><td class="num">3</td><td class="num">0,999999</td><td class="num">0,999998</td><td class="num">0,13</td><td>χ²/ν caiu <i>demais</i>: seguindo ruído</td></tr>
+        <tr><td class="num">6</td><td class="num">1,000000</td><td class="num">0,999999</td><td class="num">0,06</td><td>sobreajuste claro</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Repare que o \(r^2\) sobe monotonicamente e nunca denuncia nada — chega a 1,000000 no
+    grau 6. Já o \(\chi^2/\nu\) conta a história toda: salta de 6282 (grau 1, modelo errado)
+    para 0,42 (grau 2, correto) e depois <em>desce abaixo do razoável</em>, sinal de que os
+    graus extras estão absorvendo flutuações aleatórias.</p>
+    <p>E o grau 2 entrega o que interessa: \(a_2 = 4{,}878 \pm 0{,}014\), de onde
+    \(g = 2a_2 = (9{,}756 \pm 0{,}028)\ \mathrm{m/s^2}\), compatível com 9,78. O grau 6 não
+    entrega grandeza física alguma.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Condicionamento numérico</h2>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Por que graus altos dão problema no computador</span>
+    <p>A matriz \(\mathbf{X}^{\mathsf T}\mathbf{X}\) de um ajuste polinomial fica
+    <strong>mal condicionada</strong> rapidamente: suas colunas — \(1, x, x^2, x^3,\dots\) —
+    são quase paralelas quando os \(x\) estão todos positivos e numa faixa estreita.</p>
+    <p>O resultado é que pequenos erros de arredondamento nos dados produzem variações
+    grandes nos coeficientes. Na prática, acima do grau 5 ou 6 os coeficientes deixam de ser
+    confiáveis em aritmética de precisão dupla.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Três remédios</span>
+    <ol>
+      <li><strong>Centralizar e escalar.</strong> Ajuste em \(u = (x-\bar x)/s_x\) em vez de
+      \(x\). Isso sozinho resolve a maior parte dos casos, e é o que se deve fazer
+      sempre;</li>
+      <li><strong>Polinômios ortogonais</strong> — Legendre, Chebyshev — cujas colunas são
+      ortogonais por construção, tornando \(\mathbf{X}^{\mathsf T}\mathbf{X}\) diagonal;</li>
+      <li><strong>Não usar grau alto.</strong> Na esmagadora maioria dos problemas de Física
+      experimental, grau 2 ou 3 é o suficiente. Se você precisa de grau 8, provavelmente o
+      modelo está errado.</li>
+    </ol>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Aplicações em Física</h2>
+
+  <h3>Exercício resolvido 9.2 — g pela queda livre</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um sensor registrou a posição de um corpo em queda a cada 0,2 s (conjunto
+    <i>Queda livre</i> do simulador, com \(\sigma = 0{,}02\) m em cada posição). Obtenha
+    \(g\) com sua incerteza e teste se \(v_0\) e \(s_0\) são compatíveis com zero.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — O modelo.</strong> A cinemática dá</p>
+      <p>\[s(t)=s_0+v_0t+\tfrac12 g t^{2},\]</p>
+      <p>que é um polinômio de grau 2 em \(t\), linear nos parâmetros \(s_0\), \(v_0\) e
+      \(g\). A identificação é direta:</p>
+      <p>\[a_0 = s_0, \qquad a_1 = v_0, \qquad a_2 = \tfrac12 g.\]</p>
+      <p><strong>Passo 2 — O ajuste.</strong> Com grau 2 no simulador:</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>coef.</th><th class="num">valor</th><th class="num">erro</th><th class="num">t</th><th>interpretação</th></tr></thead>
+        <tbody>
+          <tr><td>a₀</td><td class="num">0,0186</td><td class="num">0,0102</td><td class="num">1,83</td><td>\(s_0\), em m</td></tr>
+          <tr><td>a₁</td><td class="num">0,0036</td><td class="num">0,0263</td><td class="num">0,14</td><td>\(v_0\), em m/s</td></tr>
+          <tr><td>a₂</td><td class="num">4,8779</td><td class="num">0,0141</td><td class="num">346,7</td><td>\(g/2\), em m/s²</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Passo 3 — Extrair g.</strong> Como \(g = 2a_2\) e o 2 é constante exata,
+      a incerteza simplesmente dobra:</p>
+      <p>\[g = 2(4{,}8779) = 9{,}756\ \mathrm{m/s^2},
+      \qquad \sigma_g = 2(0{,}0141) = 0{,}028\ \mathrm{m/s^2}\]</p>
+      <p>\[\boxed{\,g=(9{,}756 \pm 0{,}028)\ \mathrm{m/s^2}\,}\]</p>
+      <p>O valor local é 9,78, que dista \((9{,}78-9{,}756)/0{,}028 = 0{,}86\,\sigma\) —
+      acordo confortável.</p>
+      <p><strong>Passo 4 — Testar \(v_0\) e \(s_0\).</strong> Com \(\nu = 10-3 = 7\), o
+      crítico a 5% é \(t_{0{,}025;7}=2{,}365\).</p>
+      <ul>
+        <li>\(v_0\): \(t = 0{,}14 \ll 2{,}365\). <strong>Compatível com zero</strong> — o
+        corpo partiu do repouso, como se esperava;</li>
+        <li>\(s_0\): \(t = 1{,}83 < 2{,}365\). Também compatível com zero, embora
+        marginalmente. Um \(t\) próximo de 2 sugere um pequeno deslocamento sistemático na
+        origem do sensor — vale investigar, mas não é evidência forte.</li>
+      </ul>
+      <div class="bloco fisica">
+        <span class="rotulo">Por que isso é melhor que a fórmula direta</span>
+        <p>A alternativa ingênua seria calcular \(g = 2s/t^2\) para cada ponto e tirar a
+        média. Isso é pior por três razões:</p>
+        <ul>
+          <li>Supõe \(s_0 = v_0 = 0\) sem testar — e o ajuste <em>testa</em>;</li>
+          <li>Dá peso absurdo aos primeiros pontos, onde \(t^2\) é minúsculo e divide;</li>
+          <li>Não produz uma incerteza defensável para \(g\).</li>
+        </ul>
+        <p>O ajuste polinomial usa os dez pontos de forma ótima, estima os três parâmetros
+        simultaneamente, e entrega barras de erro que significam alguma coisa.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Exercícios propostos</h2>
+
+  <ol>
+    <li>Escreva explicitamente as equações normais para um ajuste de grau 3, em termos de
+    \(S_k\) e \(T_k\). Quantas somas distintas é preciso calcular?</li>
+    <li>Mostre que, para \(m=1\), as equações normais desta aula se reduzem às do Módulo 8.</li>
+    <li>Verifique que o elemento \((j,k)\) de \(\mathbf{X}^{\mathsf T}\mathbf{X}\) vale
+    \(\sum_i x_i^{\,j+k}\), e conclua que a matriz é simétrica.</li>
+    <li>Prove que a hessiana de \(S\) é \(2\mathbf{X}^{\mathsf T}\mathbf{X}\) e explique por
+    que isso garante mínimo único.</li>
+    <li>Ajuste à mão um polinômio de grau 2 aos pontos (0,1), (1,2), (2,5), (3,10). Monte o
+    sistema 3×3, resolva e confira no simulador. <em>(Dica: a resposta é exata.)</em></li>
+    <li>Deduza os pesos \(w_i = 1/\sigma_i^2\) partindo de \(\ln L\) com erros normais de
+    desvios diferentes.</li>
+    <li>No conjunto de calibração, calcule à mão a razão entre o peso de um ponto bom e um
+    ruim. Por que ela é 178 e não 13?</li>
+    <li>Com o conjunto ruidoso, anote \(r^2\), \(r^2_{\text{aj}}\) e \(\chi^2/\nu\) para os
+    graus de 1 a 7. Faça uma tabela e identifique o grau ótimo por cada critério. Eles
+    concordam?</li>
+    <li>Um ajuste de grau 4 devolveu \(a_4 = 0{,}003 \pm 0{,}012\). O termo se justifica?
+    Calcule \(t\) e conclua.</li>
+    <li>Explique por que, no ajuste ponderado, a matriz de covariância é
+    \((\mathbf{X}^{\mathsf T}\mathbf{W}\mathbf{X})^{-1}\) <em>sem</em> o fator \(s_e^2\),
+    enquanto no não ponderado o fator aparece. <em>(Dica: no primeiro caso a escala das
+    incertezas já é conhecida.)</em></li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>O que importa é ser linear <b>nos parâmetros</b>, não em \(x\);</li>
+      <li>Equações normais: \(\sum_j a_j S_{j+k} = T_k\), com \(S_k=\sum x_i^k\);</li>
+      <li>Em forma matricial, \(\mathbf a = (\mathbf X^{\mathsf T}\mathbf X)^{-1}
+      \mathbf X^{\mathsf T}\mathbf y\), e a hessiana é de novo \(2\mathbf X^{\mathsf T}
+      \mathbf X\);</li>
+      <li>\(\mathbf V = s_e^2(\mathbf X^{\mathsf T}\mathbf X)^{-1}\): a diagonal dá as
+      incertezas, e as covariâncias fora dela importam na propagação;</li>
+      <li>Pesos \(w_i = 1/\sigma_i^2\) vêm da máxima verossimilhança, não de escolha;</li>
+      <li>\(r^2\) nunca denuncia sobreajuste; use \(r^2\) ajustado, \(\chi^2/\nu\) e o
+      \(t\) do último coeficiente;</li>
+      <li>Grau alto é mal condicionado: centralize e escale, e desconfie de grau > 3;</li>
+      <li>O melhor critério para o grau é a teoria física, não a estatística.</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula08.html"><small>Módulo anterior</small>← 8. Regressão linear</a>
+    <a class="prox" href="aula11.html"><small>Próximo módulo</small>11. Intervalos de confiança →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js?v=202611061641"></script>
+</body>
+</html>

@@ -4201,6 +4201,326 @@
   }
 
   /* =================================================================
+     Ajuste de polinômios por mínimos quadrados (com pesos)
+     ================================================================= */
+
+  /* resolve A p = c por eliminacao de Gauss com pivotamento parcial.
+     Devolve tambem a inversa de A, de onde saem as incertezas. */
+  function resolveSim(A, c) {
+    var n = A.length, i, j, k;
+    /* matriz aumentada [A | I | c] */
+    var M2 = [];
+    for (i = 0; i < n; i++) {
+      var lin = A[i].slice();
+      for (j = 0; j < n; j++) lin.push(i === j ? 1 : 0);
+      lin.push(c[i]);
+      M2.push(lin);
+    }
+    for (k = 0; k < n; k++) {
+      var piv = k;
+      for (i = k + 1; i < n; i++)
+        if (Math.abs(M2[i][k]) > Math.abs(M2[piv][k])) piv = i;
+      if (Math.abs(M2[piv][k]) < 1e-300) return null;
+      var tmp = M2[k]; M2[k] = M2[piv]; M2[piv] = tmp;
+      var d = M2[k][k];
+      for (j = k; j < 2 * n + 1; j++) M2[k][j] /= d;
+      for (i = 0; i < n; i++) {
+        if (i === k) continue;
+        var f = M2[i][k];
+        if (f === 0) continue;
+        for (j = k; j < 2 * n + 1; j++) M2[i][j] -= f * M2[k][j];
+      }
+    }
+    var p = [], inv = [];
+    for (i = 0; i < n; i++) {
+      p.push(M2[i][2 * n]);
+      inv.push(M2[i].slice(n, 2 * n));
+    }
+    return { p: p, inv: inv };
+  }
+
+  /* ajuste polinomial de grau m, com pesos w_i (1 se omitidos) */
+  function ajustePoli(x, y, m, w) {
+    var n = x.length, i, j, k, N = m + 1;
+    if (n < N) return null;
+    var A = [], c = [];
+    for (j = 0; j < N; j++) {
+      A.push(new Array(N).fill(0));
+      c.push(0);
+    }
+    for (i = 0; i < n; i++) {
+      var pw = w ? w[i] : 1;
+      var pot = [1];
+      for (k = 1; k < 2 * N; k++) pot.push(pot[k - 1] * x[i]);
+      for (j = 0; j < N; j++) {
+        for (k = 0; k < N; k++) A[j][k] += pw * pot[j + k];
+        c[j] += pw * pot[j] * y[i];
+      }
+    }
+    var sol = resolveSim(A, c);
+    if (!sol) return null;
+    var p = sol.p;
+
+    function avalia(v) {
+      var s = 0;
+      for (var q = N - 1; q >= 0; q--) s = s * v + p[q];
+      return s;
+    }
+    var res = [], SQR = 0, qui = 0, SQT = 0, my = 0, somaW = 0;
+    for (i = 0; i < n; i++) { my += y[i]; somaW += (w ? w[i] : 1); }
+    my /= n;
+    for (i = 0; i < n; i++) {
+      var r = y[i] - avalia(x[i]);
+      res.push(r);
+      SQR += r * r;
+      qui += (w ? w[i] : 1) * r * r;
+      SQT += (y[i] - my) * (y[i] - my);
+    }
+    var gl = n - N;
+    /* sem pesos reais, estima-se sigma dos proprios residuos */
+    var se = gl > 0 ? Math.sqrt(SQR / gl) : NaN;
+    var erros = [];
+    for (j = 0; j < N; j++) {
+      var vjj = sol.inv[j][j];
+      erros.push(w ? Math.sqrt(Math.max(0, vjj))
+                   : se * Math.sqrt(Math.max(0, vjj)));
+    }
+    return { p: p, erros: erros, avalia: avalia, res: res, n: n, grau: m,
+             gl: gl, SQR: SQR, SQT: SQT, se: se, qui: qui,
+             quiRed: gl > 0 ? qui / gl : NaN,
+             r2: SQT > 0 ? 1 - SQR / SQT : NaN,
+             r2aj: (SQT > 0 && gl > 0) ? 1 - (SQR / gl) / (SQT / (n - 1)) : NaN };
+  }
+
+  var DADOSPOLI = {
+    termo: { rot: 'Dilatação térmica de um fio (grau 1 basta)',
+      rx: 'temperatura (°C)', ry: 'comprimento (mm)',
+      x: [20, 30, 40, 50, 60, 70, 80, 90, 100],
+      y: [1000.00, 1000.17, 1000.33, 1000.52, 1000.68, 1000.83, 1001.02, 1001.17, 1001.35],
+      s: [0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04] },
+    queda: { rot: 'Queda livre: posição × tempo (grau 2)',
+      rx: 'tempo (s)', ry: 'posição (m)',
+      x: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8],
+      y: [0.012, 0.207, 0.812, 1.787, 3.154, 4.901, 7.031, 9.573, 12.504, 15.846],
+      s: [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02] },
+    calib: { rot: 'Calibração com incertezas desiguais (use pesos!)',
+      rx: 'sinal do sensor (V)', ry: 'grandeza (unidade)',
+      x: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0],
+      y: [1.04, 2.11, 2.89, 4.08, 4.92, 6.13, 6.88, 8.09],
+      s: [0.03, 0.03, 0.03, 0.03, 0.40, 0.40, 0.40, 0.40] },
+    ruido: { rot: 'Dados ruidosos (cuidado com o sobreajuste)',
+      rx: 'x', ry: 'y',
+      x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      y: [2.4, 4.1, 5.2, 7.5, 8.1, 10.4, 11.3, 13.9, 14.6, 16.8],
+      s: [0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6] }
+  };
+
+  function polinomio(raiz) {
+    var c = moldura(raiz, 'Ajuste de polinômios e mínimos quadrados ponderados');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var chave = 'queda', grau = 2, usarPeso = false, vista = 'ajuste';
+
+    var campoD = el('div', { class: 'campo', style: 'flex:3 1 300px' });
+    campoD.appendChild(el('label', { html: 'Conjunto de dados' }));
+    var selD = el('select');
+    Object.keys(DADOSPOLI).forEach(function (k) {
+      selD.appendChild(el('option', { value: k, texto: DADOSPOLI[k].rot }));
+    });
+    selD.value = 'queda';
+    campoD.appendChild(selD); ctr.appendChild(campoD);
+    selD.addEventListener('change', function () { chave = selD.value; atualizar(); });
+
+    deslizante(ctr, 'Grau do polinômio', 1, 7, 1, 2, function (v) { grau = v; atualizar(); });
+
+    var campoP = el('div', { class: 'campo' });
+    var lblP = el('label');
+    var chk = el('input', { type: 'checkbox' });
+    lblP.appendChild(chk);
+    lblP.appendChild(document.createTextNode(' usar pesos 1/σᵢ²'));
+    campoP.appendChild(lblP); ctr.appendChild(campoP);
+    chk.addEventListener('change', function () { usarPeso = chk.checked; atualizar(); });
+
+    var campoV = el('div', { class: 'campo' });
+    campoV.appendChild(el('label', { html: 'Vista' }));
+    var selV = el('select');
+    [['ajuste', 'Ajuste'], ['res', 'Resíduos'],
+     ['graus', 'Comparar graus']].forEach(function (o) {
+      selV.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoV.appendChild(selV); ctr.appendChild(campoV);
+    selV.addEventListener('change', function () { vista = selV.value; atualizar(); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda' }); c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'r²', k: 'r2' }, { rot: 'r² ajustado', k: 'r2a' },
+      { rot: 'χ²', k: 'qui' }, { rot: 'χ²/ν', k: 'quir' },
+      { rot: 'graus de liberdade ν', k: 'gl' }
+    ]);
+    var tabela = el('div', { class: 'tabela-rolavel' }); c.appendChild(tabela);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var D = DADOSPOLI[chave];
+      var x = D.x, y = D.y, s = D.s;
+      var w = null;
+      if (usarPeso) {
+        w = s.map(function (v) { return 1 / (v * v); });
+      }
+      var R = ajustePoli(x, y, grau, w);
+      if (!R) {
+        saida.innerHTML = 'Grau alto demais para o número de pontos: é preciso n > grau+1.';
+        painel({ r2: '—', r2a: '—', qui: '—', quir: '—', gl: '—' });
+        tabela.innerHTML = ''; G.preparar(cv, 300); return;
+      }
+
+      /* chi2 sempre usando os sigmas declarados, mesmo em ajuste sem peso */
+      var qui2 = 0, i;
+      for (i = 0; i < x.length; i++) qui2 += R.res[i] * R.res[i] / (s[i] * s[i]);
+      var quiRed = R.gl > 0 ? qui2 / R.gl : NaN;
+
+      painel({
+        r2: M.fmt(R.r2, 6), r2a: M.fmt(R.r2aj, 6),
+        qui: M.fmt(qui2, 3), quir: M.fmt(quiRed, 3), gl: String(R.gl)
+      });
+
+      /* tabela dos coeficientes */
+      var h = '<table><thead><tr><th>coeficiente</th><th class="num">valor</th>'
+        + '<th class="num">erro padrão</th><th class="num">t = a/s</th></tr></thead><tbody>';
+      for (i = 0; i < R.p.length; i++) {
+        var tt = R.erros[i] > 0 ? R.p[i] / R.erros[i] : NaN;
+        h += '<tr><th>a<sub>' + i + '</sub> (x<sup>' + i + '</sup>)</th><td class="num">'
+          + M.fmt(R.p[i], 6) + '</td><td class="num">±' + M.fmt(R.erros[i], 6)
+          + '</td><td class="num">' + M.fmt(tt, 2) + '</td></tr>';
+      }
+      tabela.innerHTML = h + '</tbody></table>';
+
+      /* ---------- gráficos ---------- */
+      var xmin = Math.min.apply(null, x), xmax = Math.max.apply(null, x);
+      var fx = (xmax - xmin) * 0.08;
+
+      if (vista === 'res') {
+        var m = Math.max.apply(null, R.res.map(Math.abs));
+        m = Math.max(m, Math.max.apply(null, s)) * 1.4 || 1;
+        var g2 = G.eixos(cv, {
+          xmin: xmin - fx, xmax: xmax + fx, ymin: -m, ymax: m, altura: 300, divY: 4,
+          rotX: D.rx, rotY: 'resíduo', marcasX: G.marcasLineares(xmin - fx, xmax + fx, 6, 1),
+          formataY: function (v) { return M.fmt(v, 3); }
+        });
+        var c2 = g2.ct;
+        c2.strokeStyle = G.COR.vinho; c2.lineWidth = 1.6;
+        c2.beginPath(); c2.moveTo(g2.X(g2.xmin), g2.Y(0));
+        c2.lineTo(g2.X(g2.xmax), g2.Y(0)); c2.stroke();
+        for (i = 0; i < x.length; i++) {
+          /* barra de erro do ponto */
+          c2.strokeStyle = 'rgba(31,78,121,.45)'; c2.lineWidth = 1.4;
+          c2.beginPath();
+          c2.moveTo(g2.X(x[i]), g2.Y(-s[i])); c2.lineTo(g2.X(x[i]), g2.Y(s[i])); c2.stroke();
+          c2.beginPath(); c2.moveTo(g2.X(x[i]) - 4, g2.Y(s[i]));
+          c2.lineTo(g2.X(x[i]) + 4, g2.Y(s[i])); c2.stroke();
+          c2.beginPath(); c2.moveTo(g2.X(x[i]) - 4, g2.Y(-s[i]));
+          c2.lineTo(g2.X(x[i]) + 4, g2.Y(-s[i])); c2.stroke();
+          c2.fillStyle = G.COR.vinho;
+          c2.beginPath(); c2.arc(g2.X(x[i]), g2.Y(R.res[i]), 4, 0, 2 * Math.PI); c2.fill();
+          c2.strokeStyle = '#fff'; c2.lineWidth = 1.2; c2.stroke();
+        }
+        legenda.innerHTML = 'Barras azuis: a incerteza σᵢ declarada de cada ponto. '
+          + 'Pontos vinho: os resíduos. Num ajuste bom, os resíduos ficam '
+          + '<b>dentro</b> das barras, sem padrão.';
+      } else {
+        var ymin = Math.min.apply(null, y), ymax2 = Math.max.apply(null, y);
+        var fy = (ymax2 - ymin) * 0.12 || 1;
+        var g = G.eixos(cv, {
+          xmin: xmin - fx, xmax: xmax + fx, ymin: ymin - fy, ymax: ymax2 + fy, altura: 310,
+          rotX: D.rx, rotY: D.ry, marcasX: G.marcasLineares(xmin - fx, xmax + fx, 6, 1),
+          formataY: function (v) { return M.fmt(v, Math.abs(ymax2 - ymin) > 50 ? 0 : 2); }
+        });
+        var ct = g.ct;
+
+        if (vista === 'graus') {
+          var cores = ['#b5831f', G.COR.azul, G.COR.vinho, '#2e7d4f'];
+          var itens = [];
+          [1, 2, 3, 6].forEach(function (gq, idx) {
+            var Rq = ajustePoli(x, y, gq, w);
+            if (!Rq) return;
+            G.curva(g, Rq.avalia, cores[idx], 2);
+            itens.push({ texto: 'grau ' + gq, cor: cores[idx] });
+          });
+          G.legenda(g, itens);
+          legenda.innerHTML = 'Quatro graus sobrepostos. Repare que o grau 6 passa mais '
+            + 'perto dos pontos e <b>oscila entre eles</b> — isso é sobreajuste, não '
+            + 'precisão.';
+        } else {
+          G.curva(g, R.avalia, G.COR.vinho, 2.4);
+          legenda.innerHTML = 'Curva vinho: o polinômio de grau ' + grau
+            + ' ajustado. Barras: a incerteza declarada de cada ponto.';
+        }
+
+        for (i = 0; i < x.length; i++) {
+          ct.strokeStyle = 'rgba(31,78,121,.55)'; ct.lineWidth = 1.4;
+          ct.beginPath();
+          ct.moveTo(g.X(x[i]), g.Y(y[i] - s[i]));
+          ct.lineTo(g.X(x[i]), g.Y(y[i] + s[i])); ct.stroke();
+          ct.fillStyle = G.COR.azul;
+          ct.beginPath(); ct.arc(g.X(x[i]), g.Y(y[i]), 4, 0, 2 * Math.PI); ct.fill();
+          ct.strokeStyle = '#fff'; ct.lineWidth = 1.2; ct.stroke();
+        }
+      }
+
+      /* ---------- texto ---------- */
+      var txt = 'Polinômio de grau <b>' + grau + '</b> com ' + x.length + ' pontos, '
+        + 'portanto ν = n − (grau+1) = <b>' + R.gl + '</b> graus de liberdade.';
+
+      txt += '<br><br><b>Qualidade do ajuste.</b> χ² = ' + M.fmt(qui2, 3)
+        + ' e χ²/ν = <b>' + M.fmt(quiRed, 3) + '</b>. ';
+      if (R.gl <= 0) {
+        txt += 'Com ν ≤ 0 não há como avaliar: o polinômio tem parâmetros suficientes para '
+          + 'passar exatamente por todos os pontos, e isso não é ajuste, é interpolação.';
+      } else if (quiRed < 0.4) {
+        txt += 'Um valor <b>muito abaixo de 1</b> sugere que as incertezas σᵢ foram '
+          + '<b>superestimadas</b>, ou que o modelo tem parâmetros demais e está seguindo '
+          + 'o ruído.';
+      } else if (quiRed <= 2) {
+        txt += 'Está <b>próximo de 1</b>, que é o esperado quando o modelo é adequado e as '
+          + 'incertezas foram bem estimadas: cada ponto desvia-se tipicamente de um σ.';
+      } else {
+        txt += 'Um valor <b>bem acima de 1</b> indica que o modelo não dá conta dos dados, '
+          + 'ou que as incertezas foram subestimadas. Olhe o gráfico de resíduos para '
+          + 'distinguir os dois casos: padrão sistemático aponta modelo errado; dispersão '
+          + 'sem padrão aponta σ subestimado.';
+      }
+
+      txt += '<br><br><b>r² e r² ajustado.</b> r² = ' + M.fmt(R.r2, 6)
+        + ' e r²<sub>aj</sub> = ' + M.fmt(R.r2aj, 6) + '. '
+        + 'O r² comum <b>nunca diminui</b> quando se aumenta o grau — ele só pode melhorar, '
+        + 'mesmo que o grau extra esteja seguindo ruído. Por isso ele é inútil para '
+        + 'escolher o grau. Já o r² ajustado desconta os graus de liberdade gastos e '
+        + '<b>piora</b> quando o parâmetro a mais não compensa. <i>Suba o grau e compare '
+        + 'os dois cartões.</i>';
+
+      if (usarPeso) {
+        var smin = Math.min.apply(null, s), smax = Math.max.apply(null, s);
+        txt += '<br><br><b>Pesos ativos.</b> Cada ponto entra com w = 1/σᵢ². Como os σ vão '
+          + 'de ' + M.fmt(smin, 3) + ' a ' + M.fmt(smax, 3) + ', o ponto mais preciso pesa '
+          + '<b>' + M.fmt((smax * smax) / (smin * smin), 0) + ' vezes</b> mais que o menos '
+          + 'preciso. Desmarque a caixa e compare os coeficientes: sem peso, as medidas '
+          + 'ruins puxam o ajuste tanto quanto as boas.';
+      } else if (Math.max.apply(null, s) / Math.min.apply(null, s) > 2) {
+        txt += '<br><br><b>Atenção:</b> os σᵢ deste conjunto são muito desiguais '
+          + '(de ' + M.fmt(Math.min.apply(null, s), 3) + ' a '
+          + M.fmt(Math.max.apply(null, s), 3) + '). Sem pesos, os mínimos quadrados tratam '
+          + 'todos os pontos como igualmente confiáveis, o que é errado. '
+          + '<b>Marque a caixa de pesos</b> e veja os coeficientes mudarem.';
+      }
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Propagação de erros: fórmula contra Monte Carlo
      ================================================================= */
   var FORMULAS = {
@@ -6393,7 +6713,7 @@
     tamanhoamostral: tamanhoAmostral, curvaspoder: curvasPoder,
     algarismos: algarismos, instrumentos: instrumentos, tiposerro: tiposErro,
     verossimilhanca: verossimilhanca, limitenormal: limiteNormal,
-    propagacao: propagacao
+    propagacao: propagacao, polinomio: polinomio
   };
 
   document.addEventListener('DOMContentLoaded', function () {
