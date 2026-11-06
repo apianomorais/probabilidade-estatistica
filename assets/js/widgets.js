@@ -2507,7 +2507,7 @@
     descritiva: descritiva, amostragem: amostragem, tstudent: tstudent,
     quiquadrado: quiquadrado, gradedados: gradeDados,
     pascal: pascal, aniversarios: aniversarios, montyhall: montyhall,
-    galton: galton
+    galton: galton, intervalos: intervalos, calcic: calcIC
   };
 
   document.addEventListener('DOMContentLoaded', function () {
