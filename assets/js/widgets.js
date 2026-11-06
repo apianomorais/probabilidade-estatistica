@@ -2498,6 +2498,272 @@
   }
 
   /* =================================================================
+     20. Região crítica: o gráfico central do teste de hipóteses
+     ================================================================= */
+  function regiaoCritica(raiz) {
+    var c = moldura(raiz, 'Região de não rejeição, valores críticos e decisão');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var dist = 'z', cauda = 'bi', alfa = 0.05, gl = 15, estat = 1.8;
+
+    var campoD = el('div', { class: 'campo' });
+    campoD.appendChild(el('label', { html: 'Distribuição de referência' }));
+    var selD = el('select');
+    selD.appendChild(el('option', { value: 'z', texto: 'Normal padrão (teste z)' }));
+    selD.appendChild(el('option', { value: 't', texto: 't de Student (teste t)' }));
+    campoD.appendChild(selD); ctr.appendChild(campoD);
+    selD.addEventListener('change', function () {
+      dist = selD.value; campoGL.style.display = dist === 't' ? '' : 'none'; atualizar();
+    });
+
+    var campoC = el('div', { class: 'campo' });
+    campoC.appendChild(el('label', { html: 'Tipo de teste' }));
+    var selC = el('select');
+    [['bi', 'Bilateral  (H₁: μ ≠ μ₀)'],
+     ['dir', 'Unilateral à direita  (H₁: μ > μ₀)'],
+     ['esq', 'Unilateral à esquerda  (H₁: μ < μ₀)']].forEach(function (o) {
+      selC.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoC.appendChild(selC); ctr.appendChild(campoC);
+    selC.addEventListener('change', function () { cauda = selC.value; atualizar(); });
+
+    var campoA = el('div', { class: 'campo' });
+    campoA.appendChild(el('label', { html: 'Nível α' }));
+    var selA = el('select');
+    [['0.10', '10%'], ['0.05', '5%'], ['0.01', '1%']].forEach(function (o) {
+      selA.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selA.value = '0.05';
+    campoA.appendChild(selA); ctr.appendChild(campoA);
+    selA.addEventListener('change', function () { alfa = Number(selA.value); atualizar(); });
+
+    var campoGL = el('div', { class: 'campo' });
+    var slGL = deslizante(campoGL, 'graus de liberdade ν', 1, 60, 1, 15, function (v) {
+      gl = v; atualizar();
+    });
+    ctr.appendChild(campoGL);
+    campoGL.style.display = 'none';
+
+    var slE = deslizante(ctr, 'estatística calculada', -5, 5, 0.05, 1.8, function (v) {
+      estat = v; atualizar();
+    }, function (v) { return v.toFixed(2).replace('.', ','); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Área azul: <b>região de não rejeição</b> de H₀ &nbsp;·&nbsp; '
+      + 'área vermelha: <b>região crítica</b>, com área total α' }));
+    var painel = cartoes(c, [
+      { rot: 'valor(es) crítico(s)', k: 'crit' },
+      { rot: 'estatística calculada', k: 'est' },
+      { rot: 'valor p', k: 'p' },
+      { rot: 'decisão', k: 'dec' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function densidade(x) {
+      return dist === 'z' ? M.dNormal(x, 0, 1) : M.dT(x, gl);
+    }
+    function acumulada(x) {
+      return dist === 'z' ? M.FNormal(x, 0, 1) : M.FT(x, gl);
+    }
+    function critico(a) {
+      return dist === 'z' ? M.zCritico(1 - a) : M.tCritico(a, gl);
+    }
+
+    function atualizar() {
+      var cDir = null, cEsq = null, p;
+      if (cauda === 'bi') {
+        cDir = critico(alfa / 2); cEsq = -cDir;
+        p = 2 * (1 - acumulada(Math.abs(estat)));
+      } else if (cauda === 'dir') {
+        cDir = critico(alfa);
+        p = 1 - acumulada(estat);
+      } else {
+        cEsq = -critico(alfa);
+        p = acumulada(estat);
+      }
+
+      var rejeita = (cDir !== null && estat > cDir) || (cEsq !== null && estat < cEsq);
+
+      var lim = Math.max(4.2, Math.abs(estat) + 1.2,
+                         (cDir !== null ? cDir : 0) + 1, Math.abs(cEsq !== null ? cEsq : 0) + 1);
+      var g = G.eixos(cv, {
+        xmin: -lim, xmax: lim, ymax: densidade(0) * 1.3, altura: 300,
+        rotX: dist === 'z' ? 'z' : 't', rotY: 'densidade sob H₀',
+        marcasX: G.marcasLineares(-lim, lim, 8, 1),
+        formataY: function (v) { return v.toFixed(2).replace('.', ','); }
+      });
+
+      /* região de NÃO rejeição (azul) */
+      var naoLo = cEsq !== null ? cEsq : -lim;
+      var naoHi = cDir !== null ? cDir : lim;
+      G.area(g, densidade, naoLo, naoHi, 'rgba(44,95,141,.20)');
+      /* região crítica (vermelha) */
+      if (cEsq !== null) G.area(g, densidade, -lim, cEsq, 'rgba(140,47,57,.34)');
+      if (cDir !== null) G.area(g, densidade, cDir, lim, 'rgba(140,47,57,.34)');
+
+      G.curva(g, densidade, G.COR.tinta, 2);
+
+      var ct = g.ct;
+      /* fronteiras */
+      [[cEsq, '−crítico'], [cDir, '+crítico']].forEach(function (par) {
+        if (par[0] === null) return;
+        G.vertical(g, par[0], G.COR.vinho, M.fmt(par[0], 3), false);
+      });
+      /* estatística calculada */
+      ct.save();
+      ct.strokeStyle = rejeita ? G.COR.vinho : G.COR.verde;
+      ct.lineWidth = 3;
+      ct.beginPath();
+      ct.moveTo(g.X(estat), g.y1); ct.lineTo(g.X(estat), g.Y(densidade(estat)) - 16);
+      ct.stroke();
+      ct.fillStyle = ct.strokeStyle;
+      ct.beginPath();
+      ct.moveTo(g.X(estat), g.Y(densidade(estat)) - 20);
+      ct.lineTo(g.X(estat) - 5, g.Y(densidade(estat)) - 10);
+      ct.lineTo(g.X(estat) + 5, g.Y(densidade(estat)) - 10);
+      ct.closePath(); ct.fill();
+      ct.font = '600 11px system-ui, sans-serif';
+      ct.textAlign = 'center'; ct.textBaseline = 'bottom';
+      ct.fillText('calculado: ' + M.fmt(estat, 2), g.X(estat), g.Y(densidade(estat)) - 23);
+      ct.restore();
+
+      /* rótulos das regiões */
+      ct.font = '600 10px system-ui, sans-serif';
+      ct.textAlign = 'center'; ct.textBaseline = 'middle';
+      ct.fillStyle = '#2c5f8d';
+      ct.fillText('NÃO REJEITAR H₀', g.X((naoLo + naoHi) / 2), g.y1 - 16);
+      if (cDir !== null && g.X(lim) - g.X(cDir) > 46) {
+        ct.fillStyle = '#8c2f39';
+        ct.fillText('REJEITAR', (g.X(cDir) + g.x1) / 2, g.y1 - 16);
+      }
+      if (cEsq !== null && g.X(cEsq) - g.x0 > 46) {
+        ct.fillStyle = '#8c2f39';
+        ct.fillText('REJEITAR', (g.x0 + g.X(cEsq)) / 2, g.y1 - 16);
+      }
+
+      painel({
+        crit: cauda === 'bi' ? '±' + M.fmt(cDir, 3)
+              : (cauda === 'dir' ? '+' + M.fmt(cDir, 3) : M.fmt(cEsq, 3)),
+        est: M.fmt(estat, 3),
+        p: M.fmt(p, 4),
+        dec: rejeita ? '<span style="color:#8c2f39">rejeitar H₀</span>'
+                     : '<span style="color:#1f6f54">não rejeitar</span>'
+      });
+
+      saida.innerHTML = rejeita
+        ? 'A estatística <b>' + M.fmt(estat, 2) + '</b> caiu na <b>região crítica</b>. '
+          + 'O valor p = <b>' + M.fmt(p, 4) + '</b> é menor que α = ' + M.fmt(alfa, 2) + ', '
+          + 'e as duas vias levam à mesma conclusão: <b>rejeitamos H₀</b> ao nível de '
+          + M.pct(alfa, 0) + '. Isso significa que um resultado tão extremo quanto este '
+          + 'ocorreria em apenas ' + M.pct(p, 2) + ' das amostras se H₀ fosse verdadeira.'
+        : 'A estatística <b>' + M.fmt(estat, 2) + '</b> está na <b>região de não rejeição</b>. '
+          + 'O valor p = <b>' + M.fmt(p, 4) + '</b> excede α = ' + M.fmt(alfa, 2) + '. '
+          + '<b>Não rejeitamos H₀</b> — o que não é o mesmo que aceitá-la: apenas não há '
+          + 'evidência suficiente contra ela nesta amostra.';
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     21. Erros tipo I e II, e o poder do teste
+     ================================================================= */
+  function poderTeste(raiz) {
+    var c = moldura(raiz, 'Erro tipo I, erro tipo II e o poder do teste');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var alfa = 0.05, efeito = 2.5, nAm = 16, sigma = 4;
+
+    var campoA = el('div', { class: 'campo' });
+    campoA.appendChild(el('label', { html: 'Nível α' }));
+    var selA = el('select');
+    [['0.10', '10%'], ['0.05', '5%'], ['0.01', '1%'], ['0.001', '0,1%']].forEach(function (o) {
+      selA.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selA.value = '0.05';
+    campoA.appendChild(selA); ctr.appendChild(campoA);
+    selA.addEventListener('change', function () { alfa = Number(selA.value); atualizar(); });
+
+    deslizante(ctr, 'efeito real μ₁ − μ₀', 0, 8, 0.1, 2.5, function (v) { efeito = v; atualizar(); },
+      function (v) { return v.toFixed(1).replace('.', ','); });
+    deslizante(ctr, 'tamanho da amostra n', 2, 120, 1, 16, function (v) { nAm = v; atualizar(); });
+    deslizante(ctr, 'σ da população', 1, 12, 0.5, 4, function (v) { sigma = v; atualizar(); },
+      function (v) { return v.toFixed(1).replace('.', ','); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Curva azul: distribuição sob H₀ &nbsp;·&nbsp; curva verde: sob H₁ (efeito real) '
+      + '&nbsp;·&nbsp; vermelho: erro tipo I (α) &nbsp;·&nbsp; âmbar: erro tipo II (β)' }));
+    var painel = cartoes(c, [
+      { rot: 'α (erro tipo I)', k: 'a' },
+      { rot: 'β (erro tipo II)', k: 'b' },
+      { rot: 'poder = 1 − β', k: 'pod' },
+      { rot: 'valor crítico', k: 'crit' },
+      { rot: 'n para 80% de poder', k: 'n80' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var ep = sigma / Math.sqrt(nAm);
+      var zc = M.zCritico(1 - alfa);          /* unilateral à direita */
+      var limite = zc * ep;                    /* em unidades da grandeza */
+      var beta = M.FNormal(limite, efeito, ep);
+      var poder = 1 - beta;
+
+      /* n necessário para poder 80%, unilateral */
+      var n80 = efeito > 0
+        ? Math.ceil(Math.pow((M.zCritico(1 - alfa) + M.zCritico(0.80)) * sigma / efeito, 2))
+        : Infinity;
+
+      painel({
+        a: M.pct(alfa, 1), b: M.pct(beta, 1), pod: M.pct(poder, 1),
+        crit: M.fmt(limite, 3),
+        n80: isFinite(n80) ? String(n80) : '∞'
+      });
+
+      var lo = Math.min(-4 * ep, efeito - 4 * ep);
+      var hi = Math.max(4 * ep, efeito + 4 * ep);
+      var f0 = function (x) { return M.dNormal(x, 0, ep); };
+      var f1 = function (x) { return M.dNormal(x, efeito, ep); };
+      var g = G.eixos(cv, {
+        xmin: lo, xmax: hi, ymax: M.dNormal(0, 0, ep) * 1.22, altura: 300,
+        rotX: 'diferença observada  x̄ − μ₀', rotY: 'densidade',
+        marcasX: G.marcasLineares(lo, hi, 7, 1),
+        formataY: function (v) { return v.toFixed(2).replace('.', ','); }
+      });
+
+      /* erro tipo II: área de H1 à esquerda do limite */
+      G.area(g, f1, lo, limite, 'rgba(181,131,31,.38)');
+      /* erro tipo I: área de H0 à direita do limite */
+      G.area(g, f0, limite, hi, 'rgba(140,47,57,.42)');
+
+      G.curva(g, f0, G.COR.azul, 2.2);
+      G.curva(g, f1, G.COR.verde, 2.2);
+      G.vertical(g, limite, G.COR.tinta, 'crítico', false);
+      G.legenda(g, [
+        { texto: 'H₀ (sem efeito)', cor: G.COR.azul },
+        { texto: 'H₁ (efeito real)', cor: G.COR.verde }
+      ]);
+
+      saida.innerHTML =
+        'Com efeito real de <b>' + M.fmt(efeito, 1) + '</b>, n = <b>' + nAm + '</b> e σ = <b>'
+        + M.fmt(sigma, 1) + '</b>, o teste tem poder de <b>' + M.pct(poder, 1) + '</b>: '
+        + 'é essa a chance de detectar o efeito, se ele de fato existir. '
+        + (poder < 0.8
+            ? '<b style="color:#8c2f39">Poder abaixo de 80% — o estudo é subdimensionado.</b> '
+              + 'Seriam necessárias <b>' + (isFinite(n80) ? n80 : '∞') + '</b> observações '
+              + 'para atingir 80%.'
+            : 'Poder adequado (≥ 80%, o mínimo usualmente exigido).')
+        + '<br><br>Repare na tensão: reduzir α empurra o valor crítico para a direita e '
+        + '<b>encolhe</b> o vermelho — mas <b>aumenta</b> o âmbar. Com n fixo, diminuir um erro '
+        + 'aumenta o outro. Só aumentar n reduz os dois ao mesmo tempo, por estreitar as duas curvas.';
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Registro e inicialização
      ================================================================= */
   var REGISTRO = {
@@ -2507,7 +2773,8 @@
     descritiva: descritiva, amostragem: amostragem, tstudent: tstudent,
     quiquadrado: quiquadrado, gradedados: gradeDados,
     pascal: pascal, aniversarios: aniversarios, montyhall: montyhall,
-    galton: galton, intervalos: intervalos, calcic: calcIC
+    galton: galton, intervalos: intervalos, calcic: calcIC,
+    regiaocritica: regiaoCritica, poder: poderTeste
   };
 
   document.addEventListener('DOMContentLoaded', function () {
