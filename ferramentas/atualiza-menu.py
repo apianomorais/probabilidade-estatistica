@@ -22,6 +22,7 @@ TITULOS = {
     10: "Testes qui-quadrado",
     11: "Testes de normalidade",
     12: "Correlação",
+    13: "Regressão linear e mínimos quadrados",
 }
 
 
@@ -40,7 +41,7 @@ def monta_menu(pagina_atual):
     partes = [link("index.html", "Início")]
 
     for rotulo, faixa in (("Probabilidade", range(1, 6)),
-                          ("Estatística", range(6, 13))):
+                          ("Estatística", range(6, 14))):
         numeros = [n for n in faixa if n in existentes]
         if not numeros:
             continue

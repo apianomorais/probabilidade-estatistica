@@ -3581,6 +3581,580 @@
   }
 
   /* =================================================================
+     Regressão linear simples pelos mínimos quadrados
+     ================================================================= */
+  var REG = {
+    pendulo: { rot: 'Pêndulo: T² × L', rx: 'comprimento L (m)', ry: 'T² (s²)',
+      x: [0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.10],
+      y: [0.8317, 1.2056, 1.6002, 1.9881, 2.4336, 2.8595, 3.2184, 3.6252, 4.0562, 4.4352] },
+    ohm: { rot: 'Lei de Ohm: V × I', rx: 'corrente I (A)', ry: 'tensão V (V)',
+      x: [0.020, 0.040, 0.060, 0.080, 0.100, 0.120, 0.140, 0.160],
+      y: [0.95, 1.96, 2.76, 3.82, 4.68, 5.62, 6.69, 7.53] },
+    altura: { rot: 'Altura × peso', rx: 'altura (cm)', ry: 'peso (kg)',
+      x: [165, 170, 175, 168, 172, 180, 160, 175, 165, 170],
+      y: [60, 65, 70, 68, 72, 80, 55, 75, 62, 68] },
+    a1: { rot: 'Anscombe I (bem comportado)', rx: 'x', ry: 'y',
+      x: [10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5],
+      y: [8.04, 6.95, 7.58, 8.81, 8.33, 9.96, 7.24, 4.26, 10.84, 4.82, 5.68] },
+    a2: { rot: 'Anscombe II (curvatura)', rx: 'x', ry: 'y',
+      x: [10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5],
+      y: [9.14, 8.14, 8.74, 8.77, 9.26, 8.10, 6.13, 3.10, 9.13, 7.26, 4.74] },
+    a3: { rot: 'Anscombe III (um ponto atípico)', rx: 'x', ry: 'y',
+      x: [10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5],
+      y: [7.46, 6.77, 12.74, 7.11, 7.81, 8.84, 6.08, 5.39, 8.15, 6.42, 5.73] }
+  };
+
+  /* ajuste por mínimos quadrados, com toda a decomposição da variação */
+  function mmq(x, y) {
+    var n = x.length, i;
+    var mx = 0, my = 0;
+    for (i = 0; i < n; i++) { mx += x[i]; my += y[i]; }
+    mx /= n; my /= n;
+    var Sxx = 0, Syy = 0, Sxy = 0;
+    for (i = 0; i < n; i++) {
+      Sxx += (x[i] - mx) * (x[i] - mx);
+      Syy += (y[i] - my) * (y[i] - my);
+      Sxy += (x[i] - mx) * (y[i] - my);
+    }
+    var a = Sxy / Sxx, b = my - a * mx;
+    var SQT = Syy, SQE = a * Sxy, SQR = SQT - SQE;
+    var gl = n - 2;
+    var se = gl > 0 ? Math.sqrt(SQR / gl) : NaN;      /* erro padrão da estimativa */
+    var sea = se / Math.sqrt(Sxx);                     /* erro padrão da inclinação */
+    var seb = se * Math.sqrt(1 / n + mx * mx / Sxx);   /* erro padrão do intercepto */
+    var r2 = SQT > 0 ? SQE / SQT : NaN;
+    var res = [];
+    for (i = 0; i < n; i++) res.push(y[i] - (a * x[i] + b));
+    return { n: n, mx: mx, my: my, Sxx: Sxx, Syy: Syy, Sxy: Sxy,
+             a: a, b: b, SQT: SQT, SQE: SQE, SQR: SQR, gl: gl,
+             se: se, sea: sea, seb: seb, r2: r2, r: Math.sign(a) * Math.sqrt(r2),
+             ta: a / sea, tb: b / seb, res: res };
+  }
+
+  /* escala simétrica arredondada para os gráficos de resíduo */
+  function escalaRes(m) {
+    if (!isFinite(m) || m <= 0) return 1;
+    var e = Math.pow(10, Math.floor(Math.log10(m)));
+    var r = m / e;
+    var mult = r <= 1 ? 1 : r <= 2 ? 2 : r <= 2.5 ? 2.5 : r <= 5 ? 5 : 10;
+    return mult * e;
+  }
+
+  function regressao(raiz) {
+    var c = moldura(raiz, 'Laboratório de regressão: a reta dos mínimos quadrados');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var chave = 'pendulo', vista = 'disp', x0 = null;
+
+    var campoD = el('div', { class: 'campo', style: 'flex:2 1 230px' });
+    campoD.appendChild(el('label', { html: 'Conjunto de dados' }));
+    var selD = el('select');
+    Object.keys(REG).forEach(function (k) {
+      selD.appendChild(el('option', { value: k, texto: REG[k].rot }));
+    });
+    campoD.appendChild(selD); ctr.appendChild(campoD);
+    selD.addEventListener('change', function () {
+      chave = selD.value;
+      iX.value = REG[chave].x.join(', ');
+      iY.value = REG[chave].y.join(', ');
+      atualizar();
+    });
+
+    var campoV = el('div', { class: 'campo' });
+    campoV.appendChild(el('label', { html: 'O que mostrar' }));
+    var selV = el('select');
+    [['disp', 'Dispersão, reta e bandas'], ['res', 'Gráfico de resíduos'],
+     ['qq', 'Normalidade dos resíduos']].forEach(function (o) {
+      selV.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoV.appendChild(selV); ctr.appendChild(campoV);
+    selV.addEventListener('change', function () { vista = selV.value; atualizar(); });
+
+    var campoP = el('div', { class: 'campo' });
+    campoP.appendChild(el('label', { html: 'Prever em x₀ <i>(opcional)</i>' }));
+    var iP = el('input', { type: 'number', step: 'any', placeholder: 'ex.: 0,75' });
+    campoP.appendChild(iP); ctr.appendChild(campoP);
+    iP.addEventListener('input', function () {
+      x0 = iP.value === '' ? null : Number(iP.value); atualizar();
+    });
+
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    var campoX = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    campoX.appendChild(el('label', { html: 'valores de x' }));
+    var iX = el('input', { type: 'text' }); campoX.appendChild(iX); ctr2.appendChild(campoX);
+    var campoY = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    campoY.appendChild(el('label', { html: 'valores de y' }));
+    var iY = el('input', { type: 'text' }); campoY.appendChild(iY); ctr2.appendChild(campoY);
+    iX.addEventListener('input', atualizar);
+    iY.addEventListener('input', atualizar);
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda' }); c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'inclinação a', k: 'a' }, { rot: 'erro de a', k: 'sa' },
+      { rot: 'intercepto b', k: 'b' }, { rot: 'erro de b', k: 'sb' },
+      { rot: 'r²', k: 'r2' }, { rot: 'erro padrão sₑ', k: 'se' }
+    ]);
+    var anova = el('div', { class: 'saida' }); c.appendChild(anova);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function ler(s) {
+      return String(s).split(/[,;\s]+/).map(function (t) {
+        return Number(t.trim().replace(',', '.'));
+      }).filter(function (v) { return isFinite(v); });
+    }
+
+    function marcar(g, px, py, cor, raio) {
+      var ct = g.ct;
+      ct.fillStyle = cor;
+      ct.beginPath();
+      ct.arc(px, py, raio || 4, 0, 2 * Math.PI);
+      ct.fill();
+      ct.strokeStyle = '#fff'; ct.lineWidth = 1.2; ct.stroke();
+    }
+
+    function atualizar() {
+      var x = ler(iX.value), y = ler(iY.value);
+      var n = Math.min(x.length, y.length);
+      if (n < 3) {
+        saida.innerHTML = 'Informe ao menos três pares (x, y).';
+        anova.innerHTML = '';
+        painel({ a: '—', sa: '—', b: '—', sb: '—', r2: '—', se: '—' });
+        G.preparar(cv, 300);
+        return;
+      }
+      x = x.slice(0, n); y = y.slice(0, n);
+      var R = mmq(x, y);
+      var tc = M.tCritico(0.025, R.gl);
+      var pA = 2 * (1 - M.FT(Math.abs(R.ta), R.gl));
+      var pB = 2 * (1 - M.FT(Math.abs(R.tb), R.gl));
+
+      painel({
+        a: M.fmt(R.a, 4), sa: '±' + M.fmt(R.sea, 4),
+        b: M.fmt(R.b, 4), sb: '±' + M.fmt(R.seb, 4),
+        r2: M.fmt(R.r2, 5), se: M.fmt(R.se, 4)
+      });
+
+      if (vista === 'disp') desenharDisp(x, y, R, tc);
+      else if (vista === 'res') desenharRes(x, R);
+      else desenharQQ(R);
+
+      /* ----- decomposição da variação ----- */
+      anova.innerHTML =
+        '<b>Decomposição da variação.</b> '
+        + 'SQT = <b>' + M.fmt(R.SQT, 4) + '</b> &nbsp;=&nbsp; '
+        + 'SQE (explicada pela reta) = <b>' + M.fmt(R.SQE, 4) + '</b> &nbsp;+&nbsp; '
+        + 'SQR (residual) = <b>' + M.fmt(R.SQR, 4) + '</b>. '
+        + 'A razão SQE/SQT é exatamente o r² = <b>' + M.pct(R.r2, 2) + '</b>, '
+        + 'e sₑ = √(SQR/(n−2)) = <b>' + M.fmt(R.se, 4) + '</b> é o desvio típico de um ponto '
+        + 'em torno da reta — nas mesmas unidades de y.';
+
+      /* ----- texto principal ----- */
+      var rotY = REG[chave] ? REG[chave].ry : 'y';
+      var rotX = REG[chave] ? REG[chave].rx : 'x';
+      var txt = 'Reta ajustada: <b>ŷ = ' + M.fmt(R.a, 4) + ' x '
+        + (R.b >= 0 ? '+ ' : '− ') + M.fmt(Math.abs(R.b), 4) + '</b>.<br>'
+        + 'Cada unidade a mais de ' + rotX + ' corresponde, em média, a <b>'
+        + M.fmt(R.a, 4) + '</b> unidade(s) a mais de ' + rotY + '.';
+
+      txt += '<br><br><b>Inclinação:</b> t = a/s<sub>a</sub> = ' + M.fmt(R.ta, 3)
+        + ' com ν = ' + R.gl + ', crítico ' + M.fmt(tc, 3) + ' a 5% — '
+        + (pA < 0.05
+            ? '<b>significativa</b> (p = ' + M.fmt(pA, 5) + '): há relação linear entre as duas variáveis.'
+            : '<b>não significativa</b> (p = ' + M.fmt(pA, 4) + '): os dados são compatíveis com inclinação nula.')
+        + ' IC 95% para a inclinação: <b>[' + M.fmt(R.a - tc * R.sea, 4) + ' ; '
+        + M.fmt(R.a + tc * R.sea, 4) + ']</b>.';
+
+      txt += '<br><br><b>Intercepto:</b> b = ' + M.fmt(R.b, 4) + ' ± ' + M.fmt(R.seb, 4)
+        + ', IC 95% [' + M.fmt(R.b - tc * R.seb, 4) + ' ; ' + M.fmt(R.b + tc * R.seb, 4) + ']. '
+        + (pB < 0.05
+            ? 'É <b>diferente de zero</b> (p = ' + M.fmt(pB, 4) + ').'
+            : 'É <b>compatível com zero</b> (p = ' + M.fmt(pB, 3) + ') — se a teoria prevê que a '
+              + 'reta passe pela origem, os dados não a contradizem.');
+
+      /* ----- previsão ----- */
+      if (x0 !== null && isFinite(x0)) {
+        var yh = R.a * x0 + R.b;
+        var raizM = Math.sqrt(1 / R.n + Math.pow(x0 - R.mx, 2) / R.Sxx);
+        var raizP = Math.sqrt(1 + 1 / R.n + Math.pow(x0 - R.mx, 2) / R.Sxx);
+        var fora = x0 < Math.min.apply(null, x) || x0 > Math.max.apply(null, x);
+        txt += '<br><br><b>Previsão em x₀ = ' + M.fmt(x0, 4) + ':</b> ŷ = <b>'
+          + M.fmt(yh, 4) + '</b>.<br>'
+          + 'IC 95% para a <i>média</i> de y nesse x₀: ['
+          + M.fmt(yh - tc * R.se * raizM, 4) + ' ; ' + M.fmt(yh + tc * R.se * raizM, 4) + ']<br>'
+          + 'Intervalo de <i>previsão</i> para uma nova observação: ['
+          + M.fmt(yh - tc * R.se * raizP, 4) + ' ; ' + M.fmt(yh + tc * R.se * raizP, 4) + ']'
+          + '<br>O segundo é bem mais largo porque carrega, além da incerteza da reta, a '
+          + 'dispersão natural de um ponto individual em torno dela.'
+          + (fora ? ' <b>Atenção:</b> x₀ está <b>fora</b> da faixa observada — isso é '
+                  + 'extrapolação, e a reta não tem autoridade nenhuma ali.' : '');
+      }
+
+      /* ----- diagnóstico dos resíduos ----- */
+      var somaRes = R.res.reduce(function (s, v) { return s + v; }, 0);
+      var dag = R.n >= 8 ? M.dagostino(R.res) : null;
+      txt += '<br><br><b>Resíduos:</b> somam ' + M.fmt(somaRes, 6)
+        + ' (sempre zero, por construção — a reta é escolhida para que isso aconteça). ';
+      if (dag) {
+        txt += 'O teste de D’Agostino sobre eles dá p = <b>' + M.fmt(dag.p, 4) + '</b>: '
+          + (dag.p < 0.05
+              ? 'há evidência contra a normalidade dos resíduos, e os intervalos acima devem ser '
+                + 'lidos com reserva.'
+              : 'nada contra a hipótese de resíduos normais.');
+      } else {
+        txt += 'Com n &lt; 8 não há como testar sua normalidade de forma confiável.';
+      }
+      txt += ' Troque a vista para <i>Gráfico de resíduos</i>: se sobrar qualquer padrão '
+        + 'visível ali — curvatura, funil, degrau — a reta não é o modelo certo.';
+
+      saida.innerHTML = txt;
+    }
+
+    function desenharDisp(x, y, R, tc) {
+      var xmin = Math.min.apply(null, x), xmax = Math.max.apply(null, x);
+      var fx = (xmax - xmin) * 0.12 || 1;
+      var X0 = xmin - fx, X1 = xmax + fx;
+      if (x0 !== null && isFinite(x0)) { X0 = Math.min(X0, x0 - fx / 2); X1 = Math.max(X1, x0 + fx / 2); }
+
+      function banda(v, k) {
+        return tc * R.se * Math.sqrt(k + 1 / R.n + Math.pow(v - R.mx, 2) / R.Sxx);
+      }
+      var ymin = Math.min.apply(null, y), ymax = Math.max.apply(null, y);
+      ymin = Math.min(ymin, R.a * X0 + R.b - banda(X0, 1), R.a * X1 + R.b - banda(X1, 1));
+      ymax = Math.max(ymax, R.a * X0 + R.b + banda(X0, 1), R.a * X1 + R.b + banda(X1, 1));
+      var fy = (ymax - ymin) * 0.08 || 1;
+
+      var g = G.eixos(cv, {
+        xmin: X0, xmax: X1, ymin: ymin - fy, ymax: ymax + fy, altura: 320,
+        rotX: REG[chave] ? REG[chave].rx : 'x',
+        rotY: REG[chave] ? REG[chave].ry : 'y',
+        marcasX: G.marcasLineares(X0, X1, 6, (xmax - xmin) > 20 ? 0 : 2),
+        formataY: function (v) { return M.fmt(v, (ymax - ymin) > 20 ? 0 : 2); }
+      });
+      var ct = g.ct, i, v;
+
+      /* bandas: previsão (mais larga, clara) e média (estreita) */
+      [[1, 'rgba(181,131,31,.13)'], [0, 'rgba(31,78,121,.20)']].forEach(function (par) {
+        ct.fillStyle = par[1];
+        ct.beginPath();
+        for (i = 0; i <= 120; i++) {
+          v = X0 + (X1 - X0) * i / 120;
+          var py = g.Y(R.a * v + R.b + banda(v, par[0]));
+          if (i === 0) ct.moveTo(g.X(v), py); else ct.lineTo(g.X(v), py);
+        }
+        for (i = 120; i >= 0; i--) {
+          v = X0 + (X1 - X0) * i / 120;
+          ct.lineTo(g.X(v), g.Y(R.a * v + R.b - banda(v, par[0])));
+        }
+        ct.closePath(); ct.fill();
+      });
+
+      /* resíduos verticais */
+      ct.strokeStyle = 'rgba(140,47,57,.45)'; ct.lineWidth = 1; ct.setLineDash([3, 3]);
+      for (i = 0; i < x.length; i++) {
+        ct.beginPath();
+        ct.moveTo(g.X(x[i]), g.Y(y[i]));
+        ct.lineTo(g.X(x[i]), g.Y(R.a * x[i] + R.b));
+        ct.stroke();
+      }
+      ct.setLineDash([]);
+
+      /* reta */
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2.4;
+      ct.beginPath();
+      ct.moveTo(g.X(X0), g.Y(R.a * X0 + R.b));
+      ct.lineTo(g.X(X1), g.Y(R.a * X1 + R.b));
+      ct.stroke();
+
+      /* centroide e pontos */
+      for (i = 0; i < x.length; i++) marcar(g, g.X(x[i]), g.Y(y[i]), G.COR.azul, 4.2);
+      marcar(g, g.X(R.mx), g.Y(R.my), '#b5831f', 6);
+
+      if (x0 !== null && isFinite(x0)) {
+        G.vertical(g, x0, '#2e7d4f', 'x₀');
+        marcar(g, g.X(x0), g.Y(R.a * x0 + R.b), '#2e7d4f', 5);
+      }
+
+      legenda.innerHTML = 'Pontos azuis: dados &nbsp;·&nbsp; linha vinho: reta dos mínimos '
+        + 'quadrados &nbsp;·&nbsp; tracejado: resíduos &nbsp;·&nbsp; faixa azul: IC 95% da '
+        + '<b>média</b> de y &nbsp;·&nbsp; faixa clara: intervalo de <b>previsão</b> &nbsp;·&nbsp; '
+        + 'ponto dourado: o centroide (x̄, ȳ), por onde a reta sempre passa.';
+    }
+
+    function desenharRes(x, R) {
+      var xmin = Math.min.apply(null, x), xmax = Math.max.apply(null, x);
+      var fx = (xmax - xmin) * 0.1 || 1;
+      var m = escalaRes(Math.max.apply(null, R.res.map(Math.abs)) * 1.25);
+      var g = G.eixos(cv, {
+        xmin: xmin - fx, xmax: xmax + fx, ymin: -m, ymax: m, altura: 300, divY: 4,
+        rotX: REG[chave] ? REG[chave].rx : 'x', rotY: 'resíduo  y − ŷ',
+        marcasX: G.marcasLineares(xmin - fx, xmax + fx, 6, (xmax - xmin) > 20 ? 0 : 2),
+        formataY: function (v) { return M.fmt(v, 2); }
+      });
+      var ct = g.ct, i;
+      /* faixa de ±2 sₑ */
+      ct.fillStyle = 'rgba(31,78,121,.10)';
+      ct.fillRect(g.X(g.xmin), g.Y(2 * R.se), g.X(g.xmax) - g.X(g.xmin),
+                  g.Y(-2 * R.se) - g.Y(2 * R.se));
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 1.6;
+      ct.beginPath(); ct.moveTo(g.X(g.xmin), g.Y(0)); ct.lineTo(g.X(g.xmax), g.Y(0)); ct.stroke();
+      for (i = 0; i < x.length; i++) {
+        ct.strokeStyle = 'rgba(31,78,121,.5)'; ct.lineWidth = 1;
+        ct.beginPath(); ct.moveTo(g.X(x[i]), g.Y(0)); ct.lineTo(g.X(x[i]), g.Y(R.res[i])); ct.stroke();
+        marcar(g, g.X(x[i]), g.Y(R.res[i]), G.COR.azul, 4.2);
+      }
+      legenda.innerHTML = 'Faixa azul: ±2sₑ, onde devem cair cerca de 95% dos resíduos. '
+        + 'O que se procura aqui é <b>ausência de padrão</b>: pontos espalhados ao acaso em '
+        + 'torno do zero. Curvatura denuncia modelo errado; abertura em funil denuncia '
+        + 'variância não constante.';
+    }
+
+    function desenharQQ(R) {
+      var r = R.res.slice().sort(function (p, q) { return p - q; });
+      var n = r.length, i, teo = [], s = R.se;
+      for (i = 0; i < n; i++) teo.push(M.zCritico((i + 1 - 0.375) / (n + 0.25)) * s);
+      var lim = Math.max(Math.max.apply(null, r.map(Math.abs)),
+                         Math.max.apply(null, teo.map(Math.abs))) * 1.2;
+      var g = G.eixos(cv, {
+        xmin: -lim, xmax: lim, ymin: -lim, ymax: lim, altura: 300,
+        rotX: 'quantil teórico (normal)', rotY: 'resíduo observado',
+        marcasX: G.marcasLineares(-lim, lim, 6, 2),
+        formataY: function (v) { return M.fmt(v, 2); }
+      });
+      var ct = g.ct;
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2; ct.setLineDash([6, 4]);
+      ct.beginPath(); ct.moveTo(g.X(-lim), g.Y(-lim)); ct.lineTo(g.X(lim), g.Y(lim)); ct.stroke();
+      ct.setLineDash([]);
+      for (i = 0; i < n; i++) marcar(g, g.X(teo[i]), g.Y(r[i]), G.COR.azul, 4.2);
+      legenda.innerHTML = 'Se os resíduos forem normais, os pontos acompanham a diagonal. '
+        + 'Curvatura nas pontas indica caudas pesadas ou assimetria — o mesmo diagnóstico '
+        + 'do Módulo 11, aplicado agora ao que sobrou depois do ajuste.';
+    }
+
+    iX.value = REG.pendulo.x.join(', ');
+    iY.value = REG.pendulo.y.join(', ');
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     Linearização de leis físicas
+     ================================================================= */
+  var LEIS = {
+    pendulo: {
+      rot: 'Pêndulo simples',
+      x: [0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.10],
+      y: [0.912, 1.098, 1.265, 1.410, 1.560, 1.691, 1.794, 1.904, 2.014, 2.106],
+      rx: 'L (m)', ry: 'T (s)',
+      lei: 'T = 2π√(L/g)',
+      opcoes: [
+        { k: 'cru', rot: 'T contra L (sem transformar)', fx: function (v) { return v; },
+          fy: function (v) { return v; }, rx: 'L (m)', ry: 'T (s)' },
+        { k: 'quad', rot: 'T² contra L  ✓', fx: function (v) { return v; },
+          fy: function (v) { return v * v; }, rx: 'L (m)', ry: 'T² (s²)' },
+        { k: 'log', rot: 'ln T contra ln L', fx: Math.log, fy: Math.log,
+          rx: 'ln L', ry: 'ln T' }
+      ],
+      extrai: function (op, R) {
+        if (op === 'quad')
+          return { nome: 'g', valor: 4 * Math.PI * Math.PI / R.a,
+                   erro: 4 * Math.PI * Math.PI / R.a * (R.sea / R.a), un: 'm/s²',
+                   esperado: 9.78,
+                   nota: 'A inclinação da reta T² × L é 4π²/g, de modo que g = 4π²/a. '
+                       + 'O intercepto deve ser compatível com zero — e é.' };
+        if (op === 'log')
+          return { nome: 'expoente de L', valor: R.a, erro: R.sea, un: '',
+                   esperado: 0.5,
+                   nota: 'Num gráfico log–log a inclinação é o expoente da lei de potência. '
+                       + 'O valor 0,5 confirma a dependência com a raiz quadrada de L.' };
+        return { nome: '—', valor: NaN, erro: NaN, un: '',
+                 nota: 'Sem transformar não há constante física extraível: a inclinação de '
+                     + 'T contra L não corresponde a grandeza alguma, e o intercepto afirma '
+                     + 'que um pêndulo de comprimento nulo oscilaria com período não nulo.' };
+      }
+    },
+    decaimento: {
+      rot: 'Decaimento radioativo',
+      x: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45],
+      y: [1974, 1611, 1228, 1010, 797, 633, 490, 416, 331, 233],
+      rx: 't (min)', ry: 'contagens N',
+      lei: 'N = N₀ e^{-λt}',
+      opcoes: [
+        { k: 'cru', rot: 'N contra t (sem transformar)', fx: function (v) { return v; },
+          fy: function (v) { return v; }, rx: 't (min)', ry: 'N' },
+        { k: 'log', rot: 'ln N contra t  ✓', fx: function (v) { return v; }, fy: Math.log,
+          rx: 't (min)', ry: 'ln N' }
+      ],
+      extrai: function (op, R) {
+        if (op === 'log')
+          return { nome: 'meia-vida', valor: Math.log(2) / (-R.a),
+                   erro: Math.log(2) / (R.a * R.a) * R.sea, un: 'min', esperado: 15,
+                   nota: 'A inclinação é −λ, e a meia-vida é ln2/λ. O intercepto dá '
+                       + 'ln N₀ = ' + M.fmt(R.b, 3) + ', ou seja, N₀ ≈ '
+                       + M.fmt(Math.exp(R.b), 0) + ' contagens.' };
+        return { nome: '—', valor: NaN, erro: NaN, un: '',
+                 nota: 'A reta sobre os dados crus não serve: o decaimento é exponencial, e '
+                     + 'qualquer reta vai subestimar o início e superestimar o fim. Repare na '
+                     + 'curvatura evidente no gráfico de resíduos.' };
+      }
+    },
+    ohm: {
+      rot: 'Lei de Ohm',
+      x: [0.020, 0.040, 0.060, 0.080, 0.100, 0.120, 0.140, 0.160],
+      y: [0.95, 1.96, 2.76, 3.82, 4.68, 5.62, 6.69, 7.53],
+      rx: 'I (A)', ry: 'V (V)',
+      lei: 'V = R I',
+      opcoes: [
+        { k: 'cru', rot: 'V contra I  ✓ (já é linear)', fx: function (v) { return v; },
+          fy: function (v) { return v; }, rx: 'I (A)', ry: 'V (V)' }
+      ],
+      extrai: function (op, R) {
+        return { nome: 'resistência R', valor: R.a, erro: R.sea, un: 'Ω', esperado: 47,
+                 nota: 'Aqui a lei já é linear e nenhuma transformação é necessária. A '
+                     + 'inclinação é a própria resistência, e o intercepto, compatível com '
+                     + 'zero, confirma que não há tensão de offset no circuito.' };
+      }
+    }
+  };
+
+  function linearizacao(raiz) {
+    var c = moldura(raiz, 'Linearização: extrair a constante física de uma reta');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var chave = 'pendulo', op = 'cru';
+
+    var campoL = el('div', { class: 'campo', style: 'flex:2 1 200px' });
+    campoL.appendChild(el('label', { html: 'Experimento' }));
+    var selL = el('select');
+    Object.keys(LEIS).forEach(function (k) {
+      selL.appendChild(el('option', { value: k, texto: LEIS[k].rot }));
+    });
+    campoL.appendChild(selL); ctr.appendChild(campoL);
+
+    var campoO = el('div', { class: 'campo', style: 'flex:2 1 220px' });
+    campoO.appendChild(el('label', { html: 'Como gráficar' }));
+    var selO = el('select');
+    campoO.appendChild(selO); ctr.appendChild(campoO);
+
+    function preencherOpcoes() {
+      selO.innerHTML = '';
+      LEIS[chave].opcoes.forEach(function (o) {
+        selO.appendChild(el('option', { value: o.k, texto: o.rot }));
+      });
+      op = LEIS[chave].opcoes[0].k;
+      selO.value = op;
+    }
+    preencherOpcoes();
+
+    selL.addEventListener('change', function () {
+      chave = selL.value; preencherOpcoes(); atualizar();
+    });
+    selO.addEventListener('change', function () { op = selO.value; atualizar(); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var cv2 = el('canvas'); c.appendChild(cv2);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Acima: os dados no sistema de eixos escolhido, com a reta ajustada. '
+      + 'Abaixo: os resíduos desse ajuste — é neles que a transformação errada se denuncia.' }));
+    var painel = cartoes(c, [
+      { rot: 'inclinação', k: 'a' }, { rot: 'intercepto', k: 'b' },
+      { rot: 'r²', k: 'r2' }, { rot: 'constante extraída', k: 'g' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var L = LEIS[chave];
+      var cfg = L.opcoes.filter(function (o) { return o.k === op; })[0] || L.opcoes[0];
+      var x = L.x.map(cfg.fx), y = L.y.map(cfg.fy);
+      var R = mmq(x, y);
+      var E = L.extrai(op, R);
+
+      painel({
+        a: M.fmt(R.a, 4), b: M.fmt(R.b, 4), r2: M.fmt(R.r2, 6),
+        g: isFinite(E.valor) ? M.fmt(E.valor, 3) + (E.un ? ' ' + E.un : '') : '—'
+      });
+
+      /* gráfico principal */
+      var xmin = Math.min.apply(null, x), xmax = Math.max.apply(null, x);
+      var ymin = Math.min.apply(null, y), ymax = Math.max.apply(null, y);
+      var fx = (xmax - xmin) * 0.1, fy = (ymax - ymin) * 0.12;
+      var g1 = G.eixos(cv, {
+        xmin: xmin - fx, xmax: xmax + fx, ymin: ymin - fy, ymax: ymax + fy, altura: 270,
+        rotX: cfg.rx, rotY: cfg.ry,
+        marcasX: G.marcasLineares(xmin - fx, xmax + fx, 6, 2),
+        formataY: function (v) { return M.fmt(v, Math.abs(ymax - ymin) > 50 ? 0 : 2); }
+      });
+      var ct = g1.ct, i;
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2.2;
+      ct.beginPath();
+      ct.moveTo(g1.X(g1.xmin), g1.Y(R.a * g1.xmin + R.b));
+      ct.lineTo(g1.X(g1.xmax), g1.Y(R.a * g1.xmax + R.b));
+      ct.stroke();
+      for (i = 0; i < x.length; i++) {
+        ct.fillStyle = G.COR.azul;
+        ct.beginPath(); ct.arc(g1.X(x[i]), g1.Y(y[i]), 4.2, 0, 2 * Math.PI); ct.fill();
+        ct.strokeStyle = '#fff'; ct.lineWidth = 1.2; ct.stroke();
+      }
+
+      /* resíduos */
+      var m = escalaRes(Math.max.apply(null, R.res.map(Math.abs)) * 1.3);
+      var g2 = G.eixos(cv2, {
+        xmin: xmin - fx, xmax: xmax + fx, ymin: -m, ymax: m, altura: 190, divY: 4,
+        rotX: cfg.rx, rotY: 'resíduo',
+        marcasX: G.marcasLineares(xmin - fx, xmax + fx, 6, 2),
+        formataY: function (v) { return M.fmt(v, m < 0.1 ? 3 : m < 1 ? 2 : 1); }
+      });
+      var c2 = g2.ct;
+      c2.strokeStyle = G.COR.vinho; c2.lineWidth = 1.6;
+      c2.beginPath(); c2.moveTo(g2.X(g2.xmin), g2.Y(0)); c2.lineTo(g2.X(g2.xmax), g2.Y(0)); c2.stroke();
+      for (i = 0; i < x.length; i++) {
+        c2.strokeStyle = 'rgba(31,78,121,.5)'; c2.lineWidth = 1;
+        c2.beginPath(); c2.moveTo(g2.X(x[i]), g2.Y(0)); c2.lineTo(g2.X(x[i]), g2.Y(R.res[i])); c2.stroke();
+        c2.fillStyle = G.COR.azul;
+        c2.beginPath(); c2.arc(g2.X(x[i]), g2.Y(R.res[i]), 3.6, 0, 2 * Math.PI); c2.fill();
+      }
+
+      /* troca de sinal dos resíduos: detector simples de curvatura */
+      var trocas = 0;
+      for (i = 1; i < R.res.length; i++)
+        if (R.res[i] * R.res[i - 1] < 0) trocas++;
+      var esperadas = (R.res.length - 1) / 2;
+
+      var txt = 'Lei: <b>' + L.lei + '</b> &nbsp;·&nbsp; ajuste de <b>' + cfg.ry
+        + '</b> contra <b>' + cfg.rx + '</b> &nbsp;·&nbsp; r² = <b>' + M.fmt(R.r2, 6) + '</b>.';
+
+      if (isFinite(E.valor)) {
+        txt += '<br><br><b>' + E.nome + ' = ' + M.fmt(E.valor, 3) + ' ± '
+          + M.fmt(E.erro, 3) + ' ' + E.un + '</b>';
+        if (E.esperado !== undefined) {
+          var desv = Math.abs(E.valor - E.esperado) / E.erro;
+          txt += ' — valor de referência ' + M.fmt(E.esperado, 3) + ' ' + E.un
+            + ', a <b>' + M.fmt(desv, 1) + ' σ</b> do obtido'
+            + (desv < 2 ? ', portanto em pleno acordo.'
+                        : ', o que merece investigação de erros sistemáticos.');
+        }
+      }
+      txt += '<br><br>' + E.nota;
+
+      txt += '<br><br><b>Leitura dos resíduos:</b> houve <b>' + trocas
+        + '</b> troca(s) de sinal, contra as ' + M.fmt(esperadas, 1)
+        + ' esperadas se eles fossem puramente aleatórios. '
+        + (trocas < esperadas * 0.55
+            ? 'Poucas trocas significam que os resíduos vêm em blocos de mesmo sinal — a '
+              + '<b>assinatura inconfundível de curvatura</b>. A reta está errada, por mais '
+              + 'alto que seja o r².'
+            : 'Esse número é compatível com resíduos aleatórios: não há curvatura aparente.');
+
+      txt += '<br><br><i>Repare que o r² quase nunca denuncia sozinho o modelo errado.</i> '
+        + 'Ele pode passar de 0,98 e ainda assim esconder uma curvatura sistemática. Quem '
+        + 'denuncia é o gráfico de resíduos — e é por isso que ele vem junto, aqui, sempre.';
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Calculadora de valores críticos (z, t, qui-quadrado)
      ================================================================= */
   function criticos(raiz) {
@@ -3815,7 +4389,8 @@
     galton: galton, intervalos: intervalos, calcic: calcIC,
     regiaocritica: regiaoCritica, poder: poderTeste,
     contingencia: contingencia, aderencia: aderencia, qqplot: qqplot,
-    correlacao: correlacao, criticos: criticos
+    correlacao: correlacao, criticos: criticos,
+    regressao: regressao, linearizacao: linearizacao
   };
 
   document.addEventListener('DOMContentLoaded', function () {
