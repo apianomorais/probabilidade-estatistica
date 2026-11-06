@@ -3167,6 +3167,31 @@
       }, true);
     });
 
+    var transf = 'nenhuma';
+    var TRANSF = {
+      nenhuma: { rot: 'Nenhuma (dados originais)', f: function (v) { return v; },
+                 exige: function () { return true; }, nome: 'x' },
+      ln:   { rot: 'Logaritmo natural — ln x', f: Math.log,
+              exige: function (v) { return v > 0; }, nome: 'ln x' },
+      log10:{ rot: 'Logaritmo decimal — log₁₀ x', f: Math.log10,
+              exige: function (v) { return v > 0; }, nome: 'log₁₀ x' },
+      raiz: { rot: 'Raiz quadrada — √x', f: Math.sqrt,
+              exige: function (v) { return v >= 0; }, nome: '√x' },
+      inv:  { rot: 'Inversa — 1/x', f: function (v) { return 1 / v; },
+              exige: function (v) { return v !== 0; }, nome: '1/x' },
+      quad: { rot: 'Quadrado — x²', f: function (v) { return v * v; },
+              exige: function () { return true; }, nome: 'x²' }
+    };
+    var ctrT = el('div', { class: 'controles' }); c.appendChild(ctrT);
+    var campoTr = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    campoTr.appendChild(el('label', { html: 'Transformação a aplicar' }));
+    var selTr = el('select');
+    Object.keys(TRANSF).forEach(function (k) {
+      selTr.appendChild(el('option', { value: k, texto: TRANSF[k].rot }));
+    });
+    campoTr.appendChild(selTr); ctrT.appendChild(campoTr);
+    selTr.addEventListener('change', function () { transf = selTr.value; atualizar(); });
+
     var cv = el('canvas'); c.appendChild(cv);
     c.appendChild(el('div', { class: 'legenda', html:
       'Quantis teóricos da normal no eixo horizontal, quantis observados no vertical '
@@ -3182,10 +3207,24 @@
     ]);
     var saida = el('div', { class: 'saida' }); c.appendChild(saida);
 
-    function ler() {
+    function lerCru() {
       return String(ta.value).split(/[\s,;]+/).map(function (t) {
         return Number(t.trim().replace(',', '.'));
       }).filter(function (v) { return isFinite(v); });
+    }
+
+    var aviso = '';
+    function ler() {
+      var cru = lerCru(), T = TRANSF[transf];
+      aviso = '';
+      if (transf === 'nenhuma') return cru;
+      var validos = cru.filter(T.exige);
+      if (validos.length < cru.length) {
+        aviso = (cru.length - validos.length) + ' valor(es) foram descartados por não '
+              + 'admitirem esta transformação.';
+      }
+      var fora = validos.map(T.f).filter(function (v) { return isFinite(v); });
+      return fora;
     }
 
     function atualizar() {
@@ -3261,7 +3300,13 @@
              + '(platicúrtica) — típico de dados uniformes ou truncados. ';
       }
 
-      saida.innerHTML = diag
+      var cab = '';
+      if (transf !== 'nenhuma') {
+        cab = 'Analisando <b>' + TRANSF[transf].nome + '</b> em vez de x. '
+            + (aviso ? '<i>' + aviso + '</i> ' : '');
+      }
+
+      saida.innerHTML = cab + diag
         + (rejeitam === 0
             ? 'Nenhum dos testes rejeita a normalidade ao nível de 5%. Os dados são '
               + '<b>compatíveis</b> com uma população normal — o que não prova que o sejam.'
@@ -3283,7 +3328,8 @@
       var g = G.eixos(cv, {
         xmin: tmin - folgaT, xmax: tmax + folgaT,
         ymin: omin - folgaO, ymax: omax + folgaO, altura: 290,
-        rotX: 'quantis teóricos da normal (z)', rotY: 'quantis observados',
+        rotX: 'quantis teóricos da normal (z)',
+        rotY: 'quantis observados de ' + TRANSF[transf].nome,
         marcasX: G.marcasLineares(tmin - folgaT, tmax + folgaT, 6, 1),
         formataY: function (v) { return M.fmt(v, Math.abs(omax - omin) > 50 ? 0 : 1); }
       });
@@ -3325,7 +3371,7 @@
       var lo = Math.min(min, mo.media - 3.5 * mo.s), hi = Math.max(max, mo.media + 3.5 * mo.s);
       var g = G.eixos(cv2, {
         xmin: lo, xmax: hi, ymax: pico * 1.2, altura: 220,
-        rotX: 'valor', rotY: 'densidade',
+        rotX: TRANSF[transf].nome, rotY: 'densidade',
         marcasX: G.marcasLineares(lo, hi, 6, Math.abs(hi - lo) > 50 ? 0 : 1),
         formataY: function (v) { return v.toFixed(2).replace('.', ','); }
       });
@@ -4155,6 +4201,704 @@
   }
 
   /* =================================================================
+     Coeficientes a_i do Shapiro–Wilk, vistos de perto
+     ================================================================= */
+  function coefSW(raiz) {
+    var c = moldura(raiz, 'Os coeficientes aᵢ do Shapiro–Wilk');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var n = 11, vista = 'a';
+    deslizante(ctr, 'Tamanho da amostra n', 4, 60, 1, 11, function (v) { n = v; atualizar(); });
+
+    var campoV = el('div', { class: 'campo', style: 'flex:2 1 240px' });
+    campoV.appendChild(el('label', { html: 'O que mostrar' }));
+    var selV = el('select');
+    [['a', 'Coeficientes aᵢ'],
+     ['m', 'Valores esperados mᵢ das estatísticas de ordem'],
+     ['comp', 'aᵢ e mᵢ sobrepostos']].forEach(function (o) {
+      selV.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoV.appendChild(selV); ctr.appendChild(campoV);
+    selV.addEventListener('change', function () { vista = selV.value; atualizar(); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda' }); c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'a₁ = −aₙ', k: 'a1' }, { rot: 'Σ aᵢ', k: 'soma' },
+      { rot: 'Σ aᵢ²', k: 'soma2' }, { rot: 'peso dos 2 extremos', k: 'ext' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var C = M.coefsSW(n);
+      if (!C) { saida.innerHTML = 'Shapiro–Wilk exige 4 ≤ n ≤ 5000.'; return; }
+      var a = C.a, m = C.m, i;
+      var soma = 0, soma2 = 0;
+      for (i = 0; i < n; i++) { soma += a[i]; soma2 += a[i] * a[i]; }
+      var ext = (a[0] * a[0] + a[n - 1] * a[n - 1]) / soma2;
+
+      painel({
+        a1: M.fmt(a[n - 1], 4), soma: M.fmt(soma, 6),
+        soma2: M.fmt(soma2, 6), ext: M.pct(ext, 1)
+      });
+
+      /* escala comum quando sobrepostos */
+      var serie = vista === 'm' ? m : a;
+      var lim = Math.max.apply(null, serie.map(Math.abs));
+      if (vista === 'comp') lim = Math.max(lim, Math.max.apply(null, m.map(Math.abs)));
+      lim *= 1.2;
+
+      var g = G.eixos(cv, {
+        xmin: 0.3, xmax: n + 0.7, ymin: -lim, ymax: lim, altura: 300, divY: 4,
+        rotX: 'posição i na amostra ordenada',
+        rotY: vista === 'm' ? 'mᵢ' : (vista === 'comp' ? 'aᵢ  e  mᵢ' : 'coeficiente aᵢ'),
+        marcasX: G.marcasInteiras(1, n, 12),
+        formataY: function (v) { return M.fmt(v, 2); }
+      });
+      var ct = g.ct;
+
+      /* eixo zero */
+      ct.strokeStyle = G.COR.suave; ct.lineWidth = 1.4;
+      ct.beginPath(); ct.moveTo(g.X(g.xmin), g.Y(0)); ct.lineTo(g.X(g.xmax), g.Y(0)); ct.stroke();
+
+      function hastes(v, cor, desloc, raio) {
+        for (var i2 = 0; i2 < n; i2++) {
+          var px = g.X(i2 + 1) + (desloc || 0);
+          ct.strokeStyle = cor; ct.lineWidth = 1.4;
+          ct.beginPath(); ct.moveTo(px, g.Y(0)); ct.lineTo(px, g.Y(v[i2])); ct.stroke();
+          ct.fillStyle = cor;
+          ct.beginPath(); ct.arc(px, g.Y(v[i2]), raio || 3.8, 0, 2 * Math.PI); ct.fill();
+        }
+      }
+
+      if (vista === 'a') { hastes(a, G.COR.azul); }
+      else if (vista === 'm') { hastes(m, '#b5831f'); }
+      else {
+        hastes(m, '#b5831f', -2.5, 3.2);
+        hastes(a, G.COR.azul, 2.5, 3.2);
+        G.legenda(g, [
+          { texto: 'mᵢ (esperado da normal)', cor: '#b5831f' },
+          { texto: 'aᵢ (coeficiente do teste)', cor: G.COR.azul }
+        ]);
+      }
+
+      legenda.innerHTML = vista === 'm'
+        ? 'mᵢ é o valor que a <i>i</i>-ésima menor observação de uma amostra normal padrão de '
+          + 'tamanho n teria, em média. É o mesmo eixo horizontal do gráfico Q–Q.'
+        : (vista === 'comp'
+          ? 'Os aᵢ são praticamente os mᵢ reescalados — a correção de Royston só altera '
+            + 'sensivelmente os dois valores de cada ponta.'
+          : 'Cada haste é o peso que a <i>i</i>-ésima menor observação recebe no numerador de W.');
+
+      var txt = 'Com n = <b>' + n + '</b>, o numerador de W é a combinação linear '
+        + '∑ aᵢ x₍ᵢ₎ dos dados <b>ordenados</b>. Três propriedades aparecem no gráfico '
+        + 'e valem para qualquer n:';
+      txt += '<br><br><b>1. São antissimétricos:</b> aᵢ = −a₍ₙ₊₁₋ᵢ₎, e por isso ∑ aᵢ = '
+        + M.fmt(soma, 6) + ' ≈ 0. A consequência é importante — somar uma constante a todos '
+        + 'os dados não muda o numerador, de modo que W <b>não depende da média</b>.';
+      txt += '<br><br><b>2. Estão normalizados:</b> ∑ aᵢ² = ' + M.fmt(soma2, 6)
+        + ' = 1. Junto com o denominador ∑(xᵢ − x̄)², isso é o que mantém W entre 0 e 1 '
+        + 'e o torna <b>invariante de escala</b>: medir em metros ou em centímetros dá o '
+        + 'mesmo W.';
+      txt += '<br><br><b>3. Os extremos mandam.</b> Os dois pontos das pontas sozinhos '
+        + 'respondem por <b>' + M.pct(ext, 1) + '</b> de ∑ aᵢ², com a₁ = '
+        + M.fmt(a[0], 4) + ' e aₙ = ' + M.fmt(a[n - 1], 4)
+        + ', enquanto os do meio quase não pesam (o central é exatamente zero quando n é '
+        + 'ímpar). É daí que vem a sensibilidade do teste às <b>caudas</b> — que é onde a '
+        + 'não normalidade costuma morar.';
+      txt += '<br><br><i>Arraste o n e veja o que acontece:</i> à medida que a amostra '
+        + 'cresce, as hastes se achatam e o peso se distribui, porque há mais observações '
+        + 'para repartir o mesmo total de 1.';
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     A escada do Kolmogorov–Smirnov
+     ================================================================= */
+  function escadaKS(raiz) {
+    var c = moldura(raiz, 'A escada do Kolmogorov–Smirnov');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var campoD = el('div', { class: 'campo', style: 'flex:2 1 240px' });
+    campoD.appendChild(el('label', { html: 'Conjunto de dados' }));
+    var selD = el('select');
+    Object.keys(CONJUNTOS_QQ).forEach(function (k) {
+      selD.appendChild(el('option', { value: k, texto: CONJUNTOS_QQ[k].rot }));
+    });
+    campoD.appendChild(selD); ctr.appendChild(campoD);
+
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    var campoX = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    campoX.appendChild(el('label', { html: 'valores' }));
+    var iX = el('input', { type: 'text' }); campoX.appendChild(iX); ctr2.appendChild(campoX);
+    selD.addEventListener('change', function () {
+      iX.value = CONJUNTOS_QQ[selD.value].dados.trim().split(/\s+/).join(', ');
+      atualizar();
+    });
+    iX.addEventListener('input', atualizar);
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda', html:
+      'Escada azul: acumulada empírica Fₙ(x), que sobe 1/n a cada observação. '
+      + 'Curva vinho: acumulada normal F(x) com a média e o desvio estimados dos dados. '
+      + 'Segmento verde: onde a distância entre as duas é máxima — esse é D.' });
+    c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'D', k: 'D' }, { rot: 'ocorre em x =', k: 'x' },
+      { rot: 'crítico 5% (Lilliefors)', k: 'c' }, { rot: 'n', k: 'n' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function ler(s) {
+      return String(s).split(/[,;\s]+/).map(function (t) {
+        return Number(t.trim().replace(',', '.'));
+      }).filter(function (v) { return isFinite(v); });
+    }
+
+    function atualizar() {
+      var x = ler(iX.value);
+      var n = x.length;
+      if (n < 4) {
+        saida.innerHTML = 'Informe ao menos quatro valores.';
+        painel({ D: '—', x: '—', c: '—', n: String(n) });
+        G.preparar(cv, 320); return;
+      }
+      var ord = x.slice().sort(function (p, q) { return p - q; });
+      var media = 0, i;
+      for (i = 0; i < n; i++) media += ord[i];
+      media /= n;
+      var s2 = 0;
+      for (i = 0; i < n; i++) s2 += (ord[i] - media) * (ord[i] - media);
+      var s = Math.sqrt(s2 / (n - 1));
+
+      /* D e onde ele ocorre, olhando os dois lados de cada degrau */
+      var D = 0, xD = ord[0], Fteo = 0, Femp = 0, acima = true;
+      for (i = 0; i < n; i++) {
+        var F = M.FNormal(ord[i], media, s);
+        var dMais = (i + 1) / n - F;     /* logo depois do degrau */
+        var dMenos = F - i / n;          /* logo antes do degrau  */
+        if (dMais > D) { D = dMais; xD = ord[i]; Fteo = F; Femp = (i + 1) / n; acima = true; }
+        if (dMenos > D) { D = dMenos; xD = ord[i]; Fteo = F; Femp = i / n; acima = false; }
+      }
+
+      var L = M.lilliefors(x);
+      painel({
+        D: M.fmt(D, 4), x: M.fmt(xD, 3),
+        c: L ? M.fmt(L.crit05, 4) : '—', n: String(n)
+      });
+
+      /* ---------- desenho ---------- */
+      var xmin = Math.min(ord[0], media - 3.2 * s), xmax = Math.max(ord[n - 1], media + 3.2 * s);
+      var marg = (xmax - xmin) * 0.04;
+      xmin -= marg; xmax += marg;
+      var g = G.eixos(cv, {
+        xmin: xmin, xmax: xmax, ymin: -0.04, ymax: 1.08, altura: 330, divY: 4,
+        rotX: 'x', rotY: 'probabilidade acumulada',
+        marcasX: G.marcasLineares(xmin, xmax, 6, Math.abs(xmax - xmin) > 40 ? 0 : 1),
+        formataY: function (v) { return M.fmt(v, 2); }
+      });
+      var ct = g.ct;
+
+      /* curva teórica */
+      G.curva(g, function (v) { return M.FNormal(v, media, s); }, G.COR.vinho, 2.2);
+
+      /* escada empírica */
+      ct.strokeStyle = G.COR.azul; ct.lineWidth = 2;
+      ct.beginPath();
+      ct.moveTo(g.X(xmin), g.Y(0));
+      for (i = 0; i < n; i++) {
+        ct.lineTo(g.X(ord[i]), g.Y(i / n));
+        ct.lineTo(g.X(ord[i]), g.Y((i + 1) / n));
+      }
+      ct.lineTo(g.X(xmax), g.Y(1));
+      ct.stroke();
+
+      /* bolinhas nos degraus */
+      for (i = 0; i < n; i++) {
+        ct.fillStyle = G.COR.azul;
+        ct.beginPath(); ct.arc(g.X(ord[i]), g.Y((i + 1) / n), 2.6, 0, 2 * Math.PI); ct.fill();
+      }
+
+      /* segmento de D */
+      var px = g.X(xD);
+      ct.strokeStyle = '#2e7d4f'; ct.lineWidth = 3;
+      ct.beginPath(); ct.moveTo(px, g.Y(Femp)); ct.lineTo(px, g.Y(Fteo)); ct.stroke();
+      [Femp, Fteo].forEach(function (v) {
+        ct.beginPath(); ct.moveTo(px - 5, g.Y(v)); ct.lineTo(px + 5, g.Y(v)); ct.stroke();
+      });
+      ct.fillStyle = '#2e7d4f';
+      ct.font = '600 12px var(--fonte)';
+      ct.textAlign = 'left'; ct.textBaseline = 'middle';
+      ct.fillText('D = ' + D.toFixed(3).replace('.', ','), px + 9,
+                  (g.Y(Femp) + g.Y(Fteo)) / 2);
+
+      G.legenda(g, [
+        { texto: 'Fₙ(x) empírica', cor: G.COR.azul },
+        { texto: 'F(x) normal ajustada', cor: G.COR.vinho }
+      ]);
+
+      /* ---------- texto ---------- */
+      var txt = 'A amostra tem n = <b>' + n + '</b>, média <b>' + M.fmt(media, 3)
+        + '</b> e desvio <b>' + M.fmt(s, 3) + '</b>. A escada sobe <b>1/' + n + ' = '
+        + M.fmt(1 / n, 4) + '</b> em cada observação.';
+      txt += '<br><br>A maior distância vertical entre a escada e a curva é <b>D = '
+        + M.fmt(D, 4) + '</b>, e ocorre em x = <b>' + M.fmt(xD, 3) + '</b>, '
+        + (acima ? 'logo <b>acima</b> do degrau (a empírica está à frente da teórica)'
+                 : 'logo <b>abaixo</b> do degrau (a empírica está atrás da teórica)') + '.';
+      txt += '<br><br><b>Por que olhar os dois lados do degrau.</b> A escada é '
+        + 'descontínua: em cada observação ela salta de i/n para (i+1)/n. A distância '
+        + 'máxima pode estar imediatamente antes ou imediatamente depois do salto, e um '
+        + 'programa que testar só um dos lados <b>subestima D</b>. É um erro comum em '
+        + 'implementações caseiras.';
+      if (L) {
+        txt += '<br><br>Valor crítico de <b>Lilliefors</b> a 5%: <b>' + M.fmt(L.crit05, 4)
+          + '</b>. Como D = ' + M.fmt(D, 4) + (L.rejeita ? ' &gt; ' : ' &lt; ')
+          + M.fmt(L.crit05, 4) + ', <b>'
+          + (L.rejeita ? 'rejeitamos' : 'não rejeitamos') + ' a normalidade</b>.';
+      }
+      txt += '<br><br><i>Onde o KS enxerga e onde ele é cego.</i> A diferença Fₙ(x) − F(x) '
+        + 'tem variância F(x)[1−F(x)]/n, que é máxima no <b>centro</b> da distribuição e '
+        + 'tende a <b>zero nas caudas extremas</b>. O KS, portanto, quase não percebe o que '
+        + 'acontece nos extremos — justamente onde a não normalidade mais costuma se '
+        + 'manifestar. O Anderson–Darling corrige isso dividindo pelo mesmo fator, o que '
+        + 'amplifica as caudas; compare os dois trocando de conjunto aqui e no simulador da '
+        + 'seção 3.';
+
+      saida.innerHTML = txt;
+    }
+
+    iX.value = CONJUNTOS_QQ.renda.dados.trim().split(/\s+/).join(', ');
+    selD.value = 'renda';
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     Testes não paramétricos
+     ================================================================= */
+  var NP = {
+    sinais: {
+      rot: 'Teste dos sinais (pareado)',
+      rA: 'antes', rB: 'depois',
+      A: [20.0, 21.5, 19.8, 22.3, 20.7, 21.0, 19.5, 22.8, 20.2, 21.8],
+      B: [22.4, 23.4, 22.6, 24.5, 23.3, 20.8, 21.6, 22.5, 22.7, 21.7]
+    },
+    wilcoxon: {
+      rot: 'Wilcoxon dos postos sinalizados (pareado)',
+      rA: 'antes', rB: 'depois',
+      A: [20.0, 21.5, 19.8, 22.3, 20.7, 21.0, 19.5, 22.8, 20.2, 21.8],
+      B: [22.4, 23.4, 22.6, 24.5, 23.3, 20.8, 21.6, 22.5, 22.7, 21.7]
+    },
+    mw: {
+      rot: 'Mann–Whitney (dois grupos independentes)',
+      rA: 'grupo 1', rB: 'grupo 2',
+      A: [12, 14, 13, 15, 11, 16, 14, 13, 120],
+      B: [22, 25, 21, 27, 24, 23, 26, 22, 28]
+    },
+    seq: {
+      rot: 'Sequências: a amostra é aleatória?',
+      rA: 'série de valores', rB: '(não usado)',
+      A: [12, 14, 13, 15, 16, 18, 17, 19, 21, 20, 22, 24, 23, 25, 11, 10, 9, 8, 7, 6],
+      B: []
+    }
+  };
+
+  function naoParametrico(raiz) {
+    var c = moldura(raiz, 'Laboratório dos testes não paramétricos');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var tipo = 'sinais';
+
+    var campoT = el('div', { class: 'campo', style: 'flex:3 1 280px' });
+    campoT.appendChild(el('label', { html: 'Teste' }));
+    var selT = el('select');
+    Object.keys(NP).forEach(function (k) {
+      selT.appendChild(el('option', { value: k, texto: NP[k].rot }));
+    });
+    campoT.appendChild(selT); ctr.appendChild(campoT);
+    selT.addEventListener('change', function () {
+      tipo = selT.value;
+      iA.value = NP[tipo].A.join(', ');
+      iB.value = NP[tipo].B.join(', ');
+      rotA.innerHTML = NP[tipo].rA;
+      rotB.innerHTML = NP[tipo].rB;
+      campoB.style.display = tipo === 'seq' ? 'none' : '';
+      atualizar();
+    });
+
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    var campoA = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    var rotA = el('label', { html: 'antes' }); campoA.appendChild(rotA);
+    var iA = el('input', { type: 'text' }); campoA.appendChild(iA); ctr2.appendChild(campoA);
+    var campoB = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    var rotB = el('label', { html: 'depois' }); campoB.appendChild(rotB);
+    var iB = el('input', { type: 'text' }); campoB.appendChild(iB); ctr2.appendChild(campoB);
+    iA.addEventListener('input', atualizar);
+    iB.addEventListener('input', atualizar);
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda' }); c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'estatística', k: 'est' }, { rot: 'n efetivo', k: 'n' },
+      { rot: 'valor p (não paramétrico)', k: 'p' },
+      { rot: 'valor p (teste paramétrico)', k: 'pt' }
+    ]);
+    var tabela = el('div', { class: 'tabela-rolavel' }); c.appendChild(tabela);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function ler(s) {
+      return String(s).split(/[,;\s]+/).map(function (t) {
+        return Number(t.trim().replace(',', '.'));
+      }).filter(function (v) { return isFinite(v); });
+    }
+
+    function medias(v) {
+      var m = v.reduce(function (s, a) { return s + a; }, 0) / v.length;
+      var s2 = v.reduce(function (s, a) { return s + (a - m) * (a - m); }, 0) / (v.length - 1);
+      return { m: m, s: Math.sqrt(s2) };
+    }
+
+    function mediana(v) {
+      var w = v.slice().sort(function (p, q) { return p - q; }), n = w.length;
+      return n % 2 ? w[(n - 1) / 2] : (w[n / 2 - 1] + w[n / 2]) / 2;
+    }
+
+    /* ---------- desenho da distribuição nula exata ---------- */
+    function nulaBarras(valores, probs, obs, critInf, critSup, rotX) {
+      var ymax = Math.max.apply(null, probs) * 1.25;
+      var g = G.eixos(cv, {
+        xmin: valores[0] - 0.8, xmax: valores[valores.length - 1] + 0.8,
+        ymax: ymax, altura: 280, rotX: rotX, rotY: 'probabilidade sob H₀',
+        marcasX: G.marcasInteiras(valores[0], valores[valores.length - 1], 10),
+        formataY: function (v) { return (100 * v).toFixed(1).replace('.', ',') + '%'; }
+      });
+      var dentro = [], fora = [];
+      valores.forEach(function (v, i) {
+        ((critInf !== null && v <= critInf) || (critSup !== null && v >= critSup)
+          ? fora : dentro).push({ x: v, y: probs[i] });
+      });
+      G.barras(g, dentro, 'rgba(31,78,121,.70)');
+      G.barras(g, fora, 'rgba(140,47,57,.80)');
+      if (obs !== null && isFinite(obs)) G.vertical(g, obs, '#2e7d4f', 'obs');
+      G.legenda(g, [
+        { texto: 'não rejeição', cor: 'rgba(31,78,121,.70)' },
+        { texto: 'região crítica (5%)', cor: 'rgba(140,47,57,.80)' }
+      ]);
+    }
+
+    function nulaNormal(media, dp, obs, rotX) {
+      var lim = 3.6 * dp;
+      var f = function (v) { return M.dNormal(v, media, dp); };
+      var ci = media - 1.96 * dp, cs = media + 1.96 * dp;
+      var g = G.eixos(cv, {
+        xmin: media - lim, xmax: media + lim, ymax: f(media) * 1.25, altura: 280,
+        rotX: rotX, rotY: 'densidade sob H₀',
+        marcasX: G.marcasLineares(media - lim, media + lim, 7, 0),
+        formataY: function (v) { return M.fmt(v, 3); }
+      });
+      G.area(g, f, media - lim, ci, 'rgba(140,47,57,.28)');
+      G.area(g, f, cs, media + lim, 'rgba(140,47,57,.28)');
+      G.area(g, f, ci, cs, 'rgba(31,78,121,.16)');
+      G.curva(g, f, G.COR.vinho, 2.2);
+      G.vertical(g, ci, G.COR.vinho, M.fmt(ci, 1));
+      G.vertical(g, cs, G.COR.vinho, M.fmt(cs, 1));
+      if (obs !== null && isFinite(obs)) G.vertical(g, obs, '#2e7d4f', 'obs');
+    }
+
+    /* ---------- os quatro testes ---------- */
+    function fazerSinais(A, B) {
+      var n = Math.min(A.length, B.length), d = [], i;
+      for (i = 0; i < n; i++) d.push(B[i] - A[i]);
+      var pos = 0, neg = 0, zero = 0;
+      d.forEach(function (v) { if (v > 0) pos++; else if (v < 0) neg++; else zero++; });
+      var ne = pos + neg, k = Math.min(pos, neg);
+      var p = 0;
+      for (i = 0; i <= k; i++) p += M.pBinomial(ne, i, 0.5);
+      p = Math.min(1, 2 * p);
+
+      /* distribuição nula: Binomial(ne, 1/2) sobre o menor dos dois */
+      var vals = [], probs = [];
+      for (i = 0; i <= ne; i++) { vals.push(i); probs.push(M.pBinomial(ne, i, 0.5)); }
+      /* região crítica bilateral a 5% */
+      var acum = 0, cinf = -1;
+      for (i = 0; i <= ne; i++) { acum += probs[i]; if (acum > 0.025) break; cinf = i; }
+      var csup = cinf >= 0 ? ne - cinf : null;
+      nulaBarras(vals, probs, pos, cinf >= 0 ? cinf : null, csup,
+                 'número de diferenças positivas');
+      legenda.innerHTML = 'Sob H₀ cada diferença tem a mesma chance de ser positiva ou '
+        + 'negativa, de modo que o número de positivas segue uma <b>Binomial(n, ½)</b>. '
+        + 'A linha verde marca o valor observado.';
+
+      var par = M.momentos ? null : null;
+      var dd = medias(d);
+      var tt = dd.m / (dd.s / Math.sqrt(n));
+      var pt = 2 * (1 - M.FT(Math.abs(tt), n - 1));
+
+      return { est: pos + ' positivas, ' + neg + ' negativas', n: ne, p: p, pt: pt,
+               d: d, zero: zero, tt: tt, nome: 'teste t pareado',
+               corpo: tabelaPares(A, B, d, null) };
+    }
+
+    function fazerWilcoxon(A, B) {
+      var n = Math.min(A.length, B.length), d = [], i;
+      for (i = 0; i < n; i++) d.push(B[i] - A[i]);
+      var naoNulos = d.filter(function (v) { return v !== 0; });
+      var ne = naoNulos.length;
+      var abs = naoNulos.map(Math.abs);
+      var P = M.postosMedios(abs);
+      var Wmais = 0, Wmenos = 0;
+      naoNulos.forEach(function (v, i2) {
+        if (v > 0) Wmais += P.r[i2]; else Wmenos += P.r[i2];
+      });
+      var W = Math.min(Wmais, Wmenos);
+      var p = M.pWilcoxon(Wmais, ne, P.correcao);
+
+      /* distribuição nula exata de W⁺ quando possível */
+      if (ne <= 25 && !P.correcao) {
+        var max = ne * (ne + 1) / 2, vals = [], probs = [], tot = Math.pow(2, ne);
+        var acumF = [];
+        for (i = 0; i <= max; i++) {
+          vals.push(i);
+          probs.push((M.FWilcoxon(i, ne) - (i ? M.FWilcoxon(i - 1, ne) : 0)));
+        }
+        var ac = 0, cinf = -1;
+        for (i = 0; i <= max; i++) { ac += probs[i]; if (ac > 0.025) break; cinf = i; }
+        nulaBarras(vals, probs, Wmais, cinf >= 0 ? cinf : null,
+                   cinf >= 0 ? max - cinf : null, 'W⁺ (soma dos postos positivos)');
+        legenda.innerHTML = 'Distribuição <b>exata</b> de W⁺ sob H₀: todas as '
+          + tot.toLocaleString('pt-BR') + ' atribuições de sinal aos postos 1…' + ne
+          + ' são igualmente prováveis.';
+      } else {
+        var med = ne * (ne + 1) / 4;
+        var dp = Math.sqrt(ne * (ne + 1) * (2 * ne + 1) / 24 - P.correcao / 48);
+        nulaNormal(med, dp, Wmais, 'W⁺');
+        legenda.innerHTML = 'Com n grande ou com empates nos postos, usa-se a aproximação '
+          + 'normal com correção de continuidade e de empates.';
+      }
+
+      var dd = medias(d);
+      var tt = dd.m / (dd.s / Math.sqrt(n));
+      var pt = 2 * (1 - M.FT(Math.abs(tt), n - 1));
+
+      return { est: 'W⁺ = ' + M.fmt(Wmais, 1) + ' , W⁻ = ' + M.fmt(Wmenos, 1),
+               n: ne, p: p, pt: pt, d: d, W: W, Wmais: Wmais, Wmenos: Wmenos,
+               tt: tt, empates: P.correcao > 0, nome: 'teste t pareado',
+               corpo: tabelaPares(A, B, d, P.r) };
+    }
+
+    function fazerMW(A, B) {
+      var n1 = A.length, n2 = B.length, todos = A.concat(B);
+      var P = M.postosMedios(todos);
+      var R1 = 0, i;
+      for (i = 0; i < n1; i++) R1 += P.r[i];
+      var U1 = R1 - n1 * (n1 + 1) / 2;
+      var U2 = n1 * n2 - U1;
+      var U = Math.min(U1, U2);
+      var p = M.pMannWhitney(U1, n1, n2, P.correcao);
+
+      if (n1 <= 12 && n2 <= 12 && !P.correcao) {
+        var max = n1 * n2, vals = [], probs = [];
+        for (i = 0; i <= max; i++) {
+          vals.push(i);
+          probs.push(M.FMannWhitney(i, n1, n2) - (i ? M.FMannWhitney(i - 1, n1, n2) : 0));
+        }
+        var ac = 0, cinf = -1;
+        for (i = 0; i <= max; i++) { ac += probs[i]; if (ac > 0.025) break; cinf = i; }
+        nulaBarras(vals, probs, U1, cinf >= 0 ? cinf : null,
+                   cinf >= 0 ? max - cinf : null, 'U');
+        legenda.innerHTML = 'Distribuição <b>exata</b> de U sob H₀: todas as '
+          + M.binom(n1 + n2, n1).toLocaleString('pt-BR') + ' maneiras de repartir os postos '
+          + 'entre os dois grupos são igualmente prováveis.';
+      } else {
+        var nT = n1 + n2;
+        var med = n1 * n2 / 2;
+        var dp = Math.sqrt(n1 * n2 / 12 * (nT + 1 - P.correcao / (nT * (nT - 1))));
+        nulaNormal(med, dp, U1, 'U');
+        legenda.innerHTML = 'Com grupos grandes ou com empates, usa-se a aproximação normal '
+          + 'com correção de continuidade e de empates.';
+      }
+
+      var mA = medias(A), mB = medias(B);
+      var sp = Math.sqrt(((n1 - 1) * mA.s * mA.s + (n2 - 1) * mB.s * mB.s) / (n1 + n2 - 2));
+      var tt = (mA.m - mB.m) / (sp * Math.sqrt(1 / n1 + 1 / n2));
+      var pt = 2 * (1 - M.FT(Math.abs(tt), n1 + n2 - 2));
+
+      return { est: 'U₁ = ' + M.fmt(U1, 1) + ' , U₂ = ' + M.fmt(U2, 1),
+               n: n1 + '+' + n2, p: p, pt: pt, U: U, U1: U1, R1: R1,
+               mA: mA, mB: mB, medA: mediana(A), medB: mediana(B),
+               tt: tt, empates: P.correcao > 0, nome: 'teste t independente',
+               corpo: tabelaMW(A, B, P.r) };
+    }
+
+    function fazerSeq(A) {
+      var md = mediana(A);
+      var sinais = A.filter(function (v) { return v !== md; })
+                    .map(function (v) { return v > md ? 1 : 0; });
+      var n1 = sinais.filter(function (v) { return v === 1; }).length;
+      var n2 = sinais.length - n1;
+      var R = sinais.length ? 1 : 0, i;
+      for (i = 1; i < sinais.length; i++) if (sinais[i] !== sinais[i - 1]) R++;
+      var S = M.pSequencias(R, n1, n2);
+      nulaNormal(S.media, S.dp, R, 'número de sequências R');
+      legenda.innerHTML = 'Cada valor é classificado como acima (A) ou abaixo (B) da mediana. '
+        + 'Uma <b>sequência</b> é um bloco de letras iguais. Poucas sequências indicam '
+        + 'tendência ou agrupamento; muitas indicam alternância sistemática.';
+      var letras = sinais.map(function (v) { return v ? 'A' : 'B'; }).join(' ');
+      return { est: 'R = ' + R, n: n1 + '+' + n2, p: S.p, pt: NaN,
+               R: R, S: S, letras: letras, nome: null, corpo: '' };
+    }
+
+    /* ---------- tabelas auxiliares ---------- */
+    function tabelaPares(A, B, d, postos) {
+      var n = d.length, h = '<table><thead><tr><th class="num">i</th>'
+        + '<th class="num">antes</th><th class="num">depois</th>'
+        + '<th class="num">d</th><th class="num">sinal</th>'
+        + (postos ? '<th class="num">|d|</th><th class="num">posto</th>' : '')
+        + '</tr></thead><tbody>';
+      var j = 0;
+      for (var i = 0; i < n; i++) {
+        h += '<tr><td class="num">' + (i + 1) + '</td><td class="num">' + M.fmt(A[i], 2)
+          + '</td><td class="num">' + M.fmt(B[i], 2) + '</td><td class="num">'
+          + (d[i] > 0 ? '+' : '') + M.fmt(d[i], 2) + '</td><td class="num">'
+          + (d[i] > 0 ? '+' : d[i] < 0 ? '−' : '0') + '</td>';
+        if (postos) {
+          if (d[i] !== 0) {
+            h += '<td class="num">' + M.fmt(Math.abs(d[i]), 2) + '</td><td class="num">'
+              + M.fmt(postos[j], 1) + '</td>';
+            j++;
+          } else h += '<td class="num">—</td><td class="num">descartado</td>';
+        }
+        h += '</tr>';
+      }
+      return h + '</tbody></table>';
+    }
+
+    function tabelaMW(A, B, postos) {
+      var h = '<table><thead><tr><th>grupo</th><th class="num">valor</th>'
+        + '<th class="num">posto</th></tr></thead><tbody>';
+      var ordem = [];
+      A.forEach(function (v, i) { ordem.push({ g: 1, v: v, r: postos[i] }); });
+      B.forEach(function (v, i) { ordem.push({ g: 2, v: v, r: postos[A.length + i] }); });
+      ordem.sort(function (p, q) { return p.v - q.v; });
+      ordem.forEach(function (o) {
+        h += '<tr><td' + (o.g === 1 ? ' style="color:var(--azul);font-weight:700"' : '')
+          + '>' + (o.g === 1 ? 'grupo 1' : 'grupo 2') + '</td><td class="num">'
+          + M.fmt(o.v, 2) + '</td><td class="num">' + M.fmt(o.r, 1) + '</td></tr>';
+      });
+      return h + '</tbody></table>';
+    }
+
+    /* ---------- orquestração ---------- */
+    function atualizar() {
+      var A = ler(iA.value), B = ler(iB.value);
+      if (A.length < 3 || (tipo !== 'seq' && B.length < 3)) {
+        saida.innerHTML = 'Informe ao menos três valores em cada campo.';
+        painel({ est: '—', n: '—', p: '—', pt: '—' });
+        tabela.innerHTML = ''; G.preparar(cv, 280);
+        return;
+      }
+
+      var R;
+      if (tipo === 'sinais') R = fazerSinais(A, B);
+      else if (tipo === 'wilcoxon') R = fazerWilcoxon(A, B);
+      else if (tipo === 'mw') R = fazerMW(A, B);
+      else R = fazerSeq(A);
+
+      painel({
+        est: R.est, n: String(R.n), p: M.fmt(R.p, 5),
+        pt: isFinite(R.pt) ? M.fmt(R.pt, 5) : '—'
+      });
+      tabela.innerHTML = R.corpo;
+
+      var txt = '';
+      if (tipo === 'sinais') {
+        txt = 'Das ' + R.d.length + ' diferenças, <b>' + R.est + '</b>'
+          + (R.zero ? ' e ' + R.zero + ' nula(s), que são descartadas' : '') + '. '
+          + 'Sob H₀ (as duas condições são equivalentes) isso se distribui como uma '
+          + 'Binomial(' + R.n + ', ½), e o valor p bilateral é <b>' + M.fmt(R.p, 5) + '</b>: '
+          + (R.p < 0.05 ? '<b>rejeitamos H₀</b>.' : '<b>não rejeitamos H₀</b>.');
+        txt += '<br><br>O teste t pareado nos mesmos dados dá p = <b>' + M.fmt(R.pt, 5)
+          + '</b>. ' + comparacao(R.p, R.pt)
+          + '<br><br><i>O teste dos sinais usa apenas o sinal de cada diferença e joga fora '
+          + 'o tamanho dela.</i> É o mais robusto e o mais fraco dos três: exige quase nada '
+          + 'dos dados e, em troca, detecta pouco.';
+      } else if (tipo === 'wilcoxon') {
+        txt = 'Somando os postos das diferenças positivas, W⁺ = <b>' + M.fmt(R.Wmais, 1)
+          + '</b>; das negativas, W⁻ = <b>' + M.fmt(R.Wmenos, 1) + '</b>. '
+          + '<i>Confira:</i> W⁺ + W⁻ deve dar n(n+1)/2 = '
+          + M.fmt(R.n * (R.n + 1) / 2, 1) + '. '
+          + 'Valor p bilateral = <b>' + M.fmt(R.p, 5) + '</b>: '
+          + (R.p < 0.05 ? '<b>rejeitamos H₀</b>.' : '<b>não rejeitamos H₀</b>.')
+          + (R.empates ? ' Há empates entre os |d|, de modo que o valor p vem da '
+                       + 'aproximação normal com correção.' : '');
+        txt += '<br><br>O teste t pareado dá p = <b>' + M.fmt(R.pt, 5) + '</b>. '
+          + comparacao(R.p, R.pt)
+          + '<br><br><i>Wilcoxon usa o sinal <b>e</b> a ordem das magnitudes.</i> '
+          + 'Por isso costuma ficar entre o teste dos sinais e o t: tem cerca de '
+          + '<b>95% da eficiência</b> do t quando os dados são de fato normais, e é '
+          + '<i>mais</i> poderoso que ele quando não são.';
+      } else if (tipo === 'mw') {
+        txt = 'Soma dos postos do grupo 1: R₁ = <b>' + M.fmt(R.R1, 1) + '</b>, '
+          + 'de onde U₁ = R₁ − n₁(n₁+1)/2 = <b>' + M.fmt(R.U1, 1) + '</b>. '
+          + '<i>Confira:</i> U₁ + U₂ = n₁n₂. '
+          + 'Valor p bilateral = <b>' + M.fmt(R.p, 5) + '</b>: '
+          + (R.p < 0.05 ? '<b>rejeitamos H₀</b>.' : '<b>não rejeitamos H₀</b>.')
+          + (R.empates ? ' Há empates entre os valores, de modo que se usa a aproximação '
+                       + 'normal com correção.' : '');
+        txt += '<br><br><b>Médias:</b> ' + M.fmt(R.mA.m, 2) + ' e ' + M.fmt(R.mB.m, 2)
+          + ' &nbsp;·&nbsp; <b>medianas:</b> ' + M.fmt(R.medA, 2) + ' e '
+          + M.fmt(R.medB, 2) + '. O teste t independente dá p = <b>' + M.fmt(R.pt, 5)
+          + '</b>. ' + comparacao(R.p, R.pt);
+        if (R.pt > 0.05 && R.p < 0.05) {
+          txt += '<br><br><b>Repare no que aconteceu aqui.</b> O teste t não encontrou nada, '
+            + 'e o de Mann–Whitney encontrou um efeito claro. Olhe as médias: elas quase '
+            + 'coincidem, enquanto as medianas estão muito distantes. É a assinatura de um '
+            + '<b>valor extremo</b> arrastando a média de um dos grupos e inflando a '
+            + 'variância — que é o denominador do t. Os postos não se deixam enganar por '
+            + 'isso: o maior valor é apenas "o maior", qualquer que seja seu tamanho.';
+        }
+      } else {
+        txt = 'Classificando cada valor em relação à mediana (' + M.fmt(mediana(A), 2)
+          + '):<br><code style="font-size:.78rem;letter-spacing:.08em">' + R.letras
+          + '</code><br><br>Há <b>R = ' + R.R + '</b> sequências, contra as '
+          + M.fmt(R.S.media, 2) + ' ± ' + M.fmt(R.S.dp, 2) + ' esperadas sob a hipótese de '
+          + 'aleatoriedade, ou seja, z = <b>' + M.fmt(R.S.z, 3) + '</b> e p = <b>'
+          + M.fmt(R.S.p, 5) + '</b>. '
+          + (R.S.p < 0.05
+              ? '<b>Rejeitamos a aleatoriedade.</b> ' + (R.R < R.S.media
+                  ? 'Poucas sequências: os valores vêm agrupados, sinal de <b>tendência</b> '
+                    + 'ou de dependência entre observações vizinhas.'
+                  : 'Sequências demais: há <b>alternância sistemática</b>, o que também não '
+                    + 'é aleatório.')
+              : '<b>Não rejeitamos a aleatoriedade:</b> nada de anormal na ordem dos valores.')
+          + '<br><br><i>Este teste não olha para os valores, apenas para a ordem em que '
+          + 'apareceram.</i> É o que se aplica aos resíduos de uma regressão para detectar '
+          + 'curvatura, como vimos no Módulo 13.';
+      }
+      saida.innerHTML = txt;
+    }
+
+    function comparacao(pnp, pt) {
+      if (!isFinite(pt)) return '';
+      if (pnp < 0.05 && pt >= 0.05)
+        return 'O não paramétrico <b>rejeita</b> e o paramétrico <b>não</b> — os pressupostos '
+             + 'do teste t provavelmente estão violados.';
+      if (pnp >= 0.05 && pt < 0.05)
+        return 'O paramétrico <b>rejeita</b> e o não paramétrico <b>não</b> — é o preço da '
+             + 'robustez: ao descartar informação, perde-se poder.';
+      return 'Os dois concordam na conclusão; o paramétrico costuma dar um p menor quando '
+           + 'seus pressupostos valem, porque usa mais informação dos dados.';
+    }
+
+    iA.value = NP.sinais.A.join(', ');
+    iB.value = NP.sinais.B.join(', ');
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Calculadora de valores críticos (z, t, qui-quadrado)
      ================================================================= */
   function criticos(raiz) {
@@ -4390,7 +5134,9 @@
     regiaocritica: regiaoCritica, poder: poderTeste,
     contingencia: contingencia, aderencia: aderencia, qqplot: qqplot,
     correlacao: correlacao, criticos: criticos,
-    regressao: regressao, linearizacao: linearizacao
+    regressao: regressao, linearizacao: linearizacao,
+    naoparametrico: naoParametrico,
+    coefsw: coefSW, escadaks: escadaKS
   };
 
   document.addEventListener('DOMContentLoaded', function () {

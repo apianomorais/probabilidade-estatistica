@@ -352,10 +352,10 @@ var M = (function () {
   }
 
   /* Shapiro–Wilk pelo algoritmo de Royston (1992) */
-  function shapiroWilk(x) {
-    var n = x.length;
+  /* Coeficientes a_i do Shapiro-Wilk (Royston 1992), e os valores esperados m_i
+     das estatisticas de ordem de que eles derivam. Depende so de n. */
+  function coefsSW(n) {
     if (n < 4 || n > 5000) return null;
-    var ord = x.slice().sort(function (a, b) { return a - b; });
     var i, m = [], somaM2 = 0;
     for (i = 1; i <= n; i++) {
       var mi = zCritico((i - 0.375) / (n + 0.25));
@@ -380,6 +380,16 @@ var M = (function () {
       inicio = 1;
     }
     for (i = inicio; i < n - inicio; i++) a[i] = m[i] / Math.sqrt(phi);
+    return { a: a, m: m, somaM2: somaM2 };
+  }
+
+  function shapiroWilk(x) {
+    var n = x.length;
+    if (n < 4 || n > 5000) return null;
+    var ord = x.slice().sort(function (p, q) { return p - q; });
+    var C = coefsSW(n);
+    if (!C) return null;
+    var a = C.a, m = C.m, i;
 
     var media = 0;
     for (i = 0; i < n; i++) media += ord[i];
@@ -402,7 +412,124 @@ var M = (function () {
       sg = Math.exp(0.0030302 * ln * ln - 0.082676 * ln - 0.4803);
       p = 1 - FNormal((Math.log(1 - W) - mu) / sg, 0, 1);
     }
-    return { W: W, p: Math.min(1, Math.max(0, p)) };
+    return { W: W, p: Math.min(1, Math.max(0, p)), a: a, m: m, ord: ord };
+  }
+
+  /* ===================================================================
+     Distribuições exatas dos testes não paramétricos
+     =================================================================== */
+
+  /* Postos com empates resolvidos pela média das posições.
+     Devolve {r: postos, correcao: Σ(t³−t) sobre os grupos empatados}  */
+  function postosMedios(v) {
+    var n = v.length, idx = [], i, j;
+    for (i = 0; i < n; i++) idx.push(i);
+    idx.sort(function (p, q) { return v[p] - v[q]; });
+    var r = new Array(n), corr = 0;
+    i = 0;
+    while (i < n) {
+      j = i;
+      while (j + 1 < n && v[idx[j + 1]] === v[idx[i]]) j++;
+      var m = (i + j) / 2 + 1, t = j - i + 1;
+      for (var k = i; k <= j; k++) r[idx[k]] = m;
+      if (t > 1) corr += t * t * t - t;
+      i = j + 1;
+    }
+    return { r: r, correcao: corr };
+  }
+
+  /* Wilcoxon dos postos sinalizados: nº de subconjuntos de {1..n} com soma w.
+     Guardado em cache, pois a tabela é a mesma para todo n repetido. */
+  var cacheW = {};
+  function contagemWilcoxon(n) {
+    if (cacheW[n]) return cacheW[n];
+    var max = n * (n + 1) / 2, c = new Float64Array(max + 1), i, w;
+    c[0] = 1;
+    for (i = 1; i <= n; i++)
+      for (w = max; w >= i; w--) c[w] += c[w - i];
+    cacheW[n] = c;
+    return c;
+  }
+
+  /* P(W⁺ ≤ w) exato, sem empates */
+  function FWilcoxon(w, n) {
+    if (n < 1) return NaN;
+    var c = contagemWilcoxon(n), total = Math.pow(2, n), s = 0;
+    for (var i = 0; i <= Math.min(w, c.length - 1); i++) s += c[i];
+    return s / total;
+  }
+
+  /* valor p bilateral do Wilcoxon pareado.
+     exato quando n ≤ 25 e não há empates nos postos; normal com
+     correção de continuidade e de empates caso contrário. */
+  function pWilcoxon(W, n, correcao) {
+    var media = n * (n + 1) / 4;
+    if (n <= 25 && !correcao) {
+      var w = Math.min(W, 2 * media - W);
+      return Math.min(1, 2 * FWilcoxon(Math.floor(w), n));
+    }
+    var va = n * (n + 1) * (2 * n + 1) / 24 - (correcao || 0) / 48;
+    if (va <= 0) return 1;
+    var z = (Math.abs(W - media) - 0.5) / Math.sqrt(va);
+    return Math.min(1, 2 * (1 - FNormal(z, 0, 1)));
+  }
+
+  /* P(U ≤ u) exato por programação dinâmica sobre partições */
+  var cacheFU = {};
+  function FMannWhitney(u, n1, n2) {
+    var ch = n1 + 'x' + n2;
+    var tab = cacheFU[ch];
+    if (!tab) {
+      var max = n1 * n2;
+      /* f[k][s]: nº de subconjuntos de tamanho k dos postos 1..n com soma s */
+      var n = n1 + n2, i, k, s;
+      var f = [];
+      for (k = 0; k <= n1; k++) f.push(new Float64Array(n1 * n + 1));
+      f[0][0] = 1;
+      for (i = 1; i <= n; i++)
+        for (k = Math.min(n1, i); k >= 1; k--)
+          for (s = f[k].length - 1; s >= i; s--)
+            f[k][s] += f[k - 1][s - i];
+      var base = n1 * (n1 + 1) / 2;
+      tab = new Float64Array(max + 1);
+      for (s = 0; s < f[n1].length; s++) {
+        var uu = s - base;
+        if (uu >= 0 && uu <= max) tab[uu] += f[n1][s];
+      }
+      cacheFU[ch] = tab;
+    }
+    var soma = 0, tot = 0, i2;
+    for (i2 = 0; i2 < tab.length; i2++) {
+      tot += tab[i2];
+      if (i2 <= u) soma += tab[i2];
+    }
+    return soma / tot;
+  }
+
+  /* valor p bilateral de Mann–Whitney */
+  function pMannWhitney(U, n1, n2, correcao) {
+    var media = n1 * n2 / 2;
+    if (n1 <= 12 && n2 <= 12 && !correcao) {
+      var u = Math.min(U, 2 * media - U);
+      return Math.min(1, 2 * FMannWhitney(Math.floor(u), n1, n2));
+    }
+    var n = n1 + n2;
+    var va = n1 * n2 / 12 * (n + 1 - (correcao || 0) / (n * (n - 1)));
+    if (va <= 0) return 1;
+    var z = (Math.abs(U - media) - 0.5) / Math.sqrt(va);
+    return Math.min(1, 2 * (1 - FNormal(z, 0, 1)));
+  }
+
+  /* Teste das sequências (runs): aproximação normal com continuidade */
+  function pSequencias(R, n1, n2) {
+    var n = n1 + n2;
+    if (n1 < 1 || n2 < 1) return NaN;
+    var media = 2 * n1 * n2 / n + 1;
+    var va = 2 * n1 * n2 * (2 * n1 * n2 - n) / (n * n * (n - 1));
+    if (va <= 0) return 1;
+    var z = (Math.abs(R - media) - 0.5) / Math.sqrt(va);
+    return { z: (R - media) / Math.sqrt(va), media: media, dp: Math.sqrt(va),
+             p: Math.min(1, 2 * (1 - FNormal(z, 0, 1))) };
   }
 
   /* Normal padrão por Box–Muller */
@@ -440,6 +567,9 @@ var M = (function () {
     momentos: momentos, dagostino: dagostino, andersonDarling: andersonDarling,
     lilliefors: lilliefors, shapiroWilk: shapiroWilk,
     dQui: dQui, FQui: FQui, quiCritico: quiCritico, simpson: simpson,
+    coefsSW: coefsSW, postosMedios: postosMedios, FWilcoxon: FWilcoxon, pWilcoxon: pWilcoxon,
+    FMannWhitney: FMannWhitney, pMannWhitney: pMannWhitney,
+    pSequencias: pSequencias,
     normalAleatoria: normalAleatoria, fmt: fmt, pct: pct
   };
 })();

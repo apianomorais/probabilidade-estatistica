@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 11 — Testes de normalidade | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061300">
-<script src="assets/js/comum.js?v=202611061300"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061311">
+<script src="assets/js/comum.js?v=202611061311"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -251,6 +251,28 @@
     <p><strong>Faixa de uso:</strong> \(4 \le n \le 5000\).</p>
   </div>
 
+  <p>Esses coeficientes merecem ser olhados de perto, porque é neles que está a inteligência
+  do teste. O simulador abaixo os calcula para qualquer \(n\) e mostra três propriedades que
+  explicam o comportamento de \(W\):</p>
+
+  <div data-widget="coefsw"></div>
+
+  <div class="bloco def">
+    <span class="rotulo">O que o gráfico revela</span>
+    <ul>
+      <li>Os \(a_i\) são <strong>antissimétricos</strong> — \(a_i = -a_{n+1-i}\) — e portanto
+      somam zero. É por isso que \(W\) não muda se somarmos uma constante a todos os dados;</li>
+      <li>Eles satisfazem \(\sum_i a_i^2 = 1\), o que, junto ao denominador, deixa \(W\)
+      entre 0 e 1 e <strong>invariante de escala</strong>;</li>
+      <li>Os dois das pontas carregam a maior parte do peso. Com \(n=11\), eles sozinhos
+      respondem por 63% de \(\sum a_i^2\). <strong>É daí que vem a sensibilidade do teste às
+      caudas</strong> — e por que ele é tão bom em detectar assimetria e outliers.</li>
+    </ul>
+    <p>Comparando os \(a_i\) com os \(m_i\) na terceira vista, vê-se que os coeficientes são
+    quase os \(m_i\) reescalados: a correção de Royston altera de forma apreciável apenas os
+    dois valores de cada extremo.</p>
+  </div>
+
   <h3>Exercício resolvido 11.1 — O conjunto histórico de Royston</h3>
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
@@ -336,6 +358,11 @@
     <p>\[D = \max_x \big|F_n(x) - F(x)\big| .\]</p>
     <p>É um teste geral: serve para <strong>qualquer</strong> distribuição, não só a normal.</p>
   </div>
+
+  <p>A definição é mais fácil de ver do que de ler. O simulador desenha a escada empírica
+  sobre a curva teórica e marca exatamente onde a distância é máxima:</p>
+
+  <div data-widget="escadaks"></div>
 
   <div class="bloco alerta">
     <span class="rotulo">A armadilha dos parâmetros estimados</span>
@@ -478,12 +505,19 @@
     <span class="rotulo">Enunciado</span>
     <p>Carregue o conjunto <strong>"Renda"</strong>. Ele é fortemente assimétrico
     (\(g_1 = 2{,}52\)) e todos os testes rejeitam com \(p &lt; 0{,}0001\). Aplique a
-    transformação logarítmica e reavalie.</p>
+    transformação logarítmica — o seletor <i>Transformação a aplicar</i> do simulador faz
+    isso — e reavalie.</p>
   </div>
   <details class="solucao">
     <summary>Ver solução</summary>
     <div class="corpo-solucao">
-      <p>Tomando o logaritmo natural de cada valor e colando os resultados no simulador:</p>
+      <p><strong>Como fazer no simulador.</strong> Não é preciso calcular os logaritmos à mão:
+      no simulador da seção 3, clique no botão <i>Renda</i> para carregar os dados e depois
+      escolha <b>"Logaritmo natural — ln x"</b> no seletor <i>Transformação a aplicar</i>,
+      logo abaixo da caixa de dados. Todo o painel — gráfico Q–Q, histograma e os quatro
+      testes — passa a se referir a \(\ln x\). Voltar para "Nenhuma" desfaz a transformação,
+      e dá para alternar entre as duas para comparar.</p>
+      <p>Tomando o logaritmo natural de cada valor:</p>
       <div class="tabela-rolavel">
       <table>
         <thead><tr><th></th><th class="num">g₁</th><th class="num">Shapiro–Wilk p</th><th>Decisão</th></tr></thead>
@@ -571,6 +605,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061300"></script>
+<script src="assets/js/widgets.js?v=202611061311"></script>
 </body>
 </html>
