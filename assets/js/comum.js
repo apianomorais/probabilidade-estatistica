@@ -154,6 +154,92 @@ var M = (function () {
             ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
   }
 
+  /* ----- distribuição t de Student ----- */
+  function lnGamaF(x) { return lnFatorial(x - 1); }
+
+  function dT(t, nu) {
+    var ln = lnGamaF((nu + 1) / 2) - lnGamaF(nu / 2)
+           - 0.5 * Math.log(nu * Math.PI)
+           - ((nu + 1) / 2) * Math.log(1 + t * t / nu);
+    return Math.exp(ln);
+  }
+
+  /* integração de Simpson de a até b */
+  function simpson(f, a, b, n) {
+    n = n || 400;
+    if (n % 2) n++;
+    var h = (b - a) / n, s = f(a) + f(b);
+    for (var i = 1; i < n; i++) s += f(a + i * h) * (i % 2 ? 4 : 2);
+    return s * h / 3;
+  }
+
+  function FT(t, nu) {
+    if (t === 0) return 0.5;
+    var area = simpson(function (x) { return dT(x, nu); }, 0, Math.abs(t), 400);
+    return t > 0 ? 0.5 + area : 0.5 - area;
+  }
+
+  /* t crítico bilateral: devolve t tal que P(T > t) = alfa */
+  function tCritico(alfa, nu) {
+    var lo = 0, hi = 60;
+    for (var i = 0; i < 80; i++) {
+      var m = (lo + hi) / 2;
+      if (1 - FT(m, nu) > alfa) lo = m; else hi = m;
+    }
+    return (lo + hi) / 2;
+  }
+
+  /* ----- distribuição qui-quadrado ----- */
+  function dQui(x, k) {
+    if (x <= 0) return 0;
+    var ln = (k / 2 - 1) * Math.log(x) - x / 2
+           - (k / 2) * Math.LN2 - lnGamaF(k / 2);
+    return Math.exp(ln);
+  }
+
+  /* gama incompleta regularizada P(a,x) — série e fração continuada
+     (Simpson não serve aqui: para k=1 a densidade diverge na origem) */
+  function gamaP(a, x) {
+    if (x <= 0 || a <= 0) return 0;
+    var i, del;
+    if (x < a + 1) {                       // série
+      var ap = a, soma = 1 / a;
+      del = soma;
+      for (i = 0; i < 600; i++) {
+        ap++; del *= x / ap; soma += del;
+        if (Math.abs(del) < Math.abs(soma) * 1e-15) break;
+      }
+      return soma * Math.exp(-x + a * Math.log(x) - lnGamaF(a));
+    }
+    var MIN = 1e-300;                      // fração continuada para Q
+    var b = x + 1 - a, c = 1 / MIN, d = 1 / b, h = d, an;
+    for (i = 1; i <= 600; i++) {
+      an = -i * (i - a);
+      b += 2;
+      d = an * d + b; if (Math.abs(d) < MIN) d = MIN;
+      c = b + an / c; if (Math.abs(c) < MIN) c = MIN;
+      d = 1 / d;
+      del = d * c; h *= del;
+      if (Math.abs(del - 1) < 1e-15) break;
+    }
+    return 1 - Math.exp(-x + a * Math.log(x) - lnGamaF(a)) * h;
+  }
+
+  function FQui(x, k) {
+    if (x <= 0) return 0;
+    return Math.min(1, Math.max(0, gamaP(k / 2, x / 2)));
+  }
+
+  /* qui-quadrado crítico: devolve x tal que P(X > x) = alfa */
+  function quiCritico(alfa, k) {
+    var lo = 1e-6, hi = Math.max(60, k * 6 + 40);
+    for (var i = 0; i < 90; i++) {
+      var m = (lo + hi) / 2;
+      if (1 - FQui(m, k) > alfa) lo = m; else hi = m;
+    }
+    return (lo + hi) / 2;
+  }
+
   /* Normal padrão por Box–Muller */
   var reserva = null;
   function normalAleatoria() {
@@ -185,6 +271,8 @@ var M = (function () {
     fatorial: fatorial, lnFatorial: lnFatorial, binom: binom, arranjo: arranjo,
     pBinomial: pBinomial, pPoisson: pPoisson, pGeometrica: pGeometrica,
     dNormal: dNormal, FNormal: FNormal, erf: erf, zCritico: zCritico,
+    dT: dT, FT: FT, tCritico: tCritico,
+    dQui: dQui, FQui: FQui, quiCritico: quiCritico, simpson: simpson,
     normalAleatoria: normalAleatoria, fmt: fmt, pct: pct
   };
 })();

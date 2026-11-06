@@ -263,7 +263,8 @@ mjx-container[display="true"]{
 }
 @media (max-width:620px){
   /* tabelas com 4+ colunas rolam na horizontal em vez de espremer */
-  .tabela-rolavel table:has(th:nth-child(4)){min-width:540px}
+  .tabela-rolavel table:has(th:nth-child(3)){min-width:470px}
+  .tabela-rolavel table:has(th:nth-child(4)){min-width:560px}
   #tabelaZ table{min-width:660px}
   .tabela-rolavel{
     background:linear-gradient(90deg,#fff 30%,hsla(0,0%,100%,0)),

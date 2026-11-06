@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 7 — Amostragem e distribuições amostrais | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css">
+<script src="assets/js/comum.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Probabilidade</span>
+      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
+      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
+      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
+      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
+      <span class="grupo">Estatística</span>
+      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
+      <a href="aula07.html" class="num ativo" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Por que amostrar</a></li>
+    <li><a href="#s2">2. Planos de amostragem</a></li>
+    <li><a href="#s3">3. Vieses</a></li>
+    <li><a href="#s4">4. Distribuição amostral</a></li>
+    <li><a href="#s5">5. A média amostral</a></li>
+    <li><a href="#s6">6. A t de Student</a></li>
+    <li><a href="#s7">7. A variância e o qui-quadrado</a></li>
+    <li><a href="#s8">8. A proporção amostral</a></li>
+    <li><a href="#s9">9. Aplicações em Física</a></li>
+    <li><a href="#s10">10. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 7 · 3 horas</p>
+  <h1>Amostragem e distribuições amostrais</h1>
+  <p class="subtitulo">A ponte entre a amostra que temos e a população que queremos conhecer.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Descrever os planos de amostragem probabilística e seus usos;</li>
+      <li>Reconhecer vieses de seleção e de não resposta;</li>
+      <li>Entender o que é a <em>distribuição amostral</em> de uma estatística;</li>
+      <li>Demonstrar que \(\mu_{\bar X}=\mu\) e \(\sigma_{\bar X}=\sigma/\sqrt n\);</li>
+      <li>Saber quando usar a normal e quando usar a t de Student;</li>
+      <li>Reconhecer o papel da qui-quadrado na distribuição de \(s^2\).</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Por que amostrar</h2>
+
+  <p>Quase nunca podemos medir a população inteira. Às vezes por custo ou por tempo; às vezes por
+  impossibilidade lógica — a população das medidas que o seu cronômetro <em>poderia</em> produzir
+  é infinita; às vezes porque medir destrói — testar a resistência à ruptura de todos os cabos
+  produzidos deixaria a fábrica sem cabos para vender.</p>
+
+  <p>Então medimos uma parte e torcemos para que ela represente o todo. A pergunta central deste
+  módulo é: <strong>o quanto podemos confiar nisso?</strong> E a resposta, surpreendentemente, é
+  quantitativa e precisa — graças ao Teorema Central do Limite.</p>
+
+  <div class="destaque">
+    A amostra é aleatória, logo <strong>toda estatística calculada nela também é aleatória</strong>.
+    \(\bar x\) é uma variável aleatória. Ela tem distribuição, média e variância próprias.
+  </div>
+
+  <p>Esta é a ideia mais importante do módulo, e a que mais custa a assentar. Se eu sortear outra
+  amostra, obterei outro \(\bar x\). A distribuição de todos os \(\bar x\) possíveis é o que
+  chamamos de <strong>distribuição amostral da média</strong> — e é ela, e não os dados brutos,
+  que permite fazer inferência.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Planos de amostragem probabilística</h2>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Plano</th><th>Como funciona</th><th>Quando usar</th></tr></thead>
+    <tbody>
+      <tr><td><b>Aleatória simples</b></td>
+        <td>todo subconjunto de tamanho \(n\) tem a mesma chance de ser escolhido</td>
+        <td>o padrão; exige uma lista completa da população</td></tr>
+      <tr><td><b>Sistemática</b></td>
+        <td>sorteia-se o primeiro e tomam-se depois de \(k\) em \(k\)</td>
+        <td>linhas de produção, filas; cuidado se houver periodicidade nos dados</td></tr>
+      <tr><td><b>Estratificada</b></td>
+        <td>divide-se a população em estratos homogêneos e sorteia-se dentro de cada um</td>
+        <td>quando há subgrupos distintos; <em>reduz</em> a variância da estimativa</td></tr>
+      <tr><td><b>Por conglomerados</b></td>
+        <td>sorteiam-se grupos inteiros (escolas, bairros) e mede-se tudo dentro deles</td>
+        <td>quando é caro chegar a cada indivíduo; <em>aumenta</em> a variância</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Estratificada e conglomerados: parecidas, opostas</span>
+    <p>Nas duas a população é dividida em grupos, mas com lógicas contrárias. Na
+    <strong>estratificada</strong>, queremos grupos <em>internamente homogêneos</em> e
+    diferentes entre si, e tomamos um pouco de cada um — isso garante representação e reduz o
+    erro. Nos <strong>conglomerados</strong>, queremos grupos que sejam cada um uma
+    "mini-população", e tomamos alguns grupos inteiros — isso barateia a coleta, mas paga o preço
+    de mais variabilidade.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Vieses: quando a amostra mente</h2>
+
+  <p>Nenhuma matemática deste módulo funciona se a amostra não for aleatória. E o modo mais
+  comum de arruinar um estudo não é calcular errado — é coletar errado.</p>
+
+  <div class="bloco ex">
+    <span class="rotulo">O caso Literary Digest, 1936</span>
+    <p>A revista enviou questionários sobre a eleição presidencial americana e recebeu
+    <strong>2,4 milhões</strong> de respostas — uma amostra gigantesca para qualquer padrão.
+    Previu a vitória de Landon com folga. Roosevelt venceu em 46 dos 48 estados.</p>
+    <p>No mesmo pleito, George Gallup acertou o resultado com cerca de <strong>50 mil</strong>
+    respostas: cinquenta vezes menos gente.</p>
+    <p><strong>O que deu errado.</strong> As listas vieram de registros de proprietários de
+    automóveis e assinantes de telefone — em plena Grande Depressão, um recorte de renda alta.
+    Pior, apenas uma fração dos questionários enviados voltou, e quem se dá ao trabalho de
+    responder tende a ser quem tem opinião mais forte.</p>
+    <p><strong>A moral:</strong> um viés sistemático não é corrigido por aumentar \(n\). Pelo
+    contrário — uma amostra grande e enviesada produz um erro <em>grande e com aparência de
+    precisão</em>. Tamanho de amostra combate o acaso, não o viés.</p>
+  </div>
+
+  <ul>
+    <li><strong>Viés de seleção:</strong> a lista de onde se sorteia não representa a população;</li>
+    <li><strong>Viés de não resposta:</strong> quem responde difere sistematicamente de quem não responde;</li>
+    <li><strong>Viés do sobrevivente:</strong> só se observa o que restou — os aviões que voltaram,
+    as empresas que não faliram, os equipamentos que não queimaram;</li>
+    <li><strong>Viés do voluntário:</strong> amostras autosselecionadas, como enquetes de internet.</li>
+  </ul>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. O que é uma distribuição amostral</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>A <strong>distribuição amostral</strong> de uma estatística é a distribuição de
+    probabilidade dos valores que ela assumiria ao longo de todas as amostras possíveis de
+    tamanho \(n\) extraídas da população.</p>
+  </div>
+
+  <p>Ela existe conceitualmente mesmo que na prática sorteemos uma única amostra. O simulador
+  abaixo torna esse objeto abstrato visível: ele sorteia amostra após amostra e constrói, diante
+  de você, a distribuição das médias.</p>
+
+  <div data-widget="amostragem"></div>
+
+  <p>Três coisas para experimentar ali, nesta ordem:</p>
+  <ol>
+    <li>Com a população <strong>normal</strong> e \(n=1\), as duas curvas são idênticas — uma
+    amostra de um elemento é o próprio elemento;</li>
+    <li>Aumente \(n\) e veja a curva de baixo <strong>estreitar</strong> enquanto permanece
+    centrada em \(\mu\). Compare o desvio observado com \(\sigma/\sqrt n\) nos cartões;</li>
+    <li>Troque para a população <strong>exponencial</strong>, fortemente assimétrica. Com
+    \(n=1\) a distribuição das "médias" é assimétrica; com \(n=30\) já está quase simétrica.
+    <strong>Esse é o TCL em ação</strong>: a forma da população deixa de importar.</li>
+  </ol>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. A distribuição amostral da média</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Resultado central</span>
+    <p>Se \(X_1,\dots,X_n\) são extraídas independentemente de uma população com média \(\mu\) e
+    variância \(\sigma^2\), então para \(\bar X = \frac1n\sum_i X_i\):</p>
+    <p>\[\mu_{\bar X} = \mu, \qquad
+       \sigma_{\bar X} = \frac{\sigma}{\sqrt n}.\]</p>
+    <p>A quantidade \(\sigma/\sqrt n\) chama-se <strong>erro padrão da média</strong>.</p>
+  </div>
+
+  <p><em>Demonstração.</em> Nada de novo: é o Exercício 4.3 do Módulo 4. A esperança é linear,
+  logo \(\langle \bar X\rangle = \frac1n \cdot n\mu = \mu\). Para a variância, a soma de \(n\)
+  independentes tem variância \(n\sigma^2\), e a transformação linear com \(a = 1/n\) multiplica
+  a variância por \(1/n^2\):</p>
+  <p>\[\sigma^2_{\bar X} = \frac{1}{n^2}\,n\sigma^2 = \frac{\sigma^2}{n}. \qquad \blacksquare\]</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Não confunda σ com σ/√n</span>
+    <p>\(\sigma\) mede o espalhamento dos <strong>indivíduos</strong> da população. Ele é o que
+    é — não muda porque você mediu mais gente.</p>
+    <p>\(\sigma/\sqrt n\) mede o espalhamento das <strong>médias amostrais</strong>, isto é, a
+    imprecisão da sua estimativa. Esse, sim, diminui à medida que você coleta mais dados.</p>
+    <p>Confundir os dois é o erro mais frequente em relatórios de laboratório.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">A forma da distribuição</span>
+    <ul>
+      <li>Se a <strong>população é normal</strong>, então \(\bar X\) é <em>exatamente</em> normal,
+      para qualquer \(n\);</li>
+      <li>Se a população <strong>não</strong> é normal, \(\bar X\) é <em>aproximadamente</em>
+      normal para \(n\) grande, pelo TCL. A regra prática usual é \(n \geq 30\), mas quanto mais
+      assimétrica a população, maior o \(n\) necessário.</li>
+    </ul>
+  </div>
+
+  <h3>Exercício resolvido 7.1 — Resistores</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Uma linha de produção fabrica resistores com resistência média \(\mu = 100\,\Omega\) e
+    desvio padrão \(\sigma = 6\,\Omega\). Toma-se uma amostra de 36 resistores.
+    (a) Qual o erro padrão da média? (b) Qual a probabilidade de a média amostral ficar entre
+    98 e 102 Ω? (c) E de exceder 101 Ω?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>(a)</strong> \(\displaystyle \sigma_{\bar X} = \frac{6}{\sqrt{36}} = \frac{6}{6}
+      = \mathbf{1{,}0\ \Omega}\).</p>
+      <p>Note o ganho: resistores individuais variam com \(\sigma = 6\,\Omega\), mas a média de 36
+      deles varia apenas com 1 Ω.</p>
+      <p><strong>(b)</strong> Padronizando: \(z_1 = (98-100)/1 = -2\) e \(z_2 = +2\). Logo</p>
+      <p>\[P(98 \le \bar X \le 102) = \Phi(2)-\Phi(-2) = \mathbf{0{,}9545}.\]</p>
+      <p>É a regra 68–95–99,7 aplicada à <em>média</em>, não aos indivíduos.</p>
+      <p><strong>(c)</strong> \(z = (101-100)/1 = 1\), portanto
+      \(P(\bar X > 101) = 1 - \Phi(1) = \mathbf{0{,}1587}\).</p>
+      <p><strong>Compare:</strong> um resistor <em>individual</em> acima de 101 Ω tem
+      \(z = 1/6 = 0{,}167\) e probabilidade 0,434 — quase metade deles. Mas a <em>média</em> de 36
+      ultrapassar 101 Ω só acontece em 16% das amostras. Médias são muito mais estáveis que
+      indivíduos.</p>
+    </div>
+  </details>
+
+  <h3>Exercício resolvido 7.2 — Quando a população não é normal</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>O tempo entre falhas de um equipamento segue distribuição exponencial com média 50 horas
+    (e portanto \(\sigma = 50\) h, como vimos no Módulo 5). Registram-se 100 intervalos. Qual a
+    probabilidade de o tempo médio entre falhas observado exceder 60 horas?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>A população é fortemente assimétrica — mas \(n = 100 \geq 30\), então o TCL autoriza
+      tratar \(\bar X\) como normal.</p>
+      <p>\[\sigma_{\bar X} = \frac{50}{\sqrt{100}} = 5\ \text{h},
+      \qquad z = \frac{60-50}{5} = 2 .\]</p>
+      <p>\[P(\bar X > 60) = 1 - \Phi(2) = \mathbf{0{,}0228}.\]</p>
+      <p><strong>O ponto fundamental:</strong> a <em>população</em> continua exponencial,
+      assimétrica, com cauda longa. É a <em>distribuição da média</em> que se tornou normal. O TCL
+      não transforma os dados — transforma a estatística calculada a partir deles.</p>
+      <p>Verifique no simulador da seção 4: escolha a população exponencial e compare o gráfico de
+      cima com o de baixo em \(n=100\).</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. A distribuição t de Student</h2>
+
+  <p>Há um problema prático na fórmula \(z = (\bar x - \mu)/(\sigma/\sqrt n)\): ela exige
+  \(\sigma\), o desvio padrão da <strong>população</strong>. Mas se não conhecemos \(\mu\), é
+  implausível que conheçamos \(\sigma\). O que temos é \(s\), calculado da própria amostra.</p>
+
+  <p>Trocar \(\sigma\) por \(s\) introduz uma <strong>segunda fonte de incerteza</strong>: além de
+  \(\bar x\) flutuar, o próprio denominador flutua. A estatística resultante não é mais normal.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>Se a população é normal, então</p>
+    <p>\[T = \frac{\bar X - \mu}{s/\sqrt n}\]</p>
+    <p>segue a <strong>distribuição t de Student</strong> com \(\nu = n-1\) graus de liberdade.</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Propriedades</span>
+    <ul>
+      <li>Simétrica em torno de zero, como a normal, mas com <strong>caudas mais pesadas</strong>;</li>
+      <li>Variância \(\dfrac{\nu}{\nu-2}\) para \(\nu > 2\) — sempre maior que 1, a variância da normal;</li>
+      <li>Para \(\nu = 1\) nem sequer tem média definida (é a distribuição de Cauchy!);</li>
+      <li>Quando \(\nu \to \infty\), converge para a normal padrão.</li>
+    </ul>
+  </div>
+
+  <div data-widget="tstudent"></div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que "Student"</span>
+    <p>William Sealy Gosset deduziu essa distribuição em 1908 trabalhando no controle de qualidade
+    da cervejaria Guinness, em Dublin. Ele lidava com amostras pequenas de lotes de cevada, onde
+    a aproximação normal falhava. A Guinness proibia seus funcionários de publicar, e Gosset
+    assinou sob o pseudônimo <em>Student</em>. O nome pegou.</p>
+    <p>A lição é atual: a t de Student existe porque alguém precisava decidir com
+    <strong>poucos dados</strong> — exatamente a situação do laboratório didático, onde se fazem
+    cinco ou dez medidas, e não mil.</p>
+  </div>
+
+  <h3>Exercício resolvido 7.3 — Quando a diferença importa</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Em um experimento de pêndulo, 12 medidas de \(g\) forneceram \(\bar x = 9{,}81\) e
+    \(s = 0{,}03\) m/s². (a) Qual a probabilidade de \(\bar X\) se afastar de \(\mu\) em mais de
+    2 erros padrão estimados? (b) Compare com o valor que a normal daria. (c) Qual é o valor
+    crítico \(t\) para 95% de confiança?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Com \(n = 12\), os graus de liberdade são \(\nu = 11\).</p>
+      <p><strong>(a)</strong> Da tabela t (ou do simulador acima):</p>
+      <p>\[P(|T| > 2) = 2\,[1 - F_T(2;\,11)] \approx 2 \times 0{,}0354 = \mathbf{0{,}0708}.\]</p>
+      <p><strong>(b)</strong> Pela normal, \(P(|Z| > 2) = 2(1-\Phi(2)) = 0{,}0455\).</p>
+      <p>A t atribui <strong>56% mais probabilidade</strong> a esse afastamento. Usar a normal
+      aqui subestimaria o risco de erro — um otimismo indevido, que é precisamente o que a t
+      corrige.</p>
+      <p><strong>(c)</strong> Para 95% de confiança com \(\nu = 11\):
+      \(t_{0{,}025;\,11} = \mathbf{2{,}201}\), contra \(z = 1{,}960\).</p>
+      <p>Na prática isso significa que o intervalo de confiança será
+      \(2{,}201/1{,}960 = 1{,}12\) vezes mais largo — 12% a mais de incerteza declarada, pelo
+      simples fato de termos estimado \(\sigma\) em vez de conhecê-lo. Com apenas 12 medidas, é
+      um preço justo.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. A variância amostral e a qui-quadrado</h2>
+
+  <p>Se \(\bar x\) é aleatório, \(s^2\) também é. Qual a distribuição dele?</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Resultado</span>
+    <p>Para amostras de uma população normal,</p>
+    <p>\[\frac{(n-1)\,s^2}{\sigma^2} \sim \chi^2_{\,n-1},\]</p>
+    <p>a distribuição qui-quadrado com \(n-1\) graus de liberdade. Ela é a soma de \(k\) quadrados
+    de normais padrão independentes, tem média \(k\), variância \(2k\), assume apenas valores
+    positivos e é assimétrica à direita.</p>
+  </div>
+
+  <p>Repare que o \(n-1\) reaparece. Ele não é uma convenção arbitrária inventada no Módulo 6:
+  é o número de parcelas independentes na soma, e aparece sozinho na matemática.</p>
+
+  <div data-widget="quiquadrado"></div>
+
+  <h3>Exercício resolvido 7.4 — Dispersão de um instrumento</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Um fabricante afirma que seu sensor tem variância \(\sigma^2 = 4\) (em unidades
+    adequadas). Em 20 medidas, obteve-se \(s^2 = 6\). Se a afirmação do fabricante estiver
+    correta, qual a probabilidade de observar uma variância amostral tão grande ou maior?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>A estatística é</p>
+      <p>\[\chi^2 = \frac{(n-1)s^2}{\sigma^2} = \frac{19 \times 6}{4} = 28{,}5,\]</p>
+      <p>com \(\nu = 19\) graus de liberdade. Da tabela qui-quadrado (ou do simulador acima):</p>
+      <p>\[P(\chi^2_{19} > 28{,}5) \approx \mathbf{0{,}074}.\]</p>
+      <p>Cerca de 7,4% — pouco provável, mas não absurdo. O valor crítico a 5% é 30,14, e 28,5
+      fica abaixo dele; aos critérios usuais, <strong>não há evidência suficiente</strong> para
+      contestar o fabricante com esses dados.</p>
+      <p>Isso é, na prática, um teste de hipóteses — só que ainda sem o vocabulário formal, que é
+      o assunto do Módulo 9.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. A distribuição amostral da proporção</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Resultado</span>
+    <p>Se cada elemento tem probabilidade \(p\) de apresentar a característica de interesse, a
+    proporção amostral \(\hat p = X/n\) (com \(X\) binomial) satisfaz</p>
+    <p>\[\mu_{\hat p} = p, \qquad
+       \sigma_{\hat p} = \sqrt{\frac{p(1-p)}{n}},\]</p>
+    <p>e é aproximadamente normal quando \(np \geq 5\) e \(n(1-p) \geq 5\).</p>
+  </div>
+
+  <p>Não há nada de novo aqui: \(\hat p\) é a média de \(n\) variáveis de Bernoulli, cada uma com
+  média \(p\) e variância \(p(1-p)\). Aplique \(\sigma/\sqrt n\) e o resultado sai.</p>
+
+  <h3>Exercício resolvido 7.5 — Pesquisa de opinião</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Sabe-se que 60% dos estudantes de uma universidade usam transporte público. Sorteiam-se
+    200 estudantes. Qual a probabilidade de a proporção amostral exceder 65%?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>Verificação: \(np = 120 \geq 5\) e \(n(1-p) = 80 \geq 5\) — a aproximação normal vale.</p>
+      <p>\[\sigma_{\hat p} = \sqrt{\frac{0{,}6 \times 0{,}4}{200}} = \sqrt{0{,}0012}
+      \approx 0{,}0346 .\]</p>
+      <p>\[z = \frac{0{,}65 - 0{,}60}{0{,}0346} \approx 1{,}443
+      \;\Longrightarrow\; P(\hat p > 0{,}65) = 1 - \Phi(1{,}44) \approx \mathbf{0{,}0745}.\]</p>
+      <p>Cerca de 7,5%. Note que \(\sigma_{\hat p} \approx 3{,}5\) pontos percentuais: é daí que
+      saem as "margens de erro" das pesquisas eleitorais, que são aproximadamente
+      \(2\sigma_{\hat p}\) — neste caso, cerca de 7 pontos. Formalizaremos isso no Módulo 8.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Aplicações em Física</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que repetir medidas funciona</span>
+    <p>Todo o Módulo 7 é, para o físico experimental, a justificativa formal de um gesto
+    cotidiano: medir várias vezes e tirar a média. O erro padrão \(\sigma/\sqrt n\) quantifica
+    exatamente quanto se ganha.</p>
+    <p>E quantifica também o limite. Para melhorar a precisão por um fator 10, são precisas 100
+    vezes mais medidas. Chega um ponto em que é mais barato comprar um instrumento melhor —
+    reduzir \(\sigma\) — do que repetir indefinidamente. Essa decisão aparece em todo projeto
+    experimental.</p>
+    <p><strong>Advertência essencial:</strong> \(\sigma/\sqrt n\) só combate o erro
+    <strong>aleatório</strong>. Um erro <strong>sistemático</strong> — um paquímetro
+    descalibrado, um cronômetro atrasado — não diminui nem um pouco com repetições. É o
+    equivalente laboratorial do viés do Literary Digest: mais dados apenas o medem com mais
+    precisão.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Amostragem em simulações de Monte Carlo</span>
+    <p>Quando se calcula uma integral ou se simula um sistema estatístico por Monte Carlo, o
+    resultado é literalmente a média de uma amostra. A incerteza do valor obtido é
+    \(\sigma/\sqrt N\), com \(N\) o número de configurações geradas — razão de simulações sérias
+    exigirem milhões de passos para três ou quatro algarismos confiáveis.</p>
+    <p>É também por isso que, em Monte Carlo de cadeias de Markov, a <em>independência</em> das
+    amostras é um problema central: configurações sucessivas são correlacionadas, e o \(n\)
+    efetivo é menor que o número de passos. Usar o \(n\) ingênuo subestima a incerteza.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Exercícios propostos</h2>
+
+  <ol>
+    <li>Uma população tem \(\mu = 80\) e \(\sigma = 12\). Para amostras de \(n = 9\), \(n = 36\)
+    e \(n = 144\), calcule o erro padrão. Que relação há entre eles?</li>
+    <li>Explique por que a amostragem estratificada reduz a variância da estimativa, enquanto a
+    por conglomerados a aumenta.</li>
+    <li>Demonstre que \(\sigma_{\bar X}^2 = \sigma^2/n\) a partir das propriedades de soma de
+    variáveis independentes do Módulo 4.</li>
+    <li>O conteúdo de pacotes de café tem \(\mu = 500\) g e \(\sigma = 8\) g. Qual a
+    probabilidade de a média de 25 pacotes ficar abaixo de 497 g?</li>
+    <li>Uma amostra de 16 medidas de uma população normal deu \(s = 2{,}4\). Qual a probabilidade
+    de \(|\bar X - \mu|\) exceder 1,5 unidade? <em>(Use a t de Student.)</em></li>
+    <li>Para que valor de \(\nu\) o valor crítico \(t_{0{,}025}\) difere de \(z_{0{,}025}\) em
+    menos de 2%? Use o simulador da seção 6 para encontrar.</li>
+    <li>Em uma pesquisa com \(n = 400\) e \(p = 0{,}5\), qual o erro padrão da proporção? Por que
+    \(p = 0{,}5\) é o pior caso possível? <em>(Maximize \(p(1-p)\).)</em></li>
+    <li>Mostre que, se \(Z_1,\dots,Z_k\) são normais padrão independentes, então
+    \(\sum_i Z_i^2\) tem média \(k\) e variância \(2k\). <em>(Use \(\langle Z^4\rangle = 3\).)</em></li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>Toda estatística calculada numa amostra aleatória é, ela própria, aleatória;</li>
+      <li>\(\mu_{\bar X}=\mu\) e \(\sigma_{\bar X}=\sigma/\sqrt n\) — o erro padrão da média;</li>
+      <li>\(\bar X\) é normal se a população for normal; aproximadamente normal se \(n\) for
+      grande, pelo TCL;</li>
+      <li>Com \(\sigma\) desconhecido, use \(T=(\bar X-\mu)/(s/\sqrt n)\), com \(\nu=n-1\);</li>
+      <li>\((n-1)s^2/\sigma^2 \sim \chi^2_{n-1}\);</li>
+      <li>\(\sigma_{\hat p}=\sqrt{p(1-p)/n}\) para proporções;</li>
+      <li>Viés não se corrige com \(n\) maior. Só o erro aleatório diminui.</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula06.html"><small>Módulo anterior</small>← 6. Estatística descritiva</a>
+    <span class="prox em-breve"><small>Próximo módulo</small>8. Estimação · em preparação</span>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js"></script>
+</body>
+</html>

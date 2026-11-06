@@ -1270,13 +1270,299 @@
   }
 
   /* =================================================================
+     15. Da população à distribuição amostral da média
+     ================================================================= */
+  var POPULACOES = {
+    normal: {
+      rot: 'Normal (μ=50, σ=10)', mu: 50, sg: 10, lo: 10, hi: 90,
+      dens: function (x) { return M.dNormal(x, 50, 10); },
+      sorteia: function () { return 50 + 10 * M.normalAleatoria(); }
+    },
+    uniforme: {
+      rot: 'Uniforme em [30, 70]', mu: 50, sg: 40 / Math.sqrt(12), lo: 25, hi: 75,
+      dens: function (x) { return (x >= 30 && x <= 70) ? 1 / 40 : 0; },
+      sorteia: function () { return 30 + 40 * Math.random(); }
+    },
+    exponencial: {
+      rot: 'Exponencial (média 50)', mu: 50, sg: 50, lo: 0, hi: 220,
+      dens: function (x) { return x < 0 ? 0 : Math.exp(-x / 50) / 50; },
+      sorteia: function () { return -50 * Math.log(Math.random() || 1e-12); }
+    },
+    bimodal: {
+      rot: 'Bimodal (dois picos)', mu: 50, sg: Math.sqrt(250), lo: 10, hi: 90,
+      dens: function (x) { return 0.5 * M.dNormal(x, 35, 5) + 0.5 * M.dNormal(x, 65, 5); },
+      sorteia: function () {
+        return (Math.random() < 0.5 ? 35 : 65) + 5 * M.normalAleatoria();
+      }
+    }
+  };
+
+  function amostragem(raiz) {
+    var c = moldura(raiz, 'Da população à distribuição amostral da média');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var chave = 'normal', nAm = 5;
+    var campoSel = el('div', { class: 'campo' });
+    campoSel.appendChild(el('label', { html: 'População' }));
+    var sel = el('select');
+    Object.keys(POPULACOES).forEach(function (k) {
+      sel.appendChild(el('option', { value: k, texto: POPULACOES[k].rot }));
+    });
+    campoSel.appendChild(sel); ctr.appendChild(campoSel);
+    sel.addEventListener('change', function () { chave = sel.value; zerar(); });
+
+    deslizante(ctr, 'Tamanho da amostra n', 1, 50, 1, 5, function (v) { nAm = v; zerar(); });
+    var bts = el('div', { class: 'botoes' }); ctr.appendChild(bts);
+
+    var cvP = el('canvas'); c.appendChild(cvP);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'População &nbsp;·&nbsp; os traços embaixo são a última amostra sorteada' }));
+    var cvA = el('canvas'); c.appendChild(cvA);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Distribuição das médias amostrais &nbsp;·&nbsp; curva vermelha: a normal prevista pelo TCL' }));
+
+    var painel = cartoes(c, [
+      { rot: 'μ da população', k: 'mu' }, { rot: 'σ da população', k: 'sg' },
+      { rot: 'erro padrão σ/√n', k: 'ep' }, { rot: 'amostras geradas', k: 'q' },
+      { rot: 'média das médias', k: 'mo' }, { rot: 'desvio das médias', k: 'so' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    var caixas = new Array(46).fill(0), total = 0, soma = 0, soma2 = 0, ultima = [];
+
+    function simular(q) {
+      var P = POPULACOES[chave];
+      var ep = P.sg / Math.sqrt(nAm);
+      var lo = P.mu - 4.2 * ep, hi = P.mu + 4.2 * ep;
+      for (var i = 0; i < q; i++) {
+        var am = [], s = 0;
+        for (var j = 0; j < nAm; j++) { var v = P.sorteia(); am.push(v); s += v; }
+        var md = s / nAm;
+        soma += md; soma2 += md * md; total++;
+        var idx = Math.floor((md - lo) / (hi - lo) * caixas.length);
+        if (idx >= 0 && idx < caixas.length) caixas[idx]++;
+        if (i === q - 1) ultima = am;
+      }
+      desenhar();
+    }
+
+    function zerar() {
+      caixas = new Array(46).fill(0); total = 0; soma = 0; soma2 = 0; ultima = [];
+      desenhar();
+    }
+
+    function desenhar() {
+      var P = POPULACOES[chave];
+
+      /* ---- população ---- */
+      var pico = 0;
+      for (var t = P.lo; t <= P.hi; t += (P.hi - P.lo) / 200) pico = Math.max(pico, P.dens(t));
+      var gp = G.eixos(cvP, {
+        xmin: P.lo, xmax: P.hi, ymax: pico * 1.25, altura: 190,
+        rotX: 'valor na população', rotY: 'densidade',
+        marcasX: G.marcasLineares(P.lo, P.hi, 6, 0),
+        formataY: function (v) { return v.toFixed(2).replace('.', ','); }
+      });
+      G.area(gp, P.dens, P.lo, P.hi, 'rgba(44,95,141,.14)');
+      G.curva(gp, P.dens, G.COR.azul, 2);
+      G.vertical(gp, P.mu, G.COR.ambar, 'μ');
+      var ctp = gp.ct;
+      ctp.strokeStyle = G.COR.vinho; ctp.lineWidth = 1.5;
+      ultima.forEach(function (v) {
+        if (v < gp.xmin || v > gp.xmax) return;
+        ctp.beginPath();
+        ctp.moveTo(gp.X(v), gp.y1); ctp.lineTo(gp.X(v), gp.y1 - 11);
+        ctp.stroke();
+      });
+
+      /* ---- distribuição amostral ---- */
+      var ep = P.sg / Math.sqrt(nAm);
+      var lo = P.mu - 4.2 * ep, hi = P.mu + 4.2 * ep;
+      var larg = (hi - lo) / caixas.length;
+      var dens = caixas.map(function (q) { return total ? q / (total * larg) : 0; });
+      var picoA = M.dNormal(P.mu, P.mu, ep);
+      var ymax = Math.max(picoA, Math.max.apply(null, dens)) * 1.18;
+
+      var ga = G.eixos(cvA, {
+        xmin: lo, xmax: hi, ymax: ymax, altura: 230,
+        rotX: 'média da amostra x̄', rotY: 'densidade',
+        marcasX: G.marcasLineares(lo, hi, 6, 1),
+        formataY: function (v) { return v.toFixed(2).replace('.', ','); }
+      });
+      var cta = ga.ct;
+      cta.fillStyle = G.COR.azulClaro;
+      dens.forEach(function (d, i) {
+        if (d <= 0) return;
+        var x0 = ga.X(lo + i * larg), x1 = ga.X(lo + (i + 1) * larg);
+        var y = ga.Y(Math.min(d, ga.ymax));
+        cta.fillRect(x0 + 0.4, y, Math.max(1, x1 - x0 - 0.8), ga.y1 - y);
+      });
+      G.curva(ga, function (x) { return M.dNormal(x, P.mu, ep); }, G.COR.vinho, 2.2);
+      G.vertical(ga, P.mu, G.COR.ambar, 'μ');
+
+      var mo = total ? soma / total : 0;
+      var so = total > 1 ? Math.sqrt(Math.max(0, soma2 / total - mo * mo)) : 0;
+      painel({
+        mu: M.fmt(P.mu, 2), sg: M.fmt(P.sg, 3), ep: M.fmt(ep, 3),
+        q: total.toLocaleString('pt-BR'),
+        mo: total ? M.fmt(mo, 3) : '—', so: total > 1 ? M.fmt(so, 3) : '—'
+      });
+
+      saida.innerHTML = total === 0
+        ? 'Os dois gráficos estão na <b>mesma escala de valores?</b> Não — repare nos eixos. '
+          + 'A população vai de ' + M.fmt(P.lo, 0) + ' a ' + M.fmt(P.hi, 0)
+          + ', mas as médias de n = ' + nAm + ' se concentram entre ' + M.fmt(lo, 1)
+          + ' e ' + M.fmt(hi, 1) + '. Sorteie amostras para ver.'
+        : 'Depois de <b>' + total.toLocaleString('pt-BR') + '</b> amostras de tamanho n = <b>'
+          + nAm + '</b>: as médias se agrupam em <b>' + M.fmt(mo, 3) + '</b> (a teoria prevê μ = '
+          + M.fmt(P.mu, 2) + ') com dispersão <b>' + M.fmt(so, 3) + '</b> (a teoria prevê '
+          + 'σ/√n = ' + M.fmt(ep, 3) + '). A população tem σ = ' + M.fmt(P.sg, 2)
+          + ', ou seja, as médias são <b>' + M.fmt(P.sg / ep, 1) + ' vezes</b> menos dispersas '
+          + 'que os valores individuais.';
+    }
+
+    botao(bts, '+1 amostra', function () { simular(1); });
+    botao(bts, '+1 000', function () { simular(1000); });
+    botao(bts, '+50 000', function () { simular(50000); });
+    botao(bts, 'Zerar', zerar, true);
+
+    registrarRedesenho(desenhar);
+  }
+
+  /* =================================================================
+     16. t de Student contra a normal
+     ================================================================= */
+  function tstudent(raiz) {
+    var c = moldura(raiz, 't de Student: a cauda mais pesada e o preço de estimar σ');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var gl = 5, conf = 0.95;
+    deslizante(ctr, 'Graus de liberdade ν = n−1', 1, 60, 1, 5, function (v) { gl = v; atualizar(); });
+    var campoC = el('div', { class: 'campo' });
+    campoC.appendChild(el('label', { html: 'Nível de confiança' }));
+    var selC = el('select');
+    [['0.90', '90%'], ['0.95', '95%'], ['0.99', '99%']].forEach(function (o) {
+      selC.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    selC.value = '0.95';
+    campoC.appendChild(selC); ctr.appendChild(campoC);
+    selC.addEventListener('change', function () { conf = Number(selC.value); atualizar(); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Azul: normal padrão &nbsp;·&nbsp; vermelho: t com ν graus de liberdade &nbsp;·&nbsp; '
+      + 'áreas sombreadas: as duas caudas que somam 1 − confiança' }));
+    var painel = cartoes(c, [
+      { rot: 'z crítico', k: 'z' }, { rot: 't crítico', k: 't' },
+      { rot: 'quanto maior (t/z)', k: 'r' }, { rot: 'variância da t', k: 'v' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var alfa = (1 - conf) / 2;
+      var zc = M.zCritico(1 - alfa), tc = M.tCritico(alfa, gl);
+      var varT = gl > 2 ? gl / (gl - 2) : Infinity;
+      painel({
+        z: M.fmt(zc, 4), t: M.fmt(tc, 4), r: M.fmt(tc / zc, 3),
+        v: gl > 2 ? M.fmt(varT, 3) : 'infinita'
+      });
+
+      var lim = Math.max(4.4, Math.min(8, tc * 1.4));
+      var g = G.eixos(cv, {
+        xmin: -lim, xmax: lim, ymax: 0.45, altura: 280,
+        rotX: 'desvios padrão', rotY: 'densidade',
+        marcasX: G.marcasLineares(-lim, lim, 8, 1),
+        formataY: function (v) { return v.toFixed(2).replace('.', ','); }
+      });
+      var fT = function (x) { return M.dT(x, gl); };
+      var fZ = function (x) { return M.dNormal(x, 0, 1); };
+      G.area(g, fT, -lim, -tc, 'rgba(140,47,57,.25)');
+      G.area(g, fT, tc, lim, 'rgba(140,47,57,.25)');
+      G.curva(g, fZ, G.COR.azul, 2, [6, 4]);
+      G.curva(g, fT, G.COR.vinho, 2.4);
+      G.vertical(g, -tc, G.COR.vinho, '−t');
+      G.vertical(g, tc, G.COR.vinho, '+t');
+      G.vertical(g, -zc, G.COR.azul, '−z');
+      G.vertical(g, zc, G.COR.azul, '+z');
+      G.legenda(g, [
+        { texto: 'normal padrão', cor: G.COR.azul },
+        { texto: 't com ν = ' + gl, cor: G.COR.vinho }
+      ]);
+
+      saida.innerHTML = 'Com ν = <b>' + gl + '</b> graus de liberdade, o valor crítico é <b>'
+        + M.fmt(tc, 3) + '</b> contra <b>' + M.fmt(zc, 3) + '</b> da normal — um intervalo <b>'
+        + M.pct(tc / zc - 1, 1) + ' mais largo</b>. Essa largura extra é o preço de não conhecer '
+        + 'σ e ter de estimá-lo por s. '
+        + (gl >= 30
+            ? 'A partir de ν ≈ 30 a diferença some, e muitos livros autorizam usar z no lugar de t.'
+            : 'Aumente ν e veja a curva vermelha encostar na azul.');
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     17. Qui-quadrado
+     ================================================================= */
+  function quiquadrado(raiz) {
+    var c = moldura(raiz, 'Distribuição qui-quadrado');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+    var k = 5;
+    deslizante(ctr, 'Graus de liberdade k', 1, 40, 1, 5, function (v) { k = v; atualizar(); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Áreas sombreadas: as duas caudas de 2,5% usadas no intervalo de confiança da variância' }));
+    var painel = cartoes(c, [
+      { rot: 'média = k', k: 'm' }, { rot: 'variância = 2k', k: 'v' },
+      { rot: 'χ² inferior (2,5%)', k: 'ci' }, { rot: 'χ² superior (2,5%)', k: 'cs' },
+      { rot: 'χ² crítico (5% à direita)', k: 'c5' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var ci = M.quiCritico(0.975, k), cs = M.quiCritico(0.025, k), c5 = M.quiCritico(0.05, k);
+      painel({ m: String(k), v: String(2 * k), ci: M.fmt(ci, 3), cs: M.fmt(cs, 3), c5: M.fmt(c5, 3) });
+
+      var xmax = Math.max(12, k + 5 * Math.sqrt(2 * k));
+      var pico = 0;
+      for (var x = 0.02; x < xmax; x += xmax / 400) pico = Math.max(pico, M.dQui(x, k));
+      if (k <= 2) pico = Math.min(pico, M.dQui(xmax / 40, k) * 1.5);
+
+      var g = G.eixos(cv, {
+        xmin: 0, xmax: xmax, ymax: pico * 1.2, altura: 270,
+        rotX: 'χ²', rotY: 'densidade',
+        marcasX: G.marcasLineares(0, xmax, 6, 0),
+        formataY: function (v) { return v.toFixed(2).replace('.', ','); }
+      });
+      var f = function (x) { return M.dQui(x, k); };
+      G.area(g, f, 0, ci, 'rgba(140,47,57,.25)');
+      G.area(g, f, cs, xmax, 'rgba(140,47,57,.25)');
+      G.curva(g, f, G.COR.vinho, 2.4);
+      G.vertical(g, k, G.COR.ambar, 'k');
+      G.vertical(g, ci, G.COR.azul, '2,5%');
+      G.vertical(g, cs, G.COR.azul, '97,5%');
+
+      saida.innerHTML = 'A qui-quadrado só assume valores <b>positivos</b> e é '
+        + '<b>assimétrica à direita</b>. Com k = ' + k + ', a média é <b>' + k
+        + '</b> e a variância, <b>' + 2 * k + '</b>. '
+        + (k >= 25
+            ? 'Para k grande ela vai ficando simétrica — é o TCL agindo, já que χ² é uma soma de k parcelas independentes.'
+            : 'Aumente k e veja a assimetria diminuir: χ² é a soma de k quadrados de normais padrão independentes.');
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Registro e inicialização
      ================================================================= */
   var REGISTRO = {
     dados2: dadosDois, eventos: eventos, encontro: encontro, contagem: contagem,
     bayes: bayes, discreta: discreta, binomial: binomial, poisson: poisson,
     normal: normal, tcl: tcl, passeio: passeio, moeda: moeda, exponencial: exponencial,
-    descritiva: descritiva
+    descritiva: descritiva, amostragem: amostragem, tstudent: tstudent,
+    quiquadrado: quiquadrado
   };
 
   document.addEventListener('DOMContentLoaded', function () {
