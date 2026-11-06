@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 13 — Regressão linear | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061322">
-<script src="assets/js/comum.js?v=202611061322"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061532">
+<script src="assets/js/comum.js?v=202611061532"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -190,17 +190,84 @@
     S_{xy}=\sum_i x_i y_i - \frac{\left(\sum_i x_i\right)\left(\sum_i y_i\right)}{n}\]</p>
   </div>
 
+  <div class="bloco def">
+    <span class="rotulo">O sistema linear, escrito de uma vez</span>
+    <p>As duas equações normais deduzidas acima formam um sistema linear nas incógnitas
+    \(a\) e \(b\). Vale a pena escrevê-las alinhadas, com as incógnitas na mesma ordem:</p>
+    <p>\[\begin{cases}
+      \left(\sum_i x_i^{2}\right)a \;+\; \left(\sum_i x_i\right)b \;=\; \sum_i x_i y_i\\[6pt]
+      \left(\sum_i x_i\right)a \;+\; \;n\;b \;=\; \sum_i y_i
+    \end{cases}\]</p>
+    <p>Em forma matricial, \(\mathbf{A}\,\mathbf{p} = \mathbf{c}\), com</p>
+    <p>\[\mathbf{A}=\begin{pmatrix}\sum_i x_i^{2} & \sum_i x_i\\[4pt]
+    \sum_i x_i & n\end{pmatrix}, \qquad
+    \mathbf{p}=\begin{pmatrix}a\\[4pt] b\end{pmatrix}, \qquad
+    \mathbf{c}=\begin{pmatrix}\sum_i x_i y_i\\[4pt] \sum_i y_i\end{pmatrix}.\]</p>
+    <p>Repare que \(\mathbf{A}\) é <strong>simétrica</strong> — o coeficiente de \(b\) na
+    primeira equação é igual ao de \(a\) na segunda, ambos \(\sum x_i\). Isso não é
+    coincidência, como se verá a seguir.</p>
+  </div>
+
   <div class="bloco alerta">
-    <span class="rotulo">É mesmo um mínimo?</span>
-    <p>Sim. A matriz hessiana de \(S\) é</p>
-    <p>\[H = 2\begin{pmatrix}\sum_i x_i^2 & \sum_i x_i\\[2pt] \sum_i x_i & n\end{pmatrix},\]</p>
-    <p>cujo determinante vale \(4\left(n\sum x_i^2 - (\sum x_i)^2\right) = 4n\,S_{xx} &gt; 0\)
-    sempre que os \(x_i\) não forem todos iguais. Com traço positivo e determinante positivo,
-    a hessiana é definida positiva e o ponto crítico é mínimo — e, sendo \(S\) quadrática,
-    <strong>mínimo global e único</strong>.</p>
-    <p>A exceção é instrutiva: se todos os \(x_i\) forem iguais, \(S_{xx}=0\) e não há reta
-    alguma a ajustar. É exatamente o que acontece com o Anscombe IV se removermos o único
-    ponto fora da linha vertical.</p>
+    <span class="rotulo">É mesmo um mínimo? — construindo a hessiana passo a passo</span>
+    <p>A hessiana é a matriz das <strong>segundas</strong> derivadas parciais. Para uma
+    função de duas variáveis \(S(a,b)\), ela tem quatro entradas, dispostas assim:</p>
+    <p>\[H=\begin{pmatrix}
+      \dfrac{\partial^{2}S}{\partial a^{2}} & \dfrac{\partial^{2}S}{\partial a\,\partial b}\\[14pt]
+      \dfrac{\partial^{2}S}{\partial b\,\partial a} & \dfrac{\partial^{2}S}{\partial b^{2}}
+    \end{pmatrix}.\]</p>
+    <p>Então basta derivar uma segunda vez as duas expressões que já temos. Partindo de</p>
+    <p>\[\frac{\partial S}{\partial a} = -2\sum_i x_i\left(y_i - a x_i - b\right)
+    = -2\sum_i x_i y_i + 2a\sum_i x_i^{2} + 2b\sum_i x_i,\]</p>
+    <p>derivamos de novo, lembrando que \(\sum_i x_i y_i\), \(\sum_i x_i^2\) e
+    \(\sum_i x_i\) são <em>números</em>, não variáveis:</p>
+    <p>\[\frac{\partial^{2}S}{\partial a^{2}} = 2\sum_i x_i^{2},
+    \qquad\qquad
+    \frac{\partial^{2}S}{\partial a\,\partial b} = 2\sum_i x_i.\]</p>
+    <p>E, partindo da outra,</p>
+    <p>\[\frac{\partial S}{\partial b} = -2\sum_i\left(y_i - a x_i - b\right)
+    = -2\sum_i y_i + 2a\sum_i x_i + 2nb,\]</p>
+    <p>\[\frac{\partial^{2}S}{\partial b\,\partial a} = 2\sum_i x_i,
+    \qquad\qquad
+    \frac{\partial^{2}S}{\partial b^{2}} = 2n.\]</p>
+    <p>Montando as quatro entradas na posição correspondente:</p>
+    <p>\[H = \begin{pmatrix}2\sum_i x_i^{2} & 2\sum_i x_i\\[4pt]
+    2\sum_i x_i & 2n\end{pmatrix}
+    = 2\begin{pmatrix}\sum_i x_i^{2} & \sum_i x_i\\[4pt]
+    \sum_i x_i & n\end{pmatrix} = 2\,\mathbf{A}.\]</p>
+
+    <div class="bloco def" style="margin-top:1rem">
+      <span class="rotulo">O atalho que vale para todo problema de mínimos quadrados</span>
+      <p>Compare \(H\) com a matriz \(\mathbf{A}\) do sistema linear: <strong>são a mesma
+      matriz, a menos do fator 2</strong>.</p>
+      <p>Isso acontece sempre que \(S\) é <em>quadrática</em> nos parâmetros, que é o caso de
+      qualquer ajuste linear — reta, parábola, polinômio de grau qualquer. A hessiana nunca
+      precisa ser calculada do zero: <strong>ela é, a menos do fator 2, a matriz de
+      coeficientes das próprias equações normais</strong>, aquela que já se montou para
+      resolver o sistema.</p>
+      <p>É também a razão de \(\mathbf{A}\) ser simétrica: pelo teorema de Schwarz,
+      \(\partial^2 S/\partial a\,\partial b = \partial^2 S/\partial b\,\partial a\), de modo
+      que a hessiana de qualquer função bem comportada é simétrica — e \(\mathbf{A}\),
+      sendo metade dela, também.</p>
+    </div>
+
+    <p style="margin-top:1rem"><strong>Agora o critério.</strong> Para uma matriz
+    \(2\times 2\), o ponto crítico é mínimo quando a hessiana é <em>definida positiva</em>,
+    o que se verifica por duas condições:</p>
+    <p>\[\det H &gt; 0 \qquad\text{e}\qquad \frac{\partial^{2}S}{\partial a^{2}} &gt; 0.\]</p>
+    <p>Calculando o determinante:</p>
+    <p>\[\det H = \left(2\sum_i x_i^{2}\right)(2n) - \left(2\sum_i x_i\right)^{2}
+    = 4\left[n\sum_i x_i^{2}-\left(\sum_i x_i\right)^{2}\right] = 4n\,S_{xx},\]</p>
+    <p>onde usamos a fórmula de trabalho \(S_{xx}=\sum x_i^2-(\sum x_i)^2/n\) da caixa
+    anterior. Como \(n &gt; 0\) e \(S_{xx} &gt; 0\) sempre que os \(x_i\) não forem todos
+    iguais, temos \(\det H &gt; 0\). E \(\partial^2 S/\partial a^2 = 2\sum x_i^2 &gt; 0\)
+    automaticamente, por ser soma de quadrados.</p>
+    <p>Logo o ponto crítico é mínimo — e, sendo \(S\) uma função quadrática, ele é
+    <strong>global e único</strong>. Não há outro candidato a conferir.</p>
+    <p>A exceção é instrutiva: se todos os \(x_i\) forem iguais, \(S_{xx}=0\), o determinante
+    zera, a matriz \(\mathbf{A}\) fica singular e o sistema não tem solução única — não há
+    reta alguma a ajustar. É exatamente o que acontece com o Anscombe IV se removermos o
+    único ponto fora da linha vertical.</p>
   </div>
 
   <h3>Exercício resolvido 13.1 — Ajuste à mão</h3>
@@ -672,6 +739,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061322"></script>
+<script src="assets/js/widgets.js?v=202611061532"></script>
 </body>
 </html>
