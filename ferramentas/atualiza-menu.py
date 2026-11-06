@@ -19,8 +19,9 @@ TITULOS = {
     7: "Amostragem e distribuições amostrais",
     8: "Estimação e intervalos de confiança",
     9: "Testes de hipóteses",
-    10: "Associação e regressão",
-    11: "Incertezas e dados de laboratório",
+    10: "Testes qui-quadrado",
+    11: "Testes de normalidade",
+    12: "Correlação",
 }
 
 
@@ -39,7 +40,7 @@ def monta_menu(pagina_atual):
     partes = [link("index.html", "Início")]
 
     for rotulo, faixa in (("Probabilidade", range(1, 6)),
-                          ("Estatística", range(6, 12))):
+                          ("Estatística", range(6, 13))):
         numeros = [n for n in faixa if n in existentes]
         if not numeros:
             continue

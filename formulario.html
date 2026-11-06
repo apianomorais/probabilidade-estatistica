@@ -3,15 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Formulário e tabela z | Probabilidade &amp; Estatística</title>
+<title>Formulário, tabelas e valores críticos | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611061202">
-<script src="assets/js/comum.js?v=202611061202"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061217">
+<script src="assets/js/comum.js?v=202611061217"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <style>
   #tabelaZ table{font-size:.78rem}
   #tabelaZ th,#tabelaZ td{padding:.2rem .3rem}
   #tabelaZ tbody th{background:var(--azul-pastel);color:var(--azul);font-weight:700}
+  #tabelaT table,#tabelaQ table{font-size:.76rem}
+  #tabelaT th,#tabelaT td,#tabelaQ th,#tabelaQ td{padding:.2rem .35rem}
+  #tabelaT tbody th,#tabelaQ tbody th{background:var(--azul-pastel);color:var(--azul);font-weight:700}
 </style>
 </head>
 <body>
@@ -32,8 +35,9 @@
       <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
       <a href="aula08.html" class="num" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
       <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
-      <a href="aula10.html" class="num" title="Módulo 10 — Associação e regressão">10</a>
-      <a href="aula11.html" class="num" title="Módulo 11 — Incertezas e dados de laboratório">11</a>
+      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
+      <a href="aula11.html" class="num" title="Módulo 11 — Testes de normalidade">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Correlação">12</a>
       <a href="formulario.html" class="ativo">Formulário</a>
     </nav>
   </div>
@@ -51,14 +55,22 @@
     <li><a href="#f5">Distribuições</a></li>
     <li><a href="#f6">Integrais úteis</a></li>
     <li><a href="#f7">Tabela da normal</a></li>
+    <li><a href="#f8">Descritiva</a></li>
+    <li><a href="#f9">Intervalos de confiança</a></li>
+    <li><a href="#f10">Testes de hipóteses</a></li>
+    <li><a href="#f11">Qui-quadrado e correlação</a></li>
+    <li><a href="#f12">Tamanho amostral</a></li>
+    <li><a href="#f13"><b>Calculadora de críticos</b></a></li>
+    <li><a href="#f14">Tabela t de Student</a></li>
+    <li><a href="#f15">Tabela do qui-quadrado</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
   <p class="chapeu">Material de apoio</p>
-  <h1>Formulário e tabela da normal padrão</h1>
-  <p class="subtitulo">Tudo em uma página só — feita para imprimir e levar para a prova.</p>
+  <h1>Formulário, tabelas e valores críticos</h1>
+  <p class="subtitulo">Todas as fórmulas do curso, as tabelas de z, t e χ² e uma calculadora de valores críticos — feita para imprimir e para consultar durante a aula.</p>
 
   <!-- ================================================== -->
   <h2 id="f1">Axiomas e álgebra de eventos</h2>
@@ -233,8 +245,243 @@
   <p>Para consultas fora da tabela, use o simulador da normal no
   <a href="aula05.html#s5">Módulo 5</a>, que calcula \(\Phi(z)\) para qualquer valor.</p>
 
+  <!-- ================================================== -->
+  <h2 id="f8">Estatística descritiva</h2>
+  <div class="bloco">
+    <p>Média \(\bar x=\dfrac{1}{n}\displaystyle\sum_i x_i\) &nbsp;·&nbsp;
+    variância amostral \(s^2=\dfrac{1}{n-1}\displaystyle\sum_i (x_i-\bar x)^2\) &nbsp;·&nbsp;
+    desvio \(s=\sqrt{s^2}\)</p>
+    <p>Fórmula de trabalho: \(\displaystyle\sum_i (x_i-\bar x)^2=\sum_i x_i^2-\frac{\left(\sum_i x_i\right)^2}{n}\)</p>
+    <p>Dados agrupados: \(\bar x=\dfrac{\sum_j f_j x_j}{n}\) &nbsp;·&nbsp;
+    \(s^2=\dfrac{\sum_j f_j (x_j-\bar x)^2}{n-1}\)</p>
+    <p>Coeficiente de variação \(\mathrm{CV}=\dfrac{s}{\bar x}\) &nbsp;·&nbsp;
+    escore padronizado \(z_i=\dfrac{x_i-\bar x}{s}\)</p>
+    <p>Amplitude interquartil \(\mathrm{AIQ}=Q_3-Q_1\); são atípicos os pontos fora de
+    \([\,Q_1-1{,}5\,\mathrm{AIQ}\;,\;Q_3+1{,}5\,\mathrm{AIQ}\,]\)</p>
+    <p>Assimetria \(g_1=\dfrac{m_3}{m_2^{3/2}}\) &nbsp;·&nbsp;
+    curtose em excesso \(g_2=\dfrac{m_4}{m_2^{2}}-3\), com
+    \(m_k=\dfrac{1}{n}\sum_i (x_i-\bar x)^k\)</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f9">Amostragem e intervalos de confiança</h2>
+  <div class="bloco">
+    <p>Erro padrão da média: \(\sigma_{\bar X}=\dfrac{\sigma}{\sqrt{n}}\) &nbsp;·&nbsp;
+    estimado por \(\dfrac{s}{\sqrt{n}}\)</p>
+    <p>População finita de tamanho \(N\):
+    \(\sigma_{\bar X}=\dfrac{\sigma}{\sqrt{n}}\sqrt{\dfrac{N-n}{N-1}}\)</p>
+    <p>IC para \(\mu\) com \(\sigma\) conhecido:
+    \(\bar x \pm z_{\alpha/2}\dfrac{\sigma}{\sqrt{n}}\)</p>
+    <p>IC para \(\mu\) com \(\sigma\) desconhecido:
+    \(\bar x \pm t_{\alpha/2,\,\nu}\dfrac{s}{\sqrt{n}}\), &nbsp;\(\nu=n-1\)</p>
+    <p>IC para proporção: \(\hat p \pm z_{\alpha/2}\sqrt{\dfrac{\hat p(1-\hat p)}{n}}\)</p>
+    <p>IC para variância:
+    \(\left[\dfrac{(n-1)s^2}{\chi^2_{\alpha/2,\,\nu}}\;,\;\dfrac{(n-1)s^2}{\chi^2_{1-\alpha/2,\,\nu}}\right]\)</p>
+    <p>IC para diferença de médias (variâncias iguais):
+    \((\bar x_1-\bar x_2)\pm t_{\alpha/2,\,\nu}\,s_p\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}\),
+    com \(s_p^2=\dfrac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2}\) e \(\nu=n_1+n_2-2\)</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f10">Testes de hipóteses</h2>
+  <div class="bloco">
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Situação</th><th>Estatística</th><th>Distribuição</th></tr></thead>
+      <tbody>
+        <tr><td>média, \(\sigma\) conhecido</td><td>\(z=\dfrac{\bar x-\mu_0}{\sigma/\sqrt{n}}\)</td><td>\(N(0,1)\)</td></tr>
+        <tr><td>média, \(\sigma\) desconhecido</td><td>\(t=\dfrac{\bar x-\mu_0}{s/\sqrt{n}}\)</td><td>\(t_{n-1}\)</td></tr>
+        <tr><td>proporção</td><td>\(z=\dfrac{\hat p-p_0}{\sqrt{p_0(1-p_0)/n}}\)</td><td>\(N(0,1)\)</td></tr>
+        <tr><td>duas médias independentes</td><td>\(t=\dfrac{\bar x_1-\bar x_2}{s_p\sqrt{1/n_1+1/n_2}}\)</td><td>\(t_{n_1+n_2-2}\)</td></tr>
+        <tr><td>amostras pareadas</td><td>\(t=\dfrac{\bar d}{s_d/\sqrt{n}}\)</td><td>\(t_{n-1}\)</td></tr>
+        <tr><td>variância</td><td>\(\chi^2=\dfrac{(n-1)s^2}{\sigma_0^2}\)</td><td>\(\chi^2_{n-1}\)</td></tr>
+        <tr><td>correlação</td><td>\(t=r\sqrt{\dfrac{n-2}{1-r^2}}\)</td><td>\(t_{n-2}\)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p><b>Erros:</b> tipo I = rejeitar \(H_0\) verdadeira, probabilidade \(\alpha\);
+    tipo II = não rejeitar \(H_0\) falsa, probabilidade \(\beta\).
+    Poder \(=1-\beta\).</p>
+    <p><b>Decisão:</b> rejeita-se \(H_0\) se a estatística cai na região crítica, ou
+    equivalentemente se \(p&lt;\alpha\). As duas leituras sempre concordam.</p>
+    <p><b>Caudas:</b> bilateral divide \(\alpha\) em duas metades de \(\alpha/2\);
+    unilateral concentra todo o \(\alpha\) numa cauda, e por isso tem crítico menor e
+    mais poder — desde que a direção tenha sido fixada <i>antes</i> de ver os dados.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f11">Qui-quadrado, normalidade e correlação</h2>
+  <div class="bloco">
+    <p><b>Aderência:</b> \(\chi^2=\displaystyle\sum_i \frac{(O_i-E_i)^2}{E_i}\),
+    \(\nu=k-1-m\) (\(m\) = parâmetros estimados dos dados)</p>
+    <p><b>Independência</b> em tabela \(l\times c\):
+    \(E_{ij}=\dfrac{(\text{total linha }i)(\text{total coluna }j)}{n}\),
+    \(\nu=(l-1)(c-1)\)</p>
+    <p><b>Correção de Yates</b> (apenas \(2\times2\)):
+    \(\chi^2=\displaystyle\sum \frac{(|O-E|-0{,}5)^2}{E}\)</p>
+    <p>Condição de validade: todos os \(E_i\ge 5\) (ou ao menos 80% deles, com nenhum
+    abaixo de 1); caso contrário, agrupe categorias ou use o teste exato de Fisher.</p>
+    <p><b>Covariância:</b> \(\operatorname{cov}(x,y)=\dfrac{1}{n-1}\displaystyle\sum_i (x_i-\bar x)(y_i-\bar y)\)</p>
+    <p><b>Pearson:</b> \(r=\dfrac{\sum_i (x_i-\bar x)(y_i-\bar y)}
+    {\sqrt{\sum_i (x_i-\bar x)^2 \sum_i (y_i-\bar y)^2}}\),
+    com \(-1\le r\le 1\); \(r^2\) é a fração da variação de \(y\) explicada linearmente por \(x\)</p>
+    <p><b>Spearman:</b> Pearson aplicado aos postos; sem empates,
+    \(\rho_s=1-\dfrac{6\sum_i d_i^2}{n(n^2-1)}\). Com empates, use postos médios e a
+    definição geral — a fórmula simplificada deixa de valer.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f12">Tamanho amostral</h2>
+  <div class="bloco">
+    <p>Média, erro máximo \(E\): \(n=\left(\dfrac{z_{\alpha/2}\,\sigma}{E}\right)^{2}\)</p>
+    <p>Proporção: \(n=\dfrac{z_{\alpha/2}^2\,p(1-p)}{E^2}\); na ausência de informação
+    sobre \(p\), use \(p=0{,}5\), que é o pior caso e dá
+    \(n=\left(\dfrac{z_{\alpha/2}}{2E}\right)^{2}\)</p>
+    <p>População finita: \(n_{\text{aj}}=\dfrac{n}{1+(n-1)/N}\)</p>
+    <p>Para um poder \(1-\beta\) na detecção de uma diferença \(\delta\) entre médias:
+    \(n=\dfrac{2(z_{\alpha/2}+z_{\beta})^2\sigma^2}{\delta^2}\) por grupo</p>
+    <p>Sempre arredonde <i>para cima</i>: um \(n\) fracionário não existe, e arredondar para
+    baixo viola a precisão pedida.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="f13">Calculadora de valores críticos</h2>
+
+  <p>Escolha a distribuição, o tipo de teste e o nível de significância. A calculadora devolve
+  os valores críticos, desenha a região de não rejeição e, se você informar a estatística
+  observada, também o valor p.</p>
+
+  <div data-widget="criticos"></div>
+
+  <!-- ================================================== -->
+  <h2 id="f14">Tabela t de Student</h2>
+
+  <p>A tabela dá o valor \(t_{\alpha,\nu}\) tal que \(P(T&gt;t)=\alpha\), onde \(\alpha\) é a
+  área de <b>uma</b> cauda. Para um teste <b>bilateral</b> a 5%, entre na coluna
+  \(\alpha=0{,}025\); para um <b>unilateral</b> a 5%, na coluna \(\alpha=0{,}05\). A última
+  linha (\(\nu=\infty\)) reproduz os valores da normal padrão.</p>
+
+  <div class="tabela-rolavel" id="tabelaT">
+  <table>
+<thead><tr><th rowspan="2" class="num">ν</th><th colspan="6" class="num">área α na cauda direita</th></tr><tr><th class="num">0,100</th><th class="num">0,050</th><th class="num">0,025</th><th class="num">0,010</th><th class="num">0,005</th><th class="num">0,0005</th></tr></thead>
+<tbody>
+<tr><th class="num">1</th><td class="num">3,078</td><td class="num">6,314</td><td class="num">12,706</td><td class="num">31,821</td><td class="num">63,657</td><td class="num">636,619</td></tr>
+<tr><th class="num">2</th><td class="num">1,886</td><td class="num">2,920</td><td class="num">4,303</td><td class="num">6,965</td><td class="num">9,925</td><td class="num">31,599</td></tr>
+<tr><th class="num">3</th><td class="num">1,638</td><td class="num">2,353</td><td class="num">3,182</td><td class="num">4,541</td><td class="num">5,841</td><td class="num">12,924</td></tr>
+<tr><th class="num">4</th><td class="num">1,533</td><td class="num">2,132</td><td class="num">2,776</td><td class="num">3,747</td><td class="num">4,604</td><td class="num">8,610</td></tr>
+<tr><th class="num">5</th><td class="num">1,476</td><td class="num">2,015</td><td class="num">2,571</td><td class="num">3,365</td><td class="num">4,032</td><td class="num">6,869</td></tr>
+<tr><th class="num">6</th><td class="num">1,440</td><td class="num">1,943</td><td class="num">2,447</td><td class="num">3,143</td><td class="num">3,707</td><td class="num">5,959</td></tr>
+<tr><th class="num">7</th><td class="num">1,415</td><td class="num">1,895</td><td class="num">2,365</td><td class="num">2,998</td><td class="num">3,499</td><td class="num">5,408</td></tr>
+<tr><th class="num">8</th><td class="num">1,397</td><td class="num">1,860</td><td class="num">2,306</td><td class="num">2,896</td><td class="num">3,355</td><td class="num">5,041</td></tr>
+<tr><th class="num">9</th><td class="num">1,383</td><td class="num">1,833</td><td class="num">2,262</td><td class="num">2,821</td><td class="num">3,250</td><td class="num">4,781</td></tr>
+<tr><th class="num">10</th><td class="num">1,372</td><td class="num">1,812</td><td class="num">2,228</td><td class="num">2,764</td><td class="num">3,169</td><td class="num">4,587</td></tr>
+<tr><th class="num">11</th><td class="num">1,363</td><td class="num">1,796</td><td class="num">2,201</td><td class="num">2,718</td><td class="num">3,106</td><td class="num">4,437</td></tr>
+<tr><th class="num">12</th><td class="num">1,356</td><td class="num">1,782</td><td class="num">2,179</td><td class="num">2,681</td><td class="num">3,055</td><td class="num">4,318</td></tr>
+<tr><th class="num">13</th><td class="num">1,350</td><td class="num">1,771</td><td class="num">2,160</td><td class="num">2,650</td><td class="num">3,012</td><td class="num">4,221</td></tr>
+<tr><th class="num">14</th><td class="num">1,345</td><td class="num">1,761</td><td class="num">2,145</td><td class="num">2,624</td><td class="num">2,977</td><td class="num">4,140</td></tr>
+<tr><th class="num">15</th><td class="num">1,341</td><td class="num">1,753</td><td class="num">2,131</td><td class="num">2,602</td><td class="num">2,947</td><td class="num">4,073</td></tr>
+<tr><th class="num">16</th><td class="num">1,337</td><td class="num">1,746</td><td class="num">2,120</td><td class="num">2,583</td><td class="num">2,921</td><td class="num">4,015</td></tr>
+<tr><th class="num">17</th><td class="num">1,333</td><td class="num">1,740</td><td class="num">2,110</td><td class="num">2,567</td><td class="num">2,898</td><td class="num">3,965</td></tr>
+<tr><th class="num">18</th><td class="num">1,330</td><td class="num">1,734</td><td class="num">2,101</td><td class="num">2,552</td><td class="num">2,878</td><td class="num">3,922</td></tr>
+<tr><th class="num">19</th><td class="num">1,328</td><td class="num">1,729</td><td class="num">2,093</td><td class="num">2,539</td><td class="num">2,861</td><td class="num">3,883</td></tr>
+<tr><th class="num">20</th><td class="num">1,325</td><td class="num">1,725</td><td class="num">2,086</td><td class="num">2,528</td><td class="num">2,845</td><td class="num">3,850</td></tr>
+<tr><th class="num">21</th><td class="num">1,323</td><td class="num">1,721</td><td class="num">2,080</td><td class="num">2,518</td><td class="num">2,831</td><td class="num">3,819</td></tr>
+<tr><th class="num">22</th><td class="num">1,321</td><td class="num">1,717</td><td class="num">2,074</td><td class="num">2,508</td><td class="num">2,819</td><td class="num">3,792</td></tr>
+<tr><th class="num">23</th><td class="num">1,319</td><td class="num">1,714</td><td class="num">2,069</td><td class="num">2,500</td><td class="num">2,807</td><td class="num">3,768</td></tr>
+<tr><th class="num">24</th><td class="num">1,318</td><td class="num">1,711</td><td class="num">2,064</td><td class="num">2,492</td><td class="num">2,797</td><td class="num">3,745</td></tr>
+<tr><th class="num">25</th><td class="num">1,316</td><td class="num">1,708</td><td class="num">2,060</td><td class="num">2,485</td><td class="num">2,787</td><td class="num">3,725</td></tr>
+<tr><th class="num">26</th><td class="num">1,315</td><td class="num">1,706</td><td class="num">2,056</td><td class="num">2,479</td><td class="num">2,779</td><td class="num">3,707</td></tr>
+<tr><th class="num">27</th><td class="num">1,314</td><td class="num">1,703</td><td class="num">2,052</td><td class="num">2,473</td><td class="num">2,771</td><td class="num">3,690</td></tr>
+<tr><th class="num">28</th><td class="num">1,313</td><td class="num">1,701</td><td class="num">2,048</td><td class="num">2,467</td><td class="num">2,763</td><td class="num">3,674</td></tr>
+<tr><th class="num">29</th><td class="num">1,311</td><td class="num">1,699</td><td class="num">2,045</td><td class="num">2,462</td><td class="num">2,756</td><td class="num">3,659</td></tr>
+<tr><th class="num">30</th><td class="num">1,310</td><td class="num">1,697</td><td class="num">2,042</td><td class="num">2,457</td><td class="num">2,750</td><td class="num">3,646</td></tr>
+<tr><th class="num">35</th><td class="num">1,306</td><td class="num">1,690</td><td class="num">2,030</td><td class="num">2,438</td><td class="num">2,724</td><td class="num">3,591</td></tr>
+<tr><th class="num">40</th><td class="num">1,303</td><td class="num">1,684</td><td class="num">2,021</td><td class="num">2,423</td><td class="num">2,704</td><td class="num">3,551</td></tr>
+<tr><th class="num">45</th><td class="num">1,301</td><td class="num">1,679</td><td class="num">2,014</td><td class="num">2,412</td><td class="num">2,690</td><td class="num">3,520</td></tr>
+<tr><th class="num">50</th><td class="num">1,299</td><td class="num">1,676</td><td class="num">2,009</td><td class="num">2,403</td><td class="num">2,678</td><td class="num">3,496</td></tr>
+<tr><th class="num">60</th><td class="num">1,296</td><td class="num">1,671</td><td class="num">2,000</td><td class="num">2,390</td><td class="num">2,660</td><td class="num">3,460</td></tr>
+<tr><th class="num">70</th><td class="num">1,294</td><td class="num">1,667</td><td class="num">1,994</td><td class="num">2,381</td><td class="num">2,648</td><td class="num">3,435</td></tr>
+<tr><th class="num">80</th><td class="num">1,292</td><td class="num">1,664</td><td class="num">1,990</td><td class="num">2,374</td><td class="num">2,639</td><td class="num">3,416</td></tr>
+<tr><th class="num">90</th><td class="num">1,291</td><td class="num">1,662</td><td class="num">1,987</td><td class="num">2,368</td><td class="num">2,632</td><td class="num">3,402</td></tr>
+<tr><th class="num">100</th><td class="num">1,290</td><td class="num">1,660</td><td class="num">1,984</td><td class="num">2,364</td><td class="num">2,626</td><td class="num">3,390</td></tr>
+<tr><th class="num">120</th><td class="num">1,289</td><td class="num">1,658</td><td class="num">1,980</td><td class="num">2,358</td><td class="num">2,617</td><td class="num">3,373</td></tr>
+<tr><th class="num">200</th><td class="num">1,286</td><td class="num">1,653</td><td class="num">1,972</td><td class="num">2,345</td><td class="num">2,601</td><td class="num">3,340</td></tr>
+<tr><th class="num">500</th><td class="num">1,283</td><td class="num">1,648</td><td class="num">1,965</td><td class="num">2,334</td><td class="num">2,586</td><td class="num">3,310</td></tr>
+<tr><th class="num">∞</th><td class="num">1,282</td><td class="num">1,645</td><td class="num">1,960</td><td class="num">2,326</td><td class="num">2,576</td><td class="num">3,291</td></tr>
+</tbody>
+  </table>
+  </div>
+
+  <p>Para intervalos de confiança: 90% → \(\alpha=0{,}05\); 95% → \(\alpha=0{,}025\);
+  99% → \(\alpha=0{,}005\).</p>
+
+  <!-- ================================================== -->
+  <h2 id="f15">Tabela do qui-quadrado</h2>
+
+  <p>A tabela dá \(\chi^2_{\alpha,\nu}\) tal que \(P(X&gt;\chi^2)=\alpha\). As cinco primeiras
+  colunas (\(\alpha\) próximo de 1) servem ao <b>limite inferior</b> dos intervalos de
+  confiança para a variância e aos testes unilaterais à esquerda; as cinco últimas, aos
+  testes usuais de aderência, independência e ao limite superior.</p>
+
+  <div class="tabela-rolavel" id="tabelaQ">
+  <table>
+<thead><tr><th rowspan="2" class="num">ν</th><th colspan="10" class="num">área α na cauda direita</th></tr><tr><th class="num">0,995</th><th class="num">0,99</th><th class="num">0,975</th><th class="num">0,95</th><th class="num">0,9</th><th class="num">0,1</th><th class="num">0,05</th><th class="num">0,025</th><th class="num">0,01</th><th class="num">0,005</th></tr></thead>
+<tbody>
+<tr><th class="num">1</th><td class="num">0,00003927</td><td class="num">0,0001571</td><td class="num">0,0009821</td><td class="num">0,003932</td><td class="num">0,01579</td><td class="num">2,706</td><td class="num">3,841</td><td class="num">5,024</td><td class="num">6,635</td><td class="num">7,879</td></tr>
+<tr><th class="num">2</th><td class="num">0,01003</td><td class="num">0,02010</td><td class="num">0,05064</td><td class="num">0,1026</td><td class="num">0,2107</td><td class="num">4,605</td><td class="num">5,991</td><td class="num">7,378</td><td class="num">9,210</td><td class="num">10,60</td></tr>
+<tr><th class="num">3</th><td class="num">0,07172</td><td class="num">0,1148</td><td class="num">0,2158</td><td class="num">0,3518</td><td class="num">0,5844</td><td class="num">6,251</td><td class="num">7,815</td><td class="num">9,348</td><td class="num">11,34</td><td class="num">12,84</td></tr>
+<tr><th class="num">4</th><td class="num">0,2070</td><td class="num">0,2971</td><td class="num">0,4844</td><td class="num">0,7107</td><td class="num">1,064</td><td class="num">7,779</td><td class="num">9,488</td><td class="num">11,14</td><td class="num">13,28</td><td class="num">14,86</td></tr>
+<tr><th class="num">5</th><td class="num">0,4117</td><td class="num">0,5543</td><td class="num">0,8312</td><td class="num">1,145</td><td class="num">1,610</td><td class="num">9,236</td><td class="num">11,07</td><td class="num">12,83</td><td class="num">15,09</td><td class="num">16,75</td></tr>
+<tr><th class="num">6</th><td class="num">0,6757</td><td class="num">0,8721</td><td class="num">1,237</td><td class="num">1,635</td><td class="num">2,204</td><td class="num">10,64</td><td class="num">12,59</td><td class="num">14,45</td><td class="num">16,81</td><td class="num">18,55</td></tr>
+<tr><th class="num">7</th><td class="num">0,9893</td><td class="num">1,239</td><td class="num">1,690</td><td class="num">2,167</td><td class="num">2,833</td><td class="num">12,02</td><td class="num">14,07</td><td class="num">16,01</td><td class="num">18,48</td><td class="num">20,28</td></tr>
+<tr><th class="num">8</th><td class="num">1,344</td><td class="num">1,646</td><td class="num">2,180</td><td class="num">2,733</td><td class="num">3,490</td><td class="num">13,36</td><td class="num">15,51</td><td class="num">17,53</td><td class="num">20,09</td><td class="num">21,95</td></tr>
+<tr><th class="num">9</th><td class="num">1,735</td><td class="num">2,088</td><td class="num">2,700</td><td class="num">3,325</td><td class="num">4,168</td><td class="num">14,68</td><td class="num">16,92</td><td class="num">19,02</td><td class="num">21,67</td><td class="num">23,59</td></tr>
+<tr><th class="num">10</th><td class="num">2,156</td><td class="num">2,558</td><td class="num">3,247</td><td class="num">3,940</td><td class="num">4,865</td><td class="num">15,99</td><td class="num">18,31</td><td class="num">20,48</td><td class="num">23,21</td><td class="num">25,19</td></tr>
+<tr><th class="num">11</th><td class="num">2,603</td><td class="num">3,053</td><td class="num">3,816</td><td class="num">4,575</td><td class="num">5,578</td><td class="num">17,28</td><td class="num">19,68</td><td class="num">21,92</td><td class="num">24,72</td><td class="num">26,76</td></tr>
+<tr><th class="num">12</th><td class="num">3,074</td><td class="num">3,571</td><td class="num">4,404</td><td class="num">5,226</td><td class="num">6,304</td><td class="num">18,55</td><td class="num">21,03</td><td class="num">23,34</td><td class="num">26,22</td><td class="num">28,30</td></tr>
+<tr><th class="num">13</th><td class="num">3,565</td><td class="num">4,107</td><td class="num">5,009</td><td class="num">5,892</td><td class="num">7,042</td><td class="num">19,81</td><td class="num">22,36</td><td class="num">24,74</td><td class="num">27,69</td><td class="num">29,82</td></tr>
+<tr><th class="num">14</th><td class="num">4,075</td><td class="num">4,660</td><td class="num">5,629</td><td class="num">6,571</td><td class="num">7,790</td><td class="num">21,06</td><td class="num">23,68</td><td class="num">26,12</td><td class="num">29,14</td><td class="num">31,32</td></tr>
+<tr><th class="num">15</th><td class="num">4,601</td><td class="num">5,229</td><td class="num">6,262</td><td class="num">7,261</td><td class="num">8,547</td><td class="num">22,31</td><td class="num">25,00</td><td class="num">27,49</td><td class="num">30,58</td><td class="num">32,80</td></tr>
+<tr><th class="num">16</th><td class="num">5,142</td><td class="num">5,812</td><td class="num">6,908</td><td class="num">7,962</td><td class="num">9,312</td><td class="num">23,54</td><td class="num">26,30</td><td class="num">28,85</td><td class="num">32,00</td><td class="num">34,27</td></tr>
+<tr><th class="num">17</th><td class="num">5,697</td><td class="num">6,408</td><td class="num">7,564</td><td class="num">8,672</td><td class="num">10,09</td><td class="num">24,77</td><td class="num">27,59</td><td class="num">30,19</td><td class="num">33,41</td><td class="num">35,72</td></tr>
+<tr><th class="num">18</th><td class="num">6,265</td><td class="num">7,015</td><td class="num">8,231</td><td class="num">9,390</td><td class="num">10,86</td><td class="num">25,99</td><td class="num">28,87</td><td class="num">31,53</td><td class="num">34,81</td><td class="num">37,16</td></tr>
+<tr><th class="num">19</th><td class="num">6,844</td><td class="num">7,633</td><td class="num">8,907</td><td class="num">10,12</td><td class="num">11,65</td><td class="num">27,20</td><td class="num">30,14</td><td class="num">32,85</td><td class="num">36,19</td><td class="num">38,58</td></tr>
+<tr><th class="num">20</th><td class="num">7,434</td><td class="num">8,260</td><td class="num">9,591</td><td class="num">10,85</td><td class="num">12,44</td><td class="num">28,41</td><td class="num">31,41</td><td class="num">34,17</td><td class="num">37,57</td><td class="num">40,00</td></tr>
+<tr><th class="num">21</th><td class="num">8,034</td><td class="num">8,897</td><td class="num">10,28</td><td class="num">11,59</td><td class="num">13,24</td><td class="num">29,62</td><td class="num">32,67</td><td class="num">35,48</td><td class="num">38,93</td><td class="num">41,40</td></tr>
+<tr><th class="num">22</th><td class="num">8,643</td><td class="num">9,542</td><td class="num">10,98</td><td class="num">12,34</td><td class="num">14,04</td><td class="num">30,81</td><td class="num">33,92</td><td class="num">36,78</td><td class="num">40,29</td><td class="num">42,80</td></tr>
+<tr><th class="num">23</th><td class="num">9,260</td><td class="num">10,20</td><td class="num">11,69</td><td class="num">13,09</td><td class="num">14,85</td><td class="num">32,01</td><td class="num">35,17</td><td class="num">38,08</td><td class="num">41,64</td><td class="num">44,18</td></tr>
+<tr><th class="num">24</th><td class="num">9,886</td><td class="num">10,86</td><td class="num">12,40</td><td class="num">13,85</td><td class="num">15,66</td><td class="num">33,20</td><td class="num">36,42</td><td class="num">39,36</td><td class="num">42,98</td><td class="num">45,56</td></tr>
+<tr><th class="num">25</th><td class="num">10,52</td><td class="num">11,52</td><td class="num">13,12</td><td class="num">14,61</td><td class="num">16,47</td><td class="num">34,38</td><td class="num">37,65</td><td class="num">40,65</td><td class="num">44,31</td><td class="num">46,93</td></tr>
+<tr><th class="num">26</th><td class="num">11,16</td><td class="num">12,20</td><td class="num">13,84</td><td class="num">15,38</td><td class="num">17,29</td><td class="num">35,56</td><td class="num">38,89</td><td class="num">41,92</td><td class="num">45,64</td><td class="num">48,29</td></tr>
+<tr><th class="num">27</th><td class="num">11,81</td><td class="num">12,88</td><td class="num">14,57</td><td class="num">16,15</td><td class="num">18,11</td><td class="num">36,74</td><td class="num">40,11</td><td class="num">43,19</td><td class="num">46,96</td><td class="num">49,64</td></tr>
+<tr><th class="num">28</th><td class="num">12,46</td><td class="num">13,56</td><td class="num">15,31</td><td class="num">16,93</td><td class="num">18,94</td><td class="num">37,92</td><td class="num">41,34</td><td class="num">44,46</td><td class="num">48,28</td><td class="num">50,99</td></tr>
+<tr><th class="num">29</th><td class="num">13,12</td><td class="num">14,26</td><td class="num">16,05</td><td class="num">17,71</td><td class="num">19,77</td><td class="num">39,09</td><td class="num">42,56</td><td class="num">45,72</td><td class="num">49,59</td><td class="num">52,34</td></tr>
+<tr><th class="num">30</th><td class="num">13,79</td><td class="num">14,95</td><td class="num">16,79</td><td class="num">18,49</td><td class="num">20,60</td><td class="num">40,26</td><td class="num">43,77</td><td class="num">46,98</td><td class="num">50,89</td><td class="num">53,67</td></tr>
+<tr><th class="num">40</th><td class="num">20,71</td><td class="num">22,16</td><td class="num">24,43</td><td class="num">26,51</td><td class="num">29,05</td><td class="num">51,81</td><td class="num">55,76</td><td class="num">59,34</td><td class="num">63,69</td><td class="num">66,77</td></tr>
+<tr><th class="num">50</th><td class="num">27,99</td><td class="num">29,71</td><td class="num">32,36</td><td class="num">34,76</td><td class="num">37,69</td><td class="num">63,17</td><td class="num">67,50</td><td class="num">71,42</td><td class="num">76,15</td><td class="num">79,49</td></tr>
+<tr><th class="num">60</th><td class="num">35,53</td><td class="num">37,48</td><td class="num">40,48</td><td class="num">43,19</td><td class="num">46,46</td><td class="num">74,40</td><td class="num">79,08</td><td class="num">83,30</td><td class="num">88,38</td><td class="num">91,95</td></tr>
+<tr><th class="num">70</th><td class="num">43,28</td><td class="num">45,44</td><td class="num">48,76</td><td class="num">51,74</td><td class="num">55,33</td><td class="num">85,53</td><td class="num">90,53</td><td class="num">95,02</td><td class="num">100,4</td><td class="num">104,2</td></tr>
+<tr><th class="num">80</th><td class="num">51,17</td><td class="num">53,54</td><td class="num">57,15</td><td class="num">60,39</td><td class="num">64,28</td><td class="num">96,58</td><td class="num">101,9</td><td class="num">106,6</td><td class="num">112,3</td><td class="num">116,3</td></tr>
+<tr><th class="num">90</th><td class="num">59,20</td><td class="num">61,75</td><td class="num">65,65</td><td class="num">69,13</td><td class="num">73,29</td><td class="num">107,6</td><td class="num">113,1</td><td class="num">118,1</td><td class="num">124,1</td><td class="num">128,3</td></tr>
+<tr><th class="num">100</th><td class="num">67,33</td><td class="num">70,06</td><td class="num">74,22</td><td class="num">77,93</td><td class="num">82,36</td><td class="num">118,5</td><td class="num">124,3</td><td class="num">129,6</td><td class="num">135,8</td><td class="num">140,2</td></tr>
+</tbody>
+  </table>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Como não errar a coluna</span>
+    <p>O erro mais comum em prova é entrar na coluna errada. Duas verificações rápidas:</p>
+    <ul>
+      <li>Para o teste de aderência ou de independência a 5%, com \(\nu=1\), o crítico é
+      <b>3,841</b> — e vale a pena guardar esse número, porque é o \(z^2_{0{,}025}=1{,}96^2\);</li>
+      <li>Para o IC de variância a 95% com \(\nu=9\), os dois cortes são \(\chi^2_{0{,}025}=19{,}02\)
+      e \(\chi^2_{0{,}975}=2{,}700\) — o <i>maior</i> vai no <i>denominador</i> do limite
+      inferior.</li>
+    </ul>
+  </div>
+
   <nav class="nav-aulas">
-    <a href="aula05.html"><small>Módulo anterior</small>← 5. Variáveis contínuas</a>
+    <a href="aula12.html"><small>Último módulo</small>← 12. Correlação</a>
     <a class="prox" href="index.html"><small>Voltar</small>Página inicial →</a>
   </nav>
 
@@ -247,6 +494,6 @@
   Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611061202"></script>
+<script src="assets/js/widgets.js?v=202611061217"></script>
 </body>
 </html>

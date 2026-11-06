@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 12 — Correlação | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061217">
+<script src="assets/js/comum.js?v=202611061217"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Probabilidade</span>
+      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
+      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
+      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
+      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
+      <span class="grupo">Estatística</span>
+      <a href="aula06.html" class="num" title="Módulo 6 — Estatística descritiva">6</a>
+      <a href="aula07.html" class="num" title="Módulo 7 — Amostragem e distribuições amostrais">7</a>
+      <a href="aula08.html" class="num" title="Módulo 8 — Estimação e intervalos de confiança">8</a>
+      <a href="aula09.html" class="num" title="Módulo 9 — Testes de hipóteses">9</a>
+      <a href="aula10.html" class="num" title="Módulo 10 — Testes qui-quadrado">10</a>
+      <a href="aula11.html" class="num" title="Módulo 11 — Testes de normalidade">11</a>
+      <a href="aula12.html" class="num ativo" title="Módulo 12 — Correlação">12</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. Medir uma relação</a></li>
+    <li><a href="#s2">2. Covariância</a></li>
+    <li><a href="#s3">3. Pearson</a></li>
+    <li><a href="#s4">4. Significância</a></li>
+    <li><a href="#s5">5. Spearman</a></li>
+    <li><a href="#s6">6. Empates</a></li>
+    <li><a href="#s7">7. Pearson ou Spearman?</a></li>
+    <li><a href="#s8">8. O quarteto de Anscombe</a></li>
+    <li><a href="#s9">9. Correlação não é causa</a></li>
+    <li><a href="#s10">10. Aplicações em Física</a></li>
+    <li><a href="#s11">11. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 12 · 3 horas</p>
+  <h1>Correlação</h1>
+  <p class="subtitulo">Quantificar a relação entre duas variáveis — e resistir à tentação de concluir demais.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Calcular e interpretar a covariância e o coeficiente de Pearson;</li>
+      <li>Entender o coeficiente de determinação \(r^2\);</li>
+      <li>Testar a significância de uma correlação;</li>
+      <li>Calcular o coeficiente de Spearman, inclusive com empates;</li>
+      <li>Escolher entre Pearson e Spearman conforme os pressupostos;</li>
+      <li>Reconhecer, pelo quarteto de Anscombe, por que o gráfico é indispensável.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. Medir uma relação entre duas variáveis</h2>
+
+  <p>Até agora analisamos uma variável de cada vez. Mas muitas das perguntas mais interessantes
+  envolvem <strong>duas</strong>: o tempo de estudo se relaciona com a nota? A temperatura com a
+  resistência elétrica? A altura com o peso?</p>
+
+  <p>Dados assim são <strong>pares</strong> \((x_i, y_i)\), e o primeiro passo é sempre o mesmo:
+  <strong>fazer o gráfico de dispersão</strong>. Só depois quantificar.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O que a correlação mede, e o que não mede</span>
+    <p>O coeficiente de correlação mede a <strong>intensidade e o sentido de uma relação
+    linear</strong>. Ele não mede:</p>
+    <ul>
+      <li>a <em>inclinação</em> da relação — isso é a regressão, do Módulo 13;</li>
+      <li>relações <em>não lineares</em>, por mais fortes que sejam;</li>
+      <li><em>causalidade</em>, em hipótese nenhuma.</li>
+    </ul>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. Covariância: o primeiro passo</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>\[\operatorname{cov}(x,y) = \frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)\]</p>
+  </div>
+
+  <p>A lógica é elegante. Divida o gráfico em quatro quadrantes pelas médias \(\bar x\) e
+  \(\bar y\):</p>
+
+  <ul>
+    <li>Pontos no quadrante <strong>superior direito</strong> (acima das duas médias) têm os dois
+    desvios positivos, e o produto é positivo;</li>
+    <li>No <strong>inferior esquerdo</strong>, os dois desvios são negativos, e o produto também
+    é positivo;</li>
+    <li>Nos outros dois quadrantes, os sinais se opõem e o produto é negativo.</li>
+  </ul>
+
+  <p>Se os pontos se concentram na diagonal ascendente, os produtos positivos dominam e a
+  covariância é positiva. Se na descendente, negativa. Se espalhados, os termos se cancelam e a
+  covariância fica próxima de zero.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O problema da covariância</span>
+    <p>Ela tem <strong>unidades</strong> — se \(x\) está em cm e \(y\) em kg, a covariância está
+    em cm·kg. Pior: multiplicar \(x\) por mil muda a covariância por mil, sem que a relação tenha
+    mudado em nada.</p>
+    <p>Para comparar relações entre si, é preciso uma medida <strong>adimensional</strong>.
+    Essa é a função do coeficiente de Pearson.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. O coeficiente de Pearson</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definição</span>
+    <p>\[r = \frac{\operatorname{cov}(x,y)}{s_x\,s_y}
+    = \frac{\sum_i (x_i - \bar x)(y_i - \bar y)}
+    {\sqrt{\sum_i (x_i - \bar x)^{2}\;\sum_i (y_i - \bar y)^{2}}}\]</p>
+    <p>É a covariância <strong>padronizada</strong> pelos desvios de cada variável — e, por isso,
+    adimensional e limitada ao intervalo \([-1, +1]\).</p>
+  </div>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>\(|r|\)</th><th>Interpretação usual</th></tr></thead>
+    <tbody>
+      <tr><td>0,90 a 1,00</td><td>muito forte</td></tr>
+      <tr><td>0,70 a 0,89</td><td>forte</td></tr>
+      <tr><td>0,50 a 0,69</td><td>moderada</td></tr>
+      <tr><td>0,30 a 0,49</td><td>fraca</td></tr>
+      <tr><td>0,00 a 0,29</td><td>desprezível</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Essas faixas são convenções, não leis. Em Física experimental, \(r = 0{,}95\) pode ser
+  decepcionante; em pesquisa educacional, excelente.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Coeficiente de determinação r²</span>
+    <p>O quadrado de \(r\) tem interpretação direta e muito mais útil que \(r\):</p>
+    <p>\[r^{2} = \text{fração da variação de } y \text{ explicada pela relação linear com } x.\]</p>
+    <p>Se \(r = 0{,}80\), então \(r^2 = 0{,}64\): a relação com \(x\) dá conta de 64% da
+    variabilidade de \(y\), e <strong>36% permanece inexplicada</strong>.</p>
+    <p>Repare como \(r^2\) é mais modesto que \(r\): uma correlação de 0,70, que soa forte,
+    explica menos da metade da variação.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Pressupostos de Pearson</span>
+    <ol>
+      <li>As variáveis são <strong>quantitativas</strong> (intervalares ou de razão);</li>
+      <li>A relação é <strong>linear</strong> — verifique no gráfico de dispersão;</li>
+      <li>Não há <strong>outliers</strong> influentes;</li>
+      <li>Para o <em>teste</em> de significância, os dados devem ser aproximadamente
+      <strong>normais bivariados</strong> (Módulo 11).</li>
+    </ol>
+  </div>
+
+  <div data-widget="correlacao"></div>
+
+  <h3>Exercício resolvido 12.1 — Altura e peso</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Mediram-se altura (cm) e peso (kg) de dez estudantes:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Altura</th><th class="num">165</th><th class="num">170</th><th class="num">175</th><th class="num">168</th><th class="num">172</th><th class="num">180</th><th class="num">160</th><th class="num">175</th><th class="num">165</th><th class="num">170</th></tr></thead>
+      <tbody><tr><th>Peso</th><td class="num">60</td><td class="num">65</td><td class="num">70</td><td class="num">68</td><td class="num">72</td><td class="num">80</td><td class="num">55</td><td class="num">75</td><td class="num">62</td><td class="num">68</td></tr></tbody>
+    </table>
+    </div>
+    <p>Calcule \(r\), interprete \(r^2\) e teste a significância ao nível de 5%.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — Médias.</strong> A soma das alturas é 1700 e a dos pesos é 675, logo</p>
+      <p>\[\bar x = 170{,}0\ \text{cm} \qquad \bar y = 67{,}5\ \text{kg}.\]</p>
+      <p><em>Confira sempre:</em> a soma dos desvios deve dar exatamente zero em ambas as
+      variáveis. É o controle aritmético mais simples que existe, e pega a maioria dos erros de
+      cálculo.</p>
+      <p><strong>Passo 2 — As três somas.</strong></p>
+      <p>\[\sum (x_i - \bar x)^{2} = 308{,}0 \qquad
+      \sum (y_i - \bar y)^{2} = 488{,}5 \qquad
+      \sum (x_i-\bar x)(y_i-\bar y) = 373{,}0\]</p>
+      <p><strong>Passo 3 — O coeficiente.</strong></p>
+      <p>\[r = \frac{373{,}0}{\sqrt{308{,}0 \times 488{,}5}} = \frac{373{,}0}{\sqrt{150\,458}}
+      = \frac{373{,}0}{387{,}89} = \mathbf{0{,}9616}.\]</p>
+      <p><strong>Passo 4 — Determinação.</strong> \(r^2 = 0{,}9247\): a altura explica
+      <strong>92,5%</strong> da variação do peso nesta amostra. Os 7,5% restantes vêm de
+      compleição física, massa muscular, idade e tudo o mais que a altura não captura.</p>
+      <p><strong>Passo 5 — Significância.</strong></p>
+      <p>\[t = r\sqrt{\frac{n-2}{1-r^{2}}} = 0{,}9616\sqrt{\frac{8}{0{,}0753}}
+      = 0{,}9616 \times 10{,}31 = \mathbf{9{,}91}.\]</p>
+      <p>Com \(\nu = 8\), o valor crítico é 2,306. Como \(9{,}91 \gg 2{,}306\), a correlação é
+      altamente significativa (\(p \approx 9 \times 10^{-6}\)).</p>
+      <p><strong>Interpretação honesta.</strong> Altura e peso andam juntos — o que não surpreende
+      ninguém. Mas note que a conclusão é sobre <em>associação</em>: a altura não "causa" o peso
+      em sentido estrito, ambos resultam de um conjunto comum de fatores de crescimento.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Teste de significância</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Estatística</span>
+    <p>\[H_0: \rho = 0 \qquad\text{contra}\qquad H_1: \rho \neq 0\]</p>
+    <p>\[t = r\sqrt{\frac{n-2}{1-r^{2}}}, \qquad \nu = n-2 .\]</p>
+    <p>Note a notação: \(r\) é o coeficiente da <strong>amostra</strong>; \(\rho\) é o da
+    <strong>população</strong>, que não conhecemos. É a mesma distinção entre \(\bar x\) e
+    \(\mu\) do Módulo 6.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Significativo não quer dizer forte</span>
+    <p>O teste responde "esta correlação poderia ser zero na população?", e não "esta correlação
+    é grande?". Com \(n\) grande, correlações ínfimas tornam-se significativas:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th class="num">n</th><th class="num">menor r significativo a 5%</th><th class="num">r² correspondente</th></tr></thead>
+      <tbody>
+        <tr><td class="num">10</td><td class="num">0,632</td><td class="num">39,9%</td></tr>
+        <tr><td class="num">30</td><td class="num">0,361</td><td class="num">13,0%</td></tr>
+        <tr><td class="num">100</td><td class="num">0,197</td><td class="num">3,9%</td></tr>
+        <tr><td class="num">1000</td><td class="num">0,062</td><td class="num">0,4%</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Com mil pares, um \(r = 0{,}062\) é "estatisticamente significativo" e explica
+    <strong>0,4%</strong> da variação — ou seja, nada. <strong>Sempre reporte \(r^2\)</strong>,
+    não apenas o valor p.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. O coeficiente de Spearman</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Correlação dos postos</span>
+    <p>O coeficiente \(\rho_s\) de Spearman é simplesmente o <strong>coeficiente de Pearson
+    aplicado aos postos</strong> (às ordenações), e não aos valores.</p>
+    <p>Quando <em>não há empates</em>, isso se reduz a uma fórmula bem mais simples:</p>
+    <p>\[\rho_s = 1 - \frac{6\sum_i d_i^{2}}{n(n^{2}-1)},\]</p>
+    <p>onde \(d_i\) é a diferença entre o posto de \(x_i\) e o posto de \(y_i\).</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Quando usar Spearman</span>
+    <ul>
+      <li>Dados <strong>ordinais</strong> — escalas de satisfação, conceitos, classificações;</li>
+      <li>Relação <strong>monótona mas não linear</strong>;</li>
+      <li>Presença de <strong>outliers</strong>, aos quais Spearman é robusto;</li>
+      <li>Distribuições muito <strong>assimétricas</strong>;</li>
+      <li>Amostras pequenas, em que a normalidade não pode ser verificada.</li>
+    </ul>
+  </div>
+
+  <h3>Exercício resolvido 12.2 — Horas de estudo e nota</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Avaliou-se a relação entre horas de estudo e nota na prova para oito estudantes:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Horas</th><th class="num">2</th><th class="num">4</th><th class="num">6</th><th class="num">8</th><th class="num">10</th><th class="num">12</th><th class="num">14</th><th class="num">16</th></tr></thead>
+      <tbody><tr><th>Nota</th><td class="num">65</td><td class="num">70</td><td class="num">75</td><td class="num">85</td><td class="num">80</td><td class="num">90</td><td class="num">95</td><td class="num">60</td></tr></tbody>
+    </table>
+    </div>
+    <p>Calcule \(\rho_s\) e teste a significância a 5%.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — Atribuir os postos.</strong> As horas já estão em ordem crescente, de
+      modo que o posto de \(x\) é simplesmente 1, 2, …, 8. Para as notas, ordenamos: 60 é a
+      menor (posto 1), 65 vem em seguida (posto 2), e assim por diante.</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th class="num">i</th><th class="num">x</th><th class="num">y</th><th class="num">R(x)</th><th class="num">R(y)</th><th class="num">d</th><th class="num">d²</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="num">2</td><td class="num">65</td><td class="num">1</td><td class="num">2</td><td class="num">−1</td><td class="num">1</td></tr>
+          <tr><td class="num">2</td><td class="num">4</td><td class="num">70</td><td class="num">2</td><td class="num">3</td><td class="num">−1</td><td class="num">1</td></tr>
+          <tr><td class="num">3</td><td class="num">6</td><td class="num">75</td><td class="num">3</td><td class="num">4</td><td class="num">−1</td><td class="num">1</td></tr>
+          <tr><td class="num">4</td><td class="num">8</td><td class="num">85</td><td class="num">4</td><td class="num">6</td><td class="num">−2</td><td class="num">4</td></tr>
+          <tr><td class="num">5</td><td class="num">10</td><td class="num">80</td><td class="num">5</td><td class="num">5</td><td class="num">0</td><td class="num">0</td></tr>
+          <tr><td class="num">6</td><td class="num">12</td><td class="num">90</td><td class="num">6</td><td class="num">7</td><td class="num">−1</td><td class="num">1</td></tr>
+          <tr><td class="num">7</td><td class="num">14</td><td class="num">95</td><td class="num">7</td><td class="num">8</td><td class="num">−1</td><td class="num">1</td></tr>
+          <tr><td class="num">8</td><td class="num">16</td><td class="num">60</td><td class="num">8</td><td class="num">1</td><td class="num">7</td><td class="num">49</td></tr>
+          <tr><th class="num">Σ</th><td></td><td></td><td></td><td></td><td class="num">0</td><th class="num">58</th></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Passo 2 — Aplicar a fórmula.</strong></p>
+      <p>\[\rho_s = 1 - \frac{6 \times 58}{8(64-1)} = 1 - \frac{348}{504}
+      = 1 - 0{,}6905 = \mathbf{0{,}3095}.\]</p>
+      <p><strong>Passo 3 — Significância.</strong></p>
+      <p>\[t = \rho_s\sqrt{\frac{n-2}{1-\rho_s^{2}}}
+      = 0{,}3095\sqrt{\frac{6}{1-0{,}0958}} = 0{,}3095 \times 2{,}576 = \mathbf{0{,}797}.\]</p>
+      <p>Com \(\nu = 6\), o crítico é 2,447. Como \(0{,}797 &lt; 2{,}447\), <strong>não
+      rejeitamos \(H_0\)</strong> (\(p = 0{,}456\)): não há evidência de correlação na população.</p>
+      <p><strong>O que está acontecendo aqui.</strong> Olhe o oitavo estudante: estudou 16 horas
+      — o máximo — e tirou 60, a <em>pior</em> nota da turma. Esse único par contribui com 49 dos
+      58 pontos de \(\sum d^2\), ou seja, <strong>84% de toda a discordância</strong>.</p>
+      <p>Sem ele, os sete primeiros formam uma sequência quase perfeitamente crescente. Um único
+      ponto destrói a correlação — e esse ponto merece investigação: o estudante estava doente?
+      Entendeu mal a pergunta? Os dados foram transcritos errado?</p>
+      <p><em>Experimente no simulador:</em> carregue "Horas de estudo × nota" e apague o último
+      par de cada lista.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Tratamento de empates</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A regra dos postos médios</span>
+    <p>Quando dois ou mais valores são iguais, todos recebem a <strong>média</strong> das
+    posições que ocupariam.</p>
+    <p>Exemplo: nos valores 2, 3, 3, 5, os dois treses ocupariam as posições 2 e 3, e ambos
+    recebem posto \((2+3)/2 = 2{,}5\). O valor 5 fica com posto 4.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Com empates, a fórmula simplificada falha</span>
+    <p>A expressão \(1 - 6\sum d^2/[n(n^2-1)]\) foi deduzida supondo postos <em>inteiros e
+    distintos</em>. Com empates ela dá um valor aproximado — às vezes bem diferente do correto.</p>
+    <p>O procedimento correto é sempre o mesmo: <strong>aplicar Pearson aos postos</strong>. O
+    simulador desta página faz isso e avisa quando há empates, mostrando as duas versões para
+    comparação.</p>
+  </div>
+
+  <h3>Exercício resolvido 12.3 — Satisfação e intenção de recompra</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Dez clientes avaliaram satisfação e intenção de recompra, ambas em escala de 1 a 5:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Cliente</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th><th class="num">9</th><th class="num">10</th></tr></thead>
+      <tbody>
+        <tr><th>Satisfação</th><td class="num">5</td><td class="num">4</td><td class="num">3</td><td class="num">5</td><td class="num">2</td><td class="num">4</td><td class="num">1</td><td class="num">3</td><td class="num">2</td><td class="num">4</td></tr>
+        <tr><th>Recompra</th><td class="num">5</td><td class="num">4</td><td class="num">3</td><td class="num">5</td><td class="num">2</td><td class="num">3</td><td class="num">1</td><td class="num">4</td><td class="num">2</td><td class="num">5</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Calcule \(\rho_s\) tratando os empates corretamente.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — Postos da satisfação.</strong> Ordenando os dez valores:
+      1, 2, 2, 3, 3, 4, 4, 4, 5, 5.</p>
+      <ul>
+        <li>O único 1 ocupa a posição 1 → posto <b>1</b>;</li>
+        <li>Os dois 2 ocupam as posições 2 e 3 → posto \((2+3)/2 = \mathbf{2{,}5}\) cada;</li>
+        <li>Os dois 3 ocupam 4 e 5 → posto \((4+5)/2 = \mathbf{4{,}5}\) cada;</li>
+        <li>Os três 4 ocupam 6, 7 e 8 → posto \((6+7+8)/3 = \mathbf{7}\) cada;</li>
+        <li>Os dois 5 ocupam 9 e 10 → posto \((9+10)/2 = \mathbf{9{,}5}\) cada.</li>
+      </ul>
+      <p><em>Confira:</em> a soma dos postos deve dar \(n(n+1)/2 = 55\), qualquer que seja o
+      padrão de empates. Aqui: \(1 + 2(2{,}5) + 2(4{,}5) + 3(7) + 2(9{,}5) = 55\). ✓</p>
+      <p><strong>Passo 2 — Postos da recompra.</strong> Mesmo procedimento. Os valores ordenados
+      são 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, dando postos 1 · 2,5 · 4,5 · 6,5 · 9 conforme o valor.</p>
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th class="num">Cliente</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th><th class="num">9</th><th class="num">10</th></tr></thead>
+        <tbody>
+          <tr><th>R(satisf.)</th><td class="num">9,5</td><td class="num">7,0</td><td class="num">4,5</td><td class="num">9,5</td><td class="num">2,5</td><td class="num">7,0</td><td class="num">1,0</td><td class="num">4,5</td><td class="num">2,5</td><td class="num">7,0</td></tr>
+          <tr><th>R(recompra)</th><td class="num">9,0</td><td class="num">6,5</td><td class="num">4,5</td><td class="num">9,0</td><td class="num">2,5</td><td class="num">4,5</td><td class="num">1,0</td><td class="num">6,5</td><td class="num">2,5</td><td class="num">9,0</td></tr>
+          <tr><th>d²</th><td class="num">0,25</td><td class="num">0,25</td><td class="num">0</td><td class="num">0,25</td><td class="num">0</td><td class="num">6,25</td><td class="num">0</td><td class="num">4,00</td><td class="num">0</td><td class="num">4,00</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>Passo 3 — Resultado.</strong> Aplicando Pearson aos postos obtém-se</p>
+      <p>\[\rho_s = \mathbf{0{,}9051},\]</p>
+      <p>correlação muito forte, como se espera: clientes satisfeitos tendem a recomprar.</p>
+      <p><strong>Passo 4 — Comparar com a fórmula simplificada.</strong> Somando a última linha,
+      \(\sum d^2 = 15{,}0\), e a fórmula daria</p>
+      <p>\[1 - \frac{6 \times 15{,}0}{10 \times 99} = 1 - 0{,}0909 = 0{,}9091,\]</p>
+      <p>próximo mas <strong>não idêntico</strong> ao valor correto 0,9051. Aqui a diferença é
+      de apenas 0,004 e não muda nenhuma conclusão; mas ela cresce com a quantidade de empates,
+      e numa escala de cinco pontos com cem respondentes os empates são a regra, não a
+      exceção.</p>
+      <div class="bloco alerta">
+        <span class="rotulo">Por que não usar Pearson aqui</span>
+        <p>Porque uma escala de 1 a 5 é <strong>ordinal</strong>, não intervalar. Sabemos que 4
+        é mais satisfeito que 3, mas não que a diferença entre 3 e 4 seja igual à diferença
+        entre 4 e 5. Pearson supõe intervalos iguais; Spearman só usa a ordem, e por isso é a
+        escolha correta para escalas de atitude — situação muito comum em pesquisa
+        educacional.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Pearson ou Spearman?</h2>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th></th><th>Pearson (r)</th><th>Spearman (ρₛ)</th></tr></thead>
+    <tbody>
+      <tr><th>Usa</th><td>os valores</td><td>os postos</td></tr>
+      <tr><th>Detecta</th><td>relação <b>linear</b></td><td>relação <b>monótona</b></td></tr>
+      <tr><th>Tipo de dado</th><td>quantitativo</td><td>quantitativo ou ordinal</td></tr>
+      <tr><th>Outliers</th><td>muito sensível</td><td>robusto</td></tr>
+      <tr><th>Normalidade</th><td>exigida para o teste</td><td>não exigida</td></tr>
+      <tr><th>Potência</th><td>maior, <em>se</em> os pressupostos valem</td><td>um pouco menor</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Exercício resolvido 12.4 — Quando os dois discordam</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Considere \(y = x^3\) para \(x = 1, 2, \dots, 10\). A relação é perfeita e determinística.
+    Quanto valem \(r\) e \(\rho_s\)?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Spearman:</strong> \(\rho_s = \mathbf{1{,}000}\), exatamente. Como \(x^3\) é
+      estritamente crescente, a ordenação de \(y\) é idêntica à de \(x\), todos os \(d_i\) são
+      zero, e a correlação de postos é perfeita.</p>
+      <p><strong>Pearson:</strong> \(r = \mathbf{0{,}928}\). Alto, mas <em>não</em> 1 — porque a
+      relação, embora perfeita, <strong>não é linear</strong>.</p>
+      <p><strong>A lição.</strong> Pearson responde "quão bem uma <em>reta</em> descreve estes
+      dados?"; Spearman responde "quando \(x\) cresce, \(y\) cresce?". São perguntas diferentes,
+      e nenhuma é mais correta que a outra — depende do que se quer saber.</p>
+      <p>Num contexto físico isso importa: se você espera uma lei de potência, \(r = 0{,}93\) não
+      é motivo de comemoração. Ele não
+      significa "ajuste razoável", significa que você deveria <strong>linearizar</strong> — tomar
+      logaritmos — antes de analisar. Voltaremos a isso no Módulo 13.</p>
+      <p><em>Carregue "Relação monótona não linear" no simulador e veja a reta de ajuste passando
+      longe dos pontos nas extremidades.</em></p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. O quarteto de Anscombe</h2>
+
+  <p>Em 1973, o estatístico <strong>Francis Anscombe</strong> construiu quatro conjuntos de onze
+  pares cada, com uma propriedade notável.</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Conjunto</th><th class="num">x̄</th><th class="num">ȳ</th><th class="num">r</th><th class="num">r²</th><th>Reta de ajuste</th></tr></thead>
+    <tbody>
+      <tr><td>Anscombe I</td><td class="num">9,00</td><td class="num">7,50</td><td class="num">0,816</td><td class="num">0,666</td><td>y = 0,500x + 3,00</td></tr>
+      <tr><td>Anscombe II</td><td class="num">9,00</td><td class="num">7,50</td><td class="num">0,816</td><td class="num">0,666</td><td>y = 0,500x + 3,00</td></tr>
+      <tr><td>Anscombe III</td><td class="num">9,00</td><td class="num">7,50</td><td class="num">0,816</td><td class="num">0,666</td><td>y = 0,500x + 3,00</td></tr>
+      <tr><td>Anscombe IV</td><td class="num">9,00</td><td class="num">7,50</td><td class="num">0,816</td><td class="num">0,666</td><td>y = 0,500x + 3,00</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="destaque">
+    <span class="anuncio">Mesmas estatísticas, dados completamente diferentes</span>
+    Carregue os quatro conjuntos no simulador acima, um após o outro, e compare os gráficos.
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">O que você verá</span>
+    <ul>
+      <li><strong>I</strong> — uma nuvem razoavelmente linear com dispersão. É o único em que a
+      análise de correlação faz sentido;</li>
+      <li><strong>II</strong> — uma <strong>parábola perfeita</strong>. A relação é
+      determinística e a reta é completamente inadequada; \(r = 0{,}816\) é enganoso;</li>
+      <li><strong>III</strong> — uma reta <em>exata</em> com um único <strong>outlier</strong>.
+      Sem esse ponto, \(r\) seria praticamente 1. O outlier sozinho derrubou a correlação;</li>
+      <li><strong>IV</strong> — todos os pontos com \(x = 8\), exceto um em \(x = 19\). Não há
+      relação alguma: aquele único ponto cria a correlação inteira, e sem ele \(r\) é
+      <em>indefinido</em>, porque \(x\) não varia.</li>
+    </ul>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">A moral, que vale para toda a disciplina</span>
+    <p>Anscombe escreveu o artigo para combater a prática, então crescente com a chegada dos
+    computadores, de calcular estatísticas sem olhar os dados. Seu argumento era simples:
+    <strong>as medidas-resumo podem ser idênticas em situações radicalmente diferentes</strong>.</p>
+    <p>Cinquenta anos depois, o alerta é ainda mais pertinente. É trivial pedir a um programa que
+    devolva \(r\) para dez mil pares de variáveis; é trabalhoso olhar dez mil gráficos. E o que
+    se perde ao não olhar é exatamente o que mais importa.</p>
+    <p>Em 2017 isso foi levado ao extremo pelo <em>Datasaurus Dozen</em>: treze conjuntos com as
+    mesmas médias, desvios e correlação até a segunda casa decimal — um deles desenha um
+    dinossauro.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Correlação não implica causalidade</h2>
+
+  <p>É a frase mais repetida da estatística, e a menos levada a sério. Vale enumerar as razões
+  pelas quais duas variáveis podem estar correlacionadas sem que uma cause a outra.</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Quatro explicações alternativas</span>
+    <ol>
+      <li><strong>Causalidade reversa.</strong> \(y\) causa \(x\), não o contrário. Hospitais com
+      mais médicos têm mais mortes — não porque médicos matem, mas porque hospitais grandes
+      recebem casos graves;</li>
+      <li><strong>Variável de confusão.</strong> Uma terceira variável causa as duas. Vendas de
+      sorvete e afogamentos se correlacionam fortemente; a causa comum é o calor;</li>
+      <li><strong>Viés de seleção.</strong> A amostra foi escolhida de forma a criar a
+      associação — o viés do Módulo 7;</li>
+      <li><strong>Coincidência.</strong> Com muitas variáveis testadas, algumas se correlacionam
+      por acaso. É o problema das comparações múltiplas do Módulo 9.</li>
+    </ol>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Correlações espúrias</span>
+    <p>Tyler Vigen compilou centenas de correlações absurdas e estatisticamente significativas
+    entre séries temporais. O consumo per capita de queijo mozarela nos Estados Unidos
+    correlaciona-se a \(r = 0{,}95\) com o número de doutorados em engenharia civil.</p>
+    <p>A explicação não é mística: séries temporais que <em>crescem com o tempo</em> correlacionam-se
+    automaticamente entre si, porque ambas têm o tempo como fator comum. É um caso particular de
+    variável de confusão — e um bom argumento para desconfiar de qualquer correlação entre séries
+    que apenas sobem.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">O que autoriza a conclusão causal</span>
+    <p>Apenas duas coisas, e nenhuma delas é estatística:</p>
+    <ul>
+      <li>Um <strong>experimento controlado</strong> com alocação aleatória — o pesquisador
+      manipula \(x\) e observa \(y\);</li>
+      <li>Um <strong>mecanismo</strong> conhecido e verificado que explique a ligação.</li>
+    </ul>
+    <p>Em Física, o segundo caminho é o usual: sabemos <em>por que</em> a resistência varia com a
+    temperatura. Em ciências humanas, onde o experimento é muitas vezes inviável, a cautela
+    precisa ser maior.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Aplicações em Física</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Linearizar antes de correlacionar</span>
+    <p>Muitas leis físicas não são lineares, mas tornam-se lineares com a transformação
+    adequada:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Lei</th><th>Linearização</th><th>Gráfico</th></tr></thead>
+      <tbody>
+        <tr><td>\(y = ax^{b}\)</td><td>\(\log y = \log a + b\log x\)</td><td>log–log</td></tr>
+        <tr><td>\(y = a\,e^{bx}\)</td><td>\(\ln y = \ln a + bx\)</td><td>mono-log</td></tr>
+        <tr><td>\(T = 2\pi\sqrt{L/g}\)</td><td>\(T^{2} = (4\pi^{2}/g)\,L\)</td><td>\(T^2\) contra \(L\)</td></tr>
+        <tr><td>\(P V = nRT\)</td><td>\(P = (nRT)\,(1/V)\)</td><td>\(P\) contra \(1/V\)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>No experimento clássico do pêndulo, correlacionar \(T\) com \(L\) diretamente dá um \(r\)
+    alto mas inferior a 1 — porque a relação é de raiz quadrada. Correlacionar \(T^2\) com \(L\)
+    dá \(r\) próximo de 1, e a <em>inclinação</em> fornece \(g\). A linearização não é
+    conveniência: é o que torna o resultado físico extraível.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Matriz de correlação</span>
+    <p>Com várias variáveis, organiza-se os coeficientes em uma matriz simétrica, com 1 na
+    diagonal. Ela é o ponto de partida de técnicas como a análise de componentes principais, e
+    permite ver de relance quais variáveis carregam informação redundante.</p>
+    <p>Duas advertências: a matriz tem \(k(k-1)/2\) coeficientes distintos, e testar todos eles
+    reabre o problema das comparações múltiplas; e correlações altas entre variáveis explicativas
+    (multicolinearidade) tornam a regressão instável, assunto do Módulo 13.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s11">11. Exercícios propostos</h2>
+
+  <ol>
+    <li>Calcule manualmente \(r\) para os pares (1,2), (2,4), (3,5), (4,8), (5,9). Confira no
+    simulador e interprete \(r^2\).</li>
+    <li>Mostre que \(r\) não muda se somarmos uma constante a todos os \(x_i\), nem se
+    multiplicarmos todos os \(y_i\) por uma constante positiva. O que acontece se a constante
+    for negativa?</li>
+    <li>Prove que \(-1 \le r \le +1\). <em>(Sugestão: aplique a desigualdade de Cauchy–Schwarz
+    aos vetores de desvios.)</em></li>
+    <li>Para os dados do exercício 12.2, remova o oitavo estudante e recalcule \(r\) e
+    \(\rho_s\). Compare com os valores originais e comente a influência de um único ponto.</li>
+    <li>Oito produtos foram classificados por dois avaliadores. Avaliador A: 1, 3, 2, 5, 4, 7, 6,
+    8. Avaliador B: 2, 1, 4, 3, 6, 5, 8, 7. Calcule \(\rho_s\) e teste a significância.</li>
+    <li>Explique por que \(r^2 = 0{,}49\) significa que 51% da variação permanece inexplicada, e
+    por que isso é mais informativo do que dizer "r = 0,70, correlação forte".</li>
+    <li>Carregue Anscombe II no simulador. Que transformação dos dados tornaria Pearson
+    apropriado? Qual seria o \(r\) resultante?</li>
+    <li>Num experimento de pêndulo obteve-se \(r = 0{,}987\) entre \(T\) e \(L\). Um colega
+    afirma que o ajuste é excelente. Critique, e diga o que ele deveria ter feito.</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>Covariância tem unidades; \(r\) é a covariância padronizada, entre −1 e +1;</li>
+      <li>\(r^2\) é a fração da variação de \(y\) explicada linearmente por \(x\);</li>
+      <li>\(t = r\sqrt{(n-2)/(1-r^2)}\) testa \(H_0: \rho = 0\), com \(\nu = n-2\);</li>
+      <li>Spearman é Pearson aplicado aos postos; com empates, use postos médios e a definição
+      geral, não a fórmula simplificada;</li>
+      <li>Pearson detecta relação linear; Spearman, relação monótona;</li>
+      <li>Anscombe: estatísticas idênticas, dados radicalmente diferentes — <b>sempre faça o
+      gráfico</b>;</li>
+      <li>Correlação nunca estabelece causalidade: só o experimento controlado ou um mecanismo
+      conhecido fazem isso.</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula11.html"><small>Módulo anterior</small>← 11. Testes de normalidade</a>
+    <span class="prox em-breve"><small>Próximo módulo</small>13. Regressão linear · em preparação</span>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js?v=202611061217"></script>
+</body>
+</html>

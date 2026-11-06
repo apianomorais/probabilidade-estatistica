@@ -3345,6 +3345,464 @@
   }
 
   /* =================================================================
+     25. Correlação: Pearson, Spearman e o quarteto de Anscombe
+     ================================================================= */
+  var PARES = {
+    altura: { rot: 'Altura × peso',
+      rx: 'altura (cm)', ry: 'peso (kg)',
+      x: [165, 170, 175, 168, 172, 180, 160, 175, 165, 170],
+      y: [60, 65, 70, 68, 72, 80, 55, 75, 62, 68] },
+    estudo: { rot: 'Horas de estudo × nota',
+      rx: 'horas de estudo', ry: 'nota',
+      x: [2, 4, 6, 8, 10, 12, 14, 16],
+      y: [65, 70, 75, 85, 80, 90, 95, 60] },
+    monotona: { rot: 'Relação monótona não linear',
+      rx: 'x', ry: 'y = x³',
+      x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      y: [1, 8, 27, 64, 125, 216, 343, 512, 729, 1000] },
+    a1: { rot: 'Anscombe I', rx: 'x', ry: 'y',
+      x: [10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5],
+      y: [8.04, 6.95, 7.58, 8.81, 8.33, 9.96, 7.24, 4.26, 10.84, 4.82, 5.68] },
+    a2: { rot: 'Anscombe II', rx: 'x', ry: 'y',
+      x: [10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5],
+      y: [9.14, 8.14, 8.74, 8.77, 9.26, 8.10, 6.13, 3.10, 9.13, 7.26, 4.74] },
+    a3: { rot: 'Anscombe III', rx: 'x', ry: 'y',
+      x: [10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5],
+      y: [7.46, 6.77, 12.74, 7.11, 7.81, 8.84, 6.08, 5.39, 8.15, 6.42, 5.73] },
+    a4: { rot: 'Anscombe IV', rx: 'x', ry: 'y',
+      x: [8, 8, 8, 8, 8, 8, 8, 19, 8, 8, 8],
+      y: [6.58, 5.76, 7.71, 8.84, 8.47, 7.04, 5.25, 12.50, 5.56, 7.91, 6.89] }
+  };
+
+  /* postos com média em caso de empate */
+  function postos(v) {
+    var idx = v.map(function (val, i) { return { val: val, i: i }; })
+               .sort(function (a, b) { return a.val - b.val; });
+    var r = new Array(v.length), i = 0;
+    while (i < idx.length) {
+      var j = i;
+      while (j + 1 < idx.length && idx[j + 1].val === idx[i].val) j++;
+      var media = (i + j + 2) / 2;
+      for (var k = i; k <= j; k++) r[idx[k].i] = media;
+      i = j + 1;
+    }
+    return r;
+  }
+
+  function pearson(x, y) {
+    var n = x.length, mx = 0, my = 0, i;
+    for (i = 0; i < n; i++) { mx += x[i]; my += y[i]; }
+    mx /= n; my /= n;
+    var sxy = 0, sxx = 0, syy = 0;
+    for (i = 0; i < n; i++) {
+      sxy += (x[i] - mx) * (y[i] - my);
+      sxx += (x[i] - mx) * (x[i] - mx);
+      syy += (y[i] - my) * (y[i] - my);
+    }
+    var r = (sxx > 0 && syy > 0) ? sxy / Math.sqrt(sxx * syy) : NaN;
+    return { r: r, mx: mx, my: my, sxy: sxy, sxx: sxx, syy: syy,
+             a: sxx > 0 ? sxy / sxx : NaN,
+             b: sxx > 0 ? my - (sxy / sxx) * mx : NaN };
+  }
+
+  function correlacao(raiz) {
+    var c = moldura(raiz, 'Correlação de Pearson e de Spearman');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var chave = 'altura';
+    var campoD = el('div', { class: 'campo', style: 'flex:2 1 240px' });
+    campoD.appendChild(el('label', { html: 'Conjunto de dados' }));
+    var selD = el('select');
+    Object.keys(PARES).forEach(function (k) {
+      selD.appendChild(el('option', { value: k, texto: PARES[k].rot }));
+    });
+    campoD.appendChild(selD); ctr.appendChild(campoD);
+    selD.addEventListener('change', function () {
+      chave = selD.value;
+      iX.value = PARES[chave].x.join(', ');
+      iY.value = PARES[chave].y.join(', ');
+      atualizar();
+    });
+
+    var mostrarReta = true;
+    var campoR = el('div', { class: 'campo' });
+    campoR.innerHTML = '<label>Gráfico</label>';
+    var labR = el('label', { html: '<input type="checkbox" checked> mostrar reta de ajuste',
+      style: 'font-weight:400;font-size:.8rem;letter-spacing:0' });
+    campoR.appendChild(labR); ctr.appendChild(campoR);
+    labR.querySelector('input').addEventListener('change', function (e) {
+      mostrarReta = e.target.checked; atualizar();
+    });
+
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    var campoX = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    campoX.appendChild(el('label', { html: 'valores de x' }));
+    var iX = el('input', { type: 'text' }); campoX.appendChild(iX); ctr2.appendChild(campoX);
+    var campoY = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    campoY.appendChild(el('label', { html: 'valores de y' }));
+    var iY = el('input', { type: 'text' }); campoY.appendChild(iY); ctr2.appendChild(campoY);
+    iX.addEventListener('input', atualizar);
+    iY.addEventListener('input', atualizar);
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var painel = cartoes(c, [
+      { rot: 'r de Pearson', k: 'r' }, { rot: 'r² (determinação)', k: 'r2' },
+      { rot: 'ρ de Spearman', k: 'rho' }, { rot: 't de Pearson', k: 't' },
+      { rot: 'valor p (Pearson)', k: 'p' }, { rot: 'n', k: 'n' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function ler(s) {
+      return String(s).split(/[,;\s]+/).map(function (t) {
+        return Number(t.trim().replace(',', '.'));
+      }).filter(function (v) { return isFinite(v); });
+    }
+
+    function classifica(v) {
+      var a = Math.abs(v);
+      if (a >= 0.9) return 'muito forte';
+      if (a >= 0.7) return 'forte';
+      if (a >= 0.5) return 'moderada';
+      if (a >= 0.3) return 'fraca';
+      return 'desprezível';
+    }
+
+    function atualizar() {
+      var x = ler(iX.value), y = ler(iY.value);
+      var n = Math.min(x.length, y.length);
+      if (n < 3) {
+        saida.innerHTML = 'Informe ao menos três pares (x, y).';
+        painel({ r: '—', r2: '—', rho: '—', t: '—', p: '—', n: String(n) });
+        G.preparar(cv, 300);
+        return;
+      }
+      x = x.slice(0, n); y = y.slice(0, n);
+
+      var P = pearson(x, y);
+      var rx = postos(x), ry = postos(y);
+      var S = pearson(rx, ry);           /* Spearman = Pearson dos postos */
+      var rho = S.r;
+
+      var temEmpate = new Set(x).size < n || new Set(y).size < n;
+      var sd2 = 0;
+      for (var i = 0; i < n; i++) sd2 += Math.pow(rx[i] - ry[i], 2);
+      var rhoSimples = 1 - 6 * sd2 / (n * (n * n - 1));
+
+      var t = isFinite(P.r) && Math.abs(P.r) < 1
+            ? P.r * Math.sqrt((n - 2) / (1 - P.r * P.r)) : Infinity;
+      var p = isFinite(t) ? 2 * (1 - M.FT(Math.abs(t), n - 2)) : 0;
+
+      painel({
+        r: M.fmt(P.r, 4), r2: M.fmt(P.r * P.r, 4), rho: M.fmt(rho, 4),
+        t: isFinite(t) ? M.fmt(t, 3) : '∞',
+        p: M.fmt(p, 5), n: String(n)
+      });
+
+      desenhar(x, y, P);
+
+      var txt = 'r = <b>' + M.fmt(P.r, 3) + '</b> indica correlação <b>' + classifica(P.r)
+        + '</b> e ' + (P.r > 0 ? 'positiva' : 'negativa') + '. '
+        + 'O coeficiente de determinação r² = <b>' + M.pct(P.r * P.r, 1) + '</b> é a fração da '
+        + 'variação de y explicada pela relação linear com x. ';
+
+      if (Math.abs(rho - P.r) > 0.12) {
+        txt += '<br><br><b>Pearson e Spearman divergem bastante</b> (r = ' + M.fmt(P.r, 3)
+             + ' contra ρ = ' + M.fmt(rho, 3) + '). Isso acontece quando a relação é '
+             + '<b>monótona mas não linear</b>, ou quando há outliers que deslocam o r. '
+             + 'Olhe o gráfico antes de escolher qual reportar.';
+      }
+      if (temEmpate) {
+        txt += '<br><br>Há <b>empates</b> nos dados. Os postos empatados recebem a '
+             + '<b>média</b> das posições, e nesse caso a fórmula simplificada '
+             + '1 − 6Σd²/[n(n²−1)] = ' + M.fmt(rhoSimples, 4) + ' deixa de ser exata — '
+             + 'o valor correto, ' + M.fmt(rho, 4) + ', vem de aplicar Pearson aos postos.';
+      }
+      txt += '<br><br>Teste de significância: t = <b>' + (isFinite(t) ? M.fmt(t, 3) : '∞')
+           + '</b> com ' + (n - 2) + ' graus de liberdade, crítico '
+           + M.fmt(M.tCritico(0.025, n - 2), 3) + ' a 5%. '
+           + (p < 0.05
+               ? '<b>A correlação é significativa</b> (p = ' + M.fmt(p, 4) + ').'
+               : '<b>Não há evidência de correlação</b> na população (p = ' + M.fmt(p, 4) + ').');
+
+      saida.innerHTML = txt;
+    }
+
+    function desenhar(x, y, P) {
+      var xmin = Math.min.apply(null, x), xmax = Math.max.apply(null, x);
+      var ymin = Math.min.apply(null, y), ymax = Math.max.apply(null, y);
+      var fx = (xmax - xmin) * 0.1 || 1, fy = (ymax - ymin) * 0.12 || 1;
+      var g = G.eixos(cv, {
+        xmin: xmin - fx, xmax: xmax + fx, ymin: ymin - fy, ymax: ymax + fy,
+        altura: 300,
+        rotX: PARES[chave] ? PARES[chave].rx : 'x',
+        rotY: PARES[chave] ? PARES[chave].ry : 'y',
+        marcasX: G.marcasLineares(xmin - fx, xmax + fx, 6, (xmax - xmin) > 20 ? 0 : 1),
+        formataY: function (v) { return M.fmt(v, (ymax - ymin) > 20 ? 0 : 1); }
+      });
+      var ct = g.ct;
+      if (mostrarReta && isFinite(P.a)) {
+        ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2;
+        ct.beginPath();
+        ct.moveTo(g.X(g.xmin), g.Y(P.a * g.xmin + P.b));
+        ct.lineTo(g.X(g.xmax), g.Y(P.a * g.xmax + P.b));
+        ct.stroke();
+        /* resíduos */
+        ct.strokeStyle = 'rgba(181,131,31,.55)'; ct.lineWidth = 1;
+        ct.setLineDash([3, 3]);
+        for (var i = 0; i < x.length; i++) {
+          ct.beginPath();
+          ct.moveTo(g.X(x[i]), g.Y(y[i]));
+          ct.lineTo(g.X(x[i]), g.Y(P.a * x[i] + P.b));
+          ct.stroke();
+        }
+        ct.setLineDash([]);
+      }
+      /* médias */
+      G.vertical(g, P.mx, '#c9d2db', '');
+      ct.strokeStyle = '#c9d2db'; ct.lineWidth = 1; ct.setLineDash([4, 4]);
+      ct.beginPath(); ct.moveTo(g.x0, g.Y(P.my)); ct.lineTo(g.x1, g.Y(P.my)); ct.stroke();
+      ct.setLineDash([]);
+      /* pontos */
+      ct.fillStyle = G.COR.azul;
+      for (var j = 0; j < x.length; j++) {
+        ct.beginPath(); ct.arc(g.X(x[j]), g.Y(y[j]), 4, 0, 2 * Math.PI); ct.fill();
+      }
+      if (mostrarReta && isFinite(P.a)) {
+        ct.fillStyle = G.COR.vinho; ct.font = '600 11px system-ui, sans-serif';
+        ct.textAlign = 'left'; ct.textBaseline = 'top';
+        ct.fillText('y = ' + M.fmt(P.a, 3) + 'x ' + (P.b >= 0 ? '+ ' : '− ')
+                    + M.fmt(Math.abs(P.b), 3), g.x0 + 8, g.y0 + 6);
+      }
+    }
+
+    iX.value = PARES.altura.x.join(', ');
+    iY.value = PARES.altura.y.join(', ');
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     Calculadora de valores críticos (z, t, qui-quadrado)
+     ================================================================= */
+  function criticos(raiz) {
+    var c = moldura(raiz, 'Calculadora de valores críticos e de valor p');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var dist = 'z', tipo = 'bi', alfa = 0.05, gl = 10, obs = null;
+
+    function selecao(rot, opcoes, inicial, aoMudar) {
+      var campo = el('div', { class: 'campo' });
+      campo.appendChild(el('label', { html: rot }));
+      var s = el('select');
+      opcoes.forEach(function (o) {
+        s.appendChild(el('option', { value: o[0], texto: o[1] }));
+      });
+      s.value = inicial;
+      campo.appendChild(s); ctr.appendChild(campo);
+      s.addEventListener('change', function () { aoMudar(s.value); });
+      return campo;
+    }
+
+    selecao('Distribuição', [
+      ['z', 'Normal padrão (z)'],
+      ['t', 't de Student'],
+      ['q', 'Qui-quadrado (χ²)']
+    ], 'z', function (v) { dist = v; ajustar(); atualizar(); });
+
+    var campoTipo = selecao('Tipo de teste', [
+      ['bi', 'Bilateral'],
+      ['dir', 'Unilateral à direita'],
+      ['esq', 'Unilateral à esquerda']
+    ], 'bi', function (v) { tipo = v; atualizar(); });
+
+    selecao('Nível de significância α', [
+      ['0.10', '0,10  (90% de confiança)'],
+      ['0.05', '0,05  (95% de confiança)'],
+      ['0.025', '0,025'],
+      ['0.01', '0,01  (99% de confiança)'],
+      ['0.005', '0,005'],
+      ['0.001', '0,001']
+    ], '0.05', function (v) { alfa = Number(v); atualizar(); });
+
+    var campoGl = el('div', { class: 'campo' });
+    campoGl.appendChild(el('label', { html: 'Graus de liberdade ν' }));
+    var inpGl = el('input', { type: 'number', value: 10, min: 1, max: 300, step: 1 });
+    campoGl.appendChild(inpGl); ctr.appendChild(campoGl);
+    inpGl.addEventListener('input', function () {
+      var v = Math.round(Number(inpGl.value));
+      if (v >= 1 && v <= 300) { gl = v; atualizar(); }
+    });
+
+    var campoObs = el('div', { class: 'campo' });
+    campoObs.appendChild(el('label', { html: 'Estatística observada <i>(opcional)</i>' }));
+    var inpObs = el('input', { type: 'number', step: 'any', placeholder: 'deixe vazio para só ver o crítico' });
+    campoObs.appendChild(inpObs); ctr.appendChild(campoObs);
+    inpObs.addEventListener('input', function () {
+      obs = inpObs.value === '' ? null : Number(inpObs.value);
+      atualizar();
+    });
+
+    function ajustar() {
+      campoGl.style.display = dist === 'z' ? 'none' : '';
+      /* χ² à esquerda existe (teste para variância), mas o bilateral precisa dos dois cortes */
+      campoTipo.style.display = '';
+    }
+    ajustar();
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Faixa azul: <b>região de não rejeição</b> de H₀ &nbsp;·&nbsp; '
+      + 'faixas vermelhas: <b>região crítica</b>, de área total α &nbsp;·&nbsp; '
+      + 'linhas tracejadas: valores críticos &nbsp;·&nbsp; linha verde: estatística observada' }));
+
+    var painel = cartoes(c, [
+      { rot: 'crítico inferior', k: 'ci' }, { rot: 'crítico superior', k: 'cs' },
+      { rot: 'estatística', k: 'ob' }, { rot: 'valor p', k: 'p' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function nomeEstat() { return dist === 'z' ? 'z' : (dist === 't' ? 't' : 'χ²'); }
+
+    function densidade(x) {
+      if (dist === 'z') return M.dNormal(x, 0, 1);
+      if (dist === 't') return M.dT(x, gl);
+      return M.dQui(x, gl);
+    }
+
+    function acumulada(x) {
+      if (dist === 'z') return M.FNormal(x, 0, 1);
+      if (dist === 't') return M.FT(x, gl);
+      return M.FQui(x, gl);
+    }
+
+    /* devolve o valor cuja cauda DIREITA tem área a */
+    function criticoDireita(a) {
+      if (dist === 'z') return M.zCritico(1 - a);
+      if (dist === 't') return M.tCritico(a, gl);
+      return M.quiCritico(a, gl);
+    }
+
+    function atualizar() {
+      var ci = null, cs = null;
+      if (tipo === 'bi') {
+        if (dist === 'q') { ci = criticoDireita(1 - alfa / 2); cs = criticoDireita(alfa / 2); }
+        else { cs = criticoDireita(alfa / 2); ci = -cs; }
+      } else if (tipo === 'dir') {
+        cs = criticoDireita(alfa);
+      } else {
+        if (dist === 'q') ci = criticoDireita(1 - alfa);
+        else ci = -criticoDireita(alfa);
+      }
+
+      /* valor p */
+      var p = null;
+      if (obs !== null && isFinite(obs)) {
+        var caudaDir = 1 - acumulada(obs), caudaEsq = acumulada(obs);
+        if (tipo === 'dir') p = caudaDir;
+        else if (tipo === 'esq') p = caudaEsq;
+        else p = dist === 'q'
+          ? Math.min(1, 2 * Math.min(caudaDir, caudaEsq))
+          : 2 * (1 - acumulada(Math.abs(obs)));
+      }
+
+      function sinal(s) { return s.replace(/^-/, '−'); }
+      painel({
+        ci: ci === null ? '—' : sinal(M.fmt(ci, 4)),
+        cs: cs === null ? '—' : sinal(M.fmt(cs, 4)),
+        ob: obs === null ? '—' : sinal(M.fmt(obs, 4)),
+        p: p === null ? '—' : M.fmt(p, 4)
+      });
+
+      /* ----- gráfico ----- */
+      var xmin, xmax;
+      if (dist === 'q') {
+        xmin = 0;
+        xmax = Math.max(cs !== null ? cs * 1.35 : 0, ci !== null ? ci * 2 : 0,
+                        gl + 4 * Math.sqrt(2 * gl) + 4, obs !== null ? obs * 1.2 : 0);
+      } else {
+        var lim = Math.max(3.6, Math.abs(cs || 0) * 1.3, Math.abs(ci || 0) * 1.3,
+                           obs !== null ? Math.abs(obs) * 1.15 : 0);
+        xmin = -lim; xmax = lim;
+      }
+
+      var ymax = 0;
+      for (var i = 0; i <= 200; i++) {
+        var v = densidade(xmin + (xmax - xmin) * i / 200);
+        if (isFinite(v)) ymax = Math.max(ymax, v);
+      }
+      ymax *= 1.22;
+      if (!isFinite(ymax) || ymax <= 0) ymax = 0.45;
+
+      var g = G.eixos(cv, {
+        xmin: xmin, xmax: xmax, ymax: ymax, altura: 300,
+        rotX: nomeEstat(), rotY: 'densidade',
+        marcasX: dist === 'q' ? G.marcasLineares(xmin, xmax, 8, 1)
+                              : G.marcasLineares(xmin, xmax, 8, 1),
+        formataY: function (v) { return v.toFixed(2).replace('.', ','); }
+      });
+
+      var AZUL = 'rgba(31,78,121,.16)', VERM = 'rgba(140,47,57,.30)';
+      var a0 = ci === null ? xmin : ci;
+      var b0 = cs === null ? xmax : cs;
+      G.area(g, densidade, a0, b0, AZUL);
+      if (ci !== null) G.area(g, densidade, xmin, ci, VERM);
+      if (cs !== null) G.area(g, densidade, cs, xmax, VERM);
+
+      G.curva(g, densidade, G.COR.vinho, 2.4);
+      if (ci !== null) G.vertical(g, ci, G.COR.vinho, sinal(M.fmt(ci, 3).replace(/<[^>]*>/g, '')));
+      if (cs !== null) G.vertical(g, cs, G.COR.vinho, sinal(M.fmt(cs, 3).replace(/<[^>]*>/g, '')));
+      if (obs !== null && isFinite(obs) && obs >= xmin && obs <= xmax)
+        G.vertical(g, obs, '#2e7d4f', nomeEstat() + ' obs');
+
+      /* ----- texto ----- */
+      var nome = nomeEstat();
+      var conf = M.pct(1 - alfa, alfa < 0.01 ? 2 : 0);
+      var txt = '';
+      if (tipo === 'bi') {
+        txt = 'Teste <b>bilateral</b> a α = ' + M.fmt(alfa, 3) + ' ('
+            + conf + ' de confiança)' + (dist === 'z' ? '' : ' com ν = <b>' + gl + '</b>')
+            + '. Rejeita-se H₀ se ' + nome + ' &lt; <b>' + sinal(M.fmt(ci, 3))
+            + '</b> ou ' + nome + ' &gt; <b>' + sinal(M.fmt(cs, 3)) + '</b>. '
+            + 'Cada cauda tem área α/2 = ' + M.fmt(alfa / 2, 4) + '.';
+      } else if (tipo === 'dir') {
+        txt = 'Teste <b>unilateral à direita</b> a α = ' + M.fmt(alfa, 3)
+            + (dist === 'z' ? '' : ' com ν = <b>' + gl + '</b>')
+            + '. Rejeita-se H₀ se ' + nome + ' &gt; <b>' + sinal(M.fmt(cs, 3))
+            + '</b>. Toda a área α fica na cauda direita — por isso o crítico unilateral é '
+            + '<i>menor</i> que o bilateral do mesmo α.';
+      } else {
+        txt = 'Teste <b>unilateral à esquerda</b> a α = ' + M.fmt(alfa, 3)
+            + (dist === 'z' ? '' : ' com ν = <b>' + gl + '</b>')
+            + '. Rejeita-se H₀ se ' + nome + ' &lt; <b>' + sinal(M.fmt(ci, 3)) + '</b>.';
+      }
+
+      if (p !== null) {
+        var rejeita = (ci !== null && obs < ci) || (cs !== null && obs > cs);
+        txt += '<br><br>Com ' + nome + '<sub>obs</sub> = <b>' + sinal(M.fmt(obs, 3))
+             + '</b>, o valor p é <b>' + M.fmt(p, 4) + '</b>, de modo que '
+             + (rejeita
+                ? '<b>rejeitamos H₀</b> ao nível de ' + M.fmt(alfa, 3)
+                  + ' — a estatística caiu na região crítica, e p &lt; α.'
+                : '<b>não rejeitamos H₀</b> ao nível de ' + M.fmt(alfa, 3)
+                  + ' — a estatística caiu na região de não rejeição, e p &gt; α.')
+             + ' As duas leituras — comparar com o crítico ou comparar p com α — '
+             + 'sempre concordam, porque são a mesma conta vista de dois lados.';
+      } else {
+        txt += ' Informe uma estatística observada para obter também o valor p.';
+      }
+
+      if (dist === 'q' && tipo === 'bi')
+        txt += '<br><br><i>No qui-quadrado o bilateral não é simétrico:</i> a distribuição é '
+             + 'assimétrica e definida só para valores positivos, de modo que os dois cortes '
+             + 'têm de ser buscados separadamente — um com área α/2 à esquerda, outro com α/2 '
+             + 'à direita.';
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Registro e inicialização
      ================================================================= */
   var REGISTRO = {
@@ -3356,7 +3814,8 @@
     pascal: pascal, aniversarios: aniversarios, montyhall: montyhall,
     galton: galton, intervalos: intervalos, calcic: calcIC,
     regiaocritica: regiaoCritica, poder: poderTeste,
-    contingencia: contingencia, aderencia: aderencia, qqplot: qqplot
+    contingencia: contingencia, aderencia: aderencia, qqplot: qqplot,
+    correlacao: correlacao, criticos: criticos
   };
 
   document.addEventListener('DOMContentLoaded', function () {
