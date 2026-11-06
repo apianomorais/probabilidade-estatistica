@@ -252,6 +252,159 @@ var M = (function () {
     return (lo + hi) / 2;
   }
 
+  /* ===================================================================
+     Testes de normalidade
+     =================================================================== */
+
+  /* momentos amostrais padronizados */
+  function momentos(x) {
+    var n = x.length, m = 0, i;
+    for (i = 0; i < n; i++) m += x[i];
+    m /= n;
+    var m2 = 0, m3 = 0, m4 = 0, d;
+    for (i = 0; i < n; i++) {
+      d = x[i] - m;
+      m2 += d * d; m3 += d * d * d; m4 += d * d * d * d;
+    }
+    m2 /= n; m3 /= n; m4 /= n;
+    return {
+      media: m,
+      s: Math.sqrt(m2 * n / (n - 1)),
+      /* assimetria e curtose amostrais, com correção para amostra */
+      g1: m3 / Math.pow(m2, 1.5),
+      g2: m4 / (m2 * m2) - 3
+    };
+  }
+
+  /* D'Agostino–Pearson K²: combina assimetria e curtose */
+  function dagostino(x) {
+    var n = x.length;
+    if (n < 8) return null;
+    var mo = momentos(x), b1 = mo.g1, b2 = mo.g2 + 3;
+
+    /* transformação da assimetria (D'Agostino, 1970) */
+    var Y = b1 * Math.sqrt((n + 1) * (n + 3) / (6 * (n - 2)));
+    var beta2 = 3 * (n * n + 27 * n - 70) * (n + 1) * (n + 3)
+              / ((n - 2) * (n + 5) * (n + 7) * (n + 9));
+    var W2 = -1 + Math.sqrt(2 * (beta2 - 1));
+    var delta = 1 / Math.sqrt(0.5 * Math.log(W2));
+    var alfa = Math.sqrt(2 / (W2 - 1));
+    var Z1 = delta * Math.log(Y / alfa + Math.sqrt(Math.pow(Y / alfa, 2) + 1));
+
+    /* transformação da curtose (Anscombe–Glynn, 1983) */
+    var Eb2 = 3 * (n - 1) / (n + 1);
+    var varb2 = 24 * n * (n - 2) * (n - 3) / ((n + 1) * (n + 1) * (n + 3) * (n + 5));
+    var Xx = (b2 - Eb2) / Math.sqrt(varb2);
+    var sqrtB1 = 6 * (n * n - 5 * n + 2) / ((n + 7) * (n + 9))
+               * Math.sqrt(6 * (n + 3) * (n + 5) / (n * (n - 2) * (n - 3)));
+    var A = 6 + (8 / sqrtB1) * (2 / sqrtB1 + Math.sqrt(1 + 4 / (sqrtB1 * sqrtB1)));
+    var termo = (1 - 2 / A) / (1 + Xx * Math.sqrt(2 / (A - 4)));
+    var Z2 = (1 - 2 / (9 * A) - Math.sign(termo) * Math.pow(Math.abs(termo), 1 / 3))
+           / Math.sqrt(2 / (9 * A));
+
+    var K2 = Z1 * Z1 + Z2 * Z2;
+    return { K2: K2, Z1: Z1, Z2: Z2, g1: mo.g1, g2: mo.g2, p: 1 - FQui(K2, 2) };
+  }
+
+  /* Anderson–Darling para normalidade, com parâmetros estimados */
+  function andersonDarling(x) {
+    var n = x.length;
+    if (n < 8) return null;
+    var ord = x.slice().sort(function (a, b) { return a - b; });
+    var mo = momentos(ord);
+    var soma = 0;
+    for (var i = 0; i < n; i++) {
+      var F1 = FNormal(ord[i], mo.media, mo.s);
+      var F2 = FNormal(ord[n - 1 - i], mo.media, mo.s);
+      F1 = Math.min(1 - 1e-12, Math.max(1e-12, F1));
+      F2 = Math.min(1 - 1e-12, Math.max(1e-12, F2));
+      soma += (2 * (i + 1) - 1) * (Math.log(F1) + Math.log(1 - F2));
+    }
+    var A2 = -n - soma / n;
+    var A2e = A2 * (1 + 0.75 / n + 2.25 / (n * n));   /* corrigido para n finito */
+    /* valor p pela aproximação de D'Agostino & Stephens (1986) */
+    var p;
+    if (A2e >= 0.6) p = Math.exp(1.2937 - 5.709 * A2e + 0.0186 * A2e * A2e);
+    else if (A2e >= 0.34) p = Math.exp(0.9177 - 4.279 * A2e - 1.38 * A2e * A2e);
+    else if (A2e >= 0.2) p = 1 - Math.exp(-8.318 + 42.796 * A2e - 59.938 * A2e * A2e);
+    else p = 1 - Math.exp(-13.436 + 101.14 * A2e - 223.73 * A2e * A2e);
+    return { A2: A2e, p: Math.min(1, Math.max(0, p)) };
+  }
+
+  /* Kolmogorov–Smirnov com parâmetros estimados (Lilliefors) */
+  function lilliefors(x) {
+    var n = x.length;
+    if (n < 4) return null;
+    var ord = x.slice().sort(function (a, b) { return a - b; });
+    var mo = momentos(ord);
+    var D = 0;
+    for (var i = 0; i < n; i++) {
+      var F = FNormal(ord[i], mo.media, mo.s);
+      D = Math.max(D, Math.abs((i + 1) / n - F), Math.abs(F - i / n));
+    }
+    /* valor crítico a 5% (Lilliefors), aproximação usual */
+    var crit05 = n > 30 ? 0.886 / Math.sqrt(n)
+                        : [0, 0, 0, 0, 0.381, 0.337, 0.319, 0.300, 0.285, 0.271, 0.258,
+                           0.249, 0.242, 0.234, 0.227, 0.220, 0.213, 0.206, 0.200, 0.195,
+                           0.190, 0.187, 0.182, 0.177, 0.173, 0.169, 0.166, 0.163, 0.160,
+                           0.157, 0.155][n] || 0.886 / Math.sqrt(n);
+    return { D: D, crit05: crit05, rejeita: D > crit05 };
+  }
+
+  /* Shapiro–Wilk pelo algoritmo de Royston (1992) */
+  function shapiroWilk(x) {
+    var n = x.length;
+    if (n < 4 || n > 5000) return null;
+    var ord = x.slice().sort(function (a, b) { return a - b; });
+    var i, m = [], somaM2 = 0;
+    for (i = 1; i <= n; i++) {
+      var mi = zCritico((i - 0.375) / (n + 0.25));
+      m.push(mi); somaM2 += mi * mi;
+    }
+    var a = new Array(n), u = 1 / Math.sqrt(n), raiz = Math.sqrt(somaM2);
+    var an = -2.706056 * Math.pow(u, 5) + 4.434685 * Math.pow(u, 4)
+           - 2.071190 * Math.pow(u, 3) - 0.147981 * u * u + 0.221157 * u
+           + m[n - 1] / raiz;
+    a[n - 1] = an; a[0] = -an;
+    var phi, inicio;
+    if (n > 5) {
+      var an1 = -3.582633 * Math.pow(u, 5) + 5.682633 * Math.pow(u, 4)
+              - 1.752461 * Math.pow(u, 3) - 0.293762 * u * u + 0.042981 * u
+              + m[n - 2] / raiz;
+      a[n - 2] = an1; a[1] = -an1;
+      phi = (somaM2 - 2 * m[n - 1] * m[n - 1] - 2 * m[n - 2] * m[n - 2])
+          / (1 - 2 * an * an - 2 * an1 * an1);
+      inicio = 2;
+    } else {
+      phi = (somaM2 - 2 * m[n - 1] * m[n - 1]) / (1 - 2 * an * an);
+      inicio = 1;
+    }
+    for (i = inicio; i < n - inicio; i++) a[i] = m[i] / Math.sqrt(phi);
+
+    var media = 0;
+    for (i = 0; i < n; i++) media += ord[i];
+    media /= n;
+    var num = 0, den = 0;
+    for (i = 0; i < n; i++) { num += a[i] * ord[i]; den += Math.pow(ord[i] - media, 2); }
+    var W = num * num / den;
+    if (W >= 1) W = 1 - 1e-12;
+
+    /* valor p (Royston) */
+    var p, g, mu, sg, ln = Math.log(n);
+    if (n <= 11) {
+      g = -2.273 + 0.459 * n;
+      mu = 0.5440 - 0.39978 * n + 0.025054 * n * n - 0.0006714 * n * n * n;
+      sg = Math.exp(1.3822 - 0.77857 * n + 0.062767 * n * n - 0.0020322 * n * n * n);
+      var y = -Math.log(g - Math.log(1 - W));
+      p = 1 - FNormal((y - mu) / sg, 0, 1);
+    } else {
+      mu = 0.0038915 * ln * ln * ln - 0.083751 * ln * ln - 0.31082 * ln - 1.5861;
+      sg = Math.exp(0.0030302 * ln * ln - 0.082676 * ln - 0.4803);
+      p = 1 - FNormal((Math.log(1 - W) - mu) / sg, 0, 1);
+    }
+    return { W: W, p: Math.min(1, Math.max(0, p)) };
+  }
+
   /* Normal padrão por Box–Muller */
   var reserva = null;
   function normalAleatoria() {
@@ -284,6 +437,8 @@ var M = (function () {
     pBinomial: pBinomial, pPoisson: pPoisson, pGeometrica: pGeometrica,
     dNormal: dNormal, FNormal: FNormal, erf: erf, zCritico: zCritico,
     dT: dT, FT: FT, tCritico: tCritico,
+    momentos: momentos, dagostino: dagostino, andersonDarling: andersonDarling,
+    lilliefors: lilliefors, shapiroWilk: shapiroWilk,
     dQui: dQui, FQui: FQui, quiCritico: quiCritico, simpson: simpson,
     normalAleatoria: normalAleatoria, fmt: fmt, pct: pct
   };

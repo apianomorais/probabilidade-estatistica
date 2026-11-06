@@ -3127,6 +3127,224 @@
   }
 
   /* =================================================================
+     24. Gráfico Q–Q e testes de normalidade
+     ================================================================= */
+  var CONJUNTOS_QQ = {
+    reacao: { rot: 'Tempo de reação (normal)', dados:
+      '215.4 198.7 220.3 205.8 232.1 198.2 225.6 212.4 228.9 203.5 228.1 235.6 ' +
+      '210.9 218.3 225.0 240.3 205.1 230.8 215.2 222.5 221.8 230.2 225.4 208.6 ' +
+      '215.9 222.7 218.4 235.1 210.3 225.7' },
+    renda: { rot: 'Renda (assimétrica à direita)', dados:
+      '1.0 1.1 1.2 1.3 1.4 1.5 1.5 1.6 1.8 1.9 2.0 2.1 2.3 2.5 2.6 2.8 3.0 3.2 ' +
+      '3.5 3.8 4.2 4.6 5.1 5.8 6.5 7.4 8.6 10.2 12.8 18.5 27.0' },
+    bimodal: { rot: 'Bimodal (dois grupos)', dados:
+      '32 33 34 34 35 35 36 36 37 37 38 38 39 40 41 ' +
+      '62 63 64 64 65 65 66 66 67 67 68 68 69 70 71' },
+    pesada: { rot: 'Caudas pesadas', dados:
+      '-18.2 -7.4 -4.1 -2.8 -2.0 -1.5 -1.1 -0.8 -0.5 -0.3 -0.1 0.0 0.1 0.3 0.5 ' +
+      '0.8 1.1 1.5 2.0 2.8 4.1 7.4 18.2 -0.2 0.2 -0.6 0.6 -1.3 1.3 -3.2' },
+    uniforme: { rot: 'Uniforme (caudas leves)', dados:
+      '1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30' },
+    royston: { rot: 'Pesos (Royston, n=11)', dados:
+      '148 154 158 160 161 162 166 170 182 195 236' }
+  };
+
+  function qqplot(raiz) {
+    var c = moldura(raiz, 'Gráfico Q–Q e testes numéricos de normalidade');
+
+    var campoT = el('div', { class: 'campo', style: 'flex-basis:100%;min-width:100%' });
+    campoT.appendChild(el('label', { html: 'Dados (separados por espaço, vírgula ou linha)' }));
+    var ta = el('textarea', { rows: '3', style:
+      'width:100%;font-family:var(--mono);font-size:.8rem;padding:.45rem .55rem;' +
+      'border:1px solid var(--borda);border-radius:6px;resize:vertical' });
+    campoT.appendChild(ta); c.appendChild(campoT);
+
+    var bts = el('div', { class: 'botoes', style: 'margin:.5rem 0 .9rem' });
+    c.appendChild(bts);
+    Object.keys(CONJUNTOS_QQ).forEach(function (k) {
+      botao(bts, CONJUNTOS_QQ[k].rot.split(' (')[0], function () {
+        ta.value = CONJUNTOS_QQ[k].dados; atualizar();
+      }, true);
+    });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Quantis teóricos da normal no eixo horizontal, quantis observados no vertical '
+      + '&nbsp;·&nbsp; se os dados forem normais, os pontos caem sobre a reta' }));
+    var cv2 = el('canvas'); c.appendChild(cv2);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Histograma dos mesmos dados, com a normal de igual média e desvio sobreposta' }));
+
+    var tab = el('div', { class: 'tabela-rolavel' }); c.appendChild(tab);
+    var painel = cartoes(c, [
+      { rot: 'n', k: 'n' }, { rot: 'assimetria g₁', k: 'g1' },
+      { rot: 'curtose g₂', k: 'g2' }, { rot: 'veredito', k: 'ver' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function ler() {
+      return String(ta.value).split(/[\s,;]+/).map(function (t) {
+        return Number(t.trim().replace(',', '.'));
+      }).filter(function (v) { return isFinite(v); });
+    }
+
+    function atualizar() {
+      var d = ler();
+      if (d.length < 4) {
+        saida.innerHTML = 'Informe pelo menos quatro valores, ou escolha um conjunto acima.';
+        painel({ n: String(d.length), g1: '—', g2: '—', ver: '—' });
+        tab.innerHTML = ''; G.preparar(cv, 280); G.preparar(cv2, 220);
+        return;
+      }
+      var ord = d.slice().sort(function (a, b) { return a - b; });
+      var n = ord.length, mo = M.momentos(ord);
+
+      /* quantis teóricos pela fórmula de Blom */
+      var pontos = ord.map(function (v, i) {
+        return { t: M.zCritico((i + 1 - 0.375) / (n + 0.25)), o: v };
+      });
+
+      var sw = M.shapiroWilk(ord), da = M.dagostino(ord),
+          ad = M.andersonDarling(ord), li = M.lilliefors(ord);
+
+      var linhas = '';
+      function linha(nome, est, p, extra) {
+        var veredito = p === null
+          ? (extra ? extra : '—')
+          : (p < 0.05 ? '<b style="color:#8c2f39">rejeita normalidade</b>'
+                      : '<b style="color:#1f6f54">não rejeita</b>');
+        linhas += '<tr><td>' + nome + '</td><td class="num">' + est + '</td>'
+                + '<td class="num">' + (p === null ? '—' : M.fmt(p, 4)) + '</td>'
+                + '<td>' + veredito + '</td></tr>';
+      }
+      if (sw) linha('Shapiro–Wilk', 'W = ' + M.fmt(sw.W, 4), sw.p);
+      else linha('Shapiro–Wilk', '—', null, 'exige 4 ≤ n ≤ 5000');
+      if (da) linha("D'Agostino K²", 'K² = ' + M.fmt(da.K2, 4), da.p);
+      else linha("D'Agostino K²", '—', null, 'exige n ≥ 8');
+      if (ad) linha('Anderson–Darling', 'A² = ' + M.fmt(ad.A2, 4), ad.p);
+      else linha('Anderson–Darling', '—', null, 'exige n ≥ 8');
+      if (li) {
+        linhas += '<tr><td>Kolmogorov–Smirnov<br><small>(Lilliefors)</small></td>'
+                + '<td class="num">D = ' + M.fmt(li.D, 4) + '</td>'
+                + '<td class="num">crít. 5%: ' + M.fmt(li.crit05, 4) + '</td><td>'
+                + (li.rejeita ? '<b style="color:#8c2f39">rejeita normalidade</b>'
+                              : '<b style="color:#1f6f54">não rejeita</b>') + '</td></tr>';
+      }
+      tab.innerHTML = '<table><thead><tr><th>Teste</th><th class="num">Estatística</th>'
+        + '<th class="num">valor p</th><th>Veredito a 5%</th></tr></thead><tbody>'
+        + linhas + '</tbody></table>';
+
+      var rejeitam = [sw, da, ad].filter(function (r) { return r && r.p < 0.05; }).length
+                   + (li && li.rejeita ? 1 : 0);
+
+      painel({
+        n: String(n), g1: M.fmt(mo.g1, 3), g2: M.fmt(mo.g2, 3),
+        ver: rejeitam === 0 ? '<span style="color:#1f6f54">compatível</span>'
+             : (rejeitam >= 3 ? '<span style="color:#8c2f39">não normal</span>'
+                              : '<span style="color:#b5831f">duvidoso</span>')
+      });
+
+      desenharQQ(pontos, mo);
+      desenharHist(ord, mo);
+
+      var diag = '';
+      if (Math.abs(mo.g1) > 0.6) {
+        diag = 'A assimetria g₁ = <b>' + M.fmt(mo.g1, 2) + '</b> indica cauda longa '
+             + (mo.g1 > 0 ? 'à <b>direita</b>' : 'à <b>esquerda</b>')
+             + ', e no Q–Q isso aparece como curvatura em <b>C</b>. '
+             + (mo.g1 > 0 ? 'Transformar com log ou raiz costuma resolver. ' : '');
+      } else if (mo.g2 > 1) {
+        diag = 'A curtose g₂ = <b>' + M.fmt(mo.g2, 2) + '</b> indica <b>caudas pesadas</b> '
+             + '(leptocúrtica), e no Q–Q os extremos escapam da reta nas duas pontas. ';
+      } else if (mo.g2 < -1) {
+        diag = 'A curtose g₂ = <b>' + M.fmt(mo.g2, 2) + '</b> indica <b>caudas leves</b> '
+             + '(platicúrtica) — típico de dados uniformes ou truncados. ';
+      }
+
+      saida.innerHTML = diag
+        + (rejeitam === 0
+            ? 'Nenhum dos testes rejeita a normalidade ao nível de 5%. Os dados são '
+              + '<b>compatíveis</b> com uma população normal — o que não prova que o sejam.'
+            : rejeitam >= 3
+              ? '<b>' + rejeitam + ' dos 4 testes rejeitam</b> a normalidade. '
+                + 'Considere transformar os dados ou usar métodos não paramétricos (Módulo 14).'
+              : 'Os testes <b>divergem</b>: ' + rejeitam + ' de 4 rejeitam. '
+                + 'É o caso em que o gráfico Q–Q decide — olhe o tamanho do desvio, não só o veredito.')
+        + (n < 20
+            ? '<br><br><b>Atenção:</b> com n = ' + n + ', os testes têm pouco poder. '
+              + 'Não rejeitar aqui significa muito pouco.'
+            : '');
+    }
+
+    function desenharQQ(pontos, mo) {
+      var tmin = pontos[0].t, tmax = pontos[pontos.length - 1].t;
+      var omin = pontos[0].o, omax = pontos[pontos.length - 1].o;
+      var folgaT = (tmax - tmin) * 0.1, folgaO = (omax - omin) * 0.1;
+      var g = G.eixos(cv, {
+        xmin: tmin - folgaT, xmax: tmax + folgaT,
+        ymin: omin - folgaO, ymax: omax + folgaO, altura: 290,
+        rotX: 'quantis teóricos da normal (z)', rotY: 'quantis observados',
+        marcasX: G.marcasLineares(tmin - folgaT, tmax + folgaT, 6, 1),
+        formataY: function (v) { return M.fmt(v, Math.abs(omax - omin) > 50 ? 0 : 1); }
+      });
+      var ct = g.ct;
+      /* reta de referência: passa por (0, média) com inclinação s */
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2;
+      ct.beginPath();
+      ct.moveTo(g.X(g.xmin), g.Y(mo.media + mo.s * g.xmin));
+      ct.lineTo(g.X(g.xmax), g.Y(mo.media + mo.s * g.xmax));
+      ct.stroke();
+      /* banda indicativa */
+      ct.strokeStyle = 'rgba(140,47,57,.25)'; ct.lineWidth = 1; ct.setLineDash([4, 4]);
+      [-1, 1].forEach(function (s) {
+        ct.beginPath();
+        ct.moveTo(g.X(g.xmin), g.Y(mo.media + mo.s * (g.xmin + s * 0.35)));
+        ct.lineTo(g.X(g.xmax), g.Y(mo.media + mo.s * (g.xmax + s * 0.35)));
+        ct.stroke();
+      });
+      ct.setLineDash([]);
+      /* pontos */
+      pontos.forEach(function (p) {
+        var esperado = mo.media + mo.s * p.t;
+        var longe = Math.abs(p.o - esperado) > 0.35 * mo.s;
+        ct.fillStyle = longe ? G.COR.vinho : G.COR.azul;
+        ct.beginPath(); ct.arc(g.X(p.t), g.Y(p.o), 3.1, 0, 2 * Math.PI); ct.fill();
+      });
+    }
+
+    function desenharHist(ord, mo) {
+      var n = ord.length, min = ord[0], max = ord[n - 1];
+      var k = Math.max(4, Math.min(14, Math.ceil(1 + 3.322 * Math.log10(n))));
+      var larg = (max - min) / k || 1;
+      var cont = new Array(k).fill(0);
+      ord.forEach(function (x) {
+        cont[Math.min(k - 1, Math.floor((x - min) / larg))]++;
+      });
+      var dens = cont.map(function (q) { return q / (n * larg); });
+      var pico = Math.max(M.dNormal(mo.media, mo.media, mo.s), Math.max.apply(null, dens));
+      var lo = Math.min(min, mo.media - 3.5 * mo.s), hi = Math.max(max, mo.media + 3.5 * mo.s);
+      var g = G.eixos(cv2, {
+        xmin: lo, xmax: hi, ymax: pico * 1.2, altura: 220,
+        rotX: 'valor', rotY: 'densidade',
+        marcasX: G.marcasLineares(lo, hi, 6, Math.abs(hi - lo) > 50 ? 0 : 1),
+        formataY: function (v) { return v.toFixed(2).replace('.', ','); }
+      });
+      var ct = g.ct;
+      ct.fillStyle = G.COR.azulClaro;
+      dens.forEach(function (dv, i) {
+        if (dv <= 0) return;
+        var x0 = g.X(min + i * larg), x1 = g.X(min + (i + 1) * larg), y = g.Y(dv);
+        ct.fillRect(x0 + 0.5, y, Math.max(1, x1 - x0 - 1), g.y1 - y);
+      });
+      G.curva(g, function (x) { return M.dNormal(x, mo.media, mo.s); }, G.COR.vinho, 2.2);
+    }
+
+    ta.addEventListener('input', atualizar);
+    ta.value = CONJUNTOS_QQ.reacao.dados;
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Registro e inicialização
      ================================================================= */
   var REGISTRO = {
@@ -3138,7 +3356,7 @@
     pascal: pascal, aniversarios: aniversarios, montyhall: montyhall,
     galton: galton, intervalos: intervalos, calcic: calcIC,
     regiaocritica: regiaoCritica, poder: poderTeste,
-    contingencia: contingencia, aderencia: aderencia
+    contingencia: contingencia, aderencia: aderencia, qqplot: qqplot
   };
 
   document.addEventListener('DOMContentLoaded', function () {
