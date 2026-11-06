@@ -1037,12 +1037,246 @@
   }
 
   /* =================================================================
+     14. Estatística descritiva: histograma, boxplot e medidas
+     ================================================================= */
+  var CONJUNTOS = {
+    alturas: { rot: 'Alturas de 40 estudantes (cm)', dados:
+      '168 172 159 181 175 163 170 178 165 174 169 182 157 171 166 177 173 160 ' +
+      '176 168 164 179 170 172 158 183 167 175 161 169 174 180 166 171 162 177 ' +
+      '173 168 176 170' },
+    notas: { rot: 'Notas de uma turma (0 a 10)', dados:
+      '7.5 6.0 8.5 5.5 9.0 7.0 6.5 8.0 4.5 7.5 6.0 9.5 7.0 5.0 8.0 6.5 7.5 ' +
+      '3.5 8.5 7.0 6.0 9.0 5.5 7.5 8.0 6.5 7.0 4.0 8.5 7.5' },
+    medidas: { rot: 'Medidas repetidas de g (m/s²)', dados:
+      '9.79 9.83 9.78 9.81 9.85 9.80 9.77 9.82 9.84 9.79 9.81 9.76 9.83 9.80 ' +
+      '9.78 9.82 9.81 9.79 9.84 9.80' },
+    assimetrica: { rot: 'Renda mensal (salários mínimos) — assimétrica', dados:
+      '1 1 1.2 1.3 1.5 1.5 1.8 2 2 2.1 2.3 2.5 2.5 3 3.2 3.5 4 4.5 5 6 7 9 12 18 30' },
+    outliers: { rot: 'Tempos de reação (ms) — com outliers', dados:
+      '245 252 238 261 249 255 243 258 247 251 240 256 250 244 253 410 248 259 ' +
+      '242 254 120 246' }
+  };
+
+  function descritiva(raiz) {
+    var c = moldura(raiz, 'Laboratório: histograma, boxplot e medidas descritivas');
+
+    /* entrada de dados */
+    var campoTxt = el('div', { class: 'campo', style: 'flex-basis:100%;min-width:100%' });
+    campoTxt.appendChild(el('label', { html: 'Cole seus dados (separados por espaço, vírgula ou linha)' }));
+    var ta = el('textarea', { rows: '3', style:
+      'width:100%;font-family:var(--mono);font-size:.82rem;padding:.45rem .55rem;' +
+      'border:1px solid var(--borda);border-radius:6px;resize:vertical' });
+    campoTxt.appendChild(ta);
+    c.appendChild(campoTxt);
+
+    var ctrPre = el('div', { class: 'botoes', style: 'margin:.6rem 0 .9rem' });
+    c.appendChild(ctrPre);
+    Object.keys(CONJUNTOS).forEach(function (k) {
+      botao(ctrPre, CONJUNTOS[k].rot.split(' —')[0].split(' (')[0], function () {
+        ta.value = CONJUNTOS[k].dados; atualizar();
+      }, true);
+    });
+
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+    var nClasses = 0; // 0 = automático (Sturges)
+    var sl = deslizante(ctr, 'Número de classes', 0, 25, 1, 0, function (v) {
+      nClasses = v; atualizar();
+    }, function (v) { return v === 0 ? 'automático' : String(v); });
+
+    var cvH = el('canvas'); c.appendChild(cvH);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Histograma &nbsp;·&nbsp; linha vermelha: média &nbsp;·&nbsp; linha azul: mediana' }));
+    var cvB = el('canvas'); c.appendChild(cvB);
+    c.appendChild(el('div', { class: 'legenda', html:
+      'Boxplot &nbsp;·&nbsp; caixa de Q₁ a Q₃ &nbsp;·&nbsp; bigodes até 1,5×IQR &nbsp;·&nbsp; pontos: outliers' }));
+
+    var painel = cartoes(c, [
+      { rot: 'n', k: 'n' }, { rot: 'média x̄', k: 'media' },
+      { rot: 'mediana', k: 'med' }, { rot: 'moda', k: 'moda' },
+      { rot: 'desvio padrão s', k: 's' }, { rot: 'variância s²', k: 'v' },
+      { rot: 'Q₁', k: 'q1' }, { rot: 'Q₃', k: 'q3' },
+      { rot: 'IQR', k: 'iqr' }, { rot: 'amplitude', k: 'amp' },
+      { rot: 'assimetria', k: 'as' }, { rot: 'coef. de variação', k: 'cv' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function ler() {
+      return String(ta.value).split(/[\s,;]+/).map(function (t) {
+        return Number(t.replace(',', '.'));
+      }).filter(function (v) { return isFinite(v); }).sort(function (a, b) { return a - b; });
+    }
+
+    /* quantil por interpolação linear (método 7, o do R e do Excel) */
+    function quantil(ord, p) {
+      var n = ord.length;
+      if (!n) return NaN;
+      if (n === 1) return ord[0];
+      var h = (n - 1) * p, lo = Math.floor(h), fr = h - lo;
+      return ord[lo] + fr * (ord[Math.min(lo + 1, n - 1)] - ord[lo]);
+    }
+
+    function atualizar() {
+      var d = ler(), n = d.length;
+      if (n < 2) {
+        painel({ n: String(n), media: '—', med: '—', moda: '—', s: '—', v: '—',
+                 q1: '—', q3: '—', iqr: '—', amp: '—', as: '—', cv: '—' });
+        saida.innerHTML = 'Informe pelo menos dois valores, ou escolha um dos conjuntos de exemplo acima.';
+        G.preparar(cvH, 230); G.preparar(cvB, 110);
+        return;
+      }
+
+      var soma = 0;
+      d.forEach(function (x) { soma += x; });
+      var media = soma / n;
+      var s2 = 0, m3 = 0;
+      d.forEach(function (x) { s2 += (x - media) * (x - media); });
+      s2 /= (n - 1);
+      var s = Math.sqrt(s2);
+      d.forEach(function (x) { m3 += Math.pow((x - media) / (s || 1), 3); });
+      var assim = n > 2 ? (n / ((n - 1) * (n - 2))) * m3 : 0;
+
+      var mediana = quantil(d, 0.5), q1 = quantil(d, 0.25), q3 = quantil(d, 0.75);
+      var iqr = q3 - q1, min = d[0], max = d[n - 1];
+
+      /* moda */
+      var freq = {}, maxf = 0, modas = [];
+      d.forEach(function (x) { freq[x] = (freq[x] || 0) + 1; if (freq[x] > maxf) maxf = freq[x]; });
+      Object.keys(freq).forEach(function (k) { if (freq[k] === maxf) modas.push(Number(k)); });
+      var textoModa = maxf === 1 ? 'amodal'
+        : (modas.length > 2 ? modas.length + ' modas' : modas.map(function (x) { return M.fmt(x, 2); }).join(' e '));
+
+      /* outliers pela regra 1,5×IQR */
+      var limInf = q1 - 1.5 * iqr, limSup = q3 + 1.5 * iqr;
+      var fora = d.filter(function (x) { return x < limInf || x > limSup; });
+      var dentro = d.filter(function (x) { return x >= limInf && x <= limSup; });
+      var bigInf = dentro.length ? dentro[0] : min;
+      var bigSup = dentro.length ? dentro[dentro.length - 1] : max;
+
+      painel({
+        n: String(n), media: M.fmt(media, 3), med: M.fmt(mediana, 3), moda: textoModa,
+        s: M.fmt(s, 3), v: M.fmt(s2, 4), q1: M.fmt(q1, 3), q3: M.fmt(q3, 3),
+        iqr: M.fmt(iqr, 3), amp: M.fmt(max - min, 3), as: M.fmt(assim, 3),
+        cv: media !== 0 ? M.pct(Math.abs(s / media), 1) : '—'
+      });
+
+      desenharHist(d, media, mediana, min, max);
+      desenharBox(q1, mediana, q3, bigInf, bigSup, fora, min, max);
+
+      var leitura;
+      if (Math.abs(assim) < 0.3) leitura = 'A distribuição é <b>aproximadamente simétrica</b>, e média e mediana quase coincidem.';
+      else if (assim > 0) leitura = 'A distribuição é <b>assimétrica à direita</b> (cauda longa nos valores altos): a média é <b>puxada para cima</b> da mediana. Aqui a mediana descreve melhor o "valor típico".';
+      else leitura = 'A distribuição é <b>assimétrica à esquerda</b>: a média fica <b>abaixo</b> da mediana.';
+
+      saida.innerHTML = leitura
+        + (fora.length ? ' Pela regra de 1,5×IQR há <b>' + fora.length + ' outlier'
+            + (fora.length > 1 ? 's' : '') + '</b>: ' + fora.map(function (x) { return M.fmt(x, 2); }).join(', ')
+            + '. Note quanto eles deslocam a média sem mexer na mediana — apague-os do campo de texto e compare.'
+           : ' Nenhum outlier pela regra de 1,5×IQR.');
+    }
+
+    function desenharHist(d, media, mediana, min, max) {
+      var n = d.length;
+      var k = nClasses > 0 ? nClasses : Math.max(3, Math.ceil(1 + 3.322 * Math.log10(n)));
+      var lo = min, hi = max;
+      if (hi === lo) { lo -= 0.5; hi += 0.5; }
+      var larg = (hi - lo) / k;
+      var cont = new Array(k).fill(0);
+      d.forEach(function (x) {
+        var i = Math.min(k - 1, Math.floor((x - lo) / larg));
+        cont[i]++;
+      });
+      /* topo inteiro e divisível, para que as marcas do eixo y sejam inteiras */
+      var topo = Math.max(1, Math.ceil(Math.max.apply(null, cont) * 1.15));
+      var div = 0, cand = [5, 4, 6, 3, 2];
+      for (var ci = 0; ci < cand.length; ci++) {
+        if (topo % cand[ci] === 0) { div = cand[ci]; break; }
+      }
+      if (!div) {
+        if (topo <= 6) { div = topo; }
+        else { topo += (5 - topo % 5) % 5; div = 5; }
+      }
+      var folga = larg * 0.35;
+      var g = G.eixos(cvH, {
+        xmin: lo - folga, xmax: hi + folga, ymax: topo, altura: 250,
+        rotX: 'valor', rotY: 'frequência',
+        marcasX: G.marcasLineares(lo, hi, Math.min(6, k), (hi - lo) > 20 ? 0 : 1),
+        divY: div,
+        formataY: function (v) { return String(Math.round(v)); }
+      });
+      var ct = g.ct;
+      ct.fillStyle = G.COR.azulClaro;
+      ct.strokeStyle = '#ffffff'; ct.lineWidth = 1;
+      cont.forEach(function (q, i) {
+        if (!q) return;
+        var x0 = g.X(lo + i * larg), x1 = g.X(lo + (i + 1) * larg), y = g.Y(q);
+        ct.fillRect(x0, y, x1 - x0, g.y1 - y);
+        ct.strokeRect(x0, y, x1 - x0, g.y1 - y);
+      });
+      G.vertical(g, media, G.COR.vinho, 'x̄');
+      G.vertical(g, mediana, G.COR.azul, 'med');
+    }
+
+    function desenharBox(q1, med, q3, bigInf, bigSup, fora, min, max) {
+      var p = G.preparar(cvB, 120), ct = p.ct;
+      var marg = 28, lo = min, hi = max;
+      if (hi === lo) { lo -= 0.5; hi += 0.5; }
+      var folga = (hi - lo) * 0.08;
+      lo -= folga; hi += folga;
+      function X(v) { return marg + (v - lo) / (hi - lo) * (p.L - 2 * marg); }
+      var yc = 44, h = 34;
+
+      ct.strokeStyle = G.COR.azul; ct.lineWidth = 1.4;
+      // bigodes
+      ct.beginPath();
+      ct.moveTo(X(bigInf), yc); ct.lineTo(X(q1), yc);
+      ct.moveTo(X(q3), yc); ct.lineTo(X(bigSup), yc);
+      ct.moveTo(X(bigInf), yc - h / 3); ct.lineTo(X(bigInf), yc + h / 3);
+      ct.moveTo(X(bigSup), yc - h / 3); ct.lineTo(X(bigSup), yc + h / 3);
+      ct.stroke();
+      // caixa
+      ct.fillStyle = 'rgba(44,95,141,.22)';
+      ct.fillRect(X(q1), yc - h / 2, X(q3) - X(q1), h);
+      ct.strokeRect(X(q1), yc - h / 2, X(q3) - X(q1), h);
+      // mediana
+      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2.4;
+      ct.beginPath(); ct.moveTo(X(med), yc - h / 2); ct.lineTo(X(med), yc + h / 2); ct.stroke();
+      // outliers
+      ct.fillStyle = G.COR.vinho;
+      fora.forEach(function (x) {
+        ct.beginPath(); ct.arc(X(x), yc, 3.4, 0, 2 * Math.PI); ct.fill();
+      });
+      // escala
+      ct.strokeStyle = '#c9d2db'; ct.lineWidth = 1;
+      ct.beginPath(); ct.moveTo(marg, yc + h / 2 + 14); ct.lineTo(p.L - marg, yc + h / 2 + 14); ct.stroke();
+      ct.fillStyle = G.COR.suave; ct.font = '10px system-ui, sans-serif';
+      ct.textAlign = 'center'; ct.textBaseline = 'top';
+      for (var i = 0; i <= 4; i++) {
+        var v = lo + (hi - lo) * i / 4;
+        ct.beginPath(); ct.moveTo(X(v), yc + h / 2 + 14); ct.lineTo(X(v), yc + h / 2 + 18); ct.stroke();
+        ct.fillText(M.fmt(v, (hi - lo) > 20 ? 0 : 1), X(v), yc + h / 2 + 20);
+      }
+      // rótulos
+      ct.font = '10px system-ui, sans-serif'; ct.textBaseline = 'bottom';
+      ct.fillStyle = G.COR.azul;
+      ct.fillText('Q₁', X(q1), yc - h / 2 - 3);
+      ct.fillText('Q₃', X(q3), yc - h / 2 - 3);
+      ct.fillStyle = G.COR.vinho;
+      ct.fillText('mediana', X(med), yc - h / 2 - 15);
+    }
+
+    ta.addEventListener('input', atualizar);
+    ta.value = CONJUNTOS.alturas.dados;
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Registro e inicialização
      ================================================================= */
   var REGISTRO = {
     dados2: dadosDois, eventos: eventos, encontro: encontro, contagem: contagem,
     bayes: bayes, discreta: discreta, binomial: binomial, poisson: poisson,
-    normal: normal, tcl: tcl, passeio: passeio, moeda: moeda, exponencial: exponencial
+    normal: normal, tcl: tcl, passeio: passeio, moeda: moeda, exponencial: exponencial,
+    descritiva: descritiva
   };
 
   document.addEventListener('DOMContentLoaded', function () {

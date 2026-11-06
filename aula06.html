@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 6 — Estatística descritiva | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css">
+<script src="assets/js/comum.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Probabilidade</span>
+      <a href="aula01.html" class="num" title="Módulo 1 — Espaço amostral, eventos e axiomas">1</a>
+      <a href="aula02.html" class="num" title="Módulo 2 — Técnicas de contagem">2</a>
+      <a href="aula03.html" class="num" title="Módulo 3 — Probabilidade condicional e Bayes">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis aleatórias discretas">4</a>
+      <a href="aula05.html" class="num" title="Módulo 5 — Variáveis contínuas e a Normal">5</a>
+      <span class="grupo">Estatística</span>
+      <a href="aula06.html" class="num ativo" title="Módulo 6 — Estatística descritiva">6</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. A lógica se inverte</a></li>
+    <li><a href="#s2">2. População, amostra, variáveis</a></li>
+    <li><a href="#s3">3. Tabelas de frequência</a></li>
+    <li><a href="#s4">4. Histograma</a></li>
+    <li><a href="#s5">5. Medidas de posição</a></li>
+    <li><a href="#s6">6. Medidas de dispersão</a></li>
+    <li><a href="#s7">7. Quartis e boxplot</a></li>
+    <li><a href="#s8">8. Assimetria</a></li>
+    <li><a href="#s9">9. Aplicações em Física</a></li>
+    <li><a href="#s10">10. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 6 · 3 horas</p>
+  <h1>Estatística descritiva</h1>
+  <p class="subtitulo">Organizar, resumir e enxergar o que um conjunto de dados está dizendo.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Distinguir população de amostra e classificar variáveis;</li>
+      <li>Construir tabelas de frequência e histogramas, escolhendo as classes;</li>
+      <li>Calcular e interpretar média, mediana e moda, sabendo quando cada uma engana;</li>
+      <li>Calcular variância e desvio padrão amostrais e entender o porquê do \(n-1\);</li>
+      <li>Construir boxplots, identificar outliers pela regra de 1,5×IQR;</li>
+      <li>Ler a assimetria de uma distribuição e escolher a medida-resumo adequada.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. A lógica se inverte</h2>
+
+  <p>Nos cinco módulos anteriores fizemos sempre o mesmo movimento: <strong>conhecíamos o
+  modelo</strong> — uma moeda honesta, uma binomial com \(n\) e \(p\) dados, uma normal com
+  \(\mu\) e \(\sigma\) — e perguntávamos o que esperar dos dados.</p>
+
+  <p>A partir de agora o caminho é o inverso. <strong>Temos os dados e queremos descobrir o
+  modelo.</strong></p>
+
+  <div class="destaque">
+    <strong>Probabilidade:</strong> dado o modelo, o que esperar dos dados?<br>
+    <strong>Estatística:</strong> dados os dados, o que dizer do modelo?
+  </div>
+
+  <p>A estatística descritiva é o primeiro passo desse caminho inverso, e o mais humilde: antes
+  de inferir qualquer coisa, é preciso <em>olhar</em> para os dados. Resumi-los em poucos números
+  e em um ou dois gráficos. Esse passo parece trivial e é onde se cometem a maioria dos erros —
+  quase sempre por resumir demais.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. População, amostra e tipos de variáveis</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Definições</span>
+    <p><strong>População:</strong> o conjunto completo de elementos de interesse. Todos os
+    licenciandos em Física do Ceará; todos os átomos de um gás; todas as medidas que o seu
+    paquímetro poderia produzir.</p>
+    <p><strong>Amostra:</strong> um subconjunto da população, efetivamente observado.</p>
+    <p><strong>Parâmetro</strong> é uma característica da população (\(\mu\), \(\sigma\),
+    \(p\)); <strong>estatística</strong> é a mesma característica calculada na amostra
+    (\(\bar x\), \(s\), \(\hat p\)). Letras gregas para o que não conhecemos, letras latinas
+    para o que medimos.</p>
+  </div>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Tipo</th><th>Subtipo</th><th>Exemplos</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="2">Qualitativa</td><td>Nominal (sem ordem)</td><td>naipe da carta, cor, material da amostra</td></tr>
+      <tr><td>Ordinal (com ordem)</td><td>conceito A/B/C, escala de dureza de Mohs</td></tr>
+      <tr><td rowspan="2">Quantitativa</td><td>Discreta (contagem)</td><td>número de decaimentos, de filhos, de erros</td></tr>
+      <tr><td>Contínua (medida)</td><td>massa, tempo, temperatura, comprimento</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Por que a classificação importa</span>
+    <p>Ela decide o que faz sentido calcular. Média de naipes não existe. Mediana de conceitos
+    A/B/C existe, média não. E há a armadilha dos códigos numéricos: se você codifica
+    "masculino = 1, feminino = 2", o computador calculará alegremente uma média de 1,47 — um
+    número sem significado algum.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Tabelas de frequência</h2>
+
+  <p>Para uma variável discreta com poucos valores, a tabela de frequência já é o resumo
+  completo dos dados — nada se perde.</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Símbolo</th><th>Nome</th><th>Definição</th></tr></thead>
+    <tbody>
+      <tr><td>\(f_i\)</td><td>frequência absoluta</td><td>quantas vezes o valor aparece</td></tr>
+      <tr><td>\(f_i/n\)</td><td>frequência relativa</td><td>a fração do total</td></tr>
+      <tr><td>\(F_i\)</td><td>frequência acumulada</td><td>soma das frequências até aquele valor</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Exercício resolvido 6.1 — Tabela de frequência</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Perguntou-se a 25 estudantes quantos irmãos cada um tem. As respostas foram:</p>
+    <p style="font-family:var(--mono);font-size:.85rem">0, 1, 1, 2, 0, 3, 1, 2, 1, 0, 2, 1, 4, 1, 2, 0, 1, 3, 2, 1, 1, 2, 0, 1, 2</p>
+    <p>Construa a tabela de frequências e calcule a média a partir dela.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th class="num">\(x_i\)</th><th class="num">\(f_i\)</th><th class="num">\(f_i/n\)</th><th class="num">\(F_i\)</th><th class="num">\(x_i f_i\)</th></tr></thead>
+        <tbody>
+          <tr><td class="num">0</td><td class="num">5</td><td class="num">0,20</td><td class="num">5</td><td class="num">0</td></tr>
+          <tr><td class="num">1</td><td class="num">10</td><td class="num">0,40</td><td class="num">15</td><td class="num">10</td></tr>
+          <tr><td class="num">2</td><td class="num">7</td><td class="num">0,28</td><td class="num">22</td><td class="num">14</td></tr>
+          <tr><td class="num">3</td><td class="num">2</td><td class="num">0,08</td><td class="num">24</td><td class="num">6</td></tr>
+          <tr><td class="num">4</td><td class="num">1</td><td class="num">0,04</td><td class="num">25</td><td class="num">4</td></tr>
+          <tr><td class="num"><b>Σ</b></td><td class="num"><b>25</b></td><td class="num"><b>1,00</b></td><td class="num">—</td><td class="num"><b>34</b></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>A média a partir da tabela é</p>
+      <p>\[\bar x = \frac{\sum_i x_i f_i}{n} = \frac{34}{25} = \mathbf{1{,}36}\ \text{irmãos}.\]</p>
+      <p>Note a estrutura: \(\bar x = \sum_i x_i\,(f_i/n)\) é <strong>exatamente</strong> a fórmula
+      da esperança \(\langle x\rangle = \sum_i x_i P_i\) do Módulo 4, com a frequência relativa no
+      lugar da probabilidade. É a definição frequentista reaparecendo: a amostra é um retrato
+      ruidoso da distribuição.</p>
+      <p>A mediana é o 13º valor em ordem, que cai na faixa do 1; a moda é 1, o valor mais
+      frequente.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Histograma</h2>
+
+  <p>Para variáveis contínuas, agrupamos os dados em <strong>classes</strong> (intervalos) e
+  desenhamos barras justapostas — sem espaço entre elas, porque a variável é contínua. O número
+  de classes \(k\) é uma escolha, não um dado. Duas regras práticas:</p>
+
+  <p>\[k \approx \sqrt{n} \qquad\text{ou}\qquad k \approx 1 + 3{,}322\,\log_{10} n \;\;(\text{regra de Sturges}).\]</p>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O histograma é uma escolha, não um fato</span>
+    <p>Classes demais e você vê ruído; classes de menos e some a estrutura. No laboratório abaixo,
+    carregue o conjunto de alturas e mova o controle de classes de 3 até 25: é o <em>mesmo</em>
+    conjunto de dados produzindo gráficos de aparências muito diferentes. Isso não é um defeito
+    do método — é algo a ter em mente sempre que alguém lhe mostrar um histograma.</p>
+  </div>
+
+  <div data-widget="descritiva"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. Medidas de posição</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">As três medidas</span>
+    <p><strong>Média amostral:</strong> \(\displaystyle \bar x = \frac1n\sum_{i=1}^{n} x_i\)</p>
+    <p><strong>Mediana:</strong> o valor central dos dados ordenados. Se \(n\) é par, a média dos
+    dois centrais.</p>
+    <p><strong>Moda:</strong> o valor mais frequente. Pode não existir (amodal) ou haver mais de
+    uma (bimodal).</p>
+  </div>
+
+  <div class="bloco">
+    <span class="rotulo">Duas propriedades da média</span>
+    <p>A soma dos desvios em torno da média é sempre nula: \(\sum_i (x_i - \bar x) = 0\) — é o
+    mesmo fato que nos obrigou, no Módulo 4, a elevar o desvio ao quadrado.</p>
+    <p>E a média é o ponto que <strong>minimiza</strong> \(\sum_i (x_i - c)^2\). (A mediana, por
+    sua vez, minimiza \(\sum_i |x_i - c|\) — razão de ser mais robusta.)</p>
+  </div>
+
+  <h3>Exercício resolvido 6.2 — Quando a média engana</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Uma pequena empresa tem dez funcionários, com salários mensais (em reais):</p>
+    <p style="font-family:var(--mono);font-size:.85rem">1800, 2100, 1950, 2300, 2050, 1900, 2200, 2000, 2150, 24000</p>
+    <p>Calcule média e mediana. Qual delas descreve melhor "o salário típico"? O que acontece se
+    o último funcionário sai da empresa?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Média:</strong> a soma é 42 450, logo \(\bar x = 42\,450/10 = \mathbf{R\$\,4\,245}\).</p>
+      <p><strong>Mediana:</strong> ordenando, os dois valores centrais (5º e 6º) são 2050 e 2100,
+      logo a mediana é \(\mathbf{R\$\,2\,075}\).</p>
+      <p>A média é <strong>o dobro</strong> do que praticamente todo mundo ganha: nove dos dez
+      funcionários recebem abaixo dela. Um único valor extremo arrastou a média para longe de
+      todos os dados. A mediana, que só enxerga a <em>posição</em> dos valores e não a magnitude,
+      ficou onde devia.</p>
+      <p><strong>Sem o salário de 24 000:</strong> a média cai para R$ 2 050 e a mediana vai para
+      R$ 2 050 — praticamente idênticas. A média se moveu R$ 2 195; a mediana, R$ 25.</p>
+      <p>Esse é o sentido técnico de <strong>robustez</strong>: a mediana resiste a valores
+      extremos, a média não. É por isso que se divulga a renda <em>mediana</em> de um país, e não
+      a média.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. Medidas de dispersão</h2>
+
+  <p>Duas turmas podem ter a mesma média 7,0 e situações completamente distintas: uma com todas
+  as notas entre 6,5 e 7,5, outra com metade tirando 4 e metade tirando 10. Posição não basta;
+  é preciso medir o <strong>espalhamento</strong>.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Variância e desvio padrão amostrais</span>
+    <p>\[s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar x)^2, \qquad s = \sqrt{s^2}\]</p>
+    <p>Forma prática para cálculo manual:
+    \(\displaystyle s^2 = \frac{1}{n-1}\left(\sum_i x_i^2 - n\bar x^2\right)\).</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que \(n-1\) e não \(n\)?</span>
+    <p>Esta é a pergunta que todo estudante faz, e a resposta é bonita.</p>
+    <p>A variância populacional é \(\sigma^2 = \langle (x-\mu)^2\rangle\), com desvios medidos em
+    torno da <strong>média verdadeira</strong> \(\mu\). Mas \(\mu\) nós não conhecemos — usamos
+    \(\bar x\) no lugar dela. E \(\bar x\) é calculada <em>a partir dos próprios dados</em>,
+    posicionando-se exatamente onde minimiza a soma dos quadrados dos desvios (seção 5).</p>
+    <p>Consequência: os desvios em torno de \(\bar x\) são <strong>sistematicamente menores</strong>
+    que os desvios em torno de \(\mu\). Dividir por \(n\) produziria uma estimativa
+    <strong>enviesada para baixo</strong> — subestimaríamos a dispersão real. Dividir por
+    \(n-1\) corrige exatamente esse viés, de modo que \(\langle s^2\rangle = \sigma^2\).</p>
+    <p>Outra leitura, equivalente: os \(n\) desvios \((x_i - \bar x)\) não são independentes, pois
+    satisfazem a restrição \(\sum_i(x_i-\bar x)=0\). Conhecidos \(n-1\) deles, o último está
+    determinado. Só há \(n-1\) <strong>graus de liberdade</strong> — e dividimos pelo número de
+    informações independentes, não pelo número de dados. Esse conceito reaparecerá no Módulo 7,
+    na distribuição t, e no Módulo 10, no ajuste de curvas.</p>
+    <p>Um caso-limite esclarece tudo: com \(n=1\), uma única medida não diz <em>nada</em> sobre a
+    dispersão. A fórmula com \(n-1\) devolve \(0/0\), indefinido — que é a resposta honesta.
+    A fórmula com \(n\) devolveria zero, afirmando dispersão nula. É uma mentira.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Coeficiente de variação</span>
+    <p>\[CV = \frac{s}{\bar x}\]</p>
+    <p>É a dispersão <em>relativa</em>, adimensional, geralmente expressa em porcentagem. Permite
+    comparar o espalhamento de grandezas de naturezas ou unidades diferentes — o que o desvio
+    padrão sozinho não permite.</p>
+  </div>
+
+  <h3>Exercício resolvido 6.3 — Comparando precisões</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Em um laboratório, mediu-se dez vezes a aceleração da gravidade por um pêndulo, obtendo
+    (em m/s²):</p>
+    <p style="font-family:var(--mono);font-size:.85rem">9,79 9,83 9,78 9,81 9,85 9,80 9,77 9,82 9,84 9,79</p>
+    <p>Calcule \(\bar x\), \(s\) e o coeficiente de variação. Compare a precisão desse experimento
+    com a de uma medida de massa com \(\bar m = 250\) g e \(s_m = 3\) g.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p>A soma dos dez valores é 98,08, logo</p>
+      <p>\[\bar x = \frac{98{,}08}{10} = \mathbf{9{,}808\ \mathrm{m/s^2}}.\]</p>
+      <p>Calculando os desvios quadráticos e dividindo por \(n-1 = 9\):
+      \(s^2 \approx 7{,}07\times10^{-4}\), portanto</p>
+      <p>\[s \approx \mathbf{0{,}027\ \mathrm{m/s^2}}, \qquad
+      CV = \frac{0{,}027}{9{,}808} \approx \mathbf{0{,}27\%}.\]</p>
+      <p>Para a massa: \(CV = 3/250 = \mathbf{1{,}2\%}\).</p>
+      <p>A medida de \(g\) é cerca de <strong>quatro vezes mais precisa</strong> em termos
+      relativos, embora os desvios padrão — 0,027 e 3 — não sejam nem comparáveis diretamente,
+      por terem unidades diferentes. É exatamente para isso que serve o CV.</p>
+      <p><strong>Atenção a uma distinção que confunde muita gente:</strong> \(s = 0{,}027\) é o
+      espalhamento das <em>medidas individuais</em>. A incerteza da <em>média</em> é bem menor,
+      \(s/\sqrt{n} = 0{,}027/\sqrt{10} \approx 0{,}008\) — o resultado do Módulo 4. Reportaríamos
+      \(g = 9{,}808 \pm 0{,}008\ \mathrm{m/s^2}\). Voltaremos a isso no Módulo 11.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Quartis, boxplot e outliers</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Separatrizes</span>
+    <p><strong>Quartis:</strong> \(Q_1\) deixa 25% dos dados abaixo, \(Q_2\) é a mediana, \(Q_3\)
+    deixa 75% abaixo. A <strong>amplitude interquartil</strong> é \(IQR = Q_3 - Q_1\), e contém
+    os 50% centrais dos dados.</p>
+    <p>Há várias convenções de cálculo quando \(n\) não é múltiplo de 4; o laboratório desta
+    página usa interpolação linear, a mesma do R e do Excel.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Boxplot e a regra de 1,5×IQR</span>
+    <p>A caixa vai de \(Q_1\) a \(Q_3\), com um traço na mediana. Os <strong>bigodes</strong> se
+    estendem até o dado mais extremo que ainda esteja dentro de</p>
+    <p>\[[\,Q_1 - 1{,}5\,IQR,\;\; Q_3 + 1{,}5\,IQR\,].\]</p>
+    <p>Pontos fora desses limites são marcados individualmente e chamados <strong>outliers</strong>.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Outlier não significa "erro"</span>
+    <p>A regra de 1,5×IQR é uma convenção útil, não um veredito. Um outlier pode ser: um erro de
+    digitação, uma falha do instrumento — ou a descoberta mais interessante do seu conjunto de
+    dados. O buraco na camada de ozônio demorou anos a ser notado porque o software de análise
+    descartava automaticamente as leituras "anômalas".</p>
+    <p><strong>Nunca remova um outlier só porque ele é um outlier.</strong> Investigue a causa,
+    e se decidir removê-lo, diga isso no relatório.</p>
+  </div>
+
+  <h3>Exercício resolvido 6.4 — Boxplot de tempos de reação</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Doze medidas de tempo de reação (ms):</p>
+    <p style="font-family:var(--mono);font-size:.85rem">245, 252, 238, 261, 249, 255, 243, 258, 247, 251, 240, 410</p>
+    <p>Calcule os quartis, o IQR e os limites da regra 1,5×IQR. Há outliers?</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Ordenando:</strong> 238, 240, 243, 245, 247, 249, 251, 252, 255, 258, 261, 410.</p>
+      <p>Com \(n=12\), a mediana é a média do 6º e 7º valores:
+      \(Q_2 = (249+251)/2 = \mathbf{250{,}0}\).</p>
+      <p>Por interpolação linear, \(Q_1 = \mathbf{244{,}5}\) e \(Q_3 = \mathbf{255{,}75}\),
+      de modo que</p>
+      <p>\[IQR = 255{,}75 - 244{,}5 = \mathbf{11{,}25}.\]</p>
+      <p><strong>Limites:</strong></p>
+      <p>\[Q_1 - 1{,}5\,IQR = 244{,}5 - 16{,}875 = 227{,}6; \qquad
+          Q_3 + 1{,}5\,IQR = 255{,}75 + 16{,}875 = 272{,}6 .\]</p>
+      <p>O valor <strong>410 está muito acima de 272,6</strong>: é um outlier. Provavelmente o
+      sujeito se distraiu nessa tentativa.</p>
+      <p><strong>O efeito dele:</strong> com o 410, a média é 262,4 ms; sem ele, 249,0 ms — uma
+      diferença de 13 ms. A mediana, por sua vez, praticamente não se move. Cole esses dados no
+      laboratório da seção 4 e veja o ponto isolado aparecer no boxplot.</p>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. Assimetria</h2>
+
+  <p>A relação entre média, mediana e moda revela a forma da distribuição:</p>
+
+  <div class="tabela-rolavel">
+  <table>
+    <thead><tr><th>Forma</th><th>Relação</th><th>Exemplo típico</th><th>Melhor resumo</th></tr></thead>
+    <tbody>
+      <tr><td>Simétrica</td><td>\(\bar x \approx\) mediana \(\approx\) moda</td><td>erros de medida, alturas</td><td>média</td></tr>
+      <tr><td>Assimétrica à direita</td><td>moda &lt; mediana &lt; \(\bar x\)</td><td>renda, tempo de espera</td><td>mediana</td></tr>
+      <tr><td>Assimétrica à esquerda</td><td>\(\bar x\) &lt; mediana &lt; moda</td><td>idade ao morrer, notas de prova fácil</td><td>mediana</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>A regra mnemônica: <strong>a média é arrastada na direção da cauda</strong>. É ela que
+  "sente" a magnitude dos valores extremos; a mediana só conta posições.</p>
+
+  <p>Uma medida numérica da assimetria é o coeficiente</p>
+  <p>\[g_1 = \frac{n}{(n-1)(n-2)}\sum_{i=1}^{n}\left(\frac{x_i-\bar x}{s}\right)^{3},\]</p>
+  <p>nulo para distribuições simétricas, positivo para cauda à direita e negativo para cauda à
+  esquerda. O expoente ímpar é essencial: ele preserva o sinal dos desvios, ao contrário do
+  quadrado da variância. Carregue o conjunto "Renda mensal" no laboratório e observe \(g_1\)
+  bem acima de zero, com a média visivelmente à direita da mediana.</p>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Aplicações em Física</h2>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Descritiva no laboratório didático</span>
+    <p>Ao repetir \(n\) vezes a medida de uma grandeza, o procedimento padrão é:</p>
+    <ol>
+      <li>Calcular \(\bar x\) — a melhor estimativa do valor verdadeiro;</li>
+      <li>Calcular \(s\) — o espalhamento das medidas individuais, que caracteriza o
+      <em>instrumento e o procedimento</em>, e não melhora com mais medidas;</li>
+      <li>Calcular \(s/\sqrt{n}\) — a incerteza da média, que <em>melhora</em> com mais medidas;</li>
+      <li>Fazer o histograma, para verificar se a distribuição é aproximadamente normal, como o
+      TCL faz esperar quando o erro vem de muitas fontes pequenas;</li>
+      <li>Fazer o boxplot, para localizar medidas suspeitas antes de calcular qualquer coisa.</li>
+    </ol>
+    <p>Um histograma fortemente assimétrico ou bimodal é um <strong>alerta</strong>: pode indicar
+    erro sistemático variável, mudança de condições no meio do experimento, ou dois
+    experimentadores diferentes com vícios diferentes de leitura.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Histogramas como objetos físicos</span>
+    <p>Em muitas áreas da Física, o histograma <em>é</em> o resultado experimental, não apenas
+    uma ferramenta de visualização:</p>
+    <ul>
+      <li>Um <strong>espectro</strong> de raios gama é um histograma de energias de fótons
+      detectados, e cada pico é um nível nuclear;</li>
+      <li>A descoberta do bóson de Higgs foi, literalmente, um <strong>excesso de contagens em
+      algumas classes</strong> de um histograma de massa invariante;</li>
+      <li>A distribuição de velocidades de Maxwell–Boltzmann é verificada experimentalmente
+      construindo-se o histograma das velocidades de um feixe atômico.</li>
+    </ul>
+    <p>Nesses casos, a escolha da largura de classe não é cosmética: classes largas demais
+    escondem um pico estreito, e estreitas demais afogam o sinal no ruído de contagem
+    \(\sqrt{N}\) do Módulo 4.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Exercícios propostos</h2>
+
+  <ol>
+    <li>Classifique as variáveis: (a) tipo sanguíneo; (b) número de filhos; (c) temperatura em
+    °C; (d) conceito A/B/C/D; (e) tempo de queda de um corpo; (f) marca do multímetro.</li>
+    <li>Prove que \(\sum_{i=1}^{n}(x_i - \bar x) = 0\) para qualquer conjunto de dados.</li>
+    <li>Mostre que a função \(h(c) = \sum_i (x_i - c)^2\) é minimizada em \(c = \bar x\).</li>
+    <li>Demonstre a forma prática
+    \(s^2 = \frac{1}{n-1}\left(\sum_i x_i^2 - n\bar x^2\right)\) a partir da definição.</li>
+    <li>Um conjunto tem média 50 e desvio padrão 8. Se todos os valores forem multiplicados por 3
+    e depois somados a 10, quais serão a nova média e o novo desvio padrão?
+    <em>(Use a transformação linear do Módulo 4.)</em></li>
+    <li>Construa a tabela de frequências, o histograma e o boxplot do conjunto "Notas de uma
+    turma" disponível no laboratório desta página. A distribuição é simétrica?</li>
+    <li>Dez medidas de um período têm \(\bar T = 1{,}42\) s e \(s = 0{,}05\) s. Qual o
+    coeficiente de variação? Qual a incerteza da média? Quantas medidas seriam necessárias para
+    reduzir a incerteza da média à metade?</li>
+    <li>Um conjunto de dados tem mediana 20 e média 35. Esboce a forma provável do histograma e
+    justifique. Que tipo de fenômeno produz esse padrão?</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>Parâmetro (\(\mu,\sigma\)) descreve a população; estatística (\(\bar x, s\)) descreve a amostra;</li>
+      <li>\(\bar x = \frac1n\sum x_i\); mediana e moda; a média é arrastada pela cauda;</li>
+      <li>\(s^2 = \frac{1}{n-1}\sum(x_i-\bar x)^2\) — o \(n-1\) corrige o viés e conta os graus de liberdade;</li>
+      <li>\(CV = s/\bar x\) compara dispersões de grandezas diferentes;</li>
+      <li>Boxplot: caixa \(Q_1\)–\(Q_3\), bigodes até 1,5×IQR, pontos isolados são outliers;</li>
+      <li>Assimetria positiva: moda &lt; mediana &lt; média, e a mediana resume melhor.</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula05.html"><small>Módulo anterior</small>← 5. Variáveis contínuas</a>
+    <span class="prox em-breve"><small>Próximo módulo</small>7. Amostragem · em preparação</span>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js"></script>
+</body>
+</html>

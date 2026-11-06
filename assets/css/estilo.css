@@ -50,6 +50,12 @@ body{
 }
 .menu a:hover{background:rgba(255,255,255,.12);color:#fff}
 .menu a.ativo{background:#fff;color:var(--azul);font-weight:600}
+.menu .grupo{
+  font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  color:#9fb6cd;padding:.3rem .1rem .3rem .55rem;align-self:center;
+}
+.menu .grupo:first-of-type{padding-left:.3rem}
+.menu a.num{min-width:1.85em;text-align:center;padding:.3rem .4rem}
 
 /* ---------- Layout ---------- */
 .envoltorio{max-width:1180px;margin:0 auto;padding:0 1.1rem;display:flex;gap:2.2rem}
@@ -286,3 +292,11 @@ mjx-container[display="true"]{
   details.solucao .corpo-solucao{padding:0}
   body{font-size:11pt}
 }
+
+/* ---------- Módulo ainda não publicado ---------- */
+.nav-aulas .em-breve{
+  flex:1;padding:.8rem 1rem;border:1px dashed var(--borda);border-radius:var(--raio);
+  color:var(--tinta-suave);background:transparent;text-align:right;
+}
+.nav-aulas .em-breve small{display:block;color:var(--tinta-suave);font-size:.72rem;
+  text-transform:uppercase;letter-spacing:.07em}
