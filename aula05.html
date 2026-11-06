@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Módulo 5 — Máxima verossimilhança e a dedução da Normal | Probabilidade &amp; Estatística</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611061631">
+<script src="assets/js/comum.js?v=202611061631"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-interno">
+    <a class="marca" href="index.html">Probabilidade &amp; Estatística <span>· LFCA/URCA</span></a>
+    <nav class="menu">
+      <a href="index.html">Início</a>
+      <span class="grupo">Fundamentos</span>
+      <a href="aula01.html" class="num" title="Módulo 1 — Erros de medida e algarismos significativos">1</a>
+      <a href="aula02.html" class="num" title="Módulo 2 — Estatística descritiva">2</a>
+      <span class="grupo">Normal</span>
+      <a href="aula03.html" class="num" title="Módulo 3 — Variáveis aleatórias discretas">3</a>
+      <a href="aula04.html" class="num" title="Módulo 4 — Variáveis contínuas e a Normal">4</a>
+      <a href="aula05.html" class="num ativo" title="Módulo 5 — Máxima verossimilhança e a dedução da Normal">5</a>
+      <a href="aula06.html" class="num" title="Módulo 6 — Amostragem e o teorema central do limite">6</a>
+      <span class="grupo">Ajuste</span>
+      <a href="aula08.html" class="num" title="Módulo 8 — Regressão linear e mínimos quadrados">8</a>
+      <span class="grupo">Testes</span>
+      <a href="aula11.html" class="num" title="Módulo 11 — Estimação e intervalos de confiança">11</a>
+      <a href="aula12.html" class="num" title="Módulo 12 — Testes de hipóteses">12</a>
+      <a href="aula13.html" class="num" title="Módulo 13 — Testes qui-quadrado">13</a>
+      <span class="grupo">Complementares</span>
+      <a href="aula14.html" class="num" title="Módulo 14 — Espaço amostral, eventos e axiomas">14</a>
+      <a href="aula15.html" class="num" title="Módulo 15 — Técnicas de contagem">15</a>
+      <a href="aula16.html" class="num" title="Módulo 16 — Probabilidade condicional e Bayes">16</a>
+      <a href="aula17.html" class="num" title="Módulo 17 — Testes de normalidade">17</a>
+      <a href="aula18.html" class="num" title="Módulo 18 — Correlação">18</a>
+      <a href="aula19.html" class="num" title="Módulo 19 — Testes não paramétricos">19</a>
+      <a href="aula20.html" class="num" title="Módulo 20 — Tamanho amostral e planejamento">20</a>
+      <a href="formulario.html">Formulário</a>
+    </nav>
+  </div>
+</header>
+
+<div class="envoltorio">
+
+<aside class="lateral">
+  <h4>Neste módulo</h4>
+  <ol>
+    <li><a href="#s1">1. A pergunta de Gauss</a></li>
+    <li><a href="#s2">2. O princípio da verossimilhança</a></li>
+    <li><a href="#s3">3. Por que o logaritmo</a></li>
+    <li><a href="#s4">4. Dedução da distribuição normal</a></li>
+    <li><a href="#s5">5. Significado do desvio padrão</a></li>
+    <li><a href="#s6">6. A curvatura e a incerteza</a></li>
+    <li><a href="#s7">7. Verossimilhança e mínimos quadrados</a></li>
+    <li><a href="#s8">8. A normal como caso limite</a></li>
+    <li><a href="#s9">9. Quando a normal não vale</a></li>
+    <li><a href="#s10">10. Exercícios propostos</a></li>
+  </ol>
+</aside>
+
+<main class="conteudo">
+
+  <p class="chapeu">Módulo 5 · 3 horas · Unidade 2</p>
+  <h1>Máxima verossimilhança e a dedução da Normal</h1>
+  <p class="subtitulo">Por que a média aritmética? Por que a curva em sino? As duas perguntas
+  têm a mesma resposta — e Gauss a encontrou invertendo o problema.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">Objetivos</span>
+    <ul>
+      <li>Formular o princípio da máxima verossimilhança e aplicá-lo a um parâmetro;</li>
+      <li>Demonstrar que a média aritmética é o valor mais provável sob erros normais;</li>
+      <li>Reproduzir a dedução de Gauss da lei dos erros;</li>
+      <li>Interpretar \(\sigma\) como largura, e ligá-lo à curvatura da log-verossimilhança;</li>
+      <li>Mostrar que máxima verossimilhança e mínimos quadrados são o mesmo critério;</li>
+      <li>Reconhecer a Normal como limite da binomial, da Poisson e de somas.</li>
+    </ul>
+  </div>
+
+  <hr class="linha">
+
+  <!-- ================================================== -->
+  <h2 id="s1">1. A pergunta de Gauss</h2>
+
+  <p>O Módulo 4 apresentou a distribuição normal como um fato: a curva \(e^{-z^2/2}\), com
+  suas propriedades. Mas de onde ela vem? Por que <em>essa</em> função, e não outra?</p>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Ceres, 1801</span>
+    <p>Em 1º de janeiro de 1801, Giuseppe Piazzi descobriu um objeto que se movia entre
+    Marte e Júpiter. Observou-o por 41 dias — cerca de 3° de arco — e então o asteroide se
+    perdeu atrás do Sol. Com tão pouco arco, ninguém sabia dizer onde Ceres reapareceria
+    meses depois.</p>
+    <p>Gauss, com 24 anos, atacou o problema. Tinha poucas observações, todas com erro, e
+    precisava de um critério para extrair delas a melhor órbita. Previu a posição; em
+    dezembro, Franz von Zach apontou o telescópio e encontrou Ceres a menos de meio grau da
+    previsão.</p>
+    <p>O método que ele usou foi publicado em 1809, na <em>Theoria Motus</em>, e continha
+    tanto os mínimos quadrados quanto a dedução da curva de erros. Os dois nasceram juntos,
+    de um problema astronômico concreto.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">A inversão genial</span>
+    <p>Gauss poderia ter tentado deduzir a lei dos erros de princípios físicos. Fez o
+    contrário. Partiu de uma convicção prática, universalmente aceita pelos astrônomos da
+    época:</p>
+    <p style="padding-left:1.2rem;border-left:3px solid var(--borda);font-style:italic">
+    Dadas várias medidas de uma mesma grandeza, o valor mais provável é a média
+    aritmética.</p>
+    <p>E então perguntou: <strong>qual lei de erros torna essa afirmação verdadeira?</strong>
+    A resposta — única — é a gaussiana.</p>
+    <p>É um argumento circular? Não, é um argumento de consistência: ele mostra que
+    <em>exatamente uma</em> distribuição é compatível com usar a média, e nenhuma outra. Se
+    você aceita a média, está comprometido com a normal; se rejeita a normal, deve abandonar
+    a média.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s2">2. O princípio da máxima verossimilhança</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A ideia</span>
+    <p>Observamos \(x_1, \dots, x_n\). Para cada valor candidato \(\mu\) do parâmetro,
+    perguntamos: <em>qual seria a probabilidade (densidade) de observar exatamente estes
+    dados, se o verdadeiro valor fosse \(\mu\)?</em></p>
+    <p>Como as medidas são independentes, as densidades se multiplicam:</p>
+    <p>\[L(\mu) = \prod_{i=1}^{n} f(x_i \mid \mu).\]</p>
+    <p>O <strong>estimador de máxima verossimilhança</strong> é o \(\hat\mu\) que torna
+    \(L\) máxima.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Verossimilhança não é probabilidade</span>
+    <p>A distinção é fina e importante. Em \(f(x \mid \mu)\):</p>
+    <ul>
+      <li>Como função de \(x\), com \(\mu\) fixo, é uma <strong>densidade de
+      probabilidade</strong> — integra 1;</li>
+      <li>Como função de \(\mu\), com \(x\) fixo, é a <strong>verossimilhança</strong> — e
+      <em>não</em> integra 1, nem é uma distribuição de probabilidade de \(\mu\).</li>
+    </ul>
+    <p>Dizer "a probabilidade de \(\mu\) ser 9,8" seria tratar o parâmetro como variável
+    aleatória, o que a estatística clássica não faz: \(\mu\) é uma constante desconhecida,
+    não um sorteio. O que a verossimilhança mede é <strong>o quanto cada candidato explica
+    os dados observados</strong>.</p>
+  </div>
+
+  <div data-widget="verossimilhanca"></div>
+
+  <!-- ================================================== -->
+  <h2 id="s3">3. Por que trabalhar com o logaritmo</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Três razões</span>
+    <ol>
+      <li><strong>Produto vira soma.</strong> \(\ln \prod_i f_i = \sum_i \ln f_i\), e somas
+      são muito mais fáceis de derivar;</li>
+      <li><strong>O máximo é o mesmo.</strong> O logaritmo é estritamente crescente, de modo
+      que maximizar \(L\) e maximizar \(\ln L\) dão o mesmo \(\hat\mu\);</li>
+      <li><strong>Os números ficam tratáveis.</strong> Com 50 medidas, \(L\) é um produto de
+      50 densidades — um número da ordem de \(10^{-80}\), que satura a precisão de qualquer
+      computador. Já \(\ln L\) fica na casa das dezenas.</li>
+    </ol>
+    <p><em>Troque a vista do simulador para \(L(\mu)\) e olhe o eixo vertical:</em> já com
+    cinco medidas os valores estão em notação científica.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s4">4. Dedução da distribuição normal</h2>
+
+  <p>Agora o argumento de Gauss, passo a passo. É uma das deduções mais elegantes da
+  Física-Matemática, e cabe em uma página.</p>
+
+  <div class="bloco def">
+    <span class="rotulo">As hipóteses</span>
+    <p>Seja \(\varphi(\varepsilon)\) a densidade do erro \(\varepsilon = x - \mu\). Exigimos:</p>
+    <ol>
+      <li>Os erros são <strong>independentes</strong> entre as medidas;</li>
+      <li>\(\varphi\) é <strong>simétrica</strong>: erros para mais e para menos são
+      igualmente prováveis, \(\varphi(-\varepsilon)=\varphi(\varepsilon)\);</li>
+      <li>Erros pequenos são mais prováveis que grandes, e \(\varphi\) é diferenciável;</li>
+      <li><strong>A média aritmética é o estimador de máxima verossimilhança</strong> de
+      \(\mu\), para qualquer conjunto de dados.</li>
+    </ol>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Passo 1 — Escrever a condição de máximo</span>
+    <p>A verossimilhança é \(L(\mu)=\prod_i \varphi(x_i-\mu)\), e</p>
+    <p>\[\ln L = \sum_{i=1}^n \ln\varphi(x_i-\mu).\]</p>
+    <p>Derivando em relação a \(\mu\) e usando a regra da cadeia (a derivada de
+    \(x_i-\mu\) em relação a \(\mu\) é \(-1\)):</p>
+    <p>\[\frac{d\ln L}{d\mu} = -\sum_{i=1}^n
+    \frac{\varphi'(x_i-\mu)}{\varphi(x_i-\mu)} = 0.\]</p>
+    <p>Chamando \(g(\varepsilon) = \varphi'(\varepsilon)/\varphi(\varepsilon)\), a condição
+    de máximo é simplesmente</p>
+    <p>\[\sum_{i=1}^{n} g(x_i-\mu) = 0.\]</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Passo 2 — Impor que a solução seja a média</span>
+    <p>A hipótese 4 exige que \(\mu = \bar x\) resolva essa equação para <strong>qualquer</strong>
+    conjunto de dados. Escrevendo \(\varepsilon_i = x_i - \bar x\), temos a identidade
+    \(\sum_i \varepsilon_i = 0\) sempre, e a exigência passa a ser:</p>
+    <p>\[\sum_i \varepsilon_i = 0 \quad\Longrightarrow\quad \sum_i g(\varepsilon_i) = 0,
+    \qquad \text{para todo conjunto } \{\varepsilon_i\}.\]</p>
+    <p>Ou seja: \(g\) precisa levar <em>toda</em> coleção de números que some zero em outra
+    coleção que também some zero.</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Passo 3 — Só a função linear serve</span>
+    <p>Tome o caso mais simples, \(n=2\). Então \(\varepsilon_2 = -\varepsilon_1\), e a
+    exigência dá</p>
+    <p>\[g(\varepsilon) + g(-\varepsilon) = 0 \;\Longrightarrow\; g \text{ é ímpar}.\]</p>
+    <p>Agora tome \(n=3\) com \(\varepsilon_1 = \varepsilon_2 = t\) e
+    \(\varepsilon_3 = -2t\), que somam zero. A exigência dá</p>
+    <p>\[2g(t) + g(-2t) = 0 \;\Longrightarrow\; g(2t) = 2g(t),\]</p>
+    <p>usando que \(g\) é ímpar. Repetindo o argumento com \(k\) cópias de \(t\) e um termo
+    \(-kt\), obtém-se \(g(kt) = k\,g(t)\) para todo inteiro \(k\), e daí, por densidade dos
+    racionais e continuidade,</p>
+    <p>\[g(\varepsilon) = -k\,\varepsilon\]</p>
+    <p>para alguma constante \(k\). <strong>A única função que satisfaz a exigência é a
+    linear.</strong> O sinal negativo é escolhido por conveniência, e a hipótese 3 (erros
+    pequenos mais prováveis) obrigará \(k>0\).</p>
+  </div>
+
+  <div class="bloco def">
+    <span class="rotulo">Passo 4 — Integrar e obter φ</span>
+    <p>Voltando à definição de \(g\):</p>
+    <p>\[\frac{\varphi'(\varepsilon)}{\varphi(\varepsilon)} = -k\,\varepsilon.\]</p>
+    <p>O lado esquerdo é \(\dfrac{d}{d\varepsilon}\ln\varphi\). Integrando os dois lados:</p>
+    <p>\[\ln\varphi(\varepsilon) = -\frac{k\varepsilon^{2}}{2} + C
+    \;\Longrightarrow\;
+    \varphi(\varepsilon) = A\,e^{-k\varepsilon^{2}/2}.\]</p>
+    <p>A constante \(A\) sai da normalização \(\int_{-\infty}^{\infty}\varphi\,d\varepsilon
+    = 1\). Usando a integral de Gauss \(\int e^{-k\varepsilon^2/2}d\varepsilon
+    = \sqrt{2\pi/k}\), vem \(A = \sqrt{k/2\pi}\).</p>
+    <p>Finalmente, escrevendo \(k = 1/\sigma^{2}\):</p>
+    <p>\[\boxed{\;\varphi(\varepsilon)=\frac{1}{\sigma\sqrt{2\pi}}\,
+    e^{-\varepsilon^{2}/2\sigma^{2}}\;}\]</p>
+  </div>
+
+  <div class="destaque">
+    <span class="anuncio">A curva não foi escolhida — ela foi deduzida</span>
+    Aceitar a média aritmética como o valor mais provável <b>obriga</b> a lei dos erros a ser
+    a gaussiana. Não há alternativa.
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">O que a dedução realmente mostra</span>
+    <p>É tentador ler o resultado como "os erros são normais". O que ele diz é mais preciso
+    e mais modesto: <strong>se</strong> os erros forem independentes, simétricos e
+    compatíveis com usar a média, <strong>então</strong> são normais.</p>
+    <p>A justificativa <em>física</em> de por que os erros reais costumam satisfazer isso é
+    outra, e vem do teorema central do limite (Módulo 6): o erro total é a soma de muitas
+    causas pequenas e independentes, e essa soma tende à normal seja qual for a
+    distribuição de cada causa.</p>
+    <p>São dois argumentos distintos que chegam ao mesmo lugar — um de consistência lógica,
+    outro de mecanismo. Juntos explicam por que a gaussiana aparece em todo lugar.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s5">5. O significado do desvio padrão</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">σ é a largura, e aparece em três papéis</span>
+    <ul>
+      <li><strong>Ponto de inflexão.</strong> Derivando duas vezes a gaussiana, encontra-se
+      \(\varphi''=0\) exatamente em \(\varepsilon=\pm\sigma\). O desvio padrão é onde a
+      curva troca de concavidade — e isso se <em>enxerga</em> no gráfico;</li>
+      <li><strong>Escala natural.</strong> Com \(z=(x-\mu)/\sigma\) a curva vira
+      \(e^{-z^2/2}/\sqrt{2\pi}\), sem parâmetro algum. Toda normal é a mesma normal, medida
+      na unidade certa;</li>
+      <li><strong>Áreas de referência:</strong> 68,27% em \(\pm\sigma\), 95,45% em
+      \(\pm 2\sigma\), 99,73% em \(\pm 3\sigma\).</li>
+    </ul>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Os sigmas na prática científica</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Nível</th><th class="num">dentro</th><th>1 em quantas vezes cai fora</th><th>Uso típico</th></tr></thead>
+      <tbody>
+        <tr><td>1σ</td><td class="num">68,27%</td><td>3</td><td>barra de erro usual</td></tr>
+        <tr><td>2σ</td><td class="num">95,45%</td><td>22</td><td>"significativo" em geral</td></tr>
+        <tr><td>3σ</td><td class="num">99,73%</td><td>370</td><td>evidência forte</td></tr>
+        <tr><td>5σ</td><td class="num">99,99994%</td><td>1,7 milhão</td><td>descoberta em física de partículas</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>O critério de 5σ adotado para anunciar o bóson de Higgs em 2012 não é exagero
+    burocrático: com milhares de canais analisados simultaneamente, flutuações de 3σ
+    aparecem o tempo todo por acaso. É o problema das comparações múltiplas do Módulo 12,
+    levado à escala de um acelerador.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s6">6. A curvatura dá a incerteza</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">Uma ponte entre a verossimilhança e a barra de erro</span>
+    <p>Perto do máximo, expanda \(\ln L\) em série de Taylor em torno de \(\hat\mu\). O
+    termo de primeira ordem some, porque a derivada é nula no máximo:</p>
+    <p>\[\ln L(\mu) \approx \ln L(\hat\mu)
+    + \frac12 \left.\frac{d^{2}\ln L}{d\mu^{2}}\right|_{\hat\mu}(\mu-\hat\mu)^{2}.\]</p>
+    <p>Comparando com o logaritmo de uma gaussiana em \(\mu\), de largura
+    \(\sigma_{\hat\mu}\), identifica-se</p>
+    <p>\[\boxed{\;\sigma_{\hat\mu}^{2}
+    = \left(-\frac{d^{2}\ln L}{d\mu^{2}}\right)^{-1}\;}\]</p>
+    <p>No caso da média com \(\sigma\) conhecido, \(\ln L = \text{const} - S(\mu)/2\sigma^2\)
+    com \(S = \sum(x_i-\mu)^2\), de modo que \(d^2\ln L/d\mu^2 = -n/\sigma^2\) e</p>
+    <p>\[\sigma_{\bar x} = \frac{\sigma}{\sqrt n},\]</p>
+    <p>que é exatamente o erro padrão da média.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Verossimilhança aguda, estimativa precisa</span>
+    <p>A fórmula tem leitura geométrica direta: quanto <strong>mais curvo</strong> o pico de
+    \(\ln L\), menor a incerteza. Um pico agudo significa que valores vizinhos de \(\mu\)
+    explicam os dados muito pior; um pico achatado significa que muitos valores servem quase
+    igualmente, e a estimativa é vaga.</p>
+    <p>No simulador, aumente o número de medidas e observe o pico afinar. Essa é a razão
+    geométrica de \(\sigma_{\bar x}\) cair com \(\sqrt n\).</p>
+    <p>Este resultado — a chamada <em>informação de Fisher</em> — é o que permite obter
+    barras de erro em ajustes complicados, onde não há fórmula fechada. O Módulo 10 o usa
+    para o ajuste não linear.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s7">7. Verossimilhança e mínimos quadrados são a mesma coisa</h2>
+
+  <div class="bloco def">
+    <span class="rotulo">A identificação</span>
+    <p>Com erros normais independentes de mesmo \(\sigma\):</p>
+    <p>\[\ln L = \underbrace{-n\ln(\sigma\sqrt{2\pi})}_{\text{não depende dos parâmetros}}
+    \;-\;\frac{1}{2\sigma^{2}}\sum_i \left[y_i - f(x_i)\right]^{2}.\]</p>
+    <p>Maximizar \(\ln L\) é, portanto, <strong>minimizar
+    \(\sum_i [y_i - f(x_i)]^2\)</strong> — a soma dos quadrados dos resíduos.</p>
+    <p><em>Compare as vistas \(\ln L\) e \(S(\mu)\) no simulador:</em> são a mesma parábola,
+    uma invertida e reescalada em relação à outra.</p>
+  </div>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Quando os σ são diferentes: mínimos quadrados ponderados</span>
+    <p>Se cada medida tem seu próprio \(\sigma_i\), a conta refaz-se igual e dá</p>
+    <p>\[\ln L = \text{const} - \frac12 \sum_i
+    \frac{\left[y_i - f(x_i)\right]^{2}}{\sigma_i^{2}}
+    = \text{const} - \frac{\chi^{2}}{2}.\]</p>
+    <p>Aqui aparece, naturalmente, a estatística que dá nome ao qui-quadrado de ajuste:</p>
+    <p>\[\chi^{2} = \sum_i \frac{\left[y_i-f(x_i)\right]^{2}}{\sigma_i^{2}},\]</p>
+    <p>e o peso de cada ponto é \(w_i = 1/\sigma_i^2\): <strong>medidas mais precisas pesam
+    mais</strong>, na proporção inversa do quadrado de sua incerteza. Os módulos 9 e 10
+    desenvolvem isso.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">O que acontece se os erros não forem normais</span>
+    <p>A equivalência acima <em>depende</em> da normalidade. Com outra distribuição de
+    erros, a máxima verossimilhança leva a outro critério:</p>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Distribuição dos erros</th><th>Critério que a MV produz</th><th>Estimador de posição</th></tr></thead>
+      <tbody>
+        <tr><td>Normal</td><td>minimizar \(\sum \varepsilon_i^2\)</td><td>média</td></tr>
+        <tr><td>Laplace (dupla exponencial)</td><td>minimizar \(\sum |\varepsilon_i|\)</td><td><b>mediana</b></td></tr>
+        <tr><td>Uniforme em \([\mu-a,\mu+a]\)</td><td>minimizar \(\max|\varepsilon_i|\)</td><td>ponto médio dos extremos</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>É a justificativa teórica dos métodos robustos: a mediana não é um "truque" para
+    evitar outliers — é o estimador <em>ótimo</em> quando os erros têm caudas pesadas como
+    as da Laplace. Os testes do Módulo 19 vivem nesse território.</p>
+  </div>
+
+  <h3>Exercício resolvido 5.1 — Deduzir a média pela verossimilhança</h3>
+  <div class="bloco ex">
+    <span class="rotulo">Enunciado</span>
+    <p>Cinco medidas de \(g\) (m/s²): 9,72 · 9,85 · 9,76 · 9,91 · 9,80, com incerteza
+    individual \(\sigma = 0{,}10\). Escreva \(\ln L(\mu)\), maximize, e obtenha também a
+    incerteza pela curvatura.</p>
+  </div>
+  <details class="solucao">
+    <summary>Ver solução</summary>
+    <div class="corpo-solucao">
+      <p><strong>Passo 1 — A log-verossimilhança.</strong></p>
+      <p>\[\ln L(\mu) = -5\ln(0{,}10\sqrt{2\pi})
+      - \frac{1}{2(0{,}10)^{2}}\sum_{i=1}^{5}(x_i-\mu)^{2}\]</p>
+      <p>\[= -5(-1{,}3836) - 50\,S(\mu) = 6{,}918 - 50\,S(\mu).\]</p>
+      <p><strong>Passo 2 — Maximizar.</strong> Como o primeiro termo é constante, maximizar
+      \(\ln L\) é minimizar \(S(\mu)=\sum(x_i-\mu)^2\). Derivando:</p>
+      <p>\[\frac{dS}{d\mu} = -2\sum_i (x_i-\mu) = 0
+      \;\Longrightarrow\; \sum_i x_i = 5\mu\]</p>
+      <p>\[\hat\mu = \bar x = \frac{49{,}04}{5} = \mathbf{9{,}808\ m/s^2}.\]</p>
+      <p>A segunda derivada é \(d^2S/d\mu^2 = 2n = 10 > 0\), confirmando mínimo de \(S\) e
+      portanto máximo de \(\ln L\).</p>
+      <p><strong>Passo 3 — O valor no máximo.</strong></p>
+      <p>\[S(\hat\mu)=0{,}02228 \;\Longrightarrow\;
+      \ln L(\hat\mu) = 6{,}918 - 50(0{,}02228) = \mathbf{5{,}804},\]</p>
+      <p>que é o valor que o simulador mostra no cartão.</p>
+      <p><strong>Passo 4 — Incerteza pela curvatura.</strong></p>
+      <p>\[\frac{d^{2}\ln L}{d\mu^{2}} = -\frac{n}{\sigma^{2}}
+      = -\frac{5}{0{,}01} = -500\]</p>
+      <p>\[\sigma_{\hat\mu} = \frac{1}{\sqrt{500}} = 0{,}0447
+      = \frac{0{,}10}{\sqrt 5}. \checkmark\]</p>
+      <p>Confere com o erro padrão da média, como tinha de ser.</p>
+      <p><strong>Resultado:</strong> \(g = (9{,}81 \pm 0{,}04)\ \mathrm{m/s^2}\), seguindo as
+      regras de escrita do Módulo 1.</p>
+      <div class="bloco fisica">
+        <span class="rotulo">Duas observações</span>
+        <p>A primeira: \(\ln L\) deu um valor <em>positivo</em>. Isso é perfeitamente normal
+        — \(L\) é uma <em>densidade</em>, não uma probabilidade, e densidades podem passar
+        de 1. Com \(\sigma\) pequeno, a densidade no pico é alta.</p>
+        <p>A segunda: o resultado 9,81 ± 0,04 engloba o valor local de 9,78 confortavelmente,
+        a menos de um desvio. Se o σ suposto estivesse errado — digamos, se as medidas
+        tivessem na verdade \(\sigma = 0{,}03\) — a barra encolheria para ±0,013 e o
+        resultado passaria a discordar de 9,78 por mais de 2σ. <strong>Supor mal o σ é tão
+        grave quanto medir mal.</strong></p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ================================================== -->
+  <h2 id="s8">8. A normal como caso limite de outras distribuições</h2>
+
+  <p>A gaussiana não é só a lei dos erros: ela é o destino para onde muitas distribuições
+  convergem.</p>
+
+  <div data-widget="limitenormal"></div>
+
+  <div class="bloco def">
+    <span class="rotulo">Os quatro limites, e quando valem</span>
+    <div class="tabela-rolavel">
+    <table>
+      <thead><tr><th>Partida</th><th>Converge quando</th><th>Assimetria γ₁</th><th>μ e σ da Normal</th></tr></thead>
+      <tbody>
+        <tr><td>Binomial(n,p)</td><td>\(np\ge5\) e \(n(1-p)\ge5\)</td><td>\(\frac{1-2p}{\sqrt{np(1-p)}}\)</td><td>\(np\), \(\sqrt{np(1-p)}\)</td></tr>
+        <tr><td>Poisson(λ)</td><td>\(\lambda \ge 20\)</td><td>\(1/\sqrt\lambda\)</td><td>\(\lambda\), \(\sqrt\lambda\)</td></tr>
+        <tr><td>Soma de k uniformes</td><td>\(k \ge 12\)</td><td>0</td><td>\(k/2\), \(\sqrt{k/12}\)</td></tr>
+        <tr><td>Soma de k exponenciais</td><td>\(k \ge 30\)</td><td>\(2/\sqrt k\)</td><td>\(k\), \(\sqrt k\)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Repare no padrão: em todos os casos a assimetria cai com \(1/\sqrt{(\text{parâmetro})}\).
+    É isso que governa a velocidade da convergência — e por que a exponencial, que parte de
+    \(\gamma_1 = 2\), demora mais que a uniforme, que parte de zero.</p>
+  </div>
+
+  <div class="bloco fisica">
+    <span class="rotulo">Por que isso importa no laboratório</span>
+    <p><strong>Contagem de radiação.</strong> Decaimentos seguem Poisson com \(\sigma =
+    \sqrt\lambda\). Com 100 contagens, a incerteza é ±10, ou seja 10%; com 10 000, ±100, ou
+    1%. Para ganhar um fator 10 em precisão é preciso contar 100 vezes mais — de novo a lei
+    do \(\sqrt n\). E, acima de λ ≈ 20, pode-se usar a Normal e todas as ferramentas dos
+    módulos seguintes.</p>
+    <p><strong>Erros de medida.</strong> A soma de uniformes é o modelo mais honesto do que
+    acontece de fato: cada arredondamento de leitura é aproximadamente uniforme, e o erro
+    total é a soma de vários. Com k = 12 já se obtém algo indistinguível de uma normal — e
+    essa é a razão de a normalidade dos erros ser <em>razoável</em>, não apenas
+    conveniente.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s9">9. Quando a normal não vale</h2>
+
+  <div class="bloco alerta">
+    <span class="rotulo">Quatro situações em que supor normalidade é erro</span>
+    <ol>
+      <li><strong>Grandezas limitadas.</strong> Massa, tempo e contagem não podem ser
+      negativos; a normal se estende a \(-\infty\). Se \(\sigma\) for comparável a \(\mu\), a
+      cauda negativa deixa de ser desprezível e o modelo trai;</li>
+      <li><strong>Poucas contagens.</strong> Com \(\lambda\) pequeno, use Poisson, não a
+      Normal;</li>
+      <li><strong>Distribuições assimétricas por natureza.</strong> Tempo de vida, renda,
+      tamanho de partícula — frequentemente log-normais. A transformação logarítmica resolve,
+      como visto no Módulo 17;</li>
+      <li><strong>Uma causa dominante.</strong> O TCL exige <em>muitas</em> causas de
+      tamanho comparável. Se uma delas domina, o erro total tem a cara dessa causa, não a
+      da normal.</li>
+    </ol>
+    <p>A verificação é o assunto do Módulo 17, com testes e gráficos Q–Q. A alternativa,
+    quando a normalidade não se sustenta, são os métodos do Módulo 19.</p>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="s10">10. Exercícios propostos</h2>
+
+  <ol>
+    <li>Escreva \(L(\mu)\) e \(\ln L(\mu)\) para três medidas 2,1 · 2,4 · 2,3 com
+    \(\sigma = 0{,}2\). Maximize analiticamente e confira no simulador.</li>
+    <li>Refaça o passo 3 da dedução de Gauss com \(n=4\), usando
+    \(\varepsilon_1=\varepsilon_2=\varepsilon_3=t\) e \(\varepsilon_4=-3t\). Verifique que
+    se obtém \(g(3t)=3g(t)\).</li>
+    <li>Mostre, derivando duas vezes a gaussiana, que os pontos de inflexão estão em
+    \(\varepsilon = \pm\sigma\).</li>
+    <li>Suponha erros com densidade \(\varphi(\varepsilon) \propto e^{-|\varepsilon|/b}\)
+    (Laplace). Escreva \(\ln L\) e mostre que maximizá-la equivale a minimizar
+    \(\sum|x_i-\mu|\), cuja solução é a mediana.</li>
+    <li>Para a verossimilhança normal, calcule \(d^2\ln L/d\mu^2\) e obtenha
+    \(\sigma_{\bar x}=\sigma/\sqrt n\). Explique a leitura geométrica do resultado.</li>
+    <li>No simulador, mantenha as medidas e varie \(\sigma\) de 0,02 a 0,5. O máximo se
+    desloca? E a curvatura? Relacione com a fórmula da incerteza.</li>
+    <li>Uma amostra radioativa produz em média 9 contagens por minuto. Qual a probabilidade
+    exata (Poisson) de observar 15 ou mais? E pela aproximação normal com correção de
+    continuidade? Comente o erro da aproximação.</li>
+    <li>Com que \(k\) a soma de uniformes tem assimetria e curtose indistinguíveis da normal
+    a olho nu? Verifique no simulador e justifique pela tabela da seção 8.</li>
+    <li>Deduza o estimador de máxima verossimilhança de \(\sigma^2\), supondo \(\mu\)
+    conhecido. <em>(Resposta: \(\frac1n\sum(x_i-\mu)^2\) — note o divisor \(n\), e não
+    \(n-1\); discuta por quê.)</em></li>
+    <li>Um colega afirma: "os erros de medida são normais porque Gauss provou". Critique a
+    frase e reformule-a corretamente, distinguindo o argumento de consistência do argumento
+    do TCL.</li>
+  </ol>
+
+  <div class="bloco def">
+    <span class="rotulo">Resumo do módulo</span>
+    <ul>
+      <li>\(L(\mu)=\prod_i f(x_i\mid\mu)\); maximizá-la é o princípio da máxima
+      verossimilhança;</li>
+      <li>Trabalha-se com \(\ln L\): produto vira soma, o máximo é o mesmo, os números ficam
+      tratáveis;</li>
+      <li>Exigir que a média aritmética seja o estimador de MV <strong>força</strong>
+      \(\varphi\) a ser gaussiana — é a dedução de Gauss;</li>
+      <li>\(\sigma\) é o ponto de inflexão da curva, a escala natural, e dá as áreas
+      68–95–99,7;</li>
+      <li>\(\sigma_{\hat\mu}^2 = (-d^2\ln L/d\mu^2)^{-1}\): a curvatura do pico é a
+      incerteza;</li>
+      <li>Com erros normais de mesmo \(\sigma\), máxima verossimilhança <b>é</b> mínimos
+      quadrados; com \(\sigma_i\) distintos, é a minimização de \(\chi^2\) com pesos
+      \(1/\sigma_i^2\);</li>
+      <li>A Normal é o limite de binomial, Poisson e somas, com assimetria caindo como
+      \(1/\sqrt{\text{parâmetro}}\).</li>
+    </ul>
+  </div>
+
+  <nav class="nav-aulas">
+    <a href="aula04.html"><small>Módulo anterior</small>← 4. Variáveis contínuas e a Normal</a>
+    <a class="prox" href="aula06.html"><small>Próximo módulo</small>6. Amostragem e o TCL →</a>
+  </nav>
+
+</main>
+</div>
+
+<footer class="rodape">
+  <img class="logo-rodape" src="assets/img/logo-lfca.png" alt="LFCA | URCA">
+  <p><strong>Prof. Apiano Morais</strong> · <a href="mailto:apiano.morais@urca.br">apiano.morais@urca.br</a><br>
+  Laboratório de Física Computacional Aplicada — LFCA · Universidade Regional do Cariri</p>
+</footer>
+
+<script src="assets/js/widgets.js?v=202611061631"></script>
+</body>
+</html>

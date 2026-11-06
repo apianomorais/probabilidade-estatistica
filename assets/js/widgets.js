@@ -4201,6 +4201,328 @@
   }
 
   /* =================================================================
+     Verossimilhança: encontrar o parâmetro mais provável
+     ================================================================= */
+  function verossimilhanca(raiz) {
+    var c = moldura(raiz, 'A função de verossimilhança e o valor mais provável');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var vista = 'lnL', sigma = 0.1;
+
+    var campoD = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    campoD.appendChild(el('label', { html: 'Medidas observadas <i>(separe por ponto-e-vírgula)</i>' }));
+    var iD = el('input', { type: 'text', value: '9,72; 9,85; 9,76; 9,91; 9,80' });
+    campoD.appendChild(iD); ctr.appendChild(campoD);
+    iD.addEventListener('input', atualizar);
+
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    var campoV = el('div', { class: 'campo', style: 'flex:2 1 260px' });
+    campoV.appendChild(el('label', { html: 'O que mostrar' }));
+    var selV = el('select');
+    [['lnL', 'ln L(μ) — log-verossimilhança'],
+     ['L', 'L(μ) — verossimilhança'],
+     ['S', 'S(μ) = Σ(xᵢ − μ)² — soma dos quadrados']].forEach(function (o) {
+      selV.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoV.appendChild(selV); ctr2.appendChild(campoV);
+    selV.addEventListener('change', function () { vista = selV.value; atualizar(); });
+
+    deslizante(ctr2, 'σ suposto das medidas', 0.02, 0.5, 0.01, 0.1,
+      function (v) { sigma = v; atualizar(); },
+      function (v) { return v.toFixed(2).replace('.', ','); });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda' }); c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'média aritmética x̄', k: 'm' }, { rot: 'μ que maximiza L', k: 'mu' },
+      { rot: 'ln L no máximo', k: 'lnl' }, { rot: 'n', k: 'n' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    /* aceita tanto "1,5; 2,3" (vírgula decimal) quanto "1.5, 2.3" (vírgula separadora):
+       se houver ponto-e-vírgula, a vírgula é decimal; senão, é separador. */
+    function ler() {
+      var s = String(iD.value);
+      var partes = s.indexOf(';') >= 0 ? s.split(/[;\s]+/) : s.split(/[,;\s]+/);
+      return partes.map(function (q) {
+        return Number(q.trim().replace(',', '.'));
+      }).filter(function (v) { return isFinite(v); });
+    }
+
+    function atualizar() {
+      var x = ler(), n = x.length, i;
+      if (n < 2) {
+        saida.innerHTML = 'Informe ao menos duas medidas.';
+        painel({ m: '—', mu: '—', lnl: '—', n: String(n) });
+        G.preparar(cv, 300); return;
+      }
+      var media = 0;
+      for (i = 0; i < n; i++) media += x[i];
+      media /= n;
+
+      function S(mu) {
+        var s = 0;
+        for (var j = 0; j < n; j++) s += (x[j] - mu) * (x[j] - mu);
+        return s;
+      }
+      function lnL(mu) {
+        return -n * Math.log(sigma * Math.sqrt(2 * Math.PI)) - S(mu) / (2 * sigma * sigma);
+      }
+      function L(mu) { return Math.exp(lnL(mu)); }
+
+      painel({
+        m: M.fmt(media, 5), mu: M.fmt(media, 5),
+        lnl: M.fmt(lnL(media), 3), n: String(n)
+      });
+
+      var lo = Math.min.apply(null, x), hi = Math.max.apply(null, x);
+      var meio = (lo + hi) / 2, meia = Math.max((hi - lo) * 0.9, 4 * sigma);
+      var xmin = meio - meia, xmax = meio + meia;
+
+      var f = vista === 'S' ? S : (vista === 'L' ? L : lnL);
+      var vs = [];
+      for (i = 0; i <= 200; i++) vs.push(f(xmin + (xmax - xmin) * i / 200));
+      var ymin = Math.min.apply(null, vs), ymax = Math.max.apply(null, vs);
+      var folga = (ymax - ymin) * 0.12 || 1;
+
+      var g = G.eixos(cv, {
+        xmin: xmin, xmax: xmax,
+        ymin: vista === 'L' ? 0 : ymin - folga, ymax: ymax + folga, altura: 300,
+        rotX: 'valor candidato μ',
+        rotY: vista === 'S' ? 'S(μ)' : (vista === 'L' ? 'L(μ)' : 'ln L(μ)'),
+        marcasX: G.marcasLineares(xmin, xmax, 6, 2),
+        formataY: function (v) {
+          return vista === 'L' ? v.toExponential(1).replace('.', ',') : M.fmt(v, 1);
+        }
+      });
+      var ct = g.ct;
+
+      /* marcas das observacoes no eixo */
+      for (i = 0; i < n; i++) {
+        ct.strokeStyle = 'rgba(31,78,121,.55)'; ct.lineWidth = 1.6;
+        ct.beginPath();
+        ct.moveTo(g.X(x[i]), g.Y(g.ymin));
+        ct.lineTo(g.X(x[i]), g.Y(g.ymin) - 12);
+        ct.stroke();
+      }
+
+      G.curva(g, f, G.COR.vinho, 2.4);
+      G.vertical(g, media, '#2e7d4f', 'x̄');
+      ct.fillStyle = '#2e7d4f';
+      ct.beginPath(); ct.arc(g.X(media), g.Y(f(media)), 5.5, 0, 2 * Math.PI); ct.fill();
+      ct.strokeStyle = '#fff'; ct.lineWidth = 1.6; ct.stroke();
+
+      legenda.innerHTML = 'Traços azuis no eixo: as medidas observadas. Curva vinho: a função '
+        + 'em cada valor candidato de μ. Ponto verde: o extremo, que cai <b>exatamente</b> '
+        + 'sobre a média aritmética.';
+
+      var txt = '';
+      if (vista === 'lnL') {
+        txt = 'A <b>verossimilhança</b> responde: dado que observei estas ' + n
+          + ' medidas, qual valor de μ as torna mais prováveis? Para cada candidato μ, '
+          + 'multiplicamos as densidades das ' + n + ' observações:'
+          + '<br><br>\\( L(\\mu)=\\prod_i \\frac{1}{\\sigma\\sqrt{2\\pi}}'
+          + '\\exp\\!\\left[-\\frac{(x_i-\\mu)^2}{2\\sigma^2}\\right] \\)'
+          + '<br><br>Tomando o logaritmo — que não muda onde está o máximo, por ser função '
+          + 'crescente — o produto vira soma:'
+          + '<br><br>\\( \\ln L(\\mu) = -n\\ln(\\sigma\\sqrt{2\\pi}) '
+          + '- \\frac{1}{2\\sigma^2}\\sum_i (x_i-\\mu)^2 \\)'
+          + '<br><br><b>Repare na estrutura.</b> O primeiro termo não depende de μ. '
+          + 'Maximizar ln L é, portanto, <b>minimizar \\(\\sum (x_i-\\mu)^2\\)</b> — e é '
+          + 'daí que os mínimos quadrados saem, como veremos no Módulo 8.';
+      } else if (vista === 'L') {
+        txt = 'Esta é a verossimilhança sem logaritmo. Note a escala do eixo vertical: '
+          + 'com ' + n + ' medidas, L é o produto de ' + n + ' densidades e assume valores '
+          + 'minúsculos. Com 50 medidas, o produto estoura a precisão de qualquer '
+          + 'computador.'
+          + '<br><br>É a <b>razão prática</b> de sempre se trabalhar com ln L: ele converte '
+          + 'produto em soma e mantém os números em escala tratável. O máximo é o mesmo.';
+      } else {
+        txt = 'Esta é apenas a soma dos quadrados dos desvios, \\(S(\\mu)=\\sum_i '
+          + '(x_i-\\mu)^2\\) — uma parábola em μ.'
+          + '<br><br>Compare com a vista de ln L: as duas têm o extremo no <b>mesmo</b> '
+          + 'ponto, uma de cabeça para baixo em relação à outra. '
+          + 'Não é coincidência: \\(\\ln L = \\text{const} - S/2\\sigma^2\\), de modo que '
+          + '<b>maximizar a verossimilhança é literalmente minimizar os quadrados</b>, '
+          + 'desde que os erros sejam normais e de mesmo σ.';
+      }
+
+      txt += '<br><br><b>A demonstração, em três linhas.</b> Derivando e igualando a zero:'
+        + '<br>\\( \\frac{d}{d\\mu}\\sum_i (x_i-\\mu)^2 = -2\\sum_i (x_i-\\mu) = 0 \\)'
+        + '<br>\\( \\Rightarrow \\sum_i x_i = n\\mu \\Rightarrow \\mu = \\bar x \\)'
+        + '<br><br>Aqui, \\(\\bar x = ' + M.fmt(media, 5) + '\\), e é exatamente onde o '
+        + 'ponto verde caiu. <b>A média aritmética é o estimador de máxima verossimilhança '
+        + 'da posição</b>, quando os erros são normais — e é essa a justificativa de usá-la, '
+        + 'não o costume.';
+
+      if (vista !== 'S') {
+        txt += '<br><br><i>Arraste o σ suposto:</i> a curva fica mais aguda com σ pequeno e '
+          + 'mais achatada com σ grande, mas o <b>máximo não se desloca</b>. O σ controla '
+          + 'a <i>confiança</i> na estimativa, não a estimativa em si — e a curvatura no '
+          + 'máximo é justamente o que define a incerteza de μ.';
+      }
+
+      saida.innerHTML = txt;
+      if (window.MathJax && window.MathJax.typesetPromise)
+        window.MathJax.typesetPromise([saida]).catch(function () {});
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
+     A normal como caso limite de outras distribuições
+     ================================================================= */
+  function limiteNormal(raiz) {
+    var c = moldura(raiz, 'A Normal como limite: binomial, Poisson e somas');
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+
+    var fonte = 'binomial', par = 10, p = 0.5;
+
+    var campoF = el('div', { class: 'campo', style: 'flex:2 1 240px' });
+    campoF.appendChild(el('label', { html: 'Distribuição de partida' }));
+    var selF = el('select');
+    [['binomial', 'Binomial(n, p)'],
+     ['poisson', 'Poisson(λ)'],
+     ['uniforme', 'Soma de k uniformes'],
+     ['exponencial', 'Soma de k exponenciais']].forEach(function (o) {
+      selF.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    campoF.appendChild(selF); ctr.appendChild(campoF);
+    selF.addEventListener('change', function () {
+      fonte = selF.value; ajustar(); atualizar();
+    });
+
+    var desP, campoPp;
+    var desPar = deslizante(ctr, 'n (ou λ, ou k)', 1, 60, 1, 10,
+      function (v) { par = v; atualizar(); });
+    campoPp = el('div', { class: 'campo' });
+    campoPp.appendChild(el('label', { html: 'p da binomial' }));
+    desP = el('input', { type: 'range', min: 0.05, max: 0.95, step: 0.05, value: 0.5 });
+    campoPp.appendChild(desP); ctr.appendChild(campoPp);
+    desP.addEventListener('input', function () { p = Number(desP.value); atualizar(); });
+
+    function ajustar() { campoPp.style.display = fonte === 'binomial' ? '' : 'none'; }
+    ajustar();
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda', html:
+      'Barras azuis: a distribuição exata. Curva vinho: a Normal de mesma média e mesma '
+      + 'variância. A aproximação melhora conforme o parâmetro cresce.' });
+    c.appendChild(legenda);
+    var painel = cartoes(c, [
+      { rot: 'média μ', k: 'mu' }, { rot: 'desvio σ', k: 'sd' },
+      { rot: 'assimetria γ₁', k: 'g1' }, { rot: 'erro máx. da aproximação', k: 'err' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      var mu, sd, g1, discreta = true, probs = [], vals = [], i;
+
+      if (fonte === 'binomial') {
+        var n = par;
+        mu = n * p; sd = Math.sqrt(n * p * (1 - p));
+        g1 = (1 - 2 * p) / sd;
+        for (i = 0; i <= n; i++) { vals.push(i); probs.push(M.pBinomial(n, i, p)); }
+      } else if (fonte === 'poisson') {
+        var lam = par;
+        mu = lam; sd = Math.sqrt(lam); g1 = 1 / Math.sqrt(lam);
+        var top = Math.ceil(lam + 5 * sd);
+        for (i = 0; i <= top; i++) { vals.push(i); probs.push(M.pPoisson(i, lam)); }
+      } else {
+        discreta = false;
+        var k = par;
+        if (fonte === 'uniforme') { mu = k * 0.5; sd = Math.sqrt(k / 12); g1 = 0; }
+        else { mu = k; sd = Math.sqrt(k); g1 = 2 / Math.sqrt(k); }
+      }
+
+      /* erro maximo da aproximacao normal, nos pontos discretos */
+      var errMax = 0;
+      if (discreta) {
+        for (i = 0; i < vals.length; i++) {
+          var aprox = M.FNormal(vals[i] + 0.5, mu, sd) - M.FNormal(vals[i] - 0.5, mu, sd);
+          errMax = Math.max(errMax, Math.abs(aprox - probs[i]));
+        }
+      }
+
+      painel({
+        mu: M.fmt(mu, 3), sd: M.fmt(sd, 4), g1: M.fmt(g1, 4),
+        err: discreta ? M.fmt(errMax, 5) : '—'
+      });
+
+      var xmin = Math.max(discreta ? -0.6 : mu - 4.2 * sd, mu - 4.2 * sd);
+      var xmax = mu + 4.2 * sd;
+      var dens = function (v) { return M.dNormal(v, mu, sd); };
+
+      var ymax;
+      if (discreta) ymax = Math.max.apply(null, probs) * 1.22;
+      else ymax = dens(mu) * 1.22;
+
+      var g = G.eixos(cv, {
+        xmin: xmin, xmax: xmax, ymax: ymax, altura: 300,
+        rotX: discreta ? 'valor' : 'soma',
+        rotY: discreta ? 'probabilidade' : 'densidade',
+        marcasX: discreta ? G.marcasInteiras(Math.ceil(xmin), Math.floor(xmax), 10)
+                          : G.marcasLineares(xmin, xmax, 7, 1),
+        formataY: function (v) { return M.fmt(v, 3); }
+      });
+
+      if (discreta) {
+        var barras = [];
+        for (i = 0; i < vals.length; i++)
+          if (vals[i] >= xmin && vals[i] <= xmax)
+            barras.push({ x: vals[i], y: probs[i] });
+        G.barras(g, barras, 'rgba(31,78,121,.55)');
+      }
+      G.curva(g, dens, G.COR.vinho, 2.4);
+      G.vertical(g, mu, '#2e7d4f', 'μ');
+
+      var txt = '';
+      if (fonte === 'binomial') {
+        txt = '<b>Binomial(' + par + ', ' + M.fmt(p, 2) + ')</b> contra a Normal de mesma '
+          + 'média e variância. A assimetria é γ₁ = (1−2p)/σ = <b>' + M.fmt(g1, 4) + '</b>.'
+          + '<br><br>A regra prática pede <b>np ≥ 5 e n(1−p) ≥ 5</b>. Aqui np = '
+          + M.fmt(par * p, 1) + ' e n(1−p) = ' + M.fmt(par * (1 - p), 1) + ', de modo que a '
+          + 'aproximação ' + (par * p >= 5 && par * (1 - p) >= 5 ? '<b>é</b>' : '<b>não é</b>')
+          + ' recomendada. O maior desvio ponto a ponto é ' + M.fmt(errMax, 5) + '.'
+          + '<br><br><i>Experimente p = 0,05 com n pequeno:</i> a binomial fica encostada no '
+          + 'zero e visivelmente assimétrica, e a Normal — que é simétrica e vai até −∞ — '
+          + 'erra feio. Aumente n e veja a assimetria cair com 1/√n.';
+      } else if (fonte === 'poisson') {
+        txt = '<b>Poisson(λ = ' + par + ')</b> contra a Normal. A assimetria é '
+          + '1/√λ = <b>' + M.fmt(g1, 4) + '</b>, que vai a zero conforme λ cresce.'
+          + '<br><br>A regra usual é <b>λ ≥ 20</b> para a aproximação ser confiável. '
+          + 'Isso importa em contagem de radiação: com poucas contagens a Poisson é '
+          + 'obrigatória; com milhares, a Normal serve e simplifica tudo.'
+          + '<br><br>Note que σ = √λ: na contagem de eventos raros, a incerteza é a '
+          + '<b>raiz da própria contagem</b>. Mil contagens trazem incerteza de ±32, ou '
+          + 'seja, 3,2% — e para chegar a 1% é preciso contar dez mil.';
+      } else if (fonte === 'uniforme') {
+        txt = '<b>Soma de ' + par + ' uniformes</b> em [0,1]. A uniforme não se parece em '
+          + 'nada com uma Normal — é um retângulo. Mas a <b>soma</b> de várias converge '
+          + 'rapidamente.'
+          + '<br><br>Com k = 2 já se obtém um triângulo; com k = 3, uma curva suave em '
+          + 'três trechos de parábola; com k = 12, a diferença para a Normal é difícil de '
+          + 'enxergar. É o <b>teorema central do limite</b> em ação, assunto do Módulo 6.'
+          + '<br><br>Esta é a razão física de os erros de medida serem aproximadamente '
+          + 'normais: eles são a <b>soma de muitas causas pequenas e independentes</b>, '
+          + 'nenhuma delas necessariamente normal.';
+      } else {
+        txt = '<b>Soma de ' + par + ' exponenciais</b> de média 1. A exponencial é '
+          + 'fortemente assimétrica (γ₁ = 2), e a convergência é mais lenta que a da '
+          + 'uniforme: a assimetria da soma é 2/√k = <b>' + M.fmt(g1, 3) + '</b>.'
+          + '<br><br>É a lição prática sobre o TCL: ele vale sempre, mas a <b>velocidade</b> '
+          + 'de convergência depende da assimetria da distribuição de partida. Distribuições '
+          + 'muito assimétricas exigem k bem maior para que a Normal sirva.';
+      }
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Algarismos significativos e arredondamento
      ================================================================= */
   function algarismos(raiz) {
@@ -5870,7 +6192,8 @@
     naoparametrico: naoParametrico,
     coefsw: coefSW, escadaks: escadaKS,
     tamanhoamostral: tamanhoAmostral, curvaspoder: curvasPoder,
-    algarismos: algarismos, instrumentos: instrumentos, tiposerro: tiposErro
+    algarismos: algarismos, instrumentos: instrumentos, tiposerro: tiposErro,
+    verossimilhanca: verossimilhanca, limitenormal: limiteNormal
   };
 
   document.addEventListener('DOMContentLoaded', function () {
