@@ -1,5 +1,5 @@
 /* ===================================================================
-   widgets.js — simuladores e calculadoras interativas
+   widgets.js: simuladores e calculadoras interativas
    Uso nas páginas: <div data-widget="nome"></div>
    Probabilidade & Estatística / LFCA–URCA
    =================================================================== */
@@ -66,7 +66,7 @@
     var g = el('div', { class: 'grade-num' });
     lista.forEach(function (c) {
       g.appendChild(el('div', { class: 'cartao-num', html:
-        '<span class="rot">' + c.rot + '</span><span class="val" data-k="' + c.k + '">—</span>' }));
+        '<span class="rot">' + c.rot + '</span><span class="val" data-k="' + c.k + '">: </span>' }));
     });
     pai.appendChild(g);
     return function (vals) {
@@ -238,7 +238,7 @@
   }
 
   /* =================================================================
-     3. Probabilidade geométrica — problema do encontro
+     3. Probabilidade geométrica: problema do encontro
      ================================================================= */
   function encontro(raiz) {
     var c = moldura(raiz, 'Monte Carlo: o problema do encontro');
@@ -362,7 +362,7 @@
           + ' objetos distintos entre apenas ' + n + '. Arranjo e combinação valem zero.'
         : 'Com <b>n = ' + n + '</b> e <b>k = ' + k + '</b>: há ' + fmtInt(M.arranjo(n, k))
           + ' sequências <b>ordenadas</b> de ' + k + ' objetos distintos, mas apenas '
-          + fmtInt(M.binom(n, k)) + ' <b>subconjuntos</b> — cada subconjunto foi contado '
+          + fmtInt(M.binom(n, k)) + ' <b>subconjuntos</b>: cada subconjunto foi contado '
           + fmtInt(M.fatorial(k)) + ' vezes (= ' + k + '!) no arranjo.';
 
       // listagem explícita para casos pequenos
@@ -379,7 +379,7 @@
           + combos.map(function (x) { return '{' + x.join('') + '}'; }).join('&nbsp; ');
       } else {
         lista.innerHTML = '<span style="color:#5b6773">A listagem explícita aparece quando '
-          + 'n ≤ 8 e há no máximo 70 combinações — reduza n ou k para vê-la.</span>';
+          + 'n ≤ 8 e há no máximo 70 combinações: reduza n ou k para vê-la.</span>';
       }
     }
     atualizar();
@@ -483,7 +483,7 @@
     campoModo.appendChild(el('label', { html: 'O que você vai digitar na 2ª linha' }));
     var sel = el('select');
     sel.appendChild(el('option', { value: 'contagem',
-      texto: 'Contagens (frequências) — normalizo para você' }));
+      texto: 'Contagens (frequências): normalizo para você' }));
     sel.appendChild(el('option', { value: 'prob',
       texto: 'Probabilidades (devem somar 1)' }));
     campoModo.appendChild(sel); ctr.appendChild(campoModo);
@@ -559,7 +559,7 @@
       var total = 0;
       fs.forEach(function (f) { total += f; });
       if (total === 0) {
-        saida.innerHTML = 'A soma da segunda linha é zero — não há o que normalizar.';
+        saida.innerHTML = 'A soma da segunda linha é zero: não há o que normalizar.';
         painel({ n: '0', s: '—', m: '—', m2: '—', v: '—', d: '—' });
         tabela.innerHTML = ''; G.preparar(cv, 240);
         return;
@@ -591,7 +591,7 @@
         msg = 'Total de <b>' + M.fmt(total, 0) + '</b> observações. Cada probabilidade foi '
             + 'obtida dividindo a contagem pelo total: '
             + '<b>P<sub>i</sub> = f<sub>i</sub>/N</b>. Assim ΣP<sub>i</sub> = 1 '
-            + '<b>por construção</b> — a normalização é automática. ';
+            + '<b>por construção</b>: a normalização é automática. ';
       } else if (Math.abs(somaP - 1) > 1e-6) {
         msg = '<b style="color:#8c2f39">ΣP<sub>i</sub> = ' + M.fmt(somaP, 4) + ' ≠ 1.</b> '
             + 'A distribuição não está normalizada, e os momentos perdem o sentido. '
@@ -607,7 +607,7 @@
       msg += '⟨x⟩ = <b>' + M.fmt(m, 4) + '</b> e σ = <b>' + M.fmt(d, 4) + '</b>. '
            + (possivel
                ? 'Aqui a média coincide com um dos valores possíveis.'
-               : '<b>A média não é um dos valores possíveis</b> — como nos 2,4 filhos por família.');
+               : '<b>A média não é um dos valores possíveis</b>: como nos 2,4 filhos por família.');
       saida.innerHTML = msg;
       desenhar(xs, ps, m, d);
     }
@@ -843,7 +843,7 @@
 
       saida.innerHTML = 'A área sombreada vale <b>' + M.pct(prob, 3) + '</b>. '
         + 'Em unidades padronizadas, \\(z=(x-\\mu)/\\sigma\\), o intervalo vai de <b>'
-        + M.fmt(za, 2) + '</b> a <b>' + M.fmt(zb, 2) + '</b> — e essa probabilidade '
+        + M.fmt(za, 2) + '</b> a <b>' + M.fmt(zb, 2) + '</b>, e essa probabilidade '
         + 'não depende de μ nem de σ, apenas de z.';
       if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([saida]);
     }
@@ -1027,7 +1027,7 @@
       var so = Math.sqrt(finais.reduce(function (a, b) { return a + b * b; }, 0) / (finais.length || 1) - mo * mo);
       painel({ mt: '0', mo: M.fmt(mo, 2), st: M.fmt(Math.sqrt(nPassos), 2), so: M.fmt(so, 2) });
 
-      saida.innerHTML = 'Após <b>' + nPassos + '</b> passos, a posição média é <b>zero</b> — '
+      saida.innerHTML = 'Após <b>' + nPassos + '</b> passos, a posição média é <b>zero</b>: '
         + 'avanços e recuos se cancelam. Mas a <b>distância típica</b> percorrida cresce como '
         + '\\(\\sqrt{n}\\,L\\) = <b>' + M.fmt(Math.sqrt(nPassos), 2) + '\\(L\\)</b>. '
         + 'É esse \\(\\sqrt{n}\\) que governa a difusão: \\(\\sigma_x=\\sqrt{2Dt}\\).';
@@ -1093,7 +1093,7 @@
         ? 'Lance a moeda e observe a frequência oscilar muito no começo e depois estabilizar em p.'
         : '<b>' + n.toLocaleString('pt-BR') + '</b> lançamentos, <b>' + caras.toLocaleString('pt-BR')
           + '</b> caras. Frequência: <b>' + M.pct(caras / n, 3) + '</b> (p = ' + M.pct(p, 1) + '). '
-          + 'Desvio: <b>' + M.pct(Math.abs(caras / n - p), 3) + '</b> — tende a cair como \\(1/\\sqrt{n}\\).';
+          + 'Desvio: <b>' + M.pct(Math.abs(caras / n - p), 3) + '</b>: tende a cair como \\(1/\\sqrt{n}\\).';
       if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([saida]);
     }
 
@@ -1140,7 +1140,7 @@
       G.vertical(g, tm, G.COR.ambar, '⟨t⟩');
       saida.innerHTML = 'A área sombreada (de 0 a t½) vale exatamente <b>50%</b>: metade dos núcleos '
         + 'já decaiu. Note que a <b>vida média</b> ⟨t⟩ = 1/λ = <b>' + M.fmt(tm, 3)
-        + '</b> é maior que a <b>meia-vida</b> = <b>' + M.fmt(mv, 3) + '</b> — a cauda longa puxa a média. '
+        + '</b> é maior que a <b>meia-vida</b> = <b>' + M.fmt(mv, 3) + '</b>: a cauda longa puxa a média. '
         + 'A distribuição <b>não tem memória</b>: um núcleo que sobreviveu até t tem a mesma '
         + 'perspectiva de futuro que um recém-criado.';
     }
@@ -1161,9 +1161,9 @@
     medidas: { rot: 'Medidas repetidas de g (m/s²)', dados:
       '9.79 9.83 9.78 9.81 9.85 9.80 9.77 9.82 9.84 9.79 9.81 9.76 9.83 9.80 ' +
       '9.78 9.82 9.81 9.79 9.84 9.80' },
-    assimetrica: { rot: 'Renda mensal (salários mínimos) — assimétrica', dados:
+    assimetrica: { rot: 'Renda mensal (salários mínimos): assimétrica', dados:
       '1 1 1.2 1.3 1.5 1.5 1.8 2 2 2.1 2.3 2.5 2.5 3 3.2 3.5 4 4.5 5 6 7 9 12 18 30' },
-    outliers: { rot: 'Tempos de reação (ms) — com outliers', dados:
+    outliers: { rot: 'Tempos de reação (ms): com outliers', dados:
       '245 252 238 261 249 255 243 258 247 251 240 256 250 244 253 410 248 259 ' +
       '242 254 120 246' }
   };
@@ -1183,7 +1183,7 @@
     var ctrPre = el('div', { class: 'botoes', style: 'margin:.6rem 0 .9rem' });
     c.appendChild(ctrPre);
     Object.keys(CONJUNTOS).forEach(function (k) {
-      botao(ctrPre, CONJUNTOS[k].rot.split(' —')[0].split(' (')[0], function () {
+      botao(ctrPre, CONJUNTOS[k].rot.split(': ')[0].split(' (')[0], function () {
         ta.value = CONJUNTOS[k].dados; atualizar();
       }, true);
     });
@@ -1281,7 +1281,7 @@
       saida.innerHTML = leitura
         + (fora.length ? ' Pela regra de 1,5×IQR há <b>' + fora.length + ' outlier'
             + (fora.length > 1 ? 's' : '') + '</b>: ' + fora.map(function (x) { return M.fmt(x, 2); }).join(', ')
-            + '. Note quanto eles deslocam a média sem mexer na mediana — apague-os do campo de texto e compare.'
+            + '. Note quanto eles deslocam a média sem mexer na mediana: apague-os do campo de texto e compare.'
            : ' Nenhum outlier pela regra de 1,5×IQR.');
     }
 
@@ -1492,11 +1492,11 @@
       saida.innerHTML = total === 0
         ? 'Cada bola encontra <b>' + fileiras + '</b> pregos e, em cada um, desvia à direita com '
           + 'probabilidade <b>' + M.fmt(p, 2) + '</b>. O balde em que ela cai é o número de '
-          + 'desvios à direita — ou seja, uma variável <b>binomial</b>. Solte algumas bolas.'
+          + 'desvios à direita, ou seja, uma variável <b>binomial</b>. Solte algumas bolas.'
         : '<b>' + total.toLocaleString('pt-BR') + '</b> bolas. Média observada <b>'
           + M.fmt(mo, 3) + '</b> (teoria: np = ' + M.fmt(mt, 2) + '); dispersão <b>'
           + M.fmt(so, 3) + '</b> (teoria: √(np(1−p)) = ' + M.fmt(st, 3) + '). '
-          + 'Nenhuma bola "sabe" da binomial — ela emerge de ' + fileiras
+          + 'Nenhuma bola "sabe" da binomial: ela emerge de ' + fileiras
           + ' decisões independentes repetidas muitas vezes.';
     }
 
@@ -1617,7 +1617,7 @@
         saida.innerHTML = modo === 'informado'
           ? 'Jogue algumas partidas. A teoria diz que trocar vence em <b>2/3</b> das vezes.'
           : 'Agora o apresentador não sabe onde está o carro. As rodadas em que ele o revela '
-            + 'por acidente são descartadas — e só restam as que <em>se parecem</em> com o jogo clássico.';
+            + 'por acidente são descartadas, e só restam as que <em>se parecem</em> com o jogo clássico.';
         return;
       }
       saida.innerHTML = 'Em <b>' + n.toLocaleString('pt-BR') + '</b> partidas: trocar venceu '
@@ -1625,8 +1625,8 @@
         + M.pct(manteve / n, 1) + '</b>. '
         + (modo === 'informado'
             ? 'Os valores convergem para <b>2/3</b> e <b>1/3</b>: trocar <b>dobra</b> a chance.'
-            : 'Agora as duas estratégias empatam em <b>1/2</b>. O evento observado é o mesmo — '
-              + 'uma porta aberta com cabra — mas foi <b>gerado por outro mecanismo</b>, e por '
+            : 'Agora as duas estratégias empatam em <b>1/2</b>. O evento observado é o mesmo: '
+              + 'uma porta aberta com cabra, mas foi <b>gerado por outro mecanismo</b>, e por '
               + 'isso carrega informação diferente. Foram descartadas <b>'
               + descartadas.toLocaleString('pt-BR') + '</b> rodadas em que o carro apareceu.');
     }
@@ -1706,7 +1706,7 @@
         'A célula destacada vale <b>' + v + '</b>: é o número de maneiras de escolher <b>'
         + selK + '</b> objetos entre <b>' + selN + '</b>. '
         + (selN > 0
-            ? 'As duas células acima dela — em laranja — somam exatamente esse valor: '
+            ? 'As duas células acima dela (em laranja) somam exatamente esse valor: '
               + '<b>' + p1 + ' + ' + p2 + ' = ' + v + '</b>. É a <b>relação de Stifel</b>, '
               + 'e ela tem uma leitura combinatória: separe os subconjuntos conforme contenham '
               + 'ou não um elemento fixado. '
@@ -1782,7 +1782,7 @@
         + '</b> pares possíveis, e a probabilidade de alguma coincidência é <b>'
         + M.pct(p, 1) + '</b>. '
         + (n >= n50
-            ? 'Já passamos de 50% — e bastaram <b>' + n50 + '</b> pessoas para isso.'
+            ? 'Já passamos de 50%, e bastaram <b>' + n50 + '</b> pessoas para isso.'
             : 'Aumente até <b>' + n50 + '</b> pessoas e a probabilidade ultrapassa 50%.')
         + ' A intuição falha porque pensamos em "alguém com o <i>meu</i> aniversário" '
         + '(apenas ' + (n - 1) + ' comparações) em vez de "duas pessoas quaisquer" ('
@@ -1896,7 +1896,7 @@
         : 'Há <b>' + fav + '</b> células destacadas entre as <b>36</b> do quadro, portanto '
           + 'P(A) = ' + fav + '/36 = <b>' + fracao + '</b> ≈ <b>' + M.pct(fav / 36, 1) + '</b>. '
           + (fav === 36 ? 'Todas as células: o evento é <b>certo</b>. ' : '')
-          + 'Repare que <b>cada célula vale 1/36</b> — são elas as equiprováveis, '
+          + 'Repare que <b>cada célula vale 1/36</b>: são elas as equiprováveis, '
           + 'e não as onze somas possíveis.';
     }
 
@@ -2044,7 +2044,7 @@
       });
 
       saida.innerHTML = total === 0
-        ? 'Os dois gráficos estão na <b>mesma escala de valores?</b> Não — repare nos eixos. '
+        ? 'Os dois gráficos estão na <b>mesma escala de valores?</b> Não: repare nos eixos. '
           + 'A população vai de ' + M.fmt(P.lo, 0) + ' a ' + M.fmt(P.hi, 0)
           + ', mas as médias de n = ' + nAm + ' se concentram entre ' + M.fmt(lo, 1)
           + ' e ' + M.fmt(hi, 1) + '. Sorteie amostras para ver.'
@@ -2125,7 +2125,7 @@
       ]);
 
       saida.innerHTML = 'Com ν = <b>' + gl + '</b> graus de liberdade, o valor crítico é <b>'
-        + M.fmt(tc, 3) + '</b> contra <b>' + M.fmt(zc, 3) + '</b> da normal — um intervalo <b>'
+        + M.fmt(tc, 3) + '</b> contra <b>' + M.fmt(zc, 3) + '</b> da normal: um intervalo <b>'
         + M.pct(tc / zc - 1, 1) + ' mais largo</b>. Essa largura extra é o preço de não conhecer '
         + 'σ e ter de estimá-lo por s. '
         + (gl >= 30
@@ -2182,7 +2182,7 @@
         + '<b>assimétrica à direita</b>. Com k = ' + k + ', a média é <b>' + k
         + '</b> e a variância, <b>' + 2 * k + '</b>. '
         + (k >= 25
-            ? 'Para k grande ela vai ficando simétrica — é o TCL agindo, já que χ² é uma soma de k parcelas independentes.'
+            ? 'Para k grande ela vai ficando simétrica: é o TCL agindo, já que χ² é uma soma de k parcelas independentes.'
             : 'Aumente k e veja a assimetria diminuir: χ² é a soma de k quadrados de normais padrão independentes.');
     }
 
@@ -2214,8 +2214,8 @@
     var campoT = el('div', { class: 'campo' });
     campoT.appendChild(el('label', { html: 'σ é conhecido?' }));
     var selT = el('select');
-    selT.appendChild(el('option', { value: 't', texto: 'Não — usar s e a t de Student' }));
-    selT.appendChild(el('option', { value: 'z', texto: 'Sim — usar σ e a normal' }));
+    selT.appendChild(el('option', { value: 't', texto: 'Não: usar s e a t de Student' }));
+    selT.appendChild(el('option', { value: 'z', texto: 'Sim: usar σ e a normal' }));
     campoT.appendChild(selT); ctr.appendChild(campoT);
     selT.addEventListener('change', function () { usaT = selT.value === 't'; gerar(); });
 
@@ -2321,10 +2321,10 @@
       saida.innerHTML =
         'Dos <b>100</b> intervalos desenhados, <b>' + erram + '</b> não contêm μ = ' + MU + '. '
         + 'Acumulando <b>' + acum.n.toLocaleString('pt-BR') + '</b> intervalos, a taxa de acerto é '
-        + '<b>' + M.pct(acum.ok / acum.n, 2) + '</b> — e deve convergir para '
+        + '<b>' + M.pct(acum.ok / acum.n, 2) + '</b>, e deve convergir para '
         + M.pct(conf, 0) + '. '
         + '<br><br><b>É isto que significa 95% de confiança:</b> o <i>procedimento</i> acerta em '
-        + '95% das amostras. Um intervalo específico ou contém μ ou não contém — não há '
+        + '95% das amostras. Um intervalo específico ou contém μ ou não contém: não há '
         + '"probabilidade 95% de μ estar dentro dele", porque μ não é aleatório: a amostra é.';
     }
 
@@ -2412,7 +2412,7 @@
           + M.pct(Math.max(0, li), 1) + '</b> a <b>' + M.pct(Math.min(1, ls), 1) + '</b>, '
           + 'ou seja, ' + M.pct(est, 1) + ' ± ' + M.pct(crit * ep, 1) + '. '
           + (valido ? 'As condições np̂ ≥ 5 e n(1−p̂) ≥ 5 estão satisfeitas.'
-                    : '<b style="color:#8c2f39">Atenção: np̂ ou n(1−p̂) é menor que 5 — '
+                    : '<b style="color:#8c2f39">Atenção: np̂ ou n(1−p̂) é menor que 5: '
                       + 'a aproximação normal não é confiável aqui.</b>');
       } else if (tipo === 'var') {
         var s = Math.abs(Number(iS.value) || 0);
@@ -2425,7 +2425,7 @@
           + 'intervalo de ' + M.pct(conf, 0) + ' para a <b>variância</b> vai de <b>'
           + M.fmt(li, 4) + '</b> a <b>' + M.fmt(ls, 4) + '</b>; para o <b>desvio padrão</b>, de <b>'
           + M.fmt(Math.sqrt(li), 4) + '</b> a <b>' + M.fmt(Math.sqrt(ls), 4) + '</b>. '
-          + 'Note que o intervalo <b>não é simétrico</b> em torno de s² — a qui-quadrado é '
+          + 'Note que o intervalo <b>não é simétrico</b> em torno de s²: a qui-quadrado é '
           + 'assimétrica. Esta fórmula exige população normal e é sensível a desvios dessa hipótese.';
       } else {
         var md = Number(iM.value) || 0, sd = Math.abs(Number(iS.value) || 0);
@@ -2659,7 +2659,7 @@
           + 'ocorreria em apenas ' + M.pct(p, 2) + ' das amostras se H₀ fosse verdadeira.'
         : 'A estatística <b>' + M.fmt(estat, 2) + '</b> está na <b>região de não rejeição</b>. '
           + 'O valor p = <b>' + M.fmt(p, 4) + '</b> excede α = ' + M.fmt(alfa, 2) + '. '
-          + '<b>Não rejeitamos H₀</b> — o que não é o mesmo que aceitá-la: apenas não há '
+          + '<b>Não rejeitamos H₀</b>: o que não é o mesmo que aceitá-la: apenas não há '
           + 'evidência suficiente contra ela nesta amostra.';
     }
 
@@ -2751,12 +2751,12 @@
         + M.fmt(sigma, 1) + '</b>, o teste tem poder de <b>' + M.pct(poder, 1) + '</b>: '
         + 'é essa a chance de detectar o efeito, se ele de fato existir. '
         + (poder < 0.8
-            ? '<b style="color:#8c2f39">Poder abaixo de 80% — o estudo é subdimensionado.</b> '
+            ? '<b style="color:#8c2f39">Poder abaixo de 80%: o estudo é subdimensionado.</b> '
               + 'Seriam necessárias <b>' + (isFinite(n80) ? n80 : '∞') + '</b> observações '
               + 'para atingir 80%.'
             : 'Poder adequado (≥ 80%, o mínimo usualmente exigido).')
         + '<br><br>Repare na tensão: reduzir α empurra o valor crítico para a direita e '
-        + '<b>encolhe</b> o vermelho — mas <b>aumenta</b> o âmbar. Com n fixo, diminuir um erro '
+        + '<b>encolhe</b> o vermelho, mas <b>aumenta</b> o âmbar. Com n fixo, diminuir um erro '
         + 'aumenta o outro. Só aumentar n reduz os dois ao mesmo tempo, por estreitar as duas curvas.';
     }
 
@@ -2943,7 +2943,7 @@
         + 'p = <b>' + M.fmt(p, 4) + '</b>. '
         + (rejeita
             ? '<b>Rejeitamos H₀</b>: há evidência de associação entre as duas variáveis.'
-            : '<b>Não rejeitamos H₀</b>: não há evidência de associação — o que não prova '
+            : '<b>Não rejeitamos H₀</b>: não há evidência de associação: o que não prova '
               + 'independência, apenas não a contradiz.')
         + aviso;
     }
@@ -3097,7 +3097,7 @@
             ? '<b>Rejeitamos H₀</b>: os dados <b>não</b> seguem a distribuição proposta.'
             : '<b>Não rejeitamos H₀</b>: os dados são compatíveis com a distribuição proposta.')
         + (menor < 5
-            ? '<br><br><b style="color:#8c2f39">Alguma frequência esperada é menor que 5</b> — '
+            ? '<br><br><b style="color:#8c2f39">Alguma frequência esperada é menor que 5</b>: '
               + 'agrupe categorias antes de confiar no resultado.'
             : '');
     }
@@ -3171,15 +3171,15 @@
     var TRANSF = {
       nenhuma: { rot: 'Nenhuma (dados originais)', f: function (v) { return v; },
                  exige: function () { return true; }, nome: 'x' },
-      ln:   { rot: 'Logaritmo natural — ln x', f: Math.log,
+      ln:   { rot: 'Logaritmo natural: ln x', f: Math.log,
               exige: function (v) { return v > 0; }, nome: 'ln x' },
-      log10:{ rot: 'Logaritmo decimal — log₁₀ x', f: Math.log10,
+      log10:{ rot: 'Logaritmo decimal: log₁₀ x', f: Math.log10,
               exige: function (v) { return v > 0; }, nome: 'log₁₀ x' },
-      raiz: { rot: 'Raiz quadrada — √x', f: Math.sqrt,
+      raiz: { rot: 'Raiz quadrada: √x', f: Math.sqrt,
               exige: function (v) { return v >= 0; }, nome: '√x' },
-      inv:  { rot: 'Inversa — 1/x', f: function (v) { return 1 / v; },
+      inv:  { rot: 'Inversa: 1/x', f: function (v) { return 1 / v; },
               exige: function (v) { return v !== 0; }, nome: '1/x' },
-      quad: { rot: 'Quadrado — x²', f: function (v) { return v * v; },
+      quad: { rot: 'Quadrado: x²', f: function (v) { return v * v; },
               exige: function () { return true; }, nome: 'x²' }
     };
     var ctrT = el('div', { class: 'controles' }); c.appendChild(ctrT);
@@ -3297,7 +3297,7 @@
              + '(leptocúrtica), e no Q–Q os extremos escapam da reta nas duas pontas. ';
       } else if (mo.g2 < -1) {
         diag = 'A curtose g₂ = <b>' + M.fmt(mo.g2, 2) + '</b> indica <b>caudas leves</b> '
-             + '(platicúrtica) — típico de dados uniformes ou truncados. ';
+             + '(platicúrtica): típico de dados uniformes ou truncados. ';
       }
 
       var cab = '';
@@ -3309,12 +3309,12 @@
       saida.innerHTML = cab + diag
         + (rejeitam === 0
             ? 'Nenhum dos testes rejeita a normalidade ao nível de 5%. Os dados são '
-              + '<b>compatíveis</b> com uma população normal — o que não prova que o sejam.'
+              + '<b>compatíveis</b> com uma população normal: o que não prova que o sejam.'
             : rejeitam >= 3
               ? '<b>' + rejeitam + ' dos 4 testes rejeitam</b> a normalidade. '
                 + 'Considere transformar os dados ou usar métodos não paramétricos (Módulo 14).'
               : 'Os testes <b>divergem</b>: ' + rejeitam + ' de 4 rejeitam. '
-                + 'É o caso em que o gráfico Q–Q decide — olhe o tamanho do desvio, não só o veredito.')
+                + 'É o caso em que o gráfico Q–Q decide: olhe o tamanho do desvio, não só o veredito.')
         + (n < 20
             ? '<br><br><b>Atenção:</b> com n = ' + n + ', os testes têm pouco poder. '
               + 'Não rejeitar aqui significa muito pouco.'
@@ -3560,7 +3560,7 @@
       if (temEmpate) {
         txt += '<br><br>Há <b>empates</b> nos dados. Os postos empatados recebem a '
              + '<b>média</b> das posições, e nesse caso a fórmula simplificada '
-             + '1 − 6Σd²/[n(n²−1)] = ' + M.fmt(rhoSimples, 4) + ' deixa de ser exata — '
+             + '1 − 6Σd²/[n(n²−1)] = ' + M.fmt(rhoSimples, 4) + ' deixa de ser exata: '
              + 'o valor correto, ' + M.fmt(rho, 4) + ', vem de aplicar Pearson aos postos.';
       }
       txt += '<br><br>Teste de significância: t = <b>' + (isFinite(t) ? M.fmt(t, 3) : '∞')
@@ -3793,7 +3793,7 @@
         + 'SQR (residual) = <b>' + M.fmt(R.SQR, 4) + '</b>. '
         + 'A razão SQE/SQT é exatamente o r² = <b>' + M.pct(R.r2, 2) + '</b>, '
         + 'e sₑ = √(SQR/(n−2)) = <b>' + M.fmt(R.se, 4) + '</b> é o desvio típico de um ponto '
-        + 'em torno da reta — nas mesmas unidades de y.';
+        + 'em torno da reta: nas mesmas unidades de y.';
 
       /* ----- texto principal ----- */
       var rotY = REG[chave] ? REG[chave].ry : 'y';
@@ -3804,7 +3804,7 @@
         + M.fmt(R.a, 4) + '</b> unidade(s) a mais de ' + rotY + '.';
 
       txt += '<br><br><b>Inclinação:</b> t = a/s<sub>a</sub> = ' + M.fmt(R.ta, 3)
-        + ' com ν = ' + R.gl + ', crítico ' + M.fmt(tc, 3) + ' a 5% — '
+        + ' com ν = ' + R.gl + ', crítico ' + M.fmt(tc, 3) + ' a 5%: '
         + (pA < 0.05
             ? '<b>significativa</b> (p = ' + M.fmt(pA, 5) + '): há relação linear entre as duas variáveis.'
             : '<b>não significativa</b> (p = ' + M.fmt(pA, 4) + '): os dados são compatíveis com inclinação nula.')
@@ -3815,7 +3815,7 @@
         + ', IC 95% [' + M.fmt(R.b - tc * R.seb, 4) + ' ; ' + M.fmt(R.b + tc * R.seb, 4) + ']. '
         + (pB < 0.05
             ? 'É <b>diferente de zero</b> (p = ' + M.fmt(pB, 4) + ').'
-            : 'É <b>compatível com zero</b> (p = ' + M.fmt(pB, 3) + ') — se a teoria prevê que a '
+            : 'É <b>compatível com zero</b> (p = ' + M.fmt(pB, 3) + '): se a teoria prevê que a '
               + 'reta passe pela origem, os dados não a contradizem.');
 
       /* ----- previsão ----- */
@@ -3832,7 +3832,7 @@
           + M.fmt(yh - tc * R.se * raizP, 4) + ' ; ' + M.fmt(yh + tc * R.se * raizP, 4) + ']'
           + '<br>O segundo é bem mais largo porque carrega, além da incerteza da reta, a '
           + 'dispersão natural de um ponto individual em torno dela.'
-          + (fora ? ' <b>Atenção:</b> x₀ está <b>fora</b> da faixa observada — isso é '
+          + (fora ? ' <b>Atenção:</b> x₀ está <b>fora</b> da faixa observada: isso é '
                   + 'extrapolação, e a reta não tem autoridade nenhuma ali.' : '');
       }
 
@@ -3840,7 +3840,7 @@
       var somaRes = R.res.reduce(function (s, v) { return s + v; }, 0);
       var dag = R.n >= 8 ? M.dagostino(R.res) : null;
       txt += '<br><br><b>Resíduos:</b> somam ' + M.fmt(somaRes, 6)
-        + ' (sempre zero, por construção — a reta é escolhida para que isso aconteça). ';
+        + ' (sempre zero, por construção: a reta é escolhida para que isso aconteça). ';
       if (dag) {
         txt += 'O teste de D’Agostino sobre eles dá p = <b>' + M.fmt(dag.p, 4) + '</b>: '
           + (dag.p < 0.05
@@ -3851,7 +3851,7 @@
         txt += 'Com n &lt; 8 não há como testar sua normalidade de forma confiável.';
       }
       txt += ' Troque a vista para <i>Gráfico de resíduos</i>: se sobrar qualquer padrão '
-        + 'visível ali — curvatura, funil, degrau — a reta não é o modelo certo.';
+        + 'visível ali (curvatura, funil, degrau) a reta não é o modelo certo.';
 
       saida.innerHTML = txt;
     }
@@ -3973,7 +3973,7 @@
       ct.setLineDash([]);
       for (i = 0; i < n; i++) marcar(g, g.X(teo[i]), g.Y(r[i]), G.COR.azul, 4.2);
       legenda.innerHTML = 'Se os resíduos forem normais, os pontos acompanham a diagonal. '
-        + 'Curvatura nas pontas indica caudas pesadas ou assimetria — o mesmo diagnóstico '
+        + 'Curvatura nas pontas indica caudas pesadas ou assimetria: o mesmo diagnóstico '
         + 'do Módulo 11, aplicado agora ao que sobrou depois do ajuste.';
     }
 
@@ -4006,7 +4006,7 @@
                    erro: 4 * Math.PI * Math.PI / R.a * (R.sea / R.a), un: 'm/s²',
                    esperado: 9.78,
                    nota: 'A inclinação da reta T² × L é 4π²/g, de modo que g = 4π²/a. '
-                       + 'O intercepto deve ser compatível com zero — e é.' };
+                       + 'O intercepto deve ser compatível com zero, e é.' };
         if (op === 'log')
           return { nome: 'expoente de L', valor: R.a, erro: R.sea, un: '',
                    esperado: 0.5,
@@ -4100,7 +4100,7 @@
     var cv2 = el('canvas'); c.appendChild(cv2);
     c.appendChild(el('div', { class: 'legenda', html:
       'Acima: os dados no sistema de eixos escolhido, com a reta ajustada. '
-      + 'Abaixo: os resíduos desse ajuste — é neles que a transformação errada se denuncia.' }));
+      + 'Abaixo: os resíduos desse ajuste: é neles que a transformação errada se denuncia.' }));
     var painel = cartoes(c, [
       { rot: 'inclinação', k: 'a' }, { rot: 'intercepto', k: 'b' },
       { rot: 'r²', k: 'r2' }, { rot: 'constante extraída', k: 'g' }
@@ -4173,7 +4173,7 @@
           + M.fmt(E.erro, 3) + ' ' + E.un + '</b>';
         if (E.esperado !== undefined) {
           var desv = Math.abs(E.valor - E.esperado) / E.erro;
-          txt += ' — valor de referência ' + M.fmt(E.esperado, 3) + ' ' + E.un
+          txt += ': valor de referência ' + M.fmt(E.esperado, 3) + ' ' + E.un
             + ', a <b>' + M.fmt(desv, 1) + ' σ</b> do obtido'
             + (desv < 2 ? ', portanto em pleno acordo.'
                         : ', o que merece investigação de erros sistemáticos.');
@@ -4185,14 +4185,14 @@
         + '</b> troca(s) de sinal, contra as ' + M.fmt(esperadas, 1)
         + ' esperadas se eles fossem puramente aleatórios. '
         + (trocas < esperadas * 0.55
-            ? 'Poucas trocas significam que os resíduos vêm em blocos de mesmo sinal — a '
+            ? 'Poucas trocas significam que os resíduos vêm em blocos de mesmo sinal: a '
               + '<b>assinatura inconfundível de curvatura</b>. A reta está errada, por mais '
               + 'alto que seja o r².'
             : 'Esse número é compatível com resíduos aleatórios: não há curvatura aparente.');
 
       txt += '<br><br><i>Repare que o r² quase nunca denuncia sozinho o modelo errado.</i> '
         + 'Ele pode passar de 0,98 e ainda assim esconder uma curvatura sistemática. Quem '
-        + 'denuncia é o gráfico de resíduos — e é por isso que ele vem junto, aqui, sempre.';
+        + 'denuncia é o gráfico de resíduos, e é por isso que ele vem junto, aqui, sempre.';
 
       saida.innerHTML = txt;
     }
@@ -4449,7 +4449,7 @@
           });
           G.legenda(g, itens);
           legenda.innerHTML = 'Quatro graus sobrepostos. Repare que o grau 6 passa mais '
-            + 'perto dos pontos e <b>oscila entre eles</b> — isso é sobreajuste, não '
+            + 'perto dos pontos e <b>oscila entre eles</b>: isso é sobreajuste, não '
             + 'precisão.';
         } else {
           G.curva(g, R.avalia, G.COR.vinho, 2.4);
@@ -4493,7 +4493,7 @@
 
       txt += '<br><br><b>r² e r² ajustado.</b> r² = ' + M.fmt(R.r2, 6)
         + ' e r²<sub>aj</sub> = ' + M.fmt(R.r2aj, 6) + '. '
-        + 'O r² comum <b>nunca diminui</b> quando se aumenta o grau — ele só pode melhorar, '
+        + 'O r² comum <b>nunca diminui</b> quando se aumenta o grau: ele só pode melhorar, '
         + 'mesmo que o grau extra esteja seguindo ruído. Por isso ele é inútil para '
         + 'escolher o grau. Já o r² ajustado desconta os graus de liberdade gastos e '
         + '<b>piora</b> quando o parâmetro a mais não compensa. <i>Suba o grau e compare '
@@ -4847,7 +4847,7 @@
         + M.fmt(pAjuste, 4) + '</b>.<br>';
       if (quiRed > 2) {
         txt += 'Um χ²/ν <b>bem acima de 1</b>: ou o modelo não descreve os dados, ou as '
-          + 'incertezas foram subestimadas. Olhe os resíduos normalizados — padrão '
+          + 'incertezas foram subestimadas. Olhe os resíduos normalizados: padrão '
           + 'sistemático aponta modelo errado, dispersão sem padrão aponta σ pequeno demais.';
       } else if (quiRed < 0.5) {
         txt += 'Um χ²/ν <b>bem abaixo de 1</b>: os resíduos são menores do que as incertezas '
@@ -4872,7 +4872,7 @@
           + 'A = ' + M.fmt(p[0], 0) + ' ± ' + M.fmt(erros[0], 0) + ' contagens.'
           + '<br><i>Nota sobre as barras de erro:</i> por serem contagens, σ = √N '
           + '(distribuição de Poisson, Módulo 5). Pontos com mais contagens têm barra '
-          + 'absoluta maior, mas incerteza <b>relativa</b> menor — e por isso pesam mais.';
+          + 'absoluta maior, mas incerteza <b>relativa</b> menor, e por isso pesam mais.';
       } else if (chave === 'pot') {
         txt += '<br><br><b>Resultado físico.</b> O expoente ajustado é b = <b>'
           + M.fmt(p[1], 4) + ' ± ' + M.fmt(erros[1], 4) + '</b>. A teoria do pêndulo prevê '
@@ -4885,7 +4885,7 @@
           + ' ± ' + M.fmt(erros[1], 3) + '</b> e tem largura σ = <b>' + M.fmt(p[2], 3)
           + ' ± ' + M.fmt(erros[2], 3) + '</b>, sobre um fundo constante C = '
           + M.fmt(p[3], 2) + '. A largura a meia altura é 2,355σ = '
-          + M.fmt(2.355 * p[2], 2) + ' canais — a resolução do detector.'
+          + M.fmt(2.355 * p[2], 2) + ' canais: a resolução do detector.'
           + '<br><i>Este modelo não tem linearização possível:</i> não há transformação que '
           + 'o torne linear nos quatro parâmetros. O ajuste iterativo é a única saída.';
       }
@@ -4908,7 +4908,7 @@
              expr: '\\sigma_z = \\sqrt{\\sigma_x^2+\\sigma_y^2}' },
     sub:   { rot: 'z = x − y', f: function (x, y) { return x - y; },
              dx: function () { return 1; }, dy: function () { return -1; },
-             lei: 'Subtração: <b>a mesma</b> fórmula da soma — as incertezas somam, '
+             lei: 'Subtração: <b>a mesma</b> fórmula da soma: as incertezas somam, '
                 + 'nunca se cancelam.',
              expr: '\\sigma_z = \\sqrt{\\sigma_x^2+\\sigma_y^2}' },
     prod:  { rot: 'z = x · y', f: function (x, y) { return x * y; },
@@ -5086,7 +5086,7 @@
 
       txt += '<br><br><i>Experimente aumentar muito um dos σ</i> e veja o histograma '
         + 'deformar enquanto a curva vinho permanece simétrica. É o limite de validade da '
-        + 'propagação por derivadas — e a razão de o Monte Carlo ser o método de referência '
+        + 'propagação por derivadas, e a razão de o Monte Carlo ser o método de referência '
         + 'quando as incertezas são grandes.';
 
       saida.innerHTML = txt;
@@ -5116,9 +5116,9 @@
     var campoV = el('div', { class: 'campo', style: 'flex:2 1 260px' });
     campoV.appendChild(el('label', { html: 'O que mostrar' }));
     var selV = el('select');
-    [['lnL', 'ln L(μ) — log-verossimilhança'],
-     ['L', 'L(μ) — verossimilhança'],
-     ['S', 'S(μ) = Σ(xᵢ − μ)² — soma dos quadrados']].forEach(function (o) {
+    [['lnL', 'ln L(μ): log-verossimilhança'],
+     ['L', 'L(μ): verossimilhança'],
+     ['S', 'S(μ) = Σ(xᵢ − μ)²: soma dos quadrados']].forEach(function (o) {
       selV.appendChild(el('option', { value: o[0], texto: o[1] }));
     });
     campoV.appendChild(selV); ctr2.appendChild(campoV);
@@ -5220,12 +5220,12 @@
           + 'multiplicamos as densidades das ' + n + ' observações:'
           + '<br><br>\\( L(\\mu)=\\prod_i \\frac{1}{\\sigma\\sqrt{2\\pi}}'
           + '\\exp\\!\\left[-\\frac{(x_i-\\mu)^2}{2\\sigma^2}\\right] \\)'
-          + '<br><br>Tomando o logaritmo — que não muda onde está o máximo, por ser função '
-          + 'crescente — o produto vira soma:'
+          + '<br><br>Tomando o logaritmo: que não muda onde está o máximo, por ser função '
+          + 'crescente: o produto vira soma:'
           + '<br><br>\\( \\ln L(\\mu) = -n\\ln(\\sigma\\sqrt{2\\pi}) '
           + '- \\frac{1}{2\\sigma^2}\\sum_i (x_i-\\mu)^2 \\)'
           + '<br><br><b>Repare na estrutura.</b> O primeiro termo não depende de μ. '
-          + 'Maximizar ln L é, portanto, <b>minimizar \\(\\sum (x_i-\\mu)^2\\)</b> — e é '
+          + 'Maximizar ln L é, portanto, <b>minimizar \\(\\sum (x_i-\\mu)^2\\)</b>, e é '
           + 'daí que os mínimos quadrados saem, como veremos no Módulo 8.';
       } else if (vista === 'L') {
         txt = 'Esta é a verossimilhança sem logaritmo. Note a escala do eixo vertical: '
@@ -5236,7 +5236,7 @@
           + 'produto em soma e mantém os números em escala tratável. O máximo é o mesmo.';
       } else {
         txt = 'Esta é apenas a soma dos quadrados dos desvios, \\(S(\\mu)=\\sum_i '
-          + '(x_i-\\mu)^2\\) — uma parábola em μ.'
+          + '(x_i-\\mu)^2\\): uma parábola em μ.'
           + '<br><br>Compare com a vista de ln L: as duas têm o extremo no <b>mesmo</b> '
           + 'ponto, uma de cabeça para baixo em relação à outra. '
           + 'Não é coincidência: \\(\\ln L = \\text{const} - S/2\\sigma^2\\), de modo que '
@@ -5249,13 +5249,13 @@
         + '<br>\\( \\Rightarrow \\sum_i x_i = n\\mu \\Rightarrow \\mu = \\bar x \\)'
         + '<br><br>Aqui, \\(\\bar x = ' + M.fmt(media, 5) + '\\), e é exatamente onde o '
         + 'ponto verde caiu. <b>A média aritmética é o estimador de máxima verossimilhança '
-        + 'da posição</b>, quando os erros são normais — e é essa a justificativa de usá-la, '
+        + 'da posição</b>, quando os erros são normais, e é essa a justificativa de usá-la, '
         + 'não o costume.';
 
       if (vista !== 'S') {
         txt += '<br><br><i>Arraste o σ suposto:</i> a curva fica mais aguda com σ pequeno e '
           + 'mais achatada com σ grande, mas o <b>máximo não se desloca</b>. O σ controla '
-          + 'a <i>confiança</i> na estimativa, não a estimativa em si — e a curvatura no '
+          + 'a <i>confiança</i> na estimativa, não a estimativa em si, e a curvatura no '
           + 'máximo é justamente o que define a incerteza de μ.';
       }
 
@@ -5383,7 +5383,7 @@
           + 'aproximação ' + (par * p >= 5 && par * (1 - p) >= 5 ? '<b>é</b>' : '<b>não é</b>')
           + ' recomendada. O maior desvio ponto a ponto é ' + M.fmt(errMax, 5) + '.'
           + '<br><br><i>Experimente p = 0,05 com n pequeno:</i> a binomial fica encostada no '
-          + 'zero e visivelmente assimétrica, e a Normal — que é simétrica e vai até −∞ — '
+          + 'zero e visivelmente assimétrica, e a Normal (que é simétrica e vai até −∞) '
           + 'erra feio. Aumente n e veja a assimetria cair com 1/√n.';
       } else if (fonte === 'poisson') {
         txt = '<b>Poisson(λ = ' + par + ')</b> contra a Normal. A assimetria é '
@@ -5393,10 +5393,10 @@
           + 'obrigatória; com milhares, a Normal serve e simplifica tudo.'
           + '<br><br>Note que σ = √λ: na contagem de eventos raros, a incerteza é a '
           + '<b>raiz da própria contagem</b>. Mil contagens trazem incerteza de ±32, ou '
-          + 'seja, 3,2% — e para chegar a 1% é preciso contar dez mil.';
+          + 'seja, 3,2%, e para chegar a 1% é preciso contar dez mil.';
       } else if (fonte === 'uniforme') {
         txt = '<b>Soma de ' + par + ' uniformes</b> em [0,1]. A uniforme não se parece em '
-          + 'nada com uma Normal — é um retângulo. Mas a <b>soma</b> de várias converge '
+          + 'nada com uma Normal: é um retângulo. Mas a <b>soma</b> de várias converge '
           + 'rapidamente.'
           + '<br><br>Com k = 2 já se obtém um triângulo; com k = 3, uma curva suave em '
           + 'três trechos de parábola; com k = 12, a diferença para a Normal é difícil de '
@@ -5510,13 +5510,13 @@
         + 'incerteza. ' + M.fmt(v, 6) + ' → <b>' + fmtBR(vArr) + '</b>.';
 
       txt += '<br><br><b>Resultado: ' + res + '</b>'
-        + (dec > 0 ? ' — ambos com ' + dec + ' casa' + (dec > 1 ? 's' : '') + ' decimal'
-                     + (dec > 1 ? 'is' : '') + '.' : ' — ambos inteiros.');
+        + (dec > 0 ? ': ambos com ' + dec + ' casa' + (dec > 1 ? 's' : '') + ' decimal'
+                     + (dec > 1 ? 'is' : '') + '.' : ': ambos inteiros.');
 
       txt += '<br><br><b>O erro mais comum.</b> Escrever "' + v + ' ± ' + u + '" copiando '
         + 'as casas que a calculadora mostrou. Se a incerteza é ' + fmtBR(uArr)
         + ', os algarismos do valor além da casa 10<sup>' + casa + '</sup> '
-        + '<i>não são conhecidos</i> — anotá-los é afirmar uma precisão que a medida não '
+        + '<i>não são conhecidos</i>: anotá-los é afirmar uma precisão que a medida não '
         + 'tem.';
 
       txt += '<br><br><b>Por que a incerteza arredonda para cima.</b> Arredondar '
@@ -5642,7 +5642,7 @@
           + 'algarismo <i>duvidoso</i> além dos certos.'
           + '<br><br>A incerteza adotada é <b>metade da menor divisão</b>: ± 0,05 cm. '
           + 'Com isso a leitura tem três algarismos significativos: dois certos e um '
-          + 'duvidoso. <b>Esse algarismo duvidoso é significativo e deve ser anotado</b> — '
+          + 'duvidoso. <b>Esse algarismo duvidoso é significativo e deve ser anotado</b>: '
           + 'descartá-lo joga fora informação real.';
       } else if (tipo === 'paquimetro') {
         txt = '<b>Paquímetro com nônio.</b> O nônio (ou vernier) divide a menor divisão da '
@@ -5665,7 +5665,7 @@
       }
       txt += '<br><br>Nesta configuração o valor real é ' + valor.toFixed(3).replace('.', ',')
         + ' cm e a leitura possível é ' + f(leitura) + ' cm, uma diferença de '
-        + Math.abs(valor - leitura).toFixed(4).replace('.', ',') + ' cm — '
+        + Math.abs(valor - leitura).toFixed(4).replace('.', ',') + ' cm: '
         + (Math.abs(valor - leitura) <= inc
             ? 'dentro da incerteza declarada, como deve ser.'
             : 'fora da faixa, o que indicaria um problema de leitura.')
@@ -5765,15 +5765,15 @@
 
       var txt = 'O valor verdadeiro é <b>' + VERDADE.toFixed(2).replace('.', ',')
         + '</b>, e a média das ' + n + ' medidas deu <b>' + M.fmt(media, 4) + '</b>.';
-      txt += '<br><br><b>Erro aleatório</b> — o espalhamento, medido por s = '
+      txt += '<br><br><b>Erro aleatório</b>: o espalhamento, medido por s = '
         + M.fmt(sd, 4) + '. Ele é <b>simétrico</b> em torno da média: tanto erra para mais '
         + 'quanto para menos. Por isso <b>repetir medidas o reduz</b>: o erro padrão da '
         + 'média é s/√n = ' + M.fmt(ep, 4) + ', e cai com √n.';
-      txt += '<br><br><b>Erro sistemático</b> — a distância entre a linha vinho e a verde, '
+      txt += '<br><br><b>Erro sistemático</b>: a distância entre a linha vinho e a verde, '
         + 'aqui <b>' + M.fmt(media - VERDADE, 4) + '</b>. Ele desloca <i>todas</i> as '
         + 'medidas no mesmo sentido, e <b>repetir não adianta nada</b>. '
         + (Math.abs(vies) < 0.05
-            ? 'Com o viés em zero, a média converge para o valor verdadeiro — é o caso ideal.'
+            ? 'Com o viés em zero, a média converge para o valor verdadeiro: é o caso ideal.'
             : 'Aumente n até 200 e observe: o erro padrão despenca, a faixa azul estreita, '
               + 'e a distância para a verdade <b>não muda</b>. O resultado fica cada vez '
               + 'mais <i>preciso</i> e continua igualmente <i>inexato</i>.');
@@ -5781,7 +5781,7 @@
         + M.fmt(media, 3) + ' ± ' + M.fmt(ep, 3)
         + ' está dizendo que conhece o valor com essa precisão'
         + (Math.abs(media - VERDADE) > 2 * ep
-            ? ' — e está <b>errado por mais de 2 erros padrão</b>, porque a incerteza '
+            ? ', e está <b>errado por mais de 2 erros padrão</b>, porque a incerteza '
               + 'declarada só contabiliza a parte aleatória.'
             : '.')
         + ' O erro sistemático <b>não aparece na estatística dos dados</b>. Só calibração, '
@@ -5994,7 +5994,7 @@
           var nPior = Math.ceil(za * za * 0.25 / (fEp.v() * fEp.v()));
           txt += '<br><br>Como p é desconhecido antes da pesquisa, o usual é adotar o '
             + '<b>pior caso p = 0,5</b>, que maximiza p(1−p). Isso daria <b>n = ' + nPior
-            + '</b> — ' + M.pct(nPior / n - 1, 0) + ' a mais, e é o número honesto a usar '
+            + '</b>: ' + M.pct(nPior / n - 1, 0) + ' a mais, e é o número honesto a usar '
             + 'quando não se tem estudo piloto.';
         } else {
           txt += '<br><br>Com p = 0,5 estamos no <b>pior caso</b>: é o valor que maximiza '
@@ -6010,7 +6010,7 @@
           + M.fmt(nBruto, 2) + ' → <b>' + n + ' por grupo</b>, ' + (2 * n) + ' no total.';
         txt += '<br><br><b>Tamanho de efeito:</b> d = δ/σ = <b>' + M.fmt(d, 3) + '</b> '
           + '(d de Cohen). Pela convenção usual, '
-          + (d < 0.35 ? 'é um efeito <b>pequeno</b> — e efeitos pequenos custam caro.'
+          + (d < 0.35 ? 'é um efeito <b>pequeno</b>, e efeitos pequenos custam caro.'
              : d < 0.65 ? 'é um efeito <b>médio</b>.'
              : 'é um efeito <b>grande</b>.')
           + ' O que importa é que n depende apenas de d: dobrar δ e dobrar σ ao mesmo tempo '
@@ -6128,7 +6128,7 @@
       var ganho = 100 * (dobro - p5);
       txt += '<br><br><b>O retorno é decrescente.</b> Dobrando n para ' + (2 * nAtual)
         + ', o poder contra d = 0,5 iria de ' + M.pct(p5, 1) + ' para '
-        + M.pct(dobro, 1) + ' — um ganho de ' + M.fmt(ganho, 1) + ' pontos. '
+        + M.pct(dobro, 1) + ': um ganho de ' + M.fmt(ganho, 1) + ' pontos. '
         + (ganho > 15
             ? 'Aqui ainda compensa, porque estamos na parte íngreme da curva. '
               + 'Arraste o n para cima e refaça a conta: o mesmo esforço rende cada vez '
@@ -6138,11 +6138,11 @@
       txt += '<br><br><b>Por que 80%?</b> É convenção, não lei. Ela embute a ideia de que '
         + 'um erro tipo I é cerca de quatro vezes mais grave que um tipo II '
         + '(β = 0,20 = 4α). Se deixar de detectar um efeito real for mais caro que um '
-        + 'alarme falso — num teste de segurança, por exemplo — planeje para 90% ou 95%.';
+        + 'alarme falso (num teste de segurança, por exemplo) planeje para 90% ou 95%.';
       txt += '<br><br><b>E o que não adianta.</b> Repare que para d = 0,2 é preciso passar '
         + 'de ' + Math.ceil(2 * Math.pow(za + zb, 2) / 0.04) + ' por grupo para chegar aos '
         + '80%. Estudos pequenos simplesmente <b>não conseguem</b> detectar efeitos '
-        + 'pequenos — e quando um estudo pequeno encontra um efeito pequeno '
+        + 'pequenos, e quando um estudo pequeno encontra um efeito pequeno '
         + 'significativo, isso costuma ser acaso, não descoberta.';
 
       saida.innerHTML = txt;
@@ -6237,7 +6237,7 @@
         ? 'mᵢ é o valor que a <i>i</i>-ésima menor observação de uma amostra normal padrão de '
           + 'tamanho n teria, em média. É o mesmo eixo horizontal do gráfico Q–Q.'
         : (vista === 'comp'
-          ? 'Os aᵢ são praticamente os mᵢ reescalados — a correção de Royston só altera '
+          ? 'Os aᵢ são praticamente os mᵢ reescalados: a correção de Royston só altera '
             + 'sensivelmente os dois valores de cada ponta.'
           : 'Cada haste é o peso que a <i>i</i>-ésima menor observação recebe no numerador de W.');
 
@@ -6245,7 +6245,7 @@
         + '∑ aᵢ x₍ᵢ₎ dos dados <b>ordenados</b>. Três propriedades aparecem no gráfico '
         + 'e valem para qualquer n:';
       txt += '<br><br><b>1. São antissimétricos:</b> aᵢ = −a₍ₙ₊₁₋ᵢ₎, e por isso ∑ aᵢ = '
-        + M.fmt(soma, 6) + ' ≈ 0. A consequência é importante — somar uma constante a todos '
+        + M.fmt(soma, 6) + ' ≈ 0. A consequência é importante: somar uma constante a todos '
         + 'os dados não muda o numerador, de modo que W <b>não depende da média</b>.';
       txt += '<br><br><b>2. Estão normalizados:</b> ∑ aᵢ² = ' + M.fmt(soma2, 6)
         + ' = 1. Junto com o denominador ∑(xᵢ − x̄)², isso é o que mantém W entre 0 e 1 '
@@ -6255,7 +6255,7 @@
         + 'respondem por <b>' + M.pct(ext, 1) + '</b> de ∑ aᵢ², com a₁ = '
         + M.fmt(a[0], 4) + ' e aₙ = ' + M.fmt(a[n - 1], 4)
         + ', enquanto os do meio quase não pesam (o central é exatamente zero quando n é '
-        + 'ímpar). É daí que vem a sensibilidade do teste às <b>caudas</b> — que é onde a '
+        + 'ímpar). É daí que vem a sensibilidade do teste às <b>caudas</b>: que é onde a '
         + 'não normalidade costuma morar.';
       txt += '<br><br><i>Arraste o n e veja o que acontece:</i> à medida que a amostra '
         + 'cresce, as hastes se achatam e o peso se distribui, porque há mais observações '
@@ -6296,7 +6296,7 @@
     var legenda = el('div', { class: 'legenda', html:
       'Escada azul: acumulada empírica Fₙ(x), que sobe 1/n a cada observação. '
       + 'Curva vinho: acumulada normal F(x) com a média e o desvio estimados dos dados. '
-      + 'Segmento verde: onde a distância entre as duas é máxima — esse é D.' });
+      + 'Segmento verde: onde a distância entre as duas é máxima: esse é D.' });
     c.appendChild(legenda);
     var painel = cartoes(c, [
       { rot: 'D', k: 'D' }, { rot: 'ocorre em x =', k: 'x' },
@@ -6414,7 +6414,7 @@
       txt += '<br><br><i>Onde o KS enxerga e onde ele é cego.</i> A diferença Fₙ(x) − F(x) '
         + 'tem variância F(x)[1−F(x)]/n, que é máxima no <b>centro</b> da distribuição e '
         + 'tende a <b>zero nas caudas extremas</b>. O KS, portanto, quase não percebe o que '
-        + 'acontece nos extremos — justamente onde a não normalidade mais costuma se '
+        + 'acontece nos extremos: justamente onde a não normalidade mais costuma se '
         + 'manifestar. O Anderson–Darling corrige isso dividindo pelo mesmo fator, o que '
         + 'amplifica as caudas; compare os dois trocando de conjunto aqui e no simulador da '
         + 'seção 3.';
@@ -6720,7 +6720,7 @@
             h += '<td class="num">' + M.fmt(Math.abs(d[i]), 2) + '</td><td class="num">'
               + M.fmt(postos[j], 1) + '</td>';
             j++;
-          } else h += '<td class="num">—</td><td class="num">descartado</td>';
+          } else h += '<td class="num">: </td><td class="num">descartado</td>';
         }
         h += '</tr>';
       }
@@ -6808,7 +6808,7 @@
             + 'e o de Mann–Whitney encontrou um efeito claro. Olhe as médias: elas quase '
             + 'coincidem, enquanto as medianas estão muito distantes. É a assinatura de um '
             + '<b>valor extremo</b> arrastando a média de um dos grupos e inflando a '
-            + 'variância — que é o denominador do t. Os postos não se deixam enganar por '
+            + 'variância: que é o denominador do t. Os postos não se deixam enganar por '
             + 'isso: o maior valor é apenas "o maior", qualquer que seja seu tamanho.';
         }
       } else {
@@ -6835,10 +6835,10 @@
     function comparacao(pnp, pt) {
       if (!isFinite(pt)) return '';
       if (pnp < 0.05 && pt >= 0.05)
-        return 'O não paramétrico <b>rejeita</b> e o paramétrico <b>não</b> — os pressupostos '
+        return 'O não paramétrico <b>rejeita</b> e o paramétrico <b>não</b>: os pressupostos '
              + 'do teste t provavelmente estão violados.';
       if (pnp >= 0.05 && pt < 0.05)
-        return 'O paramétrico <b>rejeita</b> e o não paramétrico <b>não</b> — é o preço da '
+        return 'O paramétrico <b>rejeita</b> e o não paramétrico <b>não</b>: é o preço da '
              + 'robustez: ao descartar informação, perde-se poder.';
       return 'Os dois concordam na conclusão; o paramétrico costuma dar um p menor quando '
            + 'seus pressupostos valem, porque usa mais informação dos dados.';
@@ -7036,7 +7036,7 @@
         txt = 'Teste <b>unilateral à direita</b> a α = ' + M.fmt(alfa, 3)
             + (dist === 'z' ? '' : ' com ν = <b>' + gl + '</b>')
             + '. Rejeita-se H₀ se ' + nome + ' &gt; <b>' + sinal(M.fmt(cs, 3))
-            + '</b>. Toda a área α fica na cauda direita — por isso o crítico unilateral é '
+            + '</b>. Toda a área α fica na cauda direita: por isso o crítico unilateral é '
             + '<i>menor</i> que o bilateral do mesmo α.';
       } else {
         txt = 'Teste <b>unilateral à esquerda</b> a α = ' + M.fmt(alfa, 3)
@@ -7050,10 +7050,10 @@
              + '</b>, o valor p é <b>' + M.fmt(p, 4) + '</b>, de modo que '
              + (rejeita
                 ? '<b>rejeitamos H₀</b> ao nível de ' + M.fmt(alfa, 3)
-                  + ' — a estatística caiu na região crítica, e p &lt; α.'
+                  + ': a estatística caiu na região crítica, e p &lt; α.'
                 : '<b>não rejeitamos H₀</b> ao nível de ' + M.fmt(alfa, 3)
-                  + ' — a estatística caiu na região de não rejeição, e p &gt; α.')
-             + ' As duas leituras — comparar com o crítico ou comparar p com α — '
+                  + ': a estatística caiu na região de não rejeição, e p &gt; α.')
+             + ' As duas leituras (comparar com o crítico ou comparar p com α) '
              + 'sempre concordam, porque são a mesma conta vista de dois lados.';
       } else {
         txt += ' Informe uma estatística observada para obter também o valor p.';
@@ -7062,7 +7062,7 @@
       if (dist === 'q' && tipo === 'bi')
         txt += '<br><br><i>No qui-quadrado o bilateral não é simétrico:</i> a distribuição é '
              + 'assimétrica e definida só para valores positivos, de modo que os dois cortes '
-             + 'têm de ser buscados separadamente — um com área α/2 à esquerda, outro com α/2 '
+             + 'têm de ser buscados separadamente: um com área α/2 à esquerda, outro com α/2 '
              + 'à direita.';
 
       saida.innerHTML = txt;

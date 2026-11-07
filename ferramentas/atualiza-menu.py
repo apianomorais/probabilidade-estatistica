@@ -67,7 +67,7 @@ def monta_menu(pagina_atual):
         partes.append('<span class="grupo">%s</span>' % curto)
         for n in presentes:
             partes.append(link("aula%02d.html" % n, str(n),
-                               "Módulo %d — %s" % (n, TITULOS[n][0]), "num"))
+                               "Módulo %d: %s" % (n, TITULOS[n][0]), "num"))
 
     partes.append(link("formulario.html", "Formulário"))
     return "\n      " + "\n      ".join(partes) + "\n    "
