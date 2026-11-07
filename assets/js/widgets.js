@@ -5420,6 +5420,212 @@
   }
 
   /* =================================================================
+     O alvo: exatidão contra precisão
+     ================================================================= */
+  function alvos(raiz) {
+    var c = moldura(raiz, 'O alvo: exatidão e precisão são coisas diferentes');
+
+    var CASOS = {
+      bom:   { rot: 'Exato e preciso',   vies: 0.00, disp: 0.10,
+               nota: 'O objetivo de todo experimento: sem viés e com pouca dispersão.' },
+      exato: { rot: 'Exato, impreciso',  vies: 0.00, disp: 0.42,
+               nota: 'Os tiros se espalham, mas em torno do centro certo. A <b>média</b> '
+                   + 'acerta, e repetir medidas resolve.' },
+      prec:  { rot: 'Preciso, inexato',  vies: 0.46, disp: 0.10,
+               nota: 'O caso traiçoeiro: resultados lindamente agrupados, todos no lugar '
+                   + 'errado. Repetir não corrige coisa alguma.' },
+      ruim:  { rot: 'Inexato e impreciso', vies: 0.46, disp: 0.42,
+               nota: 'O pior resultado, e o único honesto dos três ruins: o problema é '
+                   + 'visível de imediato.' }
+    };
+
+    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
+    var caso = 'bom', vies = 0.0, disp = 0.10, n = 12, semente = 4;
+
+    /* botoes dos quatro casos */
+    var cxB = el('div', { class: 'campo', style: 'flex-basis:100%' });
+    cxB.appendChild(el('label', { html: 'Os quatro casos clássicos' }));
+    var linhaB = el('div', { class: 'botoes' });
+    var botoes = {};
+    Object.keys(CASOS).forEach(function (k) {
+      var b = el('button', { texto: CASOS[k].rot });
+      linhaB.appendChild(b); botoes[k] = b;
+      b.addEventListener('click', function () {
+        caso = k; vies = CASOS[k].vies; disp = CASOS[k].disp;
+        desV.value = vies; desV.dispatchEvent(new Event('input'));
+        desD.value = disp; desD.dispatchEvent(new Event('input'));
+        caso = k;            /* o evento acima limpa o caso: repõe */
+        atualizar();
+      });
+    });
+    cxB.appendChild(linhaB); ctr.appendChild(cxB);
+
+    var ctr2 = el('div', { class: 'controles' }); c.appendChild(ctr2);
+    var desV = deslizante(ctr2, 'Erro sistemático (viés)', 0, 0.75, 0.01, 0,
+      function (v) { vies = v; caso = null; atualizar(); },
+      function (v) { return v.toFixed(2).replace('.', ','); });
+    var desD = deslizante(ctr2, 'Erro aleatório (dispersão)', 0.02, 0.6, 0.01, 0.10,
+      function (v) { disp = v; caso = null; atualizar(); },
+      function (v) { return v.toFixed(2).replace('.', ','); });
+    deslizante(ctr2, 'Número de tiros', 3, 60, 1, 12,
+      function (v) { n = v; atualizar(); });
+
+    var bot = el('button', { texto: 'Nova série de tiros' });
+    ctr2.appendChild(bot);
+    bot.addEventListener('click', function () {
+      semente = Math.floor(Math.random() * 1e6); atualizar();
+    });
+
+    var cv = el('canvas'); c.appendChild(cv);
+    var legenda = el('div', { class: 'legenda', html:
+      'Cada ponto azul é uma medida. O <b>centro do alvo</b> é o valor verdadeiro; a '
+      + '<b>cruz dourada</b> é a média das medidas. A distância entre as duas é o '
+      + '<b>erro sistemático</b>; o espalhamento dos pontos em torno da cruz é o '
+      + '<b>erro aleatório</b>.' });
+    c.appendChild(legenda);
+
+    var painel = cartoes(c, [
+      { rot: 'exatidão (viés)', k: 'vi' }, { rot: 'precisão (dispersão)', k: 'di' },
+      { rot: 'erro padrão da média', k: 'ep' }, { rot: 'erro típico de um tiro', k: 'et' }
+    ]);
+    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
+
+    function atualizar() {
+      Object.keys(botoes).forEach(function (k) {
+        botoes[k].className = (k === caso) ? 'ativo' : '';
+      });
+
+      /* gerador reprodutivel */
+      var s = semente || 1;
+      function rnd() { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; }
+      function nrm() {
+        var u1 = Math.max(1e-9, rnd()), u2 = rnd();
+        return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+      }
+
+      /* o vies desloca na diagonal superior direita, para ficar visivel */
+      var ang = -Math.PI / 5;
+      var bx = vies * Math.cos(ang), by = vies * Math.sin(ang);
+      var pts = [], i;
+      for (i = 0; i < n; i++)
+        pts.push({ x: bx + disp * nrm(), y: by + disp * nrm() });
+
+      var mx = 0, my = 0;
+      for (i = 0; i < n; i++) { mx += pts[i].x; my += pts[i].y; }
+      mx /= n; my /= n;
+
+      var somaR2 = 0, somaD2 = 0;
+      for (i = 0; i < n; i++) {
+        somaR2 += Math.pow(pts[i].x - mx, 2) + Math.pow(pts[i].y - my, 2);
+        somaD2 += pts[i].x * pts[i].x + pts[i].y * pts[i].y;
+      }
+      var sd = Math.sqrt(somaR2 / (2 * (n - 1)));      /* dispersão por eixo */
+      var viesObs = Math.hypot(mx, my);
+      var ep = sd / Math.sqrt(n);
+      var erroTipico = Math.sqrt(somaD2 / n);          /* erro quadrático médio total */
+
+      painel({
+        vi: M.fmt(viesObs, 3), di: M.fmt(sd, 3),
+        ep: M.fmt(ep, 3), et: M.fmt(erroTipico, 3)
+      });
+
+      /* ---------- desenho ---------- */
+      var p = G.preparar(cv, 330);
+      var ct = p.ct;
+      var cx = p.L / 2, cy = p.A / 2;
+      var R = Math.min(p.L, p.A) / 2 - 14;
+      var esc = R / 1.0;                               /* 1 unidade = raio do alvo */
+
+      /* aneis do alvo */
+      var aneis = [[1.00, '#f3f5f8'], [0.78, '#e4e9f0'], [0.56, '#d3dbe6'],
+                   [0.34, '#bcc8d8'], [0.16, 'rgba(253,101,0,.30)']];
+      aneis.forEach(function (a) {
+        ct.beginPath(); ct.arc(cx, cy, R * a[0], 0, 2 * Math.PI);
+        ct.fillStyle = a[1]; ct.fill();
+        ct.strokeStyle = 'rgba(22,48,79,.18)'; ct.lineWidth = 1; ct.stroke();
+      });
+      /* mosca */
+      ct.beginPath(); ct.arc(cx, cy, R * 0.05, 0, 2 * Math.PI);
+      ct.fillStyle = G.COR.laranja || '#fd6500'; ct.fill();
+      /* cruz do centro verdadeiro */
+      ct.strokeStyle = 'rgba(22,48,79,.45)'; ct.lineWidth = 1;
+      ct.beginPath();
+      ct.moveTo(cx - R, cy); ct.lineTo(cx + R, cy);
+      ct.moveTo(cx, cy - R); ct.lineTo(cx, cy + R);
+      ct.stroke();
+
+      function X(v) { return cx + v * esc; }
+      function Y(v) { return cy + v * esc; }
+
+      /* circulo de dispersao: 2 sigma em torno da media dos tiros */
+      ct.beginPath(); ct.arc(X(mx), Y(my), 2 * sd * esc, 0, 2 * Math.PI);
+      ct.strokeStyle = 'rgba(31,78,121,.55)'; ct.lineWidth = 1.6;
+      ct.setLineDash([5, 4]); ct.stroke(); ct.setLineDash([]);
+
+      /* seta do vies: do centro verdadeiro ate a media */
+      if (viesObs * esc > 6) {
+        ct.strokeStyle = '#b5831f'; ct.lineWidth = 2.2;
+        ct.beginPath(); ct.moveTo(cx, cy); ct.lineTo(X(mx), Y(my)); ct.stroke();
+      }
+
+      /* os tiros */
+      for (i = 0; i < n; i++) {
+        ct.beginPath(); ct.arc(X(pts[i].x), Y(pts[i].y), 4.6, 0, 2 * Math.PI);
+        ct.fillStyle = 'rgba(31,78,121,.78)'; ct.fill();
+        ct.strokeStyle = '#fff'; ct.lineWidth = 1.3; ct.stroke();
+      }
+
+      /* cruz dourada na media */
+      ct.strokeStyle = '#b5831f'; ct.lineWidth = 2.8;
+      ct.beginPath();
+      ct.moveTo(X(mx) - 9, Y(my)); ct.lineTo(X(mx) + 9, Y(my));
+      ct.moveTo(X(mx), Y(my) - 9); ct.lineTo(X(mx), Y(my) + 9);
+      ct.stroke();
+
+      /* ---------- texto ---------- */
+      var exato = viesObs < 0.12, preciso = sd < 0.20;
+      var nome = exato ? (preciso ? 'exato e preciso' : 'exato, mas impreciso')
+                       : (preciso ? 'preciso, mas inexato' : 'inexato e impreciso');
+
+      var txt = 'Esta série é <b>' + nome + '</b>. '
+        + 'O viés observado é ' + M.fmt(viesObs, 3)
+        + ' e a dispersão é ' + M.fmt(sd, 3) + ' (em unidades do raio do alvo).';
+
+      if (caso) txt += '<br><br>' + CASOS[caso].nota;
+
+      txt += '<br><br><b>As duas qualidades são independentes.</b> '
+        + '<i>Exatidão</i> é a distância entre a cruz dourada e o centro, e só o '
+        + '<b>erro sistemático</b> a degrada. <i>Precisão</i> é o quanto os pontos se '
+        + 'agrupam entre si, e só o <b>erro aleatório</b> a degrada. Dá para ter uma sem '
+        + 'a outra, nas quatro combinações.';
+
+      txt += '<br><br><b>O que repetir medidas resolve.</b> Com ' + n + ' tiros, o erro '
+        + 'padrão da média é ' + M.fmt(sd, 3) + '/√' + n + ' = <b>' + M.fmt(ep, 3)
+        + '</b>: a cruz dourada fica cada vez mais estável. '
+        + (viesObs < 0.12
+            ? 'Como não há viés aqui, ela converge para o centro verdadeiro, e a média de '
+              + 'muitas medidas é tão boa quanto se queira.'
+            : '<b>Mas ela converge para o lugar errado</b>, a ' + M.fmt(viesObs, 3)
+              + ' do centro. Aumente o número de tiros e observe: o círculo tracejado '
+              + 'encolhe, a cruz para de tremer, e a distância até a mosca <b>não muda</b>.');
+
+      if (!exato && preciso) {
+        txt += '<br><br><b>Por que este é o caso perigoso.</b> O relatório sairia com uma '
+          + 'barra de erro pequena, de ±' + M.fmt(2 * ep, 3) + ', sobre um valor errado '
+          + 'por ' + M.fmt(viesObs, 3) + '. Isso é '
+          + M.fmt(viesObs / Math.max(ep, 1e-9), 0) + ' erros padrão de distância: o '
+          + 'resultado seria declarado com alta confiança e estaria errado. '
+          + '<b>A estatística dos dados não enxerga o viés</b>; só calibração, outro '
+          + 'método de medida ou comparação com um padrão o revelam.';
+      }
+
+      saida.innerHTML = txt;
+    }
+
+    registrarRedesenho(atualizar);
+  }
+
+  /* =================================================================
      Algarismos significativos e arredondamento
      ================================================================= */
   function algarismos(raiz) {
@@ -7090,6 +7296,7 @@
     coefsw: coefSW, escadaks: escadaKS,
     tamanhoamostral: tamanhoAmostral, curvaspoder: curvasPoder,
     algarismos: algarismos, instrumentos: instrumentos, tiposerro: tiposErro,
+    alvos: alvos,
     verossimilhanca: verossimilhanca, limitenormal: limiteNormal,
     propagacao: propagacao, polinomio: polinomio, naolinear: naoLinear
   };

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 1: Erros de medida e algarismos significativos | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070701">
-<script src="assets/js/comum.js?v=202611070701"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
+<script src="assets/js/comum.js?v=202611070715"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -209,9 +209,40 @@
     </div>
   </div>
 
+  <p>A imagem que fixa a distinção é o <strong>alvo</strong>. Cada tiro é uma medida, o
+  centro é o valor verdadeiro, e as duas qualidades aparecem como duas coisas visivelmente
+  diferentes: <em>onde</em> o grupo está e <em>quão apertado</em> ele é.</p>
+
+  <div data-widget="alvos"></div>
+
+  <div class="bloco def">
+    <span class="rotulo">Como ler o alvo</span>
+    <ul>
+      <li>A <strong>cruz dourada</strong> é a média dos tiros. Sua distância até o centro é
+      o <strong>erro sistemático</strong>, e é isso que a exatidão mede;</li>
+      <li>O <strong>círculo tracejado</strong> tem raio \(2\sigma\) e mede o espalhamento
+      dos tiros em torno da própria cruz: é o <strong>erro aleatório</strong>, e é isso que
+      a precisão mede;</li>
+      <li>A <strong>seta dourada</strong>, quando aparece, é o viés: o deslocamento que
+      nenhuma repetição corrige.</li>
+    </ul>
+    <p>Percorra os quatro botões e repare que o terceiro, <i>preciso mas inexato</i>, é o
+    único em que o grupo de tiros é bonito e a conclusão é falsa. Os outros três, ou acertam,
+    ou avisam que algo está errado.</p>
+  </div>
+
   <div class="bloco alerta">
     <span class="rotulo">Precisão alta dá falsa confiança</span>
-    <p>No simulador acima, ponha o erro sistemático em 0,6 e aumente o n até 200. Observe:</p>
+    <p>Carregue <i>Preciso, inexato</i> no alvo e arraste o número de tiros de 3 até 60.
+    Observe o que acontece com cada coisa:</p>
+    <ul>
+      <li>O círculo tracejado <strong>não</strong> encolhe, porque a dispersão de cada tiro
+      é a mesma, mas a cruz dourada <strong>para de tremer</strong>: o erro padrão da média
+      cai com \(1/\sqrt n\);</li>
+      <li>E a distância da cruz até a mosca <strong>não muda nada</strong>.</li>
+    </ul>
+    <p>O mesmo se vê no simulador da seção anterior, em números: ponha o erro sistemático em
+    0,6 e aumente o n até 200.</p>
     <ul>
       <li>O erro padrão da média despenca: de cerca de 0,06 para 0,02;</li>
       <li>A faixa azul de dispersão estreita visivelmente;</li>
@@ -582,6 +613,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070701"></script>
+<script src="assets/js/widgets.js?v=202611070715"></script>
 </body>
 </html>
