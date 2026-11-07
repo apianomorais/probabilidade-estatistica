@@ -5885,121 +5885,6 @@
   }
 
   /* =================================================================
-     Erro sistemático contra erro aleatório
-     ================================================================= */
-  function tiposErro(raiz) {
-    var c = moldura(raiz, 'Exatidão e precisão: os dois erros não são o mesmo');
-    var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
-
-    var vies = 0.6, disp = 0.35, n = 40, semente = 7;
-
-    deslizante(ctr, 'Erro sistemático (viés)', 0, 2, 0.05, 0.6,
-      function (v) { vies = v; atualizar(); },
-      function (v) { return v.toFixed(2).replace('.', ','); });
-    deslizante(ctr, 'Erro aleatório (σ)', 0.05, 1.2, 0.05, 0.35,
-      function (v) { disp = v; atualizar(); },
-      function (v) { return v.toFixed(2).replace('.', ','); });
-    deslizante(ctr, 'Número de medidas n', 5, 200, 1, 40,
-      function (v) { n = v; atualizar(); });
-
-    var bot = el('button', { texto: 'Nova série de medidas' });
-    ctr.appendChild(bot);
-    bot.addEventListener('click', function () { semente = Math.random() * 1e6; atualizar(); });
-
-    var cv = el('canvas'); c.appendChild(cv);
-    var legenda = el('div', { class: 'legenda', html:
-      'Linha verde: valor verdadeiro. Linha vinho tracejada: média das medidas. '
-      + 'A distância entre as duas é o <b>erro sistemático</b>; o espalhamento dos pontos '
-      + 'é o <b>erro aleatório</b>.' });
-    c.appendChild(legenda);
-    var painel = cartoes(c, [
-      { rot: 'média das medidas', k: 'm' }, { rot: 'desvio padrão s', k: 's' },
-      { rot: 'erro padrão da média', k: 'ep' }, { rot: 'distância da verdade', k: 'd' }
-    ]);
-    var saida = el('div', { class: 'saida' }); c.appendChild(saida);
-
-    var VERDADE = 10.0;
-
-    function atualizar() {
-      /* gerador reprodutivel */
-      var s = semente, i;
-      function rnd() {
-        s = (s * 1103515245 + 12345) % 2147483648;
-        return s / 2147483648;
-      }
-      var dados = [];
-      for (i = 0; i < n; i++) {
-        var u1 = Math.max(1e-9, rnd()), u2 = rnd();
-        var z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-        dados.push(VERDADE + vies + disp * z);
-      }
-      var media = dados.reduce(function (a, b) { return a + b; }, 0) / n;
-      var va = dados.reduce(function (a, b) { return a + (b - media) * (b - media); }, 0) / (n - 1);
-      var sd = Math.sqrt(va), ep = sd / Math.sqrt(n);
-
-      painel({
-        m: M.fmt(media, 4), s: M.fmt(sd, 4), ep: M.fmt(ep, 4),
-        d: M.fmt(media - VERDADE, 4)
-      });
-
-      var lim = Math.max(1.2, Math.abs(vies) + 3.2 * disp);
-      var g = G.eixos(cv, {
-        xmin: 0, xmax: n + 1, ymin: VERDADE - lim, ymax: VERDADE + lim, altura: 290,
-        rotX: 'ordem da medida', rotY: 'valor medido',
-        marcasX: G.marcasInteiras(1, n, 10),
-        formataY: function (v) { return M.fmt(v, 2); }
-      });
-      var ct = g.ct;
-
-      /* faixa de +-2s em torno da media */
-      ct.fillStyle = 'rgba(31,78,121,.10)';
-      ct.fillRect(g.X(g.xmin), g.Y(media + 2 * sd), g.X(g.xmax) - g.X(g.xmin),
-                  g.Y(media - 2 * sd) - g.Y(media + 2 * sd));
-
-      ct.strokeStyle = '#2e7d4f'; ct.lineWidth = 2;
-      ct.beginPath(); ct.moveTo(g.X(g.xmin), g.Y(VERDADE));
-      ct.lineTo(g.X(g.xmax), g.Y(VERDADE)); ct.stroke();
-
-      ct.strokeStyle = G.COR.vinho; ct.lineWidth = 2; ct.setLineDash([6, 4]);
-      ct.beginPath(); ct.moveTo(g.X(g.xmin), g.Y(media));
-      ct.lineTo(g.X(g.xmax), g.Y(media)); ct.stroke(); ct.setLineDash([]);
-
-      for (i = 0; i < n; i++) {
-        ct.fillStyle = 'rgba(31,78,121,.75)';
-        ct.beginPath(); ct.arc(g.X(i + 1), g.Y(dados[i]), 3.4, 0, 2 * Math.PI); ct.fill();
-      }
-
-      var txt = 'O valor verdadeiro é <b>' + VERDADE.toFixed(2).replace('.', ',')
-        + '</b>, e a média das ' + n + ' medidas deu <b>' + M.fmt(media, 4) + '</b>.';
-      txt += '<br><br><b>Erro aleatório</b>: o espalhamento, medido por s = '
-        + M.fmt(sd, 4) + '. Ele é <b>simétrico</b> em torno da média: tanto erra para mais '
-        + 'quanto para menos. Por isso <b>repetir medidas o reduz</b>: o erro padrão da '
-        + 'média é s/√n = ' + M.fmt(ep, 4) + ', e cai com √n.';
-      txt += '<br><br><b>Erro sistemático</b>: a distância entre a linha vinho e a verde, '
-        + 'aqui <b>' + M.fmt(media - VERDADE, 4) + '</b>. Ele desloca <i>todas</i> as '
-        + 'medidas no mesmo sentido, e <b>repetir não adianta nada</b>. '
-        + (Math.abs(vies) < 0.05
-            ? 'Com o viés em zero, a média converge para o valor verdadeiro: é o caso ideal.'
-            : 'Aumente n até 200 e observe: o erro padrão despenca, a faixa azul estreita, '
-              + 'e a distância para a verdade <b>não muda</b>. O resultado fica cada vez '
-              + 'mais <i>preciso</i> e continua igualmente <i>inexato</i>.');
-      txt += '<br><br><b>A armadilha.</b> Um relatório que declare '
-        + M.fmt(media, 3) + ' ± ' + M.fmt(ep, 3)
-        + ' está dizendo que conhece o valor com essa precisão'
-        + (Math.abs(media - VERDADE) > 2 * ep
-            ? ', e está <b>errado por mais de 2 erros padrão</b>, porque a incerteza '
-              + 'declarada só contabiliza a parte aleatória.'
-            : '.')
-        + ' O erro sistemático <b>não aparece na estatística dos dados</b>. Só calibração, '
-        + 'medição por outro método ou comparação com um padrão o revelam.';
-
-      saida.innerHTML = txt;
-    }
-
-    registrarRedesenho(atualizar);
-  }
-
-  /* =================================================================
      Calculadora de tamanho amostral
      ================================================================= */
   function tamanhoAmostral(raiz) {
@@ -7295,8 +7180,7 @@
     naoparametrico: naoParametrico,
     coefsw: coefSW, escadaks: escadaKS,
     tamanhoamostral: tamanhoAmostral, curvaspoder: curvasPoder,
-    algarismos: algarismos, instrumentos: instrumentos, tiposerro: tiposErro,
-    alvos: alvos,
+    algarismos: algarismos, instrumentos: instrumentos, alvos: alvos,
     verossimilhanca: verossimilhanca, limitenormal: limiteNormal,
     propagacao: propagacao, polinomio: polinomio, naolinear: naoLinear
   };
