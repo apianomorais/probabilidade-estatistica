@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 13: Testes qui-quadrado | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
-<script src="assets/js/comum.js?v=202611070715"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070722">
+<script src="assets/js/comum.js?v=202611070722"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -66,7 +66,7 @@
 
 <main class="conteudo">
 
-  <p class="chapeu">Módulo 13 · 3 horas</p>
+  <p class="chapeu">Módulo 13 · 3 horas · Unidade 4</p>
   <h1>Testes qui-quadrado</h1>
   <p class="subtitulo">Quando os dados são contagens em categorias, e não medidas.</p>
 
@@ -134,7 +134,7 @@
     <span class="rotulo">Por que esta fórmula, e não outra</span>
     <p><strong>Por que a diferença?</strong> Porque é ela que mede a discrepância.</p>
     <p><strong>Por que ao quadrado?</strong> Pelo mesmo motivo da variância, no Módulo 3: sem o
-    quadrado, os desvios positivos e negativos se cancelariam: a soma de \(O_i - E_i\) é sempre
+    quadrado, os desvios positivos e negativos se cancelariam, porque a soma de \(O_i - E_i\) é sempre
     exatamente zero.</p>
     <p><strong>Por que dividir por \(E_i\)?</strong> Esta é a parte sutil e a mais importante.
     Uma discrepância de 10 unidades significa coisas muito diferentes conforme a escala: se
@@ -276,7 +276,7 @@
       Ainda assim \(6{,}072 &gt; 3{,}841\): <strong>a conclusão não muda</strong>, rejeitamos
       \(H_0\).</p>
       <p><strong>Quando a correção faria diferença?</strong> Num caso de fronteira. Se o
-      \(\chi^2\) sem correção fosse 4,0: logo acima do crítico 3,841: a correção poderia
+      \(\chi^2\) sem correção fosse 4,0 (logo acima do crítico 3,841) a correção poderia
       derrubá-lo para 3,2 e inverter a decisão. É justamente nesses casos que ela importa, e é
       por isso que convém declarar se foi aplicada.</p>
       <p><em>Há controvérsia:</em> alguns estatísticos consideram Yates conservadora demais, e
@@ -349,8 +349,8 @@
 
   <div class="bloco alerta">
     <span class="rotulo">Por que subtrair m</span>
-    <p>Se você estimou a média dos dados para construir as frequências esperadas: ao testar
-    aderência a uma Poisson, por exemplo: então usou os dados duas vezes, e o ajuste fica
+    <p>Se você estimou a média dos dados para construir as frequências esperadas (ao testar
+    aderência a uma Poisson, por exemplo) então usou os dados duas vezes, e o ajuste fica
     artificialmente bom. Cada parâmetro estimado consome um grau de liberdade.</p>
     <p>Testar aderência a uma <strong>uniforme</strong> não consome nada (\(m=0\)); a uma
     <strong>Poisson</strong> consome 1 (a média); a uma <strong>normal</strong>, 2 (média e
@@ -474,8 +474,8 @@
     <p>O teste detecta <em>associação</em>. A interpretação causal depende inteiramente do
     desenho do estudo, e não da estatística.</p>
     <p>No exemplo dos soníferos, a conclusão causal só é legítima se os pacientes tiverem sido
-    <strong>alocados aleatoriamente</strong> aos dois grupos. Se eles escolheram, ou se o médico
-    escolheu: os grupos podem diferir em gravidade, idade ou ansiedade, e o que se mediu foi
+    <strong>alocados aleatoriamente</strong> aos dois grupos. Se eles escolheram (ou se o médico
+    escolheu) os grupos podem diferir em gravidade, idade ou ansiedade, e o que se mediu foi
     isso.</p>
   </div>
 
@@ -584,6 +584,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070715"></script>
+<script src="assets/js/widgets.js?v=202611070722"></script>
 </body>
 </html>

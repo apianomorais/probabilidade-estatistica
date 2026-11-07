@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 10: Ajuste não linear e o qui-quadrado de ajuste | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
-<script src="assets/js/comum.js?v=202611070715"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070722">
+<script src="assets/js/comum.js?v=202611070722"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -180,8 +180,8 @@
     modelo em série de Taylor <em>nos parâmetros</em>:</p>
     <p>\[f(\mathbf p + \boldsymbol\delta, x_i)
     \approx f(\mathbf p, x_i) + \sum_j \frac{\partial f}{\partial p_j}\,\delta_j.\]</p>
-    <p>Chamando \(J_{ij} = \partial f/\partial p_j\) avaliada em \(x_i\): a
-    <strong>matriz jacobiana</strong>, e \(r_i = y_i - f(\mathbf p, x_i)\) os resíduos
+    <p>Chamando \(J_{ij} = \partial f/\partial p_j\) avaliada em \(x_i\) (a
+    <strong>matriz jacobiana</strong>), e \(r_i = y_i - f(\mathbf p, x_i)\) os resíduos
     atuais, o problema de achar \(\boldsymbol\delta\) vira <em>linear</em>:</p>
     <p>\[\chi^{2}(\boldsymbol\delta) \approx
     \sum_i w_i \left(r_i - \sum_j J_{ij}\delta_j\right)^{2}.\]</p>
@@ -480,7 +480,7 @@
         \(0{,}4991 \pm 0{,}0051\). Essa é uma verificação independente da lei do pêndulo, e
         é o que distingue <em>medir uma constante</em> de <em>testar uma teoria</em>.</p>
         <p>A desvantagem é previsível: ao gastar um grau de liberdade estimando \(b\),
-        perde-se precisão em \(g\): 0,05 aqui contra 0,06 lá, valores comparáveis neste
+        perde-se precisão em \(g\) (0,05 aqui contra 0,06 lá), valores comparáveis neste
         caso. A regra geral é: <strong>se a teoria é confiável, imponha-a e ganhe precisão;
         se é o que você quer testar, deixe o parâmetro livre</strong>.</p>
       </div>
@@ -498,7 +498,7 @@
     \(2{,}355\sigma = 14{,}1\) canais: a <strong>resolução do detector</strong>. O fundo
     ajustado é \(C = 10{,}3 \pm 2{,}0\) contagens.</p>
     <p>Com \(\chi^2_\nu = 0{,}94\) e \(p = 0{,}47\), o ajuste é exemplar. E note a precisão
-    assimétrica: \(\mu\) é determinado a 0,7%, enquanto \(C\) só a 20%: porque há poucos
+    assimétrica: \(\mu\) é determinado a 0,7%, enquanto \(C\) só a 20%, porque há poucos
     canais de fundo puro para determiná-lo.</p>
   </div>
 
@@ -569,6 +569,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070715"></script>
+<script src="assets/js/widgets.js?v=202611070722"></script>
 </body>
 </html>

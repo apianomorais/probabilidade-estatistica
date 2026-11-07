@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 14: Espaço amostral, eventos e axiomas | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
-<script src="assets/js/comum.js?v=202611070715"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070722">
+<script src="assets/js/comum.js?v=202611070722"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -53,20 +53,20 @@
   <ol>
     <li><a href="#s1">1. Experimentos aleatórios</a></li>
     <li><a href="#sh">2. De onde veio a probabilidade</a></li>
-    <li><a href="#s2">3. Espaço amostral</a></li>
-    <li><a href="#s3">4. Álgebra de eventos</a></li>
-    <li><a href="#s4">5. Axiomas de Kolmogorov</a></li>
-    <li><a href="#s5">6. Consequências dos axiomas</a></li>
-    <li><a href="#s6">7. Regra de Laplace</a></li>
-    <li><a href="#s7">8. Probabilidade geométrica</a></li>
-    <li><a href="#s8">9. Aplicações em Física</a></li>
-    <li><a href="#s9">10. Exercícios propostos</a></li>
+    <li><a href="#s2">2. Espaço amostral</a></li>
+    <li><a href="#s3">3. Álgebra de eventos</a></li>
+    <li><a href="#s4">4. Axiomas de Kolmogorov</a></li>
+    <li><a href="#s5">5. Consequências dos axiomas</a></li>
+    <li><a href="#s6">6. Regra de Laplace</a></li>
+    <li><a href="#s7">7. Probabilidade geométrica</a></li>
+    <li><a href="#s8">8. Aplicações em Física</a></li>
+    <li><a href="#s9">9. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
-  <p class="chapeu">Módulo 14 · 3 horas</p>
+  <p class="chapeu">Módulo 14 · 3 horas · Complementar</p>
   <h1>Espaço amostral, eventos e os axiomas da probabilidade</h1>
   <p class="subtitulo">Do lançamento de um dado à irreversibilidade da Segunda Lei.</p>
 
@@ -99,7 +99,7 @@
   <div class="bloco alerta">
     <span class="rotulo">Atenção conceitual</span>
     <p>A aleatoriedade pode ser <strong>epistêmica</strong>: o dado obedece à mecânica clássica,
-    mas ignoramos as condições iniciais com precisão suficiente, ou <strong>intrínseca</strong>: o resultado quântico não é determinado nem em princípio. O formalismo matemático que vamos
+    mas ignoramos as condições iniciais com precisão suficiente (ou <strong>intrínseca</strong>) o resultado quântico não é determinado nem em princípio. O formalismo matemático que vamos
     construir é <em>o mesmo</em> nos dois casos. Essa é justamente a força da teoria: ela não
     precisa saber por que você ignora algo.</p>
   </div>
@@ -171,8 +171,8 @@
       todas as três reaparecerão neste curso: enumerar <em>todos</em> os casos possíveis em um
       espaço equiprovável; incluir cenários que não ocorreriam de fato, só para manter a
       equiprobabilidade; e usar a probabilidade como base para uma <strong>decisão</strong>: o
-      embrião do conceito de valor esperado, que Huygens formalizaria três anos depois e que
-      estudaremos no Módulo 3.</p>
+      embrião do conceito de valor esperado, que Huygens formalizaria três anos depois e
+      que o Módulo 3 formaliza.</p>
     </div>
   </details>
 
@@ -209,14 +209,14 @@
     <p>Repare na coluna das datas. Entre a pergunta de um jogador sobre moedas de ouro e a
     afirmação de Born de que a função de onda só fornece probabilidades passam-se 272 anos, e a
     matemática usada é, no essencial, a mesma. Os axiomas de Kolmogorov, que você estudará na
-    seção 5, descrevem igualmente bem o dado do Cavaleiro de Méré, a agitação térmica de um gás
+    seção 4, descrevem igualmente bem o dado do Cavaleiro de Méré, a agitação térmica de um gás
     e o decaimento de um núcleo.</p>
     <p>É raro que uma ferramenta construída para um fim tão modesto sirva tão bem a fins tão
     distantes. Vale guardar esse espanto.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s2">3. Espaço amostral</h2>
+  <h2 id="s2">2. Espaço amostral</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
@@ -279,7 +279,7 @@
     duplo-6 é \(1/36\), e \(24 \times 1/36 = 2/3\) também. As apostas deveriam ser equivalentes.</p>
     <p>O erro está em <em>somar</em> probabilidades de eventos que não são mutuamente
     exclusivos: os quatro lançamentos podem dar 6 simultaneamente. Fazendo a conta certa, pelo
-    complementar (seção 7):</p>
+    complementar (seção 6):</p>
     <p>\[P(\text{pelo menos um 6 em 4}) = 1-\left(\tfrac56\right)^4 \approx 0{,}5177,\]</p>
     <p>\[P(\text{pelo menos um duplo-6 em 24}) = 1-\left(\tfrac{35}{36}\right)^{24} \approx 0{,}4914.\]</p>
     <p>A primeira aposta é ligeiramente favorável; a segunda, ligeiramente desfavorável. A
@@ -293,12 +293,12 @@
   <div data-widget="dados2"></div>
 
   <p>Com poucos lançamentos, as barras ficam desarrumadas. Com dez mil, encaixam-se quase
-  perfeitamente na linha teórica. Essa convergência tem nome: <strong>lei dos grandes
-  números</strong>, demonstrada por Jacob Bernoulli em 1713, e é o que liga a definição
+  perfeitamente na linha teórica. Essa convergência tem nome (<strong>lei dos grandes
+  números</strong>, demonstrada por Jacob Bernoulli em 1713), e é o que liga a definição
   frequentista à definição clássica.</p>
 
   <!-- ================================================== -->
-  <h2 id="s3">4. Eventos e a álgebra de conjuntos</h2>
+  <h2 id="s3">3. Eventos e a álgebra de conjuntos</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
@@ -349,15 +349,15 @@
   resultados possíveis de medida. Esse conceito será decisivo no Módulo 16.</p>
 
   <!-- ================================================== -->
-  <h2 id="s4">5. Os axiomas de Kolmogorov</h2>
+  <h2 id="s4">4. Os axiomas de Kolmogorov</h2>
 
   <h3>Três caminhos para definir probabilidade</h3>
 
   <div class="bloco">
     <span class="rotulo">1. Clássica (Laplace, 1812)</span>
     <p>Se \(\Omega\) é finito e os resultados são igualmente prováveis,
-    \(P(A) = |A|/|\Omega|\). <strong>Problema:</strong> é circular: define probabilidade usando
-    "igualmente prováveis", e não se aplica a \(\Omega\) infinito.</p>
+    \(P(A) = |A|/|\Omega|\). <strong>Problema:</strong> é circular (define probabilidade usando
+    "igualmente prováveis"), e não se aplica a \(\Omega\) infinito.</p>
   </div>
 
   <div class="bloco">
@@ -408,11 +408,11 @@
   </div>
 
   <div class="destaque">
-    Tudo o que se segue: em todo o curso: é <strong>consequência lógica</strong> destes três enunciados.
+    Tudo o que se segue (em todo o curso) é <strong>consequência lógica</strong> destes três enunciados.
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s5">6. Consequências dos axiomas</h2>
+  <h2 id="s5">5. Consequências dos axiomas</h2>
 
   <div class="bloco">
     <span class="rotulo">Teorema 1: \(P(\varnothing)=0\)</span>
@@ -481,7 +481,7 @@
       \(P(A\cap B^c)=0{,}6-0{,}3=\mathbf{0{,}3}\).</p>
       <p><strong>(d)</strong> Analogamente \(P(A^c\cap B)=0{,}2\). Os eventos "só \(A\)" e
       "só \(B\)" são disjuntos, então a resposta é \(0{,}3+0{,}2=\mathbf{0{,}5}\).</p>
-      <p><em>Verificação:</em> \(0{,}3+0{,}2+0{,}3+0{,}2=1\) ✓: as quatro regiões particionam
+      <p><em>Verificação:</em> \(0{,}3+0{,}2+0{,}3+0{,}2=1\) ✓, e as quatro regiões particionam
       \(\Omega\). Confira os números no simulador acima.</p>
     </div>
   </details>
@@ -509,7 +509,7 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s6">7. A regra de Laplace</h2>
+  <h2 id="s6">6. A regra de Laplace</h2>
 
   <p>Se \(\Omega=\{\omega_1,\dots,\omega_N\}\) é finito e cada resultado tem a mesma
   probabilidade \(p\), então por (A2) e pelo Teorema 2:
@@ -611,7 +611,7 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s7">8. Probabilidade geométrica</h2>
+  <h2 id="s7">7. Probabilidade geométrica</h2>
 
   <p>Se \(\Omega\) é um contínuo, cada ponto tem probabilidade zero e a regra \(|A|/|\Omega|\)
   vira \(\infty/\infty\). A generalização natural troca <em>contagem</em> por <strong>medida</strong>: comprimento, área, volume. Se o ponto é escolhido uniformemente em \(\Omega\subset\mathbb{R}^n\):</p>
@@ -673,7 +673,7 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s8">9. Aplicações em Física</h2>
+  <h2 id="s8">8. Aplicações em Física</h2>
 
   <div class="bloco fisica">
     <span class="rotulo">Microestados e o postulado fundamental</span>
@@ -741,7 +741,7 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s9">10. Exercícios propostos</h2>
+  <h2 id="s9">9. Exercícios propostos</h2>
 
   <ol>
     <li>Três moedas honestas são lançadas. Descreva \(\Omega\) e calcule a probabilidade de:
@@ -791,6 +791,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070715"></script>
+<script src="assets/js/widgets.js?v=202611070722"></script>
 </body>
 </html>

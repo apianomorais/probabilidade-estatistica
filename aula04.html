@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 4: Variáveis contínuas e a Normal | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
-<script src="assets/js/comum.js?v=202611070715"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070722">
+<script src="assets/js/comum.js?v=202611070722"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -56,18 +56,18 @@
     <li><a href="#s3">3. Uniforme</a></li>
     <li><a href="#s4">4. Exponencial</a></li>
     <li><a href="#sh">5. A história da curva em sino</a></li>
-    <li><a href="#s5">6. Distribuição normal</a></li>
-    <li><a href="#s6">7. Padronização e tabela z</a></li>
-    <li><a href="#s7">8. Teorema Central do Limite</a></li>
+    <li><a href="#s5">5. Distribuição normal</a></li>
+    <li><a href="#s6">6. Padronização e tabela z</a></li>
+    <li><a href="#s7">7. Teorema Central do Limite</a></li>
     <li><a href="#sn">9. Os dados são normais?</a></li>
-    <li><a href="#s8">10. Aplicações em Física</a></li>
-    <li><a href="#s9">11. Exercícios propostos</a></li>
+    <li><a href="#s8">8. Aplicações em Física</a></li>
+    <li><a href="#s9">9. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
-  <p class="chapeu">Módulo 4 · 3 horas</p>
+  <p class="chapeu">Módulo 4 · 3 horas · Unidade 2</p>
   <h1>Variáveis aleatórias contínuas e a distribuição normal</h1>
   <p class="subtitulo">Densidades, a curva de Gauss e o teorema que explica por que ela está em toda parte.</p>
 
@@ -257,7 +257,7 @@
   resolveu o problema e indicou onde procurar; <strong>Ceres</strong> foi reencontrado quase
   exatamente onde ele previu.</p>
 
-  <p>O método que ele usou, e publicou em 1809: supunha que os erros de observação seguem a
+  <p>O método que ele usou (e publicou em 1809) supunha que os erros de observação seguem a
   curva em sino, e disso deduzia que a melhor estimativa é a que minimiza a soma dos quadrados
   dos erros: o <strong>método dos mínimos quadrados</strong>, que estudaremos no Módulo 8.
   Adrien-Marie Legendre havia publicado o método em 1805, sem a justificativa probabilística, e a
@@ -284,7 +284,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s5">6. A distribuição normal (gaussiana)</h2>
+  <h2 id="s5">5. A distribuição normal (gaussiana)</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
@@ -330,7 +330,7 @@
   <div data-widget="normal"></div>
 
   <!-- ================================================== -->
-  <h2 id="s6">7. Padronização e a regra 68–95–99,7</h2>
+  <h2 id="s6">6. Padronização e a regra 68–95–99,7</h2>
 
   <div class="bloco def">
     <span class="rotulo">Variável padronizada</span>
@@ -375,13 +375,13 @@
       <p><strong>(d)</strong> Agora o caminho é inverso: procuramos \(z\) com \(\Phi(z)=0{,}95\),
       que a tabela dá como \(z = 1{,}645\). Desfazendo a padronização:</p>
       <p>\[x = \mu + z\sigma = 170 + 1{,}645 \times 8 \approx \mathbf{183{,}2\ \text{cm}}.\]</p>
-      <p>Confira todos os quatro itens no simulador da seção 6: ajuste μ = 170 e σ = 8 e use os
+      <p>Confira todos os quatro itens no simulador da seção 5: ajuste μ = 170 e σ = 8 e use os
       botões ±1σ e ±2σ.</p>
     </div>
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s7">8. O Teorema Central do Limite</h2>
+  <h2 id="s7">7. O Teorema Central do Limite</h2>
 
   <div class="bloco def">
     <span class="rotulo">Enunciado</span>
@@ -396,7 +396,7 @@
   </div>
 
   <p>Observe que média e variância de \(\bar X\) já sabíamos calcular desde o Módulo 3: o
-  conteúdo <em>novo</em> e surpreendente do TCL é a <strong>forma</strong> da distribuição: ela
+  conteúdo <em>novo</em> e surpreendente do TCL é a <strong>forma</strong> da distribuição, que
   se torna gaussiana, mesmo partindo de algo totalmente diferente.</p>
 
   <div data-widget="tcl"></div>
@@ -461,8 +461,8 @@
   <!-- ================================================== -->
   <h2 id="sn">9. Os dados são normais?</h2>
 
-  <p>Boa parte dos métodos dos próximos módulos: o teste t, o intervalo de confiança da
-  variância, a regressão: supõe que os dados vêm de uma população normal. Essa suposição precisa
+  <p>Boa parte dos métodos dos próximos módulos (o teste t, o intervalo de confiança da
+  variância, a regressão) supõe que os dados vêm de uma população normal. Essa suposição precisa
   ser <strong>verificada</strong>, não assumida.</p>
 
   <div class="bloco alerta">
@@ -561,7 +561,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s8">10. Aplicações em Física</h2>
+  <h2 id="s8">8. Aplicações em Física</h2>
 
   <div class="bloco fisica">
     <span class="rotulo">Distribuição de Maxwell–Boltzmann</span>
@@ -599,7 +599,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s9">11. Exercícios propostos</h2>
+  <h2 id="s9">9. Exercícios propostos</h2>
 
   <ol>
     <li>Seja \(P(x) = Cx^2\) para \(0\le x\le 3\). Encontre \(C\), \(\langle x\rangle\),
@@ -655,6 +655,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070715"></script>
+<script src="assets/js/widgets.js?v=202611070722"></script>
 </body>
 </html>

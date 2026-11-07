@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 15: Técnicas de contagem | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
-<script src="assets/js/comum.js?v=202611070715"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070722">
+<script src="assets/js/comum.js?v=202611070722"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -53,20 +53,20 @@
   <ol>
     <li><a href="#s1">1. Por que contar</a></li>
     <li><a href="#sh">2. Uma história antiga</a></li>
-    <li><a href="#s2">3. Princípio fundamental</a></li>
-    <li><a href="#s3">4. Permutações</a></li>
-    <li><a href="#s4">5. Arranjos</a></li>
-    <li><a href="#s5">6. Combinações</a></li>
-    <li><a href="#s6">7. Quadro-resumo</a></li>
-    <li><a href="#s7">8. Binômio e triângulo de Pascal</a></li>
-    <li><a href="#s8">9. Microestados e estatísticas</a></li>
-    <li><a href="#s9">10. Exercícios propostos</a></li>
+    <li><a href="#s2">2. Princípio fundamental</a></li>
+    <li><a href="#s3">3. Permutações</a></li>
+    <li><a href="#s4">4. Arranjos</a></li>
+    <li><a href="#s5">5. Combinações</a></li>
+    <li><a href="#s6">6. Quadro-resumo</a></li>
+    <li><a href="#s7">7. Binômio e triângulo de Pascal</a></li>
+    <li><a href="#s8">8. Microestados e estatísticas</a></li>
+    <li><a href="#s9">9. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
-  <p class="chapeu">Módulo 15 · 3 horas</p>
+  <p class="chapeu">Módulo 15 · 3 horas · Complementar</p>
   <h1>Técnicas de contagem</h1>
   <p class="subtitulo">Permutações, arranjos e combinações, e a multiplicidade de um sistema físico.</p>
 
@@ -151,7 +151,7 @@
     <p>É exatamente essa a pergunta que Boltzmann faria duzentos anos depois, ao contar de
     quantas maneiras as moléculas de um gás podem se distribuir. A combinatória que você vai
     aprender aqui para resolver problemas de baralho é, literalmente, a mesma que fornece a
-    entropia de um sistema físico. Voltaremos a isso na seção 9.</p>
+    entropia de um sistema físico. Voltaremos a isso na seção 8.</p>
   </div>
 
   <h3>De onde vem a notação</h3>
@@ -163,7 +163,7 @@
   conveniente.</p>
 
   <!-- ================================================== -->
-  <h2 id="s2">3. O princípio fundamental da contagem</h2>
+  <h2 id="s2">2. O princípio fundamental da contagem</h2>
 
   <div class="bloco def">
     <span class="rotulo">Princípio multiplicativo</span>
@@ -202,7 +202,7 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s3">4. Permutações</h2>
+  <h2 id="s3">3. Permutações</h2>
 
   <h3>4.1 Permutação simples</h3>
   <div class="bloco def">
@@ -267,14 +267,14 @@
       </ul>
       <p>Pelo princípio aditivo (os casos são mutuamente excludentes):
       \(151\,200+151\,200+75\,600 = \mathbf{378\,000}\).</p>
-      <p><em>Verificação de sanidade:</em> \(378\,000/831\,600 \approx 0{,}4545 = 5/11\): exatamente
+      <p><em>Verificação de sanidade:</em> \(378\,000/831\,600 \approx 0{,}4545 = 5/11\), exatamente
       a fração de letras que são vogais. Faz sentido: por simetria, a probabilidade de a primeira
       posição ser vogal é a proporção de vogais no conjunto.</p>
     </div>
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s4">5. Arranjos</h2>
+  <h2 id="s4">4. Arranjos</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
@@ -288,18 +288,18 @@
 
   <div class="bloco alerta">
     <span class="rotulo">Arranjo com repetição</span>
-    <p>Se os objetos podem repetir-se: como nas placas do Exercício 15.1 ou nas senhas de um
-    cofre: cada uma das \(k\) posições tem \(n\) opções, e o total é \(n^k\). Não confunda:
+    <p>Se os objetos podem repetir-se (como nas placas do Exercício 15.1 ou nas senhas de um
+    cofre), cada uma das \(k\) posições tem \(n\) opções, e o total é \(n^k\). Não confunda:
     \(A_{n,k}\) proíbe repetição, \(n^k\) permite.</p>
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s5">6. Combinações</h2>
+  <h2 id="s5">5. Combinações</h2>
 
   <div class="bloco def">
     <span class="rotulo">Definição</span>
     <p>Uma <strong>combinação</strong> de \(n\) objetos tomados \(k\) a \(k\) é um
-    <strong>subconjunto</strong> de \(k\) elementos: a ordem é irrelevante:</p>
+    <strong>subconjunto</strong> de \(k\) elementos, em que a ordem é irrelevante:</p>
     <p>\[C_{n,k} = \binom{n}{k} = \frac{n!}{k!\,(n-k)!}\]</p>
   </div>
 
@@ -337,13 +337,13 @@
       <p>\[|\Omega| = \binom{60}{6} = \frac{60\cdot59\cdot58\cdot57\cdot56\cdot55}{720}
       = 50\,063\,860.\]</p>
       <p><strong>Sena:</strong> há exatamente um caso favorável, então
-      \(P = 1/50\,063\,860 \approx 2{,}0\times 10^{-8}\): cerca de 1 em 50 milhões.</p>
+      \(P = 1/50\,063\,860 \approx 2{,}0\times 10^{-8}\), ou cerca de 1 em 50 milhões.</p>
       <p><strong>Quadra:</strong> o jogo precisa conter 4 dos 6 números sorteados e 2 dos 54 não
       sorteados:</p>
       <p>\[|A| = \binom{6}{4}\binom{54}{2} = 15 \times 1431 = 21\,465
       \;\Longrightarrow\; P = \frac{21\,465}{50\,063\,860}\approx 4{,}3\times 10^{-4}.\]</p>
-      <p>Ou seja, cerca de 1 em 2332 jogos. Note a estrutura: <em>escolher alguns daqui e alguns
-      dali</em>, multiplicando as combinações: que reaparecerá em toda a disciplina.</p>
+      <p>Ou seja, cerca de 1 em 2332 jogos. Note a estrutura (<em>escolher alguns daqui e alguns
+      dali</em>, multiplicando as combinações) que reaparecerá em toda a disciplina.</p>
       <p><strong>Para dimensionar:</strong> a probabilidade de acertar a sena é comparável à de
       você escolher um segundo específico em um intervalo de 19 meses.</p>
     </div>
@@ -407,7 +407,7 @@
 
       <p><strong>Passo 5: Conferir em um caso pequeno.</strong></p>
       <p>Com \(n = 2\), a fórmula dá \(P(A) = 1 - \tfrac{365}{365}\cdot\tfrac{364}{365}
-      = \tfrac{1}{365} \approx 0{,}27\%\): que é exatamente o esperado: a segunda pessoa precisa
+      = \tfrac{1}{365} \approx 0{,}27\%\), que é exatamente o esperado: a segunda pessoa precisa
       acertar o único dia da primeira. Com \(n = 366\), um fator do produto se anula e
       \(P(A) = 1\), como manda o princípio da casa dos pombos. A fórmula passa nos dois testes.</p>
 
@@ -432,7 +432,7 @@
       é sobre <em>duas pessoas quaisquer</em>, e o número de pares é</p>
       <p>\[\binom{n}{2} = \frac{n(n-1)}{2},\]</p>
       <p>que cresce com o <strong>quadrado</strong> de \(n\). Com 23 pessoas são 253 pares, e aí 50% deixa de ser surpreendente.</p>
-      <p><em>(Para a outra pergunta: "alguém coincide comigo": seriam necessárias 253 <b>outras</b>
+      <p><em>(Para a outra pergunta: "alguém coincide comigo", seriam necessárias 253 <b>outras</b>
       pessoas, isto é, uma sala de 254. A diferença entre as duas perguntas é todo o problema.)</em></p>
     </div>
   </details>
@@ -472,7 +472,7 @@
   </details>
 
   <!-- ================================================== -->
-  <h2 id="s6">7. Quadro-resumo: qual fórmula usar?</h2>
+  <h2 id="s6">6. Quadro-resumo: qual fórmula usar?</h2>
 
   <div class="tabela-rolavel">
   <table>
@@ -499,7 +499,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s7">8. Binômio de Newton e o triângulo de Pascal</h2>
+  <h2 id="s7">7. Binômio de Newton e o triângulo de Pascal</h2>
 
   <div class="bloco def">
     <span class="rotulo">Teorema binomial</span>
@@ -524,7 +524,7 @@
   <h3>O triângulo de Pascal</h3>
 
   <p>Dispor os coeficientes \(\binom{n}{k}\) em linhas produz o triângulo. Cada número é a
-  soma dos dois imediatamente acima (a <strong>relação de Stifel</strong> da seção 6) e cada
+  soma dos dois imediatamente acima (a <strong>relação de Stifel</strong> da seção 5) e cada
   linha fornece de uma vez todos os coeficientes de \((x+y)^n\).</p>
 
   <p>Clique em qualquer célula do triângulo abaixo para ver o que ela significa:</p>
@@ -546,7 +546,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s8">9. Contando microestados</h2>
+  <h2 id="s8">8. Contando microestados</h2>
 
   <p>Toda a combinatória acima tem uma aplicação direta e central em Física: contar os
   microestados de um sistema. O número de microestados compatíveis com um macroestado é a
@@ -606,7 +606,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s9">10. Exercícios propostos</h2>
+  <h2 id="s9">9. Exercícios propostos</h2>
 
   <ol>
     <li>Quantos números de 4 algarismos distintos podem ser formados com os dígitos
@@ -635,7 +635,7 @@
       <li>\(P_n = n!\); com repetidos, \(n!/(n_1!\cdots n_r!)\); circular, \((n-1)!\);</li>
       <li>\(A_{n,k} = n!/(n-k)!\) ordena; \(C_{n,k} = A_{n,k}/k!\) esquece a ordem;</li>
       <li>Com repetição permitida: \(n^k\) se a ordem importa, \(\binom{n+k-1}{k}\) se não;</li>
-      <li>Binômio de Newton garante a normalização da binomial no próximo módulo;</li>
+      <li>Binômio de Newton garante a normalização da distribuição binomial (Módulo 3);</li>
       <li>Multiplicidade \(\Omega_{\text{mic}}\) e entropia \(S=k_B\ln\Omega_{\text{mic}}\).</li>
     </ul>
   </div>
@@ -654,6 +654,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070715"></script>
+<script src="assets/js/widgets.js?v=202611070722"></script>
 </body>
 </html>

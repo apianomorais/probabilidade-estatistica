@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 8: Regressão linear | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
-<script src="assets/js/comum.js?v=202611070715"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070722">
+<script src="assets/js/comum.js?v=202611070722"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -67,7 +67,7 @@
 
 <main class="conteudo">
 
-  <p class="chapeu">Módulo 8 · 3 horas</p>
+  <p class="chapeu">Módulo 8 · 3 horas · Unidade 3</p>
   <h1>Regressão linear e mínimos quadrados</h1>
   <p class="subtitulo">Da nuvem de pontos à reta, e da reta à constante física, com incerteza
   e tudo.</p>
@@ -151,8 +151,8 @@
     <span class="rotulo">Por que os quadrados?</span>
     <p>Minimizar \(\sum_i e_i\) não serve: resíduos positivos e negativos se cancelam, e
     infinitas retas absurdas dariam soma zero.</p>
-    <p>Minimizar \(\sum_i |e_i|\) seria defensável: é a regressão de desvios absolutos, mais
-    robusta a outliers, mas o módulo não é diferenciável no zero, não há solução fechada, e
+    <p>Minimizar \(\sum_i |e_i|\) seria defensável (é a regressão de desvios absolutos, mais
+    robusta a outliers), mas o módulo não é diferenciável no zero, não há solução fechada, e
     a solução pode não ser única.</p>
     <p>Minimizar \(\sum_i e_i^2\) resolve os dois problemas: o quadrado é positivo, suave e
     diferenciável, o que conduz a um sistema linear com <strong>solução única e explícita</strong>.
@@ -274,7 +274,7 @@
     <p>Logo o ponto crítico é mínimo: e, sendo \(S\) uma função quadrática, ele é
     <strong>global e único</strong>. Não há outro candidato a conferir.</p>
     <p>A exceção é instrutiva: se todos os \(x_i\) forem iguais, \(S_{xx}=0\), o determinante
-    zera, a matriz \(\mathbf{A}\) fica singular e o sistema não tem solução única: não há
+    zera, a matriz \(\mathbf{A}\) fica singular e o sistema não tem solução única, e não há
     reta alguma a ajustar. É exatamente o que acontece com o Anscombe IV se removermos o
     único ponto fora da linha vertical.</p>
   </div>
@@ -663,8 +663,8 @@
   <!-- ================================================== -->
   <h2 id="s10">10. Regressão forçada pela origem</h2>
 
-  <p>Quando a teoria <strong>exige</strong> que a reta passe pela origem: lei de Ohm, lei de
-  Hooke, segunda lei de Newton: pode-se ajustar \(\hat y = ax\) diretamente.</p>
+  <p>Quando a teoria <strong>exige</strong> que a reta passe pela origem (lei de Ohm, lei de
+  Hooke, segunda lei de Newton) pode-se ajustar \(\hat y = ax\) diretamente.</p>
 
   <div class="bloco def">
     <span class="rotulo">Minimizando com um só parâmetro</span>
@@ -747,6 +747,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070715"></script>
+<script src="assets/js/widgets.js?v=202611070722"></script>
 </body>
 </html>

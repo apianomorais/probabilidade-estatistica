@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 2: Estatística descritiva | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
-<script src="assets/js/comum.js?v=202611070715"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070722">
+<script src="assets/js/comum.js?v=202611070722"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -51,7 +51,7 @@
 <aside class="lateral">
   <h4>Neste módulo</h4>
   <ol>
-    <li><a href="#s1">1. A lógica se inverte</a></li>
+    <li><a href="#s1">1. De uma medida a um conjunto</a></li>
     <li><a href="#s2">2. População, amostra, variáveis</a></li>
     <li><a href="#s3">3. Tabelas de frequência</a></li>
     <li><a href="#s4">4. Histograma</a></li>
@@ -59,15 +59,15 @@
     <li><a href="#s6">6. Medidas de dispersão</a></li>
     <li><a href="#s7">7. Quartis e boxplot</a></li>
     <li><a href="#so">8. Outliers</a></li>
-    <li><a href="#s8">9. Assimetria</a></li>
-    <li><a href="#s9">10. Aplicações em Física</a></li>
-    <li><a href="#s10">11. Exercícios propostos</a></li>
+    <li><a href="#s8">8. Assimetria</a></li>
+    <li><a href="#s9">9. Aplicações em Física</a></li>
+    <li><a href="#s10">10. Exercícios propostos</a></li>
   </ol>
 </aside>
 
 <main class="conteudo">
 
-  <p class="chapeu">Módulo 2 · 3 horas</p>
+  <p class="chapeu">Módulo 2 · 3 horas · Unidade 1</p>
   <h1>Estatística descritiva</h1>
   <p class="subtitulo">Organizar, resumir e enxergar o que um conjunto de dados está dizendo.</p>
 
@@ -86,23 +86,40 @@
   <hr class="linha">
 
   <!-- ================================================== -->
-  <h2 id="s1">1. A lógica se inverte</h2>
+  <h2 id="s1">1. De uma medida para um conjunto de medidas</h2>
 
-  <p>Nos cinco módulos anteriores fizemos sempre o mesmo movimento: <strong>conhecíamos o
-  modelo</strong>: uma moeda honesta, uma binomial com \(n\) e \(p\) dados, uma normal com
-  \(\mu\) e \(\sigma\), e perguntávamos o que esperar dos dados.</p>
-
-  <p>A partir de agora o caminho é o inverso. <strong>Temos os dados e queremos descobrir o
-  modelo.</strong></p>
+  <p>O Módulo 1 tratou de <strong>uma</strong> medida: de onde vem seu erro, quantos
+  algarismos dela são confiáveis, como escrevê-la. Mas o experimentador quase nunca mede uma
+  vez só. Ele volta com uma lista de valores, e a pergunta muda de natureza:</p>
 
   <div class="destaque">
-    <strong>Probabilidade:</strong> dado o modelo, o que esperar dos dados?<br>
-    <strong>Estatística:</strong> dados os dados, o que dizer do modelo?
+    <span class="anuncio">A pergunta deste módulo</span>
+    Diante de um conjunto de medidas, o que dizer sobre ele em poucos números, sem mentir
+    pela omissão?
   </div>
 
-  <p>A estatística descritiva é o primeiro passo desse caminho inverso, e o mais humilde: antes
-  de inferir qualquer coisa, é preciso <em>olhar</em> para os dados. Resumi-los em poucos números
-  e em um ou dois gráficos. Esse passo parece trivial e é onde se cometem a maioria dos erros: quase sempre por resumir demais.</p>
+  <p>Já usamos duas respostas no módulo anterior, sem nomeá-las: a <strong>média</strong>,
+  ao combinar medidas repetidas, e o <strong>desvio padrão</strong>, ao estimar a dispersão.
+  Aqui elas são construídas com cuidado, ao lado das alternativas, e aparece a pergunta que
+  o Módulo 1 deixou em aberto: <em>quando a média é a medida-resumo certa, e quando ela
+  engana?</em></p>
+
+  <div class="bloco def">
+    <span class="rotulo">Onde este módulo fica no curso</span>
+    <p>Há dois caminhos possíveis entre modelo e dados, e vale saber qual estamos
+    percorrendo:</p>
+    <ul>
+      <li><strong>Probabilidade:</strong> dado o modelo, o que esperar dos dados? É o
+      caminho dos módulos 3 a 6, que constroem binomial, Poisson e normal a partir de
+      hipóteses;</li>
+      <li><strong>Estatística:</strong> dados os dados, o que dizer do modelo? É o caminho
+      das unidades 3 e 4, que ajustam curvas e testam hipóteses.</li>
+    </ul>
+    <p>A estatística descritiva vem antes dos dois, e é a mais humilde: antes de modelar ou
+    inferir qualquer coisa, é preciso <em>olhar</em> para os dados. Resumi-los em poucos
+    números e em um ou dois gráficos. O passo parece trivial e é onde se comete a maioria
+    dos erros, quase sempre por resumir demais.</p>
+  </div>
 
   <!-- ================================================== -->
   <h2 id="s2">2. População, amostra e tipos de variáveis</h2>
@@ -135,7 +152,7 @@
     <span class="rotulo">Por que a classificação importa</span>
     <p>Ela decide o que faz sentido calcular. Média de naipes não existe. Mediana de conceitos
     A/B/C existe, média não. E há a armadilha dos códigos numéricos: se você codifica
-    "masculino = 1, feminino = 2", o computador calculará alegremente uma média de 1,47: um
+    "masculino = 1, feminino = 2", o computador calculará alegremente uma média de 1,47, um
     número sem significado algum.</p>
   </div>
 
@@ -248,7 +265,7 @@
       todos os dados. A mediana, que só enxerga a <em>posição</em> dos valores e não a magnitude,
       ficou onde devia.</p>
       <p><strong>Sem o salário de 24 000:</strong> a média cai para R$ 2 050 e a mediana vai para
-      R$ 2 050: praticamente idênticas. A média se moveu R$ 2 195; a mediana, R$ 25.</p>
+      R$ 2 050, praticamente idênticas. A média se moveu R$ 2 195; a mediana, R$ 25.</p>
       <p>Esse é o sentido técnico de <strong>robustez</strong>: a mediana resiste a valores
       extremos, a média não. É por isso que se divulga a renda <em>mediana</em> de um país, e não
       a média.</p>
@@ -431,7 +448,7 @@
           Q_3 + 1{,}5\,IQR = 255{,}75 + 16{,}875 = 272{,}6.\]</p>
       <p>O valor <strong>410 está muito acima de 272,6</strong>: é um outlier. Provavelmente o
       sujeito se distraiu nessa tentativa.</p>
-      <p><strong>O efeito dele:</strong> com o 410, a média é 262,4 ms; sem ele, 249,0 ms: uma
+      <p><strong>O efeito dele:</strong> com o 410, a média é 262,4 ms; sem ele, 249,0 ms, uma
       diferença de 13 ms. A mediana, por sua vez, praticamente não se move. Cole esses dados no
       laboratório da seção 4 e veja o ponto isolado aparecer no boxplot.</p>
     </div>
@@ -524,7 +541,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s8">9. Assimetria</h2>
+  <h2 id="s8">8. Assimetria</h2>
 
   <p>A relação entre média, mediana e moda revela a forma da distribuição:</p>
 
@@ -561,7 +578,7 @@
   bem acima de zero, com a média visivelmente à direita da mediana.</p>
 
   <!-- ================================================== -->
-  <h2 id="s9">10. Aplicações em Física</h2>
+  <h2 id="s9">9. Aplicações em Física</h2>
 
   <div class="bloco fisica">
     <span class="rotulo">Descritiva no laboratório didático</span>
@@ -598,7 +615,7 @@
   </div>
 
   <!-- ================================================== -->
-  <h2 id="s10">11. Exercícios propostos</h2>
+  <h2 id="s10">10. Exercícios propostos</h2>
 
   <ol>
     <li>Classifique as variáveis: (a) tipo sanguíneo; (b) número de filhos; (c) temperatura em
@@ -645,6 +662,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070715"></script>
+<script src="assets/js/widgets.js?v=202611070722"></script>
 </body>
 </html>

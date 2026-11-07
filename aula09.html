@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 9: Ajuste de polinômios e mínimos quadrados ponderados | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
-<script src="assets/js/comum.js?v=202611070715"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070722">
+<script src="assets/js/comum.js?v=202611070722"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -183,7 +183,7 @@
     \quad\Longrightarrow\quad
     \mathbf{a}=(\mathbf{X}^{\mathsf T}\mathbf{X})^{-1}\mathbf{X}^{\mathsf T}\mathbf{y}\;}\]</p>
     <p>Verifique: o elemento \((j,k)\) de \(\mathbf{X}^{\mathsf T}\mathbf{X}\) é
-    \(\sum_i x_i^{\,j}x_i^{\,k} = S_{j+k}\): é a mesma matriz da seção anterior.</p>
+    \(\sum_i x_i^{\,j}x_i^{\,k} = S_{j+k}\), que é a mesma matriz da seção anterior.</p>
   </div>
 
   <div class="bloco fisica">
@@ -412,7 +412,7 @@
   <div class="bloco alerta">
     <span class="rotulo">Por que graus altos dão problema no computador</span>
     <p>A matriz \(\mathbf{X}^{\mathsf T}\mathbf{X}\) de um ajuste polinomial fica
-    <strong>mal condicionada</strong> rapidamente: suas colunas: \(1, x, x^2, x^3,\dots\): são quase paralelas quando os \(x\) estão todos positivos e numa faixa estreita.</p>
+    <strong>mal condicionada</strong> rapidamente: suas colunas (\(1, x, x^2, x^3,\dots\)) são quase paralelas quando os \(x\) estão todos positivos e numa faixa estreita.</p>
     <p>O resultado é que pequenos erros de arredondamento nos dados produzem variações
     grandes nos coeficientes. Na prática, acima do grau 5 ou 6 os coeficientes deixam de ser
     confiáveis em aritmética de precisão dupla.</p>
@@ -424,7 +424,7 @@
       <li><strong>Centralizar e escalar.</strong> Ajuste em \(u = (x-\bar x)/s_x\) em vez de
       \(x\). Isso sozinho resolve a maior parte dos casos, e é o que se deve fazer
       sempre;</li>
-      <li><strong>Polinômios ortogonais</strong>: Legendre, Chebyshev: cujas colunas são
+      <li><strong>Polinômios ortogonais</strong> (Legendre, Chebyshev) cujas colunas são
       ortogonais por construção, tornando \(\mathbf{X}^{\mathsf T}\mathbf{X}\) diagonal;</li>
       <li><strong>Não usar grau alto.</strong> Na esmagadora maioria dos problemas de Física
       experimental, grau 2 ou 3 é o suficiente. Se você precisa de grau 8, provavelmente o
@@ -551,6 +551,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070715"></script>
+<script src="assets/js/widgets.js?v=202611070722"></script>
 </body>
 </html>

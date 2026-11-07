@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Módulo 17: Testes de normalidade | Probabilidade &amp; Estatística</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="stylesheet" href="assets/css/estilo.css?v=202611070715">
-<script src="assets/js/comum.js?v=202611070715"></script>
+<link rel="stylesheet" href="assets/css/estilo.css?v=202611070722">
+<script src="assets/js/comum.js?v=202611070722"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
@@ -67,7 +67,7 @@
 
 <main class="conteudo">
 
-  <p class="chapeu">Módulo 17 · 3 horas</p>
+  <p class="chapeu">Módulo 17 · 3 horas · Complementar</p>
   <h1>Testes de normalidade</h1>
   <p class="subtitulo">Verificar a hipótese que sustenta quase tudo o que fizemos até aqui.</p>
 
@@ -89,8 +89,8 @@
   <h2 id="s1">1. Por que testar a normalidade</h2>
 
   <p>Vários métodos dos módulos anteriores supõem população normal: o teste t, o intervalo de
-  confiança para a variância, o teste qui-quadrado para \(\sigma^2\), e a regressão que veremos
-  no Módulo 8. Essa suposição precisa ser verificada, e não apenas assumida porque "quase tudo
+  confiança para a variância, o teste qui-quadrado para \(\sigma^2\), e a regressão
+  do Módulo 8. Essa suposição precisa ser verificada, e não apenas assumida porque "quase tudo
   é normal".</p>
 
   <div class="bloco alerta">
@@ -320,7 +320,7 @@
     <p>onde \(Z_1\) e \(Z_2\) são transformações que tornam \(g_1\) e \(g_2\) aproximadamente
     normais padrão sob \(H_0\).</p>
     <p><strong>A vantagem única:</strong> como \(Z_1\) e \(Z_2\) são reportados separadamente,
-    o teste indica <em>qual</em> aspecto da normalidade falhou: assimetria, caudas, ou ambos.
+    o teste indica <em>qual</em> aspecto da normalidade falhou, se assimetria, caudas, ou ambos.
     Nenhum outro teste desta lista faz isso.</p>
     <p><strong>Exige \(n \geq 8\)</strong>, e funciona melhor a partir de \(n = 20\).</p>
   </div>
@@ -363,8 +363,8 @@
 
   <div class="bloco def">
     <span class="rotulo">A maior distância entre duas curvas</span>
-    <p>Compara a função acumulada empírica \(F_n(x)\): uma escada que sobe \(1/n\) a cada
-    observação: com a acumulada teórica \(F(x)\):</p>
+    <p>Compara a função acumulada empírica \(F_n(x)\) (uma escada que sobe \(1/n\) a cada
+    observação) com a acumulada teórica \(F(x)\):</p>
     <p>\[D = \max_x \big|F_n(x) - F(x)\big|.\]</p>
     <p>É um teste geral: serve para <strong>qualquer</strong> distribuição, não só a normal.</p>
   </div>
@@ -377,7 +377,7 @@
   <div class="bloco alerta">
     <span class="rotulo">A armadilha dos parâmetros estimados</span>
     <p>O teste KS original supõe que \(\mu\) e \(\sigma\) são <strong>conhecidos de
-    antemão</strong>. Se você os estima dos próprios dados: como quase sempre faz: a
+    antemão</strong>. Se você os estima dos próprios dados (como quase sempre faz) a
     distribuição de \(D\) muda, e usar os valores críticos originais torna o teste
     <strong>conservador demais</strong>: ele quase nunca rejeita.</p>
     <p>A correção se chama <strong>teste de Lilliefors</strong>, e é ela que o simulador usa.
@@ -442,7 +442,7 @@
   <div class="bloco ex">
     <span class="rotulo">Enunciado</span>
     <p>Carregue o conjunto <strong>"Uniforme"</strong> no simulador: são os inteiros de 1 a 30,
-    perfeitamente uniformes: a distribuição menos normal que se pode imaginar entre as
+    perfeitamente uniformes, a distribuição menos normal que se pode imaginar entre as
     simétricas. O que os testes dizem?</p>
   </div>
   <details class="solucao">
@@ -524,8 +524,8 @@
       <p><strong>Como fazer no simulador.</strong> Não é preciso calcular os logaritmos à mão:
       no simulador da seção 3, clique no botão <i>Renda</i> para carregar os dados e depois
       escolha <b>"Logaritmo natural: ln x"</b> no seletor <i>Transformação a aplicar</i>,
-      logo abaixo da caixa de dados. Todo o painel: gráfico Q–Q, histograma e os quatro
-      testes: passa a se referir a \(\ln x\). Voltar para "Nenhuma" desfaz a transformação,
+      logo abaixo da caixa de dados. Todo o painel (gráfico Q–Q, histograma e os quatro
+      testes) passa a se referir a \(\ln x\). Voltar para "Nenhuma" desfaz a transformação,
       e dá para alternar entre as duas para comparar.</p>
       <p>Tomando o logaritmo natural de cada valor:</p>
       <div class="tabela-rolavel">
@@ -542,7 +542,7 @@
       <p>A assimetria caiu de 2,52 para 0,72, e os testes deixam de rejeitar. A distribuição
       original era <strong>log-normal</strong>.</p>
       <p><strong>Por que o log funciona aqui.</strong> Em processos onde os efeitos são
-      <em>multiplicativos</em>: a renda cresce em percentuais, não em valores absolutos: o
+      <em>multiplicativos</em> (a renda cresce em percentuais, não em valores absolutos) o
       logaritmo converte multiplicação em soma, e o TCL passa a valer na escala logarítmica.</p>
       <p><strong>O preço da transformação.</strong> Toda a inferência passa a valer para
       \(\log x\), não para \(x\). A média dos logaritmos, quando exponenciada, dá a
@@ -615,6 +615,6 @@
   Laboratório de Física Computacional Aplicada (LFCA) · Universidade Regional do Cariri</p>
 </footer>
 
-<script src="assets/js/widgets.js?v=202611070715"></script>
+<script src="assets/js/widgets.js?v=202611070722"></script>
 </body>
 </html>

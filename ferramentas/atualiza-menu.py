@@ -42,6 +42,17 @@ UNIDADES = [
     ("Módulos complementares", "Complementares", [14, 15, 16, 17, 18, 19, 20]),
 ]
 
+# o que vai no chapéu de cada página, logo acima do título
+CHAPEU = {
+    1: "Unidade 1", 2: "Unidade 1",
+    3: "Unidade 2", 4: "Unidade 2", 5: "Unidade 2", 6: "Unidade 2",
+    7: "Unidade 3", 8: "Unidade 3", 9: "Unidade 3", 10: "Unidade 3",
+    11: "Unidade 4", 12: "Unidade 4", 13: "Unidade 4",
+    14: "Complementar", 15: "Complementar", 16: "Complementar",
+    17: "Complementar", 18: "Complementar", 19: "Complementar",
+    20: "Complementar",
+}
+
 # ordem linear em que as setas anterior/proximo caminham
 ORDEM = [n for _, _, ns in UNIDADES for n in ns]
 
@@ -115,8 +126,26 @@ def main():
         else:
             print('AVISO: nenhum <nav class="menu"> em', p)
 
+        if p == "formulario.html" and pad_rod.search(texto):
+            tem = existentes()
+            ult = max((x for x in ORDEM if x in tem), default=None)
+            if ult:
+                rod = ('\n    <a href="aula%02d.html"><small>Último módulo</small>'
+                       '← %d. %s</a>'
+                       '\n    <a class="prox" href="index.html"><small>Voltar</small>'
+                       'Página inicial →</a>\n  ') % (ult, ult, TITULOS[ult][1])
+                novo_r = '<nav class="nav-aulas">%s</nav>' % rod
+                texto = pad_rod.sub(lambda _: novo_r, texto, count=1)
+
         m = re.match(r'aula(\d{2})\.html$', p)
         if m:
+            n = int(m.group(1))
+            if n in CHAPEU:
+                texto = re.sub(
+                    r'(<p class="chapeu">)Módulo \d+[^<]*(</p>)',
+                    lambda _: '%sMódulo %d · 3 horas · %s%s'
+                              % ('<p class="chapeu">', n, CHAPEU[n], '</p>'),
+                    texto, count=1)
             rod = monta_rodape(int(m.group(1)))
             if rod and pad_rod.search(texto):
                 novo = '<nav class="nav-aulas">%s</nav>' % rod
