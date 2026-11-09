@@ -6947,7 +6947,110 @@
     var c = moldura(raiz, 'Calculadora de valores críticos e de valor p');
     var ctr = el('div', { class: 'controles' }); c.appendChild(ctr);
 
-    var dist = 'z', tipo = 'bi', alfa = 0.05, gl = 10, obs = null;
+    var dist = 'z', tipo = 'bi', alfa = 0.05, obs = null;
+    var par = { nu: 10, v1: 5, v2: 10, n: 20, p: 0.5, m: 4, n1: 8, n2: 8 };
+
+    /* -------------------------------------------------------------
+       Cada distribuição se descreve por um objeto. As contínuas dão
+       densidade, acumulada e crítico da cauda direita; as discretas
+       dão a probabilidade pontual e o suporte, e os críticos saem de
+       varredura, porque num suporte discreto não existe, em geral, um
+       valor com área exatamente α.
+       ------------------------------------------------------------- */
+    var DIST = {
+      z: {
+        rot: 'Normal padrão (z)', estat: 'z', simetrica: true, campos: [],
+        dens: function (x) { return M.dNormal(x, 0, 1); },
+        acum: function (x) { return M.FNormal(x, 0, 1); },
+        critDir: function (a) { return M.zCritico(1 - a); },
+        faixa: function () { return [-4, 4]; },
+        onde: 'nos módulos 4 e 12'
+      },
+      t: {
+        rot: 't de Student', estat: 't', simetrica: true, campos: ['nu'],
+        dens: function (x) { return M.dT(x, par.nu); },
+        acum: function (x) { return M.FT(x, par.nu); },
+        critDir: function (a) { return M.tCritico(a, par.nu); },
+        faixa: function () { return [-5, 5]; },
+        onde: 'nos módulos 6, 11 e 12'
+      },
+      q: {
+        rot: 'Qui-quadrado (χ²)', estat: 'χ²', simetrica: false, campos: ['nu'],
+        dens: function (x) { return M.dQui(x, par.nu); },
+        acum: function (x) { return M.FQui(x, par.nu); },
+        critDir: function (a) { return M.quiCritico(a, par.nu); },
+        faixa: function () {
+          return [0, par.nu + 4 * Math.sqrt(2 * par.nu) + 6];
+        },
+        onde: 'nos módulos 10, 13 e 17'
+      },
+      f: {
+        rot: 'F de Snedecor', estat: 'F', simetrica: false, campos: ['v1', 'v2'],
+        dens: function (x) { return M.dF(x, par.v1, par.v2); },
+        acum: function (x) { return M.FF(x, par.v1, par.v2); },
+        critDir: function (a) { return M.fCritico(a, par.v1, par.v2); },
+        faixa: function () {
+          return [0, Math.max(5, M.fCritico(0.005, par.v1, par.v2) * 1.2)];
+        },
+        onde: 'nos módulos 8 e 19'
+      },
+      r: {
+        rot: 'Correlação de Pearson (r)', estat: 'r', simetrica: true, campos: ['n'],
+        dens: function (x) {
+          var nu = par.n - 2;
+          if (nu < 1 || Math.abs(x) >= 1) return 0;
+          return Math.exp(M.lnFatorial((nu - 1) / 2) - M.lnFatorial(nu / 2 - 1)
+            - 0.5 * Math.log(Math.PI)) * Math.pow(1 - x * x, nu / 2 - 1);
+        },
+        acum: function (x) {
+          var nu = par.n - 2;
+          if (nu < 1) return NaN;
+          if (x <= -1) return 0;
+          if (x >= 1) return 1;
+          return M.FT(x * Math.sqrt(nu / (1 - x * x)), nu);
+        },
+        critDir: function (a) { return M.rCritico(a, par.n); },
+        faixa: function () { return [-1, 1]; },
+        onde: 'no módulo 18'
+      },
+      bin: {
+        rot: 'Binomial (teste exato)', estat: 'k', discreta: true, campos: ['n', 'p'],
+        massa: function (k) { return M.pBinomial(par.n, k, par.p); },
+        acum: function (k) { return M.FBinomial(Math.floor(k), par.n, par.p); },
+        suporte: function () { return [0, par.n]; },
+        onde: 'no módulo 3'
+      },
+      poi: {
+        rot: 'Poisson (teste exato)', estat: 'k', discreta: true, campos: ['m'],
+        massa: function (k) { return M.pPoisson(k, par.m); },
+        acum: function (k) { return M.FPoisson(Math.floor(k), par.m); },
+        suporte: function () {
+          return [0, Math.ceil(par.m + 5 * Math.sqrt(par.m) + 6)];
+        },
+        onde: 'no módulo 3'
+      },
+      w: {
+        rot: 'Wilcoxon pareado (W⁺)', estat: 'W', discreta: true, campos: ['n'],
+        massa: function (k) {
+          return M.FWilcoxon(k, par.n) - (k > 0 ? M.FWilcoxon(k - 1, par.n) : 0);
+        },
+        acum: function (k) { return M.FWilcoxon(Math.floor(k), par.n); },
+        suporte: function () { return [0, par.n * (par.n + 1) / 2]; },
+        onde: 'no módulo 19'
+      },
+      u: {
+        rot: 'Mann-Whitney (U)', estat: 'U', discreta: true, campos: ['n1', 'n2'],
+        massa: function (k) {
+          return M.FMannWhitney(k, par.n1, par.n2)
+            - (k > 0 ? M.FMannWhitney(k - 1, par.n1, par.n2) : 0);
+        },
+        acum: function (k) { return M.FMannWhitney(Math.floor(k), par.n1, par.n2); },
+        suporte: function () { return [0, par.n1 * par.n2]; },
+        onde: 'no módulo 19'
+      }
+    };
+
+    function D() { return DIST[dist]; }
 
     function selecao(rot, opcoes, inicial, aoMudar) {
       var campo = el('div', { class: 'campo' });
@@ -6962,11 +7065,9 @@
       return campo;
     }
 
-    selecao('Distribuição', [
-      ['z', 'Normal padrão (z)'],
-      ['t', 't de Student'],
-      ['q', 'Qui-quadrado (χ²)']
-    ], 'z', function (v) { dist = v; ajustar(); atualizar(); });
+    selecao('Distribuição', Object.keys(DIST).map(function (k) {
+      return [k, DIST[k].rot];
+    }), 'z', function (v) { dist = v; ajustar(); atualizar(); });
 
     var campoTipo = selecao('Tipo de teste', [
       ['bi', 'Bilateral'],
@@ -6983,18 +7084,39 @@
       ['0.001', '0,001']
     ], '0.05', function (v) { alfa = Number(v); atualizar(); });
 
-    var campoGl = el('div', { class: 'campo' });
-    campoGl.appendChild(el('label', { html: 'Graus de liberdade ν' }));
-    var inpGl = el('input', { type: 'number', value: 10, min: 1, max: 300, step: 1 });
-    campoGl.appendChild(inpGl); ctr.appendChild(campoGl);
-    inpGl.addEventListener('input', function () {
-      var v = Math.round(Number(inpGl.value));
-      if (v >= 1 && v <= 300) { gl = v; atualizar(); }
+    /* campos de parâmetro, criados uma vez e exibidos conforme a escolha */
+    var ROT = {
+      nu: 'Graus de liberdade ν', v1: 'ν₁ do numerador', v2: 'ν₂ do denominador',
+      n: 'Tamanho da amostra n', p: 'Probabilidade p sob H₀',
+      m: 'Média m sob H₀', n1: 'n₁ do primeiro grupo', n2: 'n₂ do segundo grupo'
+    };
+    var LIM = {
+      nu: [1, 400, 1], v1: [1, 200, 1], v2: [1, 200, 1], n: [3, 400, 1],
+      p: [0.01, 0.99, 0.01], m: [0.1, 200, 0.1], n1: [2, 12, 1], n2: [2, 12, 1]
+    };
+    var SIM = { nu: 'ν', v1: 'ν₁', v2: 'ν₂', n: 'n', p: 'p', m: 'm',
+                n1: 'n₁', n2: 'n₂' };
+    var campos = {};
+    Object.keys(ROT).forEach(function (k) {
+      var campo = el('div', { class: 'campo' });
+      campo.appendChild(el('label', { html: ROT[k] }));
+      var inp = el('input', { type: 'number', value: par[k],
+        min: LIM[k][0], max: LIM[k][1], step: LIM[k][2] });
+      campo.appendChild(inp); ctr.appendChild(campo);
+      inp.addEventListener('input', function () {
+        var v = Number(inp.value);
+        if (v >= LIM[k][0] && v <= LIM[k][1]) {
+          par[k] = LIM[k][2] === 1 ? Math.round(v) : v;
+          atualizar();
+        }
+      });
+      campos[k] = campo;
     });
 
     var campoObs = el('div', { class: 'campo' });
     campoObs.appendChild(el('label', { html: 'Estatística observada <i>(opcional)</i>' }));
-    var inpObs = el('input', { type: 'number', step: 'any', placeholder: 'deixe vazio para só ver o crítico' });
+    var inpObs = el('input', { type: 'number', step: 'any',
+      placeholder: 'deixe vazio para só ver o crítico' });
     campoObs.appendChild(inpObs); ctr.appendChild(campoObs);
     inpObs.addEventListener('input', function () {
       obs = inpObs.value === '' ? null : Number(inpObs.value);
@@ -7002,91 +7124,111 @@
     });
 
     function ajustar() {
-      campoGl.style.display = dist === 'z' ? 'none' : '';
-      /* χ² à esquerda existe (teste para variância), mas o bilateral precisa dos dois cortes */
-      campoTipo.style.display = '';
+      Object.keys(campos).forEach(function (k) {
+        campos[k].style.display = D().campos.indexOf(k) >= 0 ? '' : 'none';
+      });
     }
     ajustar();
 
     var cv = el('canvas'); c.appendChild(cv);
-    c.appendChild(el('div', { class: 'legenda', html:
-      'Faixa azul: <b>região de não rejeição</b> de H₀ &nbsp;·&nbsp; '
-      + 'faixas vermelhas: <b>região crítica</b>, de área total α &nbsp;·&nbsp; '
-      + 'linhas tracejadas: valores críticos &nbsp;·&nbsp; linha verde: estatística observada' }));
+    var legenda = el('div', { class: 'legenda' }); c.appendChild(legenda);
 
     var painel = cartoes(c, [
       { rot: 'crítico inferior', k: 'ci' }, { rot: 'crítico superior', k: 'cs' },
-      { rot: 'estatística', k: 'ob' }, { rot: 'valor p', k: 'p' }
+      { rot: 'estatística', k: 'ob' }, { rot: 'valor p', k: 'p' },
+      { rot: 'α pedido', k: 'ap' }, { rot: 'α efetivo', k: 'ae' }
     ]);
     var saida = el('div', { class: 'saida' }); c.appendChild(saida);
 
-    function nomeEstat() { return dist === 'z' ? 'z' : (dist === 't' ? 't' : 'χ²'); }
+    function sinal(s) { return String(s).replace(/^-/, '−'); }
 
-    function densidade(x) {
-      if (dist === 'z') return M.dNormal(x, 0, 1);
-      if (dist === 't') return M.dT(x, gl);
-      return M.dQui(x, gl);
+    /* ---------- críticos ---------- */
+    /* contínuas: inversão direta. Discretas: o menor k cuja cauda não
+       passa de α, de modo que o teste é conservador. */
+    function criticoDiscretoDir(a) {
+      var sup = D().suporte(), k;
+      for (k = sup[0]; k <= sup[1]; k++) {
+        if (1 - D().acum(k - 1) <= a) return k;
+      }
+      return null;
     }
-
-    function acumulada(x) {
-      if (dist === 'z') return M.FNormal(x, 0, 1);
-      if (dist === 't') return M.FT(x, gl);
-      return M.FQui(x, gl);
-    }
-
-    /* devolve o valor cuja cauda DIREITA tem área a */
-    function criticoDireita(a) {
-      if (dist === 'z') return M.zCritico(1 - a);
-      if (dist === 't') return M.tCritico(a, gl);
-      return M.quiCritico(a, gl);
+    function criticoDiscretoEsq(a) {
+      var sup = D().suporte(), k;
+      for (k = sup[1]; k >= sup[0]; k--) {
+        if (D().acum(k) <= a) return k;
+      }
+      return null;
     }
 
     function atualizar() {
-      var ci = null, cs = null;
-      if (tipo === 'bi') {
-        if (dist === 'q') { ci = criticoDireita(1 - alfa / 2); cs = criticoDireita(alfa / 2); }
-        else { cs = criticoDireita(alfa / 2); ci = -cs; }
-      } else if (tipo === 'dir') {
-        cs = criticoDireita(alfa);
+      var d = D(), ci = null, cs = null, aeInf = 0, aeSup = 0;
+
+      if (d.discreta) {
+        if (tipo === 'bi') {
+          cs = criticoDiscretoDir(alfa / 2); ci = criticoDiscretoEsq(alfa / 2);
+        } else if (tipo === 'dir') {
+          cs = criticoDiscretoDir(alfa);
+        } else {
+          ci = criticoDiscretoEsq(alfa);
+        }
+        if (cs !== null) aeSup = 1 - d.acum(cs - 1);
+        if (ci !== null) aeInf = d.acum(ci);
+      } else if (d.simetrica) {
+        if (tipo === 'bi') { cs = d.critDir(alfa / 2); ci = -cs; }
+        else if (tipo === 'dir') cs = d.critDir(alfa);
+        else ci = -d.critDir(alfa);
       } else {
-        if (dist === 'q') ci = criticoDireita(1 - alfa);
-        else ci = -criticoDireita(alfa);
+        if (tipo === 'bi') { ci = d.critDir(1 - alfa / 2); cs = d.critDir(alfa / 2); }
+        else if (tipo === 'dir') cs = d.critDir(alfa);
+        else ci = d.critDir(1 - alfa);
       }
 
-      /* valor p */
+      /* ---------- valor p ---------- */
       var p = null;
       if (obs !== null && isFinite(obs)) {
-        var caudaDir = 1 - acumulada(obs), caudaEsq = acumulada(obs);
-        if (tipo === 'dir') p = caudaDir;
-        else if (tipo === 'esq') p = caudaEsq;
-        else p = dist === 'q'
-          ? Math.min(1, 2 * Math.min(caudaDir, caudaEsq))
-          : 2 * (1 - acumulada(Math.abs(obs)));
+        var dirCauda, esqCauda;
+        if (d.discreta) {
+          var k = Math.round(obs);
+          dirCauda = 1 - d.acum(k - 1);
+          esqCauda = d.acum(k);
+        } else {
+          dirCauda = 1 - d.acum(obs);
+          esqCauda = d.acum(obs);
+        }
+        if (tipo === 'dir') p = dirCauda;
+        else if (tipo === 'esq') p = esqCauda;
+        else p = Math.min(1, 2 * Math.min(dirCauda, esqCauda));
       }
 
-      function sinal(s) { return s.replace(/^-/, '−'); }
       painel({
-        ci: ci === null ? '—' : sinal(M.fmt(ci, 4)),
-        cs: cs === null ? '—' : sinal(M.fmt(cs, 4)),
-        ob: obs === null ? '—' : sinal(M.fmt(obs, 4)),
-        p: p === null ? '—' : M.fmt(p, 4)
+        ci: ci === null ? '—' : sinal(M.fmt(ci, d.discreta ? 0 : 4)),
+        cs: cs === null ? '—' : sinal(M.fmt(cs, d.discreta ? 0 : 4)),
+        ob: obs === null ? '—' : sinal(M.fmt(obs, d.discreta ? 0 : 4)),
+        p: p === null ? '—' : M.fmt(p, 4),
+        ap: M.fmt(alfa, 4),
+        ae: d.discreta ? M.fmt(aeInf + aeSup, 4) : M.fmt(alfa, 4)
       });
 
-      /* ----- gráfico ----- */
-      var xmin, xmax;
-      if (dist === 'q') {
-        xmin = 0;
-        xmax = Math.max(cs !== null ? cs * 1.35 : 0, ci !== null ? ci * 2 : 0,
-                        gl + 4 * Math.sqrt(2 * gl) + 4, obs !== null ? obs * 1.2 : 0);
+      if (d.discreta) desenharDiscreta(ci, cs);
+      else desenharContinua(ci, cs);
+      escrever(ci, cs, p, aeInf + aeSup);
+    }
+
+    /* ---------- desenho: contínuas ---------- */
+    function desenharContinua(ci, cs) {
+      var d = D(), f = d.faixa(), xmin = f[0], xmax = f[1];
+      if (d.simetrica) {
+        var lim = Math.max(Math.abs(xmin), Math.abs(cs || 0) * 1.3,
+          Math.abs(ci || 0) * 1.3, obs !== null ? Math.abs(obs) * 1.15 : 0);
+        if (dist === 'r') lim = 1; else { xmin = -lim; xmax = lim; }
       } else {
-        var lim = Math.max(3.6, Math.abs(cs || 0) * 1.3, Math.abs(ci || 0) * 1.3,
-                           obs !== null ? Math.abs(obs) * 1.15 : 0);
-        xmin = -lim; xmax = lim;
+        xmax = Math.max(xmax, cs !== null ? cs * 1.25 : 0,
+          obs !== null ? obs * 1.2 : 0);
       }
 
-      var ymax = 0;
-      for (var i = 0; i <= 200; i++) {
-        var v = densidade(xmin + (xmax - xmin) * i / 200);
+      var ymax = 0, i;
+      for (i = 0; i <= 300; i++) {
+        var v = d.dens(xmin + (xmax - xmin) * i / 300);
         if (isFinite(v)) ymax = Math.max(ymax, v);
       }
       ymax *= 1.22;
@@ -7094,67 +7236,130 @@
 
       var g = G.eixos(cv, {
         xmin: xmin, xmax: xmax, ymax: ymax, altura: 300,
-        rotX: nomeEstat(), rotY: 'densidade',
-        marcasX: dist === 'q' ? G.marcasLineares(xmin, xmax, 8, 1)
-                              : G.marcasLineares(xmin, xmax, 8, 1),
+        rotX: d.estat, rotY: 'densidade',
+        marcasX: G.marcasLineares(xmin, xmax, 8, dist === 'r' ? 2 : 1),
         formataY: function (v) { return v.toFixed(2).replace('.', ','); }
       });
-
       var AZUL = 'rgba(31,78,121,.16)', VERM = 'rgba(140,47,57,.30)';
-      var a0 = ci === null ? xmin : ci;
-      var b0 = cs === null ? xmax : cs;
-      G.area(g, densidade, a0, b0, AZUL);
-      if (ci !== null) G.area(g, densidade, xmin, ci, VERM);
-      if (cs !== null) G.area(g, densidade, cs, xmax, VERM);
-
-      G.curva(g, densidade, G.COR.vinho, 2.4);
-      if (ci !== null) G.vertical(g, ci, G.COR.vinho, sinal(M.fmt(ci, 3).replace(/<[^>]*>/g, '')));
-      if (cs !== null) G.vertical(g, cs, G.COR.vinho, sinal(M.fmt(cs, 3).replace(/<[^>]*>/g, '')));
+      G.area(g, d.dens, ci === null ? xmin : ci, cs === null ? xmax : cs, AZUL);
+      if (ci !== null) G.area(g, d.dens, xmin, ci, VERM);
+      if (cs !== null) G.area(g, d.dens, cs, xmax, VERM);
+      G.curva(g, d.dens, G.COR.vinho, 2.4);
+      if (ci !== null) G.vertical(g, ci, G.COR.vinho, sinal(M.fmt(ci, 3)));
+      if (cs !== null) G.vertical(g, cs, G.COR.vinho, sinal(M.fmt(cs, 3)));
       if (obs !== null && isFinite(obs) && obs >= xmin && obs <= xmax)
-        G.vertical(g, obs, '#2e7d4f', nomeEstat() + ' obs');
+        G.vertical(g, obs, '#2e7d4f', d.estat + ' obs');
 
-      /* ----- texto ----- */
-      var nome = nomeEstat();
-      var conf = M.pct(1 - alfa, alfa < 0.01 ? 2 : 0);
-      var txt = '';
-      if (tipo === 'bi') {
-        txt = 'Teste <b>bilateral</b> a α = ' + M.fmt(alfa, 3) + ' ('
-            + conf + ' de confiança)' + (dist === 'z' ? '' : ' com ν = <b>' + gl + '</b>')
-            + '. Rejeita-se H₀ se ' + nome + ' &lt; <b>' + sinal(M.fmt(ci, 3))
-            + '</b> ou ' + nome + ' &gt; <b>' + sinal(M.fmt(cs, 3)) + '</b>. '
-            + 'Cada cauda tem área α/2 = ' + M.fmt(alfa / 2, 4) + '.';
-      } else if (tipo === 'dir') {
-        txt = 'Teste <b>unilateral à direita</b> a α = ' + M.fmt(alfa, 3)
-            + (dist === 'z' ? '' : ' com ν = <b>' + gl + '</b>')
-            + '. Rejeita-se H₀ se ' + nome + ' &gt; <b>' + sinal(M.fmt(cs, 3))
-            + '</b>. Toda a área α fica na cauda direita: por isso o crítico unilateral é '
-            + '<i>menor</i> que o bilateral do mesmo α.';
-      } else {
-        txt = 'Teste <b>unilateral à esquerda</b> a α = ' + M.fmt(alfa, 3)
-            + (dist === 'z' ? '' : ' com ν = <b>' + gl + '</b>')
-            + '. Rejeita-se H₀ se ' + nome + ' &lt; <b>' + sinal(M.fmt(ci, 3)) + '</b>.';
+      legenda.innerHTML = 'Faixa azul: <b>região de não rejeição</b> de H₀ &nbsp;·&nbsp; '
+        + 'faixas vermelhas: <b>região crítica</b>, de área total α &nbsp;·&nbsp; '
+        + 'linhas tracejadas: valores críticos &nbsp;·&nbsp; linha verde: estatística observada';
+    }
+
+    /* ---------- desenho: discretas ---------- */
+    function desenharDiscreta(ci, cs) {
+      var d = D(), sup = d.suporte(), k;
+      var k0 = sup[0], k1 = sup[1];
+      /* recorta a janela quando o suporte é grande demais para barras */
+      if (k1 - k0 > 70) {
+        var centro = obs !== null ? obs : (cs !== null ? cs : (k0 + k1) / 2);
+        var meia = 35;
+        k0 = Math.max(sup[0], Math.round(centro - meia));
+        k1 = Math.min(sup[1], Math.round(centro + meia));
       }
+      var dados = [], ymax = 0;
+      for (k = k0; k <= k1; k++) {
+        var pk = d.massa(k);
+        dados.push({ x: k, y: pk });
+        ymax = Math.max(ymax, pk);
+      }
+      var g = G.eixos(cv, {
+        xmin: k0 - 0.7, xmax: k1 + 0.7, ymax: ymax * 1.22, altura: 300,
+        rotX: d.estat, rotY: 'probabilidade',
+        marcasX: G.marcasInteiras(k0, k1, 12),
+        formataY: function (v) { return v.toFixed(3).replace('.', ','); }
+      });
+      G.barras(g, dados.filter(function (b) {
+        return (ci === null || b.x > ci) && (cs === null || b.x < cs);
+      }), 'rgba(31,78,121,.55)', 0.82);
+      G.barras(g, dados.filter(function (b) {
+        return (ci !== null && b.x <= ci) || (cs !== null && b.x >= cs);
+      }), 'rgba(140,47,57,.75)', 0.82);
+      if (obs !== null && isFinite(obs) && obs >= k0 - 0.7 && obs <= k1 + 0.7)
+        G.vertical(g, obs, '#2e7d4f', d.estat + ' obs');
+
+      legenda.innerHTML = 'Barras azuis: <b>região de não rejeição</b> &nbsp;·&nbsp; '
+        + 'barras vermelhas: <b>região crítica</b> &nbsp;·&nbsp; '
+        + 'num suporte discreto a área da região crítica não dá exatamente α, '
+        + 'e o cartão do α efetivo mostra o que o teste de fato gasta.';
+    }
+
+    /* ---------- texto ---------- */
+    function escrever(ci, cs, p, aefetivo) {
+      var d = D(), nome = d.estat;
+      var conf = M.pct(1 - alfa, alfa < 0.01 ? 2 : 0);
+      var pars = d.campos.map(function (k) {
+        return SIM[k] + ' = <b>' + M.fmt(par[k], LIM[k][2] === 1 ? 0 : 2) + '</b>';
+      }).join(', ');
+      var comPars = pars ? ' com ' + pars : '';
+
+      var txt;
+      if (tipo === 'bi') {
+        txt = 'Teste <b>bilateral</b> a α = ' + M.fmt(alfa, 3) + ' (' + conf
+          + ' de confiança)' + comPars + '. Rejeita-se H₀ se ' + nome + ' ≤ <b>'
+          + sinal(M.fmt(ci, d.discreta ? 0 : 3)) + '</b> ou ' + nome + ' ≥ <b>'
+          + sinal(M.fmt(cs, d.discreta ? 0 : 3)) + '</b>.';
+      } else if (tipo === 'dir') {
+        txt = 'Teste <b>unilateral à direita</b> a α = ' + M.fmt(alfa, 3) + comPars
+          + '. Rejeita-se H₀ se ' + nome + ' ≥ <b>'
+          + sinal(M.fmt(cs, d.discreta ? 0 : 3)) + '</b>.';
+      } else {
+        txt = 'Teste <b>unilateral à esquerda</b> a α = ' + M.fmt(alfa, 3) + comPars
+          + '. Rejeita-se H₀ se ' + nome + ' ≤ <b>'
+          + sinal(M.fmt(ci, d.discreta ? 0 : 3)) + '</b>.';
+      }
+      txt += ' Esta distribuição aparece ' + d.onde + '.';
 
       if (p !== null) {
-        var rejeita = (ci !== null && obs < ci) || (cs !== null && obs > cs);
-        txt += '<br><br>Com ' + nome + '<sub>obs</sub> = <b>' + sinal(M.fmt(obs, 3))
-             + '</b>, o valor p é <b>' + M.fmt(p, 4) + '</b>, de modo que '
-             + (rejeita
-                ? '<b>rejeitamos H₀</b> ao nível de ' + M.fmt(alfa, 3)
-                  + ': a estatística caiu na região crítica, e p &lt; α.'
-                : '<b>não rejeitamos H₀</b> ao nível de ' + M.fmt(alfa, 3)
-                  + ': a estatística caiu na região de não rejeição, e p &gt; α.')
-             + ' As duas leituras (comparar com o crítico ou comparar p com α) '
-             + 'sempre concordam, porque são a mesma conta vista de dois lados.';
+        var rejeita = (ci !== null && obs <= ci + (d.discreta ? 0 : 0))
+          || (cs !== null && obs >= cs);
+        if (!d.discreta) rejeita = (ci !== null && obs < ci) || (cs !== null && obs > cs);
+        txt += '<br><br>Com ' + nome + '<sub>obs</sub> = <b>'
+          + sinal(M.fmt(obs, d.discreta ? 0 : 3)) + '</b>, o valor p é <b>'
+          + M.fmt(p, 4) + '</b>, de modo que '
+          + (rejeita
+            ? '<b>rejeitamos H₀</b> ao nível de ' + M.fmt(alfa, 3) + '.'
+            : '<b>não rejeitamos H₀</b> ao nível de ' + M.fmt(alfa, 3) + '.')
+          + ' Comparar com o crítico e comparar p com α são a mesma conta vista de '
+          + 'dois lados, e por isso sempre concordam.';
       } else {
         txt += ' Informe uma estatística observada para obter também o valor p.';
       }
 
-      if (dist === 'q' && tipo === 'bi')
-        txt += '<br><br><i>No qui-quadrado o bilateral não é simétrico:</i> a distribuição é '
-             + 'assimétrica e definida só para valores positivos, de modo que os dois cortes '
-             + 'têm de ser buscados separadamente: um com área α/2 à esquerda, outro com α/2 '
-             + 'à direita.';
+      if (d.discreta) {
+        txt += '<br><br><i>Por que α efetivo e α pedido não coincidem:</i> num suporte '
+          + 'discreto só existem alguns valores possíveis, e em geral nenhum deles deixa '
+          + 'exatamente α na cauda. A regra é escolher a região crítica que não '
+          + '<b>ultrapassa</b> α, de modo que o teste gasta menos que o nível nominal e é '
+          + '<b>conservador</b>: aqui ele gasta ' + M.fmt(aefetivo, 4) + ' dos '
+          + M.fmt(alfa, 3) + ' disponíveis. É por isso que testes exatos em amostras '
+          + 'pequenas têm menos poder do que o α nominal sugere.';
+      } else if (dist === 'q' && tipo === 'bi') {
+        txt += '<br><br><i>No qui-quadrado o bilateral não é simétrico:</i> a distribuição '
+          + 'é assimétrica e definida só para valores positivos, de modo que os dois cortes '
+          + 'têm de ser buscados separadamente, um com α/2 à esquerda e outro com α/2 à '
+          + 'direita.';
+      } else if (dist === 'f') {
+        txt += '<br><br><i>Sobre o F:</i> a cauda esquerda raramente é usada, porque na '
+          + 'prática se põe a maior variância no numerador e o teste vira unilateral à '
+          + 'direita. Quando for preciso, vale a identidade '
+          + 'F<sub>1−α</sub>(ν₁,ν₂) = 1/F<sub>α</sub>(ν₂,ν₁), que é como as tabelas '
+          + 'impressas evitam publicar a cauda esquerda.';
+      } else if (dist === 'r') {
+        txt += '<br><br><i>Sobre o r:</i> o crítico vem do t com ν = n − 2, pela '
+          + 'transformação t = r√(n−2)/√(1−r²). Repare como ele cai com n: uma correlação '
+          + 'de 0,5 é significativa com n = 20 e não é com n = 10, o que mostra que '
+          + 'magnitude e significância são coisas diferentes.';
+      }
 
       saida.innerHTML = txt;
     }

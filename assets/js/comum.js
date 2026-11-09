@@ -253,6 +253,97 @@ var M = (function () {
   }
 
   /* ===================================================================
+     Distribuição F de Snedecor, correlação e acumuladas discretas
+     =================================================================== */
+
+  /* fração continuada de Lentz para a beta incompleta */
+  function betaCF(a, b, x) {
+    var MAX = 300, EPS = 3e-16, MIN = 1e-300;
+    var qab = a + b, qap = a + 1, qam = a - 1;
+    var c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < MIN) d = MIN;
+    d = 1 / d;
+    var h = d, m, m2, aa, del;
+    for (m = 1; m <= MAX; m++) {
+      m2 = 2 * m;
+      aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+      d = 1 + aa * d; if (Math.abs(d) < MIN) d = MIN;
+      c = 1 + aa / c; if (Math.abs(c) < MIN) c = MIN;
+      d = 1 / d; h *= d * c;
+      aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+      d = 1 + aa * d; if (Math.abs(d) < MIN) d = MIN;
+      c = 1 + aa / c; if (Math.abs(c) < MIN) c = MIN;
+      d = 1 / d; del = d * c; h *= del;
+      if (Math.abs(del - 1) < EPS) break;
+    }
+    return h;
+  }
+
+  /* beta incompleta regularizada I_x(a,b) */
+  function betaI(a, b, x) {
+    if (!(x > 0)) return 0;
+    if (x >= 1) return 1;
+    var bt = Math.exp(lnGama(a + b) - lnGama(a) - lnGama(b)
+      + a * Math.log(x) + b * Math.log(1 - x));
+    return x < (a + 1) / (a + b + 2)
+      ? bt * betaCF(a, b, x) / a
+      : 1 - bt * betaCF(b, a, 1 - x) / b;
+  }
+
+  function dF(x, v1, v2) {
+    if (!(x > 0)) return 0;
+    var l = 0.5 * v1 * Math.log(v1) + 0.5 * v2 * Math.log(v2)
+      + (0.5 * v1 - 1) * Math.log(x) - 0.5 * (v1 + v2) * Math.log(v2 + v1 * x)
+      + lnGama((v1 + v2) / 2) - lnGama(v1 / 2) - lnGama(v2 / 2);
+    return Math.exp(l);
+  }
+
+  function FF(x, v1, v2) {
+    if (!(x > 0)) return 0;
+    return Math.min(1, Math.max(0, betaI(v1 / 2, v2 / 2, v1 * x / (v1 * x + v2))));
+  }
+
+  /* F crítico: devolve x tal que P(X > x) = alfa */
+  function fCritico(alfa, v1, v2) {
+    var lo = 1e-8, hi = 1e5;
+    for (var i = 0; i < 200; i++) {
+      var m = (lo + hi) / 2;
+      if (1 - FF(m, v1, v2) > alfa) lo = m; else hi = m;
+    }
+    return (lo + hi) / 2;
+  }
+
+  /* correlação de Pearson: sob H0 (ρ=0), t = r√(n−2)/√(1−r²) tem ν = n−2,
+     de modo que o r crítico sai do t crítico */
+  function rCritico(alfa, n) {
+    var nu = n - 2;
+    if (nu < 1) return NaN;
+    var t = tCritico(alfa, nu);
+    return t / Math.sqrt(t * t + nu);
+  }
+  /* valor p bilateral de r */
+  function pCorrelacao(r, n) {
+    var nu = n - 2;
+    if (nu < 1 || Math.abs(r) >= 1) return NaN;
+    var t = Math.abs(r) * Math.sqrt(nu / (1 - r * r));
+    return 2 * (1 - FT(t, nu));
+  }
+
+  /* acumuladas discretas, somando as probabilidades pontuais */
+  function FBinomial(k, n, p) {
+    if (k < 0) return 0;
+    var s = 0;
+    for (var i = 0; i <= Math.min(k, n); i++) s += pBinomial(n, i, p);
+    return Math.min(1, s);
+  }
+  function FPoisson(k, m) {
+    if (k < 0) return 0;
+    var s = 0;
+    for (var i = 0; i <= k; i++) s += pPoisson(i, m);
+    return Math.min(1, s);
+  }
+
+  /* ===================================================================
      Testes de normalidade
      =================================================================== */
 
@@ -567,6 +658,9 @@ var M = (function () {
     momentos: momentos, dagostino: dagostino, andersonDarling: andersonDarling,
     lilliefors: lilliefors, shapiroWilk: shapiroWilk,
     dQui: dQui, FQui: FQui, quiCritico: quiCritico, simpson: simpson,
+    betaI: betaI, dF: dF, FF: FF, fCritico: fCritico,
+    rCritico: rCritico, pCorrelacao: pCorrelacao,
+    FBinomial: FBinomial, FPoisson: FPoisson,
     coefsSW: coefsSW, postosMedios: postosMedios, FWilcoxon: FWilcoxon, pWilcoxon: pWilcoxon,
     FMannWhitney: FMannWhitney, pMannWhitney: pMannWhitney,
     pSequencias: pSequencias,
